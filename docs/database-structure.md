@@ -249,6 +249,8 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 
 ## Migration Strategy
 
+- First migration draft: [`database/migrations/0001_initial.sql`](../database/migrations/0001_initial.sql).
+- First seed draft: [`database/seeds/0001_reference_data.sql`](../database/seeds/0001_reference_data.sql).
 - Every schema change must have a forward migration and a rollback note.
 - Add nullable columns first, backfill, then enforce `not null` constraints.
 - Create large indexes concurrently in production.

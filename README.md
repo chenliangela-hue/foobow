@@ -54,6 +54,7 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [ODD Spec](docs/odd-spec.md)
 - [Database Structure](docs/database-structure.md)
 - [API Interface](docs/api-interface.md)
+- [OpenAPI Contract](docs/openapi.json)
 - [Project Plan](docs/project-plan.md)
 - [Task Board](docs/task-board.md)
 - [Acceptance Criteria](docs/acceptance-criteria.md)

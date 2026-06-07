@@ -28,6 +28,8 @@
 - Port core Foobow flows into the Expo mobile shell.
 - Add mobile TypeScript typecheck gate.
 - Add high/critical dependency audit gates for root and mobile packages.
+- Add initial PostgreSQL migration and seed data drafts.
+- Add OpenAPI contract draft and contract tests.
 
 ## In Progress
 
@@ -40,6 +42,7 @@
 - Select production backend framework.
 - Add route-based app structure once Expo Router is installed.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
+- Convert migration/API drafts into the selected backend runtime.
 - Add browser-driven tests when local browser/server isolation is resolved.
 - Choose production app framework after prototype scope stabilizes.
 

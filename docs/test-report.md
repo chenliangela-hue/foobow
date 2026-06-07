@@ -12,10 +12,12 @@ npm test
 
 Result:
 
-- 7 tests passed.
+- 14 tests passed.
 - Unit checks passed.
 - Smoke checks passed.
 - PA checklist checks passed.
+- API contract checks passed.
+- Database migration/seed contract checks passed.
 
 Additional syntax checks:
 

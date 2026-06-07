@@ -2,6 +2,8 @@
 
 This is the product-level API shape for future implementation. It avoids framework-specific details until the backend stack is selected.
 
+Executable OpenAPI draft: [`openapi.json`](openapi.json).
+
 ## Auth And User
 
 Base path: `/api/v1`.
