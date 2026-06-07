@@ -41,3 +41,23 @@ jobs:
 
       - name: Run browser PA checks
         run: npm run test:browser
+
+  visual-regression:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Run visual regression checks
+        run: npm run test:visual

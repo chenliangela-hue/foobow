@@ -10,12 +10,13 @@
     "test:smoke": "node --test tests/smoke-prototype.test.mjs",
     "test:pa": "node --test tests/pa-checklist.test.mjs",
     "test:api": "npm --prefix apps/api test",
-    "test:browser": "playwright test",
+    "test:browser": "playwright test tests/browser/foobow.pa.spec.mjs",
+    "test:visual": "playwright test tests/browser/foobow.visual.spec.mjs",
     "test:mobile": "npm --prefix apps/mobile run typecheck",
     "audit:high": "npm audit --audit-level=high",
     "audit:mobile:high": "npm --prefix apps/mobile audit --audit-level=high",
     "test:security": "npm run audit:high && npm run audit:mobile:high",
-    "test:all": "npm test && npm run test:api && npm run test:mobile && npm run test:browser && npm run test:security",
+    "test:all": "npm test && npm run test:api && npm run test:mobile && npm run test:browser && npm run test:visual && npm run test:security",
     "serve": "python -m http.server 4173 --bind 127.0.0.1 --directory prototype"
   },
   "engines": {

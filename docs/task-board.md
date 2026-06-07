@@ -33,6 +33,7 @@
 - Add dependency-light API runtime scaffold under `apps/api`.
 - Add API runtime tests for health, discovery, check-in, deed completion, blessings, reports, donation verification, and donation idempotency.
 - Accept ADR 002: target NestJS + TypeScript + PostgreSQL + Prisma for the production backend while keeping SQL migrations for database-specific controls.
+- Add Playwright visual regression baselines for core prototype screens.
 
 ## In Progress
 
@@ -41,7 +42,6 @@
 
 ## Next
 
-- Add full visual regression checks.
 - Scaffold production NestJS backend when dependencies can be installed.
 - Add route-based app structure once Expo Router is installed.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.

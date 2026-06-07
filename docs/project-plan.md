@@ -19,8 +19,9 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Smoke checks: prototype JavaScript syntax and static HTTP serving.
 - PA checks: baseline accessibility, privacy, safety, and donation wording.
 - Browser PA checks: Playwright validates mobile/desktop core flows.
+- Visual regression checks: Playwright screenshots protect core mobile/desktop prototype layouts.
 - Security checks: high/critical npm audit gates run for root and mobile packages.
-- Future gates: visual regression checks, production backend contract parity tests, migration tests, security checks.
+- Future gates: production backend contract parity tests, migration tests, security checks.
 
 ## Sub-Agent Assignment Model
 

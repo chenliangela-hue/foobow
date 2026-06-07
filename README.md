@@ -83,4 +83,5 @@ Additional gates:
 npm run test:mobile
 npm run test:api
 npm run test:browser
+npm run test:visual
 ```

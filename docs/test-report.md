@@ -92,6 +92,20 @@ Validated:
 - `npm run test:browser` passed 10/10 checks across mobile Chromium and desktop Chromium.
 - Added automated checks for map/deed category filters, keyboard traversal, keyboard deed-card activation, and WCAG 4.5:1 contrast on core design tokens.
 
+### Visual Regression
+
+Command:
+
+```text
+npm run test:visual
+```
+
+Result:
+
+- Added Playwright screenshot baselines for Today, Map/Environment, and dark-mode Community states.
+- Coverage runs across mobile Chromium and desktop Chromium through the shared Playwright projects.
+- CI runs visual regression on `windows-latest` so the committed `win32` Playwright snapshots are compared on the same platform family.
+
 Known Limits:
 
 - Browser PA is now automated with Playwright in `tests/browser/foobow.pa.spec.mjs`.
