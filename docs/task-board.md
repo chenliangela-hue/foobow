@@ -47,19 +47,15 @@
 
 - Upgrade local Node to `20.19.4+` so Prisma CLI 7 can be installed and migrations can be generated through the selected toolchain.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
-- Select production backend framework and convert the in-memory API scaffold to persistent route modules.
-- Add browser-driven tests when local browser/server isolation is resolved.
-- Choose production app framework after prototype scope stabilizes.
+- Convert the in-memory API scaffold to persistent NestJS route modules after Prisma generation and database connection are available.
+- Add production authentication provider once account/session requirements and credentials are selected.
 
 ## Backlog
 
-- Authentication and profile backend.
 - Real map provider integration.
 - Deed action persistence.
-- Blessing wall moderation.
 - Verified donation campaign workflow.
 - Subscription and ad policy.
 - Admin moderation console.
 - Localization workflow.
-- Visual regression tests.
 - Mobile app packaging.

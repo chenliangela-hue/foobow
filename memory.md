@@ -28,6 +28,7 @@ This file is the project-local memory. Keep it current whenever product directio
 - Installed NestJS 11, `@nestjs/swagger`, `@prisma/client` 7, and TypeScript tooling in `apps/api`; scaffolded a typed NestJS backend target with DTO validation, dev bearer auth guard, Swagger setup, and route modules mirroring the current contract runtime. Prisma CLI 7 install is blocked locally until Node is upgraded from `20.17.0` to `20.19+`. Added API dependency audit coverage to the root security gate.
 - Installed Expo Router and added route files for Today, Map, Deeds, Community, and Profile under `apps/mobile/app/(tabs)`, with the custom Foobow shell driving route-aware tab navigation.
 - Added `apps/api/prisma/schema.prisma` as a Prisma persistence target that mirrors the SQL migration draft, public IDs, moderation tables, subscription records, and donation idempotency constraints.
+- Cleaned the task board so completed framework, route, browser, and visual-regression work is no longer listed as future work; remaining next steps are credential/Node/service dependent.
 
 ## Working Principles
 
