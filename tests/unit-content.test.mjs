@@ -30,7 +30,38 @@ test("ODD, database, API, project plan, task board, and memory docs exist in REA
     "Project Plan",
     "Task Board",
     "Acceptance Criteria",
+    "Auth Strategy",
+    "Map Provider Decision",
+    "Localization Workflow",
+    "Mobile Release Checklist",
+    "Node Readiness",
     "Memory"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
+
+test("sprint readiness docs cover auth, maps, localization, mobile release, and Node runtime", async () => {
+  const auth = await readText("docs/auth-strategy.md");
+  const maps = await readText("docs/map-provider-decision.md");
+  const localization = await readText("docs/localization-workflow.md");
+  const release = await readText("docs/mobile-release-checklist.md");
+  const nodeReadiness = await readText("docs/node-readiness.md");
+  const nodeVersion = await readText(".node-version");
+
+  const missing = hasAll(auth + maps + localization + release + nodeReadiness + nodeVersion, [
+    "Auth0",
+    "Clerk",
+    "Apple Sign In",
+    "Mapbox",
+    "OpenStreetMap",
+    "MapLibre",
+    "zh-Hans",
+    "en",
+    "WCAG",
+    "App Store",
+    "Google Play",
+    "20.19.4"
   ]);
 
   assert.deepEqual(missing, []);

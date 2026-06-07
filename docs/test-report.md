@@ -10,10 +10,11 @@ npm run test:all
 
 Result:
 
-- Passed on 2026-06-07 after fixing Claude Code settings, mobile dependency resolution, and PA layout issues.
+- Passed on 2026-06-07 after fixing Claude Code settings, mobile dependency resolution, PA layout issues, and sprint readiness docs.
 - Covered root contract/static checks, API runtime tests and NestJS typecheck, mobile TypeScript typecheck, browser PA checks, visual regression checks, and high/critical security audits.
 - Mobile audit still reports moderate Expo-template transitive advisories; high/critical audit gate passes and the force fix would downgrade Expo.
 - `npm --prefix apps/mobile ci` did not complete within the local 3-minute command timeout, but the dependency graph now resolves `react-dom@19.2.3` with `react` peer `^19.2.3`, and mobile typecheck passes. CI should run on the configured Node `20.19.4` environment.
+- Added root test coverage for auth strategy, map provider decision, localization workflow, mobile release checklist, and Node runtime readiness. Root tests now pass 17/17.
 
 ### Automated Checks
 

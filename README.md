@@ -80,6 +80,11 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [PA Audit 2026-06-07](docs/pa-audit-2026-06-07.md)
 - [ADR 001 Mobile Stack](docs/adr-001-mobile-stack.md)
 - [ADR 002 Backend Stack](docs/adr-002-backend-stack.md)
+- [Auth Strategy](docs/auth-strategy.md)
+- [Map Provider Decision](docs/map-provider-decision.md)
+- [Localization Workflow](docs/localization-workflow.md)
+- [Mobile Release Checklist](docs/mobile-release-checklist.md)
+- [Node Readiness](docs/node-readiness.md)
 - [Memory](memory.md)
 
 ## Verification

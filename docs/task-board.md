@@ -43,13 +43,18 @@
 - Fix remote CI mobile dependency resolution for Expo Router/react/react-dom by pinning `react-dom` to the Expo-compatible React version.
 - Fix P1/P2 prototype layout issues from PA audit: mobile nav/content overlap, Community clipping/list coverage, Map bottom cramping, and desktop Today empty vertical space.
 - Refresh visual regression baselines after inspected PA layout fixes.
+- Add production authentication strategy shortlist and MVP account/security requirements.
+- Add map provider decision notes covering Mapbox, Google Maps, OpenStreetMap, and MapLibre tradeoffs.
+- Add localization workflow for `en` and `zh-Hans`, safety copy, accessibility labels, and QA.
+- Add mobile release checklist for App Store, Google Play, store assets, privacy, and build gates.
+- Add Node readiness marker and setup notes for the `20.19.4` runtime baseline.
 
 ## Next
 
 - Upgrade local Node to `20.19.4+` so Prisma CLI 7 can be installed and migrations can be generated through the selected toolchain.
-- Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Convert the in-memory API scaffold to persistent NestJS route modules after Prisma generation and database connection are available.
 - Add production authentication provider once account/session requirements and credentials are selected.
+- Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 
 ## Backlog
 

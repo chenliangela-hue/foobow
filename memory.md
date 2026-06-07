@@ -34,6 +34,7 @@ This file is the project-local memory. Keep it current whenever product directio
 - Fixed the Expo Router/react/react-dom CI dependency conflict by explicitly pinning `react-dom@19.2.3` to match the Expo-selected `react@19.2.3`; mobile typecheck passes after the lockfile update.
 - Fixed PA audit layout findings in `prototype/styles.css`: mobile bottom navigation no longer overlays the Today CTA or Community feed, Community headings have inner screen padding, Map content is not cramped by the nav, and desktop Today no longer forces a large blank lower viewport. Refreshed Playwright visual baselines after inspecting the new screenshots.
 - Ran `npm run test:all` successfully after the fixes: 16 root tests, 18 API tests/typecheck, mobile typecheck, 10 browser PA tests, 6 visual regression tests, and high/critical audit gates passed. Mobile still reports known moderate Expo transitive `uuid` advisories that require an unsafe breaking force fix.
+- Added sprint readiness docs for production auth strategy, map provider decision, localization workflow, mobile release checklist, and Node `20.19.4` readiness. Added `.node-version` and root content tests so these release-readiness artifacts stay linked from README and cover the required decision points.
 
 ## Working Principles
 

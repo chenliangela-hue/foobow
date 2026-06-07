@@ -76,6 +76,11 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Local blocker: Prisma CLI 7 requires Node `20.19+`; the current local Node `20.17.0` cannot install it, so Prisma migration generation waits for a Node upgrade.
 - Persistence target: `apps/api/prisma/schema.prisma` mirrors the SQL migration draft so future Prisma generation has an explicit schema target once Node is upgraded.
 - Mobile CI stability: Expo Router's optional web peer resolution is pinned through `react-dom@19.2.3` to match the Expo-selected `react@19.2.3` version.
+- Auth readiness: `docs/auth-strategy.md` recommends a managed provider shortlist and defines login, session, consent, moderation-role, export, and deletion requirements.
+- Map readiness: `docs/map-provider-decision.md` recommends Mapbox for a premium mobile MVP with OpenStreetMap/MapLibre as the vendor-independence fallback.
+- Localization readiness: `docs/localization-workflow.md` defines `en` and `zh-Hans` workflow, safety-copy review, and accessibility label translation requirements.
+- Mobile release readiness: `docs/mobile-release-checklist.md` captures App Store, Google Play, privacy, moderation, payment, and asset gates.
+- Runtime readiness: `.node-version` and `docs/node-readiness.md` record Node `20.19.4` as the project baseline.
 
 ### Milestone 5: Release Readiness
 
