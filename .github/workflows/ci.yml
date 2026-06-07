@@ -24,6 +24,9 @@ jobs:
       - name: Run unit, smoke, and PA checks
         run: npm test
 
+      - name: Install API dependencies
+        run: npm --prefix apps/api ci
+
       - name: Run API runtime tests
         run: npm run test:api
 

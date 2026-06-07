@@ -69,9 +69,10 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Seed deed types, map spots, badges, and donation campaigns.
 - Add auth/profile/check-in/deed/blessing APIs.
 - Add moderation and donation safety checks.
-- Current status: initial migration, seed data, OpenAPI contract drafts, contract tests, and a dependency-light in-memory API runtime exist.
+- Current status: initial migration, seed data, OpenAPI contract drafts, contract tests, a dependency-light in-memory API runtime, and a typed NestJS scaffold exist.
 - Runtime bridge: `apps/api` validates public discovery, daily check-in, deed completion, blessing/report creation, verified campaign listing, and idempotent donation creation before the production backend framework is selected.
 - Backend direction: ADR 002 selects NestJS + TypeScript + PostgreSQL + Prisma as the target production backend stack, with explicit SQL retained for database-specific safety controls.
+- Local blocker: Prisma CLI 7 requires Node `20.19+`; the current local Node `20.17.0` cannot install it, so Prisma migration generation waits for a Node upgrade.
 
 ### Milestone 5: Release Readiness
 

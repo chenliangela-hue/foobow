@@ -34,6 +34,7 @@
 - Add API runtime tests for health, discovery, check-in, deed completion, blessings, reports, donation verification, and donation idempotency.
 - Accept ADR 002: target NestJS + TypeScript + PostgreSQL + Prisma for the production backend while keeping SQL migrations for database-specific controls.
 - Add Playwright visual regression baselines for core prototype screens.
+- Scaffold typed NestJS production backend target under `apps/api/src/nest`.
 
 ## In Progress
 
@@ -42,7 +43,7 @@
 
 ## Next
 
-- Scaffold production NestJS backend when dependencies can be installed.
+- Upgrade local Node to `20.19.4+` so Prisma CLI 7 can be installed and migrations can be generated through the selected toolchain.
 - Add route-based app structure once Expo Router is installed.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Select production backend framework and convert the in-memory API scaffold to persistent route modules.

@@ -2,6 +2,18 @@
 
 ## 2026-06-06
 
+Latest aggregate command:
+
+```text
+npm run test:all
+```
+
+Result:
+
+- Passed on 2026-06-07 after adding visual regression and NestJS scaffold work.
+- Covered root contract/static checks, API runtime tests and NestJS typecheck, mobile TypeScript typecheck, browser PA checks, visual regression checks, and high/critical security audits.
+- Mobile audit still reports moderate Expo-template transitive advisories; high/critical audit gate passes and the force fix would downgrade Expo.
+
 ### Automated Checks
 
 Command:
@@ -27,8 +39,8 @@ npm run test:api
 
 Result:
 
-- 16 tests passed.
-- Covers health, auth guard, `/me` account shape, deed catalog filtering, map spot category/region filtering, daily check-in recommendations, duplicate check-in conflict, deed completion karma, blessing creation/listing, OpenAPI-aligned validation, report creation, verified campaign listing, donation idempotency, unverified campaign rejection, and standard error request IDs.
+- 18 tests passed.
+- Covers health, auth guard, `/me` account shape, deed catalog filtering, map spot category/region filtering, daily check-in recommendations, duplicate check-in conflict, deed completion karma, blessing creation/listing, OpenAPI-aligned validation, report creation, verified campaign listing, donation idempotency, unverified campaign rejection, standard error request IDs, NestJS scaffold structure, and TypeScript typecheck.
 
 Additional syntax checks:
 
@@ -56,12 +68,14 @@ Security audit:
 
 ```text
 npm audit --audit-level=high
+npm --prefix apps/api audit --audit-level=high
 npm --prefix apps/mobile audit --audit-level=high
 ```
 
 Result:
 
 - Root audit found 0 vulnerabilities.
+- API audit found 0 vulnerabilities after adding the NestJS scaffold dependencies.
 - Mobile high/critical audit passed.
 - Mobile audit still reports 10 moderate Expo-template transitive advisories through `uuid`/Expo config tooling; the suggested force fix would downgrade Expo and is not safe for the SDK 56 scaffold.
 - After adding the convenience `test:security` script and CI audit step, local rerun was blocked by Codex escalation usage limits. The underlying individual audit commands had already passed at the high/critical threshold.

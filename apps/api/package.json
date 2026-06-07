@@ -2,13 +2,31 @@
   "name": "@foobow/api",
   "version": "0.1.0",
   "private": true,
-  "description": "Dependency-light Foobow API runtime scaffold for contract validation.",
+  "description": "Foobow API runtime scaffold and typed NestJS backend target.",
   "type": "module",
   "scripts": {
     "start": "node src/server.mjs",
-    "test": "node --test tests"
+    "start:nest": "tsx src/nest/main.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test tests && npm run typecheck"
   },
   "engines": {
     "node": ">=20.19.4"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.24",
+    "@nestjs/core": "^11.1.24",
+    "@nestjs/platform-express": "^11.1.24",
+    "@nestjs/swagger": "^11.4.4",
+    "@prisma/client": "^7.8.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
   }
 }

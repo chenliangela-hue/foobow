@@ -42,6 +42,24 @@ npm run test:mobile
 
 The mobile shell currently ports the prototype's core flows: Today, Map, Deeds, Community, Profile, category filters, symbolic karma, safe donation copy, privacy settings, and low-pressure blessing interactions.
 
+## API App
+
+The API scaffold lives in:
+
+```text
+apps/api
+```
+
+Useful commands:
+
+```text
+npm --prefix apps/api run start
+npm --prefix apps/api run start:nest
+npm run test:api
+```
+
+`start` runs the proven dependency-light contract runtime. `start:nest` runs the typed NestJS production scaffold selected in ADR 002.
+
 ## Product Direction
 
 Foobow should feel calm, premium, emotionally warm, and trustworthy. It should avoid casino-style gamification or claims that users can buy luck, virtue, or karma. Virtual actions provide symbolic comfort; verified donations and sponsored campaigns are clearly labeled as real-world impact.

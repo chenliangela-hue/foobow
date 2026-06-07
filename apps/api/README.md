@@ -1,6 +1,11 @@
 # Foobow API Runtime
 
-This is a dependency-light executable scaffold for the Foobow API contract. It uses Node's built-in HTTP server and test runner so the first backend slice can validate product behavior without locking the production framework.
+This package contains two backend surfaces:
+
+- `src/server.mjs`: the dependency-light executable scaffold for contract validation.
+- `src/nest`: the typed NestJS production backend target selected in ADR 002.
+
+The in-memory runtime remains the fast contract harness while the NestJS app becomes the production implementation path.
 
 ## Run
 
@@ -20,9 +25,23 @@ http://127.0.0.1:8787
 npm --prefix apps/api test
 ```
 
+Typecheck only:
+
+```text
+npm --prefix apps/api run typecheck
+```
+
+Run the NestJS scaffold:
+
+```text
+npm --prefix apps/api run start:nest
+```
+
 ## Scope
 
 - In-memory sample data only.
 - No production authentication, persistence, payment provider, moderation queue, or rate limiter yet.
 - Public response shape follows `docs/api-interface.md` and `docs/openapi.json`.
 - Donation creation enforces verified campaigns and idempotency-key behavior so payment safety rules are testable early.
+- NestJS DTOs, guarded routes, and Swagger setup mirror the current runtime contract.
+- Prisma CLI 7 migration generation waits for local Node `20.19+`; current local Node was `20.17.0` during scaffold work.
