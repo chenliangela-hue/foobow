@@ -24,12 +24,13 @@ npm test
 
 Result:
 
-- 15 tests passed.
+- 16 tests passed.
 - Unit checks passed.
 - Smoke checks passed.
 - PA checklist checks passed.
 - API contract checks passed.
 - Database migration/seed contract checks passed.
+- Prisma schema contract checks passed.
 
 API runtime check:
 

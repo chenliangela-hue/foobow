@@ -36,6 +36,7 @@
 - Add Playwright visual regression baselines for core prototype screens.
 - Scaffold typed NestJS production backend target under `apps/api/src/nest`.
 - Add Expo Router route structure for Today, Map, Deeds, Community, and Profile mobile routes.
+- Add Prisma schema draft mirroring the PostgreSQL migration and public API ID model.
 
 ## In Progress
 

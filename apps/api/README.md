@@ -44,4 +44,5 @@ npm --prefix apps/api run start:nest
 - Public response shape follows `docs/api-interface.md` and `docs/openapi.json`.
 - Donation creation enforces verified campaigns and idempotency-key behavior so payment safety rules are testable early.
 - NestJS DTOs, guarded routes, and Swagger setup mirror the current runtime contract.
+- `prisma/schema.prisma` mirrors the current SQL migration draft and preserves opaque public IDs plus donation idempotency.
 - Prisma CLI 7 migration generation waits for local Node `20.19+`; current local Node was `20.17.0` during scaffold work.

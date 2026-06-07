@@ -73,6 +73,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Runtime bridge: `apps/api` validates public discovery, daily check-in, deed completion, blessing/report creation, verified campaign listing, and idempotent donation creation before the production backend framework is selected.
 - Backend direction: ADR 002 selects NestJS + TypeScript + PostgreSQL + Prisma as the target production backend stack, with explicit SQL retained for database-specific safety controls.
 - Local blocker: Prisma CLI 7 requires Node `20.19+`; the current local Node `20.17.0` cannot install it, so Prisma migration generation waits for a Node upgrade.
+- Persistence target: `apps/api/prisma/schema.prisma` mirrors the SQL migration draft so future Prisma generation has an explicit schema target once Node is upgraded.
 
 ### Milestone 5: Release Readiness
 

@@ -57,3 +57,24 @@ test("reference seed data includes MVP deed, map, badge, and donation records", 
 
   assert.deepEqual(missing, []);
 });
+
+test("Prisma schema mirrors public IDs, donation idempotency, and moderation models", async () => {
+  const schema = await readText("apps/api/prisma/schema.prisma");
+  const missing = hasAll(schema, [
+    "model User",
+    "publicId",
+    "@map(\"public_id\")",
+    "model MoodCheckin",
+    "@@unique([userId, checkedInOn])",
+    "model Blessing",
+    "moderationStatus",
+    "model Donation",
+    "idempotencyKey",
+    "@map(\"idempotency_key\")",
+    "model SafetyReport",
+    "targetPublicId",
+    "model Subscription"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
