@@ -17,7 +17,9 @@ test("initial migration creates core product tables", async () => {
     "create table donation_campaigns",
     "create table donations",
     "create table safety_reports",
-    "idempotency_key text not null unique"
+    "idempotency_key text not null unique",
+    "public_id text not null unique",
+    "target_public_id text not null"
   ]);
 
   assert.deepEqual(missing, []);
@@ -55,4 +57,3 @@ test("reference seed data includes MVP deed, map, badge, and donation records", 
 
   assert.deepEqual(missing, []);
 });
-

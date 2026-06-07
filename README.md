@@ -60,6 +60,7 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [Acceptance Criteria](docs/acceptance-criteria.md)
 - [Test Report](docs/test-report.md)
 - [ADR 001 Mobile Stack](docs/adr-001-mobile-stack.md)
+- [ADR 002 Backend Stack](docs/adr-002-backend-stack.md)
 - [Memory](memory.md)
 
 ## Verification
@@ -80,5 +81,6 @@ Additional gates:
 
 ```text
 npm run test:mobile
+npm run test:api
 npm run test:browser
 ```

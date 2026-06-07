@@ -27,8 +27,8 @@ npm run test:api
 
 Result:
 
-- 12 tests passed.
-- Covers health, deed catalog filtering, map spot filtering, daily check-in recommendations, deed completion karma, blessing creation/listing, report creation, verified campaign listing, donation idempotency, unverified campaign rejection, and standard error request IDs.
+- 16 tests passed.
+- Covers health, auth guard, `/me` account shape, deed catalog filtering, map spot category/region filtering, daily check-in recommendations, duplicate check-in conflict, deed completion karma, blessing creation/listing, OpenAPI-aligned validation, report creation, verified campaign listing, donation idempotency, unverified campaign rejection, and standard error request IDs.
 
 Additional syntax checks:
 

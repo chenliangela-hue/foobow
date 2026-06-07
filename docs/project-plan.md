@@ -20,7 +20,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - PA checks: baseline accessibility, privacy, safety, and donation wording.
 - Browser PA checks: Playwright validates mobile/desktop core flows.
 - Security checks: high/critical npm audit gates run for root and mobile packages.
-- Future gates: visual regression checks, backend contract tests, migration tests, security checks.
+- Future gates: visual regression checks, production backend contract parity tests, migration tests, security checks.
 
 ## Sub-Agent Assignment Model
 
@@ -70,6 +70,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Add moderation and donation safety checks.
 - Current status: initial migration, seed data, OpenAPI contract drafts, contract tests, and a dependency-light in-memory API runtime exist.
 - Runtime bridge: `apps/api` validates public discovery, daily check-in, deed completion, blessing/report creation, verified campaign listing, and idempotent donation creation before the production backend framework is selected.
+- Backend direction: ADR 002 selects NestJS + TypeScript + PostgreSQL + Prisma as the target production backend stack, with explicit SQL retained for database-specific safety controls.
 
 ### Milestone 5: Release Readiness
 

@@ -6,12 +6,15 @@ let server;
 let baseUrl;
 
 async function request(path, options = {}) {
+  const authHeaders = options.auth === false ? {} : { authorization: "Bearer dev-foobow-token" };
   const response = await fetch(`${baseUrl}${path}`, {
     headers: {
       "content-type": "application/json",
+      ...authHeaders,
       ...(options.headers ?? {})
     },
-    ...options
+    method: options.method,
+    body: options.body
   });
   const json = await response.json();
   return { response, json };
@@ -32,11 +35,27 @@ describe("Foobow API runtime", () => {
   });
 
   it("returns health metadata", async () => {
-    const { response, json } = await request("/health");
+    const { response, json } = await request("/health", { auth: false });
 
     assert.equal(response.status, 200);
     assert.equal(json.status, "ok");
     assert.equal(json.service, "foobow-api");
+  });
+
+  it("rejects anonymous access to secured endpoints", async () => {
+    const { response, json } = await request("/api/v1/me", { auth: false });
+
+    assert.equal(response.status, 401);
+    assert.equal(json.error.code, "unauthorized");
+  });
+
+  it("returns user, profile, and subscription account shape", async () => {
+    const { response, json } = await request("/api/v1/me");
+
+    assert.equal(response.status, 200);
+    assert.equal(json.user.account_status, "registered");
+    assert.equal(json.profile.privacy_mode, "private");
+    assert.equal(json.subscription.plan, "free");
   });
 
   it("lists active deed types with category filtering and pagination shape", async () => {
@@ -48,11 +67,12 @@ describe("Foobow API runtime", () => {
     assert.ok(json.items.every((item) => item.category === "animals"));
   });
 
-  it("lists map spots with collective impact data", async () => {
-    const { response, json } = await request("/api/v1/map-spots?category=elders");
+  it("lists map spots with category and region filtering", async () => {
+    const { response, json } = await request("/api/v1/map-spots?category=elders&region=Tokyo");
 
     assert.equal(response.status, 200);
     assert.equal(json.items[0].category, "elders");
+    assert.equal(json.items[0].region, "Tokyo, Japan");
     assert.equal(typeof json.items[0].impact.collective_points, "number");
   });
 
@@ -65,6 +85,16 @@ describe("Foobow API runtime", () => {
     assert.equal(response.status, 201);
     assert.equal(json.checkin.mood, "lonely");
     assert.equal(json.recommended_deed.id, "deed_send_blessing");
+  });
+
+  it("returns conflict for duplicate daily check-ins", async () => {
+    const { response, json } = await request("/api/v1/checkins", {
+      method: "POST",
+      body: JSON.stringify({ mood: "heavy" })
+    });
+
+    assert.equal(response.status, 409);
+    assert.equal(json.error.code, "conflict");
   });
 
   it("completes a deed action and returns symbolic karma without payment coupling", async () => {
@@ -87,14 +117,45 @@ describe("Foobow API runtime", () => {
   it("creates and returns moderated blessings", async () => {
     const created = await request("/api/v1/blessings", {
       method: "POST",
-      body: JSON.stringify({ body: "May your next hour feel calm.", visibility: "anonymous" })
+      body: JSON.stringify({ body: "May your next hour feel calm.", visibility: "private" })
     });
     assert.equal(created.response.status, 201);
     assert.equal(created.json.blessing.moderation_status, "visible");
+    assert.equal(created.json.blessing.visibility, "private");
 
     const listed = await request("/api/v1/blessings");
     assert.equal(listed.response.status, 200);
     assert.equal(listed.json.items[0].body, "May your next hour feel calm.");
+  });
+
+  it("rejects OpenAPI-invalid blessing and donation payloads", async () => {
+    const longBlessing = await request("/api/v1/blessings", {
+      method: "POST",
+      body: JSON.stringify({ body: "x".repeat(141), visibility: "anonymous" })
+    });
+    assert.equal(longBlessing.response.status, 422);
+
+    const badAmount = await request("/api/v1/donations", {
+      method: "POST",
+      headers: { "Idempotency-Key": "donation-bad-amount-1" },
+      body: JSON.stringify({
+        campaign_id: "campaign_operating_support",
+        amount: "3",
+        currency: "USD"
+      })
+    });
+    assert.equal(badAmount.response.status, 422);
+
+    const badCurrency = await request("/api/v1/donations", {
+      method: "POST",
+      headers: { "Idempotency-Key": "donation-bad-currency-1" },
+      body: JSON.stringify({
+        campaign_id: "campaign_operating_support",
+        amount: "3.00",
+        currency: "EUR"
+      })
+    });
+    assert.equal(badCurrency.response.status, 422);
   });
 
   it("creates moderation reports with open status", async () => {

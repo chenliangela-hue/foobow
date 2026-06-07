@@ -3,6 +3,7 @@
 
 create table users (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   email text unique nulls not distinct,
   display_name text not null,
   locale text not null default 'en',
@@ -17,6 +18,7 @@ create unique index users_email_lower_unique on users (lower(email)) where email
 
 create table profiles (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   user_id bigint not null unique references users(id) on delete cascade,
   avatar_key text,
   bio text,
@@ -86,6 +88,7 @@ create index map_spots_campaign_id_idx on map_spots (campaign_id);
 
 create table mood_checkins (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   user_id bigint not null references users(id) on delete cascade,
   mood text not null check (mood in ('calm', 'heavy', 'lonely', 'grateful', 'hopeful', 'anxious')),
   note text,
@@ -100,6 +103,7 @@ create index mood_checkins_recommended_deed_idx on mood_checkins (recommended_de
 
 create table deed_actions (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   user_id bigint not null references users(id) on delete cascade,
   deed_type_id bigint not null references deed_types(id) on delete restrict,
   map_spot_id bigint references map_spots(id) on delete set null,
@@ -116,6 +120,7 @@ create index deed_actions_spot_completed_idx on deed_actions (map_spot_id, compl
 
 create table karma_events (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   user_id bigint not null references users(id) on delete cascade,
   deed_action_id bigint references deed_actions(id) on delete set null,
   event_type text not null check (event_type in ('earned', 'adjusted', 'revoked')),
@@ -129,6 +134,7 @@ create index karma_events_deed_action_idx on karma_events (deed_action_id);
 
 create table journal_entries (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   user_id bigint not null references users(id) on delete cascade,
   deed_action_id bigint references deed_actions(id) on delete set null,
   body text not null,
@@ -142,6 +148,7 @@ create index journal_entries_deed_action_idx on journal_entries (deed_action_id)
 
 create table blessings (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   author_user_id bigint references users(id) on delete set null,
   body text not null,
   visibility text not null default 'anonymous' check (visibility in ('public', 'anonymous', 'private')),
@@ -156,6 +163,7 @@ create index blessings_author_idx on blessings (author_user_id);
 
 create table blessing_reactions (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   blessing_id bigint not null references blessings(id) on delete cascade,
   user_id bigint not null references users(id) on delete cascade,
   reaction_type text not null check (reaction_type in ('bless', 'support', 'thank_you', 'same_feeling')),
@@ -167,6 +175,7 @@ create index blessing_reactions_user_idx on blessing_reactions (user_id);
 
 create table donations (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   user_id bigint not null references users(id) on delete restrict,
   campaign_id bigint not null references donation_campaigns(id) on delete restrict,
   idempotency_key text not null unique,
@@ -227,9 +236,10 @@ create index group_memberships_user_idx on group_memberships (user_id);
 
 create table safety_reports (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   reporter_user_id bigint references users(id) on delete set null,
   target_type text not null check (target_type in ('profile', 'blessing', 'campaign', 'deed_action', 'group_mission')),
-  target_id bigint not null,
+  target_public_id text not null,
   reason text not null,
   moderation_status text not null default 'open' check (moderation_status in ('open', 'reviewing', 'actioned', 'dismissed')),
   moderator_note text,
@@ -242,6 +252,7 @@ create index safety_reports_reporter_idx on safety_reports (reporter_user_id);
 
 create table subscriptions (
   id bigint generated always as identity primary key,
+  public_id text not null unique,
   user_id bigint not null references users(id) on delete restrict,
   plan text not null check (plan in ('free', 'supporter', 'family')),
   status text not null default 'trial' check (status in ('trial', 'active', 'past_due', 'canceled')),
@@ -251,4 +262,3 @@ create table subscriptions (
 );
 
 create index subscriptions_user_status_idx on subscriptions (user_id, status);
-

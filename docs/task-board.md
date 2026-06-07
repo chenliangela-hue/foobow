@@ -32,6 +32,7 @@
 - Add OpenAPI contract draft and contract tests.
 - Add dependency-light API runtime scaffold under `apps/api`.
 - Add API runtime tests for health, discovery, check-in, deed completion, blessings, reports, donation verification, and donation idempotency.
+- Accept ADR 002: target NestJS + TypeScript + PostgreSQL + Prisma for the production backend while keeping SQL migrations for database-specific controls.
 
 ## In Progress
 
@@ -41,7 +42,7 @@
 ## Next
 
 - Add full visual regression checks.
-- Select production backend framework.
+- Scaffold production NestJS backend when dependencies can be installed.
 - Add route-based app structure once Expo Router is installed.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Select production backend framework and convert the in-memory API scaffold to persistent route modules.

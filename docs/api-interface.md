@@ -164,6 +164,7 @@ Collection endpoints use cursor pagination:
 - Webhooks from a future payment provider must verify signatures before updating payment status.
 - List endpoints must use cursor pagination, not unbounded arrays.
 - Public IDs should be opaque and must not reveal user count or sequence position.
+- Runtime IDs map to `public_id` values for dynamic records or `slug` values for static catalog records; internal database bigint keys must not be exposed to clients.
 - All write endpoints must return request IDs in error responses for support/debugging.
 
 ## Payment / Donation Webhook Flow

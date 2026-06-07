@@ -4,11 +4,12 @@ This document describes the intended product data model. It is framework-neutral
 
 ## Core Tables
 
-Use `bigint generated always as identity` for primary keys unless an external provider requires opaque public IDs. Use `timestamptz` for all event timestamps and `numeric(12,2)` for money. Store user-facing public IDs as separate opaque tokens only when needed.
+Use `bigint generated always as identity` for internal primary keys. Expose stable opaque `public_id` values to clients for dynamic user-facing records. Static catalog tables use their unique `slug` as the public identifier. Use `timestamptz` for all event timestamps and `numeric(12,2)` for money.
 
 ### users
 
 - `id bigint primary key`
+- `public_id text unique not null`
 - `email text unique nulls not distinct`
 - `display_name text not null`
 - `locale text not null default 'en'`
@@ -21,6 +22,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### profiles
 
 - `id`
+- `public_id`
 - `user_id`
 - `avatar_key`
 - `bio`
@@ -32,6 +34,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### mood_checkins
 
 - `id`
+- `public_id`
 - `user_id`
 - `mood`
 - `note`
@@ -42,6 +45,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 
 - `id`
 - `name`
+- `slug`
 - `category`
 - `description`
 - `ritual_instructions`
@@ -52,6 +56,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 
 - `id`
 - `name`
+- `slug`
 - `category`
 - `latitude`
 - `longitude`
@@ -63,6 +68,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### deed_actions
 
 - `id`
+- `public_id`
 - `user_id`
 - `deed_type_id`
 - `map_spot_id`
@@ -74,6 +80,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### karma_events
 
 - `id`
+- `public_id`
 - `user_id`
 - `deed_action_id`
 - `event_type`
@@ -84,6 +91,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### journal_entries
 
 - `id`
+- `public_id`
 - `user_id`
 - `deed_action_id`
 - `body`
@@ -94,6 +102,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### blessings
 
 - `id`
+- `public_id`
 - `author_user_id`
 - `body`
 - `visibility`
@@ -105,6 +114,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### blessing_reactions
 
 - `id`
+- `public_id`
 - `blessing_id`
 - `user_id`
 - `reaction_type`
@@ -114,6 +124,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 
 - `id`
 - `name`
+- `slug`
 - `partner_name`
 - `category`
 - `verification_status`
@@ -127,6 +138,7 @@ Use `bigint generated always as identity` for primary keys unless an external pr
 ### donations
 
 - `id`
+- `public_id`
 - `user_id`
 - `campaign_id`
 - `amount`

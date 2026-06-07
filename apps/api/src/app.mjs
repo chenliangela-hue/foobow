@@ -14,12 +14,29 @@ const jsonHeaders = {
   "cache-control": "no-store"
 };
 
-function page(items) {
+const devBearerToken = "dev-foobow-token";
+const securedRoutes = [
+  ["GET", "/api/v1/me"],
+  ["GET", "/api/v1/today"],
+  ["POST", "/api/v1/blessings"],
+  ["POST", "/api/v1/checkins"],
+  ["POST", "/api/v1/deed-actions"],
+  ["POST", "/api/v1/donations"],
+  ["POST", "/api/v1/reports"]
+];
+
+function page(items, requestUrl) {
+  const limit = Math.min(Number(requestUrl.searchParams.get("limit") ?? 25), 50);
+  const cursor = Number(requestUrl.searchParams.get("cursor") ?? 0);
+  const start = Number.isInteger(cursor) && cursor > 0 ? cursor : 0;
+  const end = start + limit;
+  const pagedItems = items.slice(start, end);
+
   return {
-    items,
+    items: pagedItems,
     page_info: {
-      next_cursor: null,
-      has_next_page: false
+      next_cursor: end < items.length ? String(end) : null,
+      has_next_page: end < items.length
     }
   };
 }
@@ -65,6 +82,24 @@ function filterByCategory(items, category) {
   return items.filter((item) => item.category === category);
 }
 
+function filterMapSpots(items, requestUrl) {
+  let filtered = filterByCategory(items, requestUrl.searchParams.get("category"));
+  const region = requestUrl.searchParams.get("region");
+  if (region) {
+    const normalized = region.toLowerCase();
+    filtered = filtered.filter((item) => item.region.toLowerCase().includes(normalized));
+  }
+  return filtered;
+}
+
+function isSecuredRoute(method, path) {
+  return securedRoutes.some(([routeMethod, routePath]) => routeMethod === method && routePath === path);
+}
+
+function isAuthorized(request) {
+  return request.headers.authorization === `Bearer ${devBearerToken}`;
+}
+
 function selectRecommendedDeed(mood) {
   const moodMap = {
     heavy: "deed_release_fish",
@@ -79,18 +114,22 @@ function selectRecommendedDeed(mood) {
 }
 
 function normalizeAmount(amount) {
+  if (typeof amount !== "string" || !/^[0-9]+(\.[0-9]{2})$/.test(amount)) {
+    return null;
+  }
+
   const numeric = Number(amount);
   if (!Number.isFinite(numeric) || numeric <= 0) {
     return null;
   }
 
-  return numeric.toFixed(2);
+  return amount;
 }
 
 export function createApp(options = {}) {
   const state = {
     blessings: options.blessings ? structuredClone(options.blessings) : structuredClone(blessings),
-    checkins: [],
+    checkins: new Map(),
     deedActions: [],
     donations: new Map(),
     reports: []
@@ -122,14 +161,33 @@ export function createApp(options = {}) {
       return;
     }
 
+    if (isSecuredRoute(method, path) && !isAuthorized(request)) {
+      sendError(response, 401, "unauthorized", "Bearer authentication is required for this endpoint.");
+      return;
+    }
+
     if (path === "/api/v1/me" && method === "GET") {
-      sendJson(response, 200, { profile: demoProfile });
+      sendJson(response, 200, {
+        user: {
+          id: "user_demo",
+          email: "demo@foobow.local",
+          account_status: "registered",
+          locale: demoProfile.locale,
+          timezone: "America/Toronto"
+        },
+        profile: demoProfile,
+        subscription: {
+          plan: "free",
+          status: "active",
+          ads_enabled: true
+        }
+      });
       return;
     }
 
     if (path === "/api/v1/today" && method === "GET") {
       sendJson(response, 200, {
-        checkin: state.checkins.at(-1) ?? null,
+        checkin: Array.from(state.checkins.values()).at(-1) ?? null,
         recommended_deed: selectRecommendedDeed("heavy"),
         journal_prompt: "What small kindness would make today feel lighter?",
         active_campaigns: donationCampaigns.filter(
@@ -144,15 +202,15 @@ export function createApp(options = {}) {
       const items = filterByCategory(deedTypes, requestUrl.searchParams.get("category")).filter(
         (deed) => deed.status === "active"
       );
-      sendJson(response, 200, page(items));
+      sendJson(response, 200, page(items, requestUrl));
       return;
     }
 
     if (path === "/api/v1/map-spots" && method === "GET") {
-      const items = filterByCategory(mapSpots, requestUrl.searchParams.get("category")).filter(
+      const items = filterMapSpots(mapSpots, requestUrl).filter(
         (spot) => spot.status === "active"
       );
-      sendJson(response, 200, page(items));
+      sendJson(response, 200, page(items, requestUrl));
       return;
     }
 
@@ -160,13 +218,13 @@ export function createApp(options = {}) {
       const items = donationCampaigns.filter(
         (campaign) => campaign.status === "active" && campaign.verification_status === "verified"
       );
-      sendJson(response, 200, page(items));
+      sendJson(response, 200, page(items, requestUrl));
       return;
     }
 
     if (path === "/api/v1/blessings" && method === "GET") {
       const items = state.blessings.filter((blessing) => blessing.moderation_status === "visible");
-      sendJson(response, 200, page(items));
+      sendJson(response, 200, page(items, requestUrl));
       return;
     }
 
@@ -178,9 +236,15 @@ export function createApp(options = {}) {
       }
 
       const text = typeof body.body === "string" ? body.body.trim() : "";
-      if (text.length < 3 || text.length > 240) {
-        sendError(response, 422, "validation_error", "Blessing body must be between 3 and 240 characters.", [
+      if (text.length < 1 || text.length > 140) {
+        sendError(response, 422, "validation_error", "Blessing body must be between 1 and 140 characters.", [
           { field: "body", issue: "length" }
+        ]);
+        return;
+      }
+      if (!["anonymous", "public", "private"].includes(body.visibility)) {
+        sendError(response, 422, "validation_error", "Blessing visibility is not supported.", [
+          { field: "visibility", issue: "unsupported" }
         ]);
         return;
       }
@@ -188,7 +252,7 @@ export function createApp(options = {}) {
       const blessing = {
         id: `blessing_${randomUUID()}`,
         body: text,
-        visibility: body.visibility === "public" ? "public" : "anonymous",
+        visibility: body.visibility,
         moderation_status: "visible",
         reactions: { bless: 0, support: 0, thank_you: 0, same_feeling: 0 },
         created_at: new Date().toISOString()
@@ -213,14 +277,22 @@ export function createApp(options = {}) {
         return;
       }
 
+      const checkedInOn = new Date().toISOString().slice(0, 10);
+      if (state.checkins.has(checkedInOn)) {
+        sendError(response, 409, "conflict", "A check-in already exists for this user today.", [
+          { field: "checked_in_on", issue: "duplicate" }
+        ]);
+        return;
+      }
+
       const checkin = {
         id: `checkin_${randomUUID()}`,
         mood: body.mood,
         note: typeof body.note === "string" ? body.note.slice(0, 500) : "",
-        checked_in_on: "2026-06-07",
+        checked_in_on: checkedInOn,
         created_at: new Date().toISOString()
       };
-      state.checkins.push(checkin);
+      state.checkins.set(checkedInOn, checkin);
       sendJson(response, 201, {
         checkin,
         recommended_deed: selectRecommendedDeed(body.mood),
@@ -240,6 +312,12 @@ export function createApp(options = {}) {
       if (!deedType) {
         sendError(response, 422, "validation_error", "Unknown deed type.", [
           { field: "deed_type_id", issue: "unknown" }
+        ]);
+        return;
+      }
+      if (!["started", "completed"].includes(body.status)) {
+        sendError(response, 422, "validation_error", "Deed action status is not supported.", [
+          { field: "status", issue: "unsupported" }
         ]);
         return;
       }
@@ -286,8 +364,15 @@ export function createApp(options = {}) {
 
       const amount = normalizeAmount(body.amount);
       if (!amount) {
-        sendError(response, 422, "validation_error", "Donation amount must be greater than zero.", [
+        sendError(response, 422, "validation_error", "Donation amount must be a positive two-decimal string.", [
           { field: "amount", issue: "invalid" }
+        ]);
+        return;
+      }
+      const currency = body.currency ?? "USD";
+      if (!["USD", "CAD"].includes(currency)) {
+        sendError(response, 422, "validation_error", "Donation currency is not supported.", [
+          { field: "currency", issue: "unsupported" }
         ]);
         return;
       }
@@ -303,7 +388,7 @@ export function createApp(options = {}) {
       const fingerprint = JSON.stringify({
         campaign_id: campaign.id,
         amount,
-        currency: body.currency ?? "USD"
+        currency
       });
       const existing = state.donations.get(idempotencyKey);
       if (existing && existing.fingerprint !== fingerprint) {
@@ -320,7 +405,7 @@ export function createApp(options = {}) {
           id: `donation_${randomUUID()}`,
           campaign_id: campaign.id,
           amount,
-          currency: body.currency ?? "USD",
+          currency,
           payment_status: "pending",
           karma_points_awarded: 0
         },
