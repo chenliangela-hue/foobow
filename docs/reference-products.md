@@ -6,13 +6,13 @@ These references are product-pattern inspiration, not direct copies.
 
 - Google Earth / Voyager: guided place stories, rich map context, educational exploration.
 - Geocaching: map search, discovery logging, collections, local/global adventure.
-- Pokemon GO: location-based activity, map points, collection, events, social raids.
+- Pokemon GO Routes: community-guided map paths, route discovery, route badges, and location-based exploration.
 
 Foobow pattern to borrow: make the map feel alive with nearby and global good-deed opportunities.
 
 ## Gamified Wellness
 
-- Finch: daily emotional check-ins, self-care quests, companion progress.
+- Finch: daily emotional check-ins, self-care quests, companion progress, streaks, goals, and seasonal rewards.
 - Forest: symbolic ritual, visual growth, focus streaks, optional real tree impact.
 
 Foobow pattern to borrow: make progress gentle, visual, and emotionally meaningful without punishment.
@@ -26,7 +26,7 @@ Foobow pattern to borrow: keep donation flows simple, transparent, and clearly s
 
 ## Cleanup / Community Impact
 
-- Litterati: cleanup actions, community challenges, map/data-driven impact.
+- Litterati: cleanup actions, geotagged impact maps, community challenges, and tagged cleanup data.
 - Olio: neighborhood sharing, local good, small community actions.
 
 Foobow pattern to borrow: show many small actions accumulating into visible community impact.
@@ -47,3 +47,11 @@ Foobow pattern to borrow: enable people to support each other without turning th
 - Donations must be trust-first and transparent.
 - The product should support multilingual and cross-cultural usage from the start.
 
+## Source Links
+
+- Finch self-care approach: https://help.finchcare.com/hc/en-us/articles/37935669335309-Our-Approach-to-Self-Care
+- Finch new user guide: https://help.finchcare.com/hc/en-us/articles/42149821015693-New-User-Guide
+- Pokemon GO Routes: https://pokemongo.com/routes
+- Niantic Routes help: https://niantic.helpshift.com/hc/en/6-pokemon-go/faq/4175-what-are-routes/
+- Litterati app FAQ: https://www.litterati.org/app-faqs
+- ShareTheMeal innovation profile: https://innovation.wfp.org/project/sharethemeal

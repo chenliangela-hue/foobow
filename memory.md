@@ -10,6 +10,7 @@ This file is the project-local memory. Keep it current whenever product directio
 - Created local commit `d2e87b4` with message `Initial Foobow product spec and prototype`.
 - Push to GitHub failed with HTTP 403 because the active GitHub credential was `regwang3713`, which does not have permission to push to `cranewang200/foobow.git`.
 - Added the second foundation slice: ODD spec, database structure, API interface, project plan, task board, CI workflow, and dependency-free unit/smoke/PA test scripts.
+- Added prototype hardening: structured sample data module, local persistence, export/delete controls, blessing report actions, focus states, reduced-motion handling, and object-level acceptance criteria.
 
 ## Working Principles
 
@@ -18,4 +19,3 @@ This file is the project-local memory. Keep it current whenever product directio
 - Keep docs updated with each meaningful project change.
 - Maintain automated checks for docs, prototype smoke behavior, and PA readiness.
 - Treat virtual karma as symbolic comfort; keep verified donations transparent and separate.
-

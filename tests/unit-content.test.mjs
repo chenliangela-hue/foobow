@@ -29,6 +29,7 @@ test("ODD, database, API, project plan, task board, and memory docs exist in REA
     "API Interface",
     "Project Plan",
     "Task Board",
+    "Acceptance Criteria",
     "Memory"
   ]);
 
@@ -45,6 +46,7 @@ test("prototype exposes the required app screens and controls", async () => {
     "screen-profile",
     "languageToggle",
     "themeToggle",
+    "data.js",
     "impactDialog",
     "Virtual 放生",
     "扶老奶奶过马路"
@@ -52,4 +54,3 @@ test("prototype exposes the required app screens and controls", async () => {
 
   assert.deepEqual(missing, []);
 });
-

@@ -16,16 +16,18 @@
 - Add project plan.
 - Add CI workflow.
 - Add dependency-free unit, smoke, and PA checks.
+- Add local prototype persistence, structured sample data, export/delete controls, and report actions.
+- Add object-level acceptance criteria.
 
 ## In Progress
 
 - Push to `cranewang200/foobow.git`.
   - Blocker: current GitHub credential `regwang3713` received 403 for the target repo.
+- Browser-driven PA tests.
+  - Blocker: local browser/server isolation prevents reliable `localhost` verification in this environment.
 
 ## Next
 
-- Add local persistence to prototype for mood, deeds, journal, blessings, theme, and language.
-- Move prototype sample content into a structured data module.
 - Add richer map/deed category filters.
 - Add keyboard focus states and reduced-motion handling.
 - Add browser-driven tests when local browser/server isolation is resolved.
@@ -43,4 +45,3 @@
 - Localization workflow.
 - Visual regression tests.
 - Mobile app packaging.
-

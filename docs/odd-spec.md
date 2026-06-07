@@ -53,11 +53,12 @@ Build a map-first virtual good karma app where users complete small symbolic dee
 
 ## Current Gaps And Risks
 
-- Current prototype is static and does not persist actions.
+- Current prototype uses local persistence only; production persistence is not implemented.
 - Map is illustrative, not provider-backed.
 - Donation flow is transparent but not integrated with a payment or charity verification provider.
 - No real authentication, privacy enforcement, moderation queue, or admin console exists yet.
 - CI currently validates static artifacts and smoke behavior; full browser PA tests should be added once a real app framework exists.
+- Acceptance criteria are tracked in [Acceptance Criteria](acceptance-criteria.md).
 
 ## Implementation Slices
 
@@ -80,4 +81,3 @@ Build a map-first virtual good karma app where users complete small symbolic dee
    - Goal: support accounts, deed actions, blessings, moderation, and donations.
    - Deliverables: database migrations, API contracts, seed data, admin moderation slice.
    - Verification: schema tests, API contract tests, security checks.
-

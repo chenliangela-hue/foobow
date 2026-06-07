@@ -39,6 +39,7 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [API Interface](docs/api-interface.md)
 - [Project Plan](docs/project-plan.md)
 - [Task Board](docs/task-board.md)
+- [Acceptance Criteria](docs/acceptance-criteria.md)
 - [Memory](memory.md)
 
 ## Verification

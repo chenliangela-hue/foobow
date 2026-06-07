@@ -9,6 +9,8 @@ test("prototype includes baseline accessibility and safety copy", async () => {
     "aria-live=\"polite\"",
     "aria-label=\"Switch language\"",
     "aria-label=\"Toggle dark mode\"",
+    "exportDataButton",
+    "deleteDataButton",
     "It does not buy luck, virtue, or guaranteed karma."
   ]);
 
@@ -18,15 +20,18 @@ test("prototype includes baseline accessibility and safety copy", async () => {
 test("project docs define verification gates and privacy/moderation responsibilities", async () => {
   const projectPlan = await readText("docs/project-plan.md");
   const database = await readText("docs/database-structure.md");
-  const missing = hasAll(projectPlan + database, [
+  const acceptance = await readText("docs/acceptance-criteria.md");
+  const app = await readText("prototype/app.js");
+  const missing = hasAll(projectPlan + database + acceptance + app, [
     "Unit checks",
     "Smoke checks",
     "PA checks",
     "privacy_mode",
     "moderation_status",
-    "verified donation"
+    "verified donation",
+    "localStorage",
+    "reported"
   ]);
 
   assert.deepEqual(missing, []);
 });
-

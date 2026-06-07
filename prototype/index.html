@@ -71,10 +71,10 @@
               <h2 id="map-title" data-i18n="mapTitle">Explore places that need a little light.</h2>
             </div>
             <div class="world-map" aria-label="Stylized good deed world map">
-              <button class="map-pin lake active" type="button" data-spot="East Lake, Wuhan" data-category="Animal kindness"></button>
-              <button class="map-pin street" type="button" data-spot="Toronto crosswalk" data-category="Elder care"></button>
-              <button class="map-pin forest" type="button" data-spot="Amazon restoration grove" data-category="Environment"></button>
-              <button class="map-pin lantern" type="button" data-spot="Night walk corridor" data-category="Emotional support"></button>
+              <button class="map-pin lake active" type="button" data-spot-id="east-lake" aria-label="East Lake good deed spot" aria-pressed="true"></button>
+              <button class="map-pin street" type="button" data-spot-id="toronto-crosswalk" aria-label="Toronto crosswalk good deed spot" aria-pressed="false"></button>
+              <button class="map-pin forest" type="button" data-spot-id="amazon-grove" aria-label="Amazon restoration good deed spot" aria-pressed="false"></button>
+              <button class="map-pin lantern" type="button" data-spot-id="night-corridor" aria-label="Night walk good deed spot" aria-pressed="false"></button>
             </div>
           </div>
           <section class="spot-detail">
@@ -194,9 +194,13 @@
           </section>
           <section class="panel settings-panel">
             <h3 data-i18n="settingsTitle">Enterprise settings</h3>
-            <label><input type="checkbox" checked> <span data-i18n="settingPrivacy">Private journal</span></label>
-            <label><input type="checkbox" checked> <span data-i18n="settingQuiet">Quiet rankings</span></label>
-            <label><input type="checkbox" checked> <span data-i18n="settingReceipts">Donation receipts</span></label>
+            <label><input id="settingPrivateJournal" data-setting-key="privateJournal" type="checkbox" checked> <span data-i18n="settingPrivacy">Private journal</span></label>
+            <label><input id="settingQuietRanking" data-setting-key="quietRanking" type="checkbox" checked> <span data-i18n="settingQuiet">Quiet rankings</span></label>
+            <label><input id="settingDonationReceipts" data-setting-key="donationReceipts" type="checkbox" checked> <span data-i18n="settingReceipts">Donation receipts</span></label>
+            <div class="privacy-actions">
+              <button class="text-button" id="exportDataButton" type="button" data-i18n="exportData">Export data</button>
+              <button class="text-button danger" id="deleteDataButton" type="button" data-i18n="deleteData">Delete local data</button>
+            </div>
           </section>
         </section>
       </main>
@@ -224,7 +228,7 @@
       </div>
     </dialog>
 
+    <script src="data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
-
