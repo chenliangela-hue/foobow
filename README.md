@@ -40,7 +40,7 @@ npm --prefix apps/mobile run start
 npm run test:mobile
 ```
 
-The mobile shell currently ports the prototype's core flows: Today, Map, Deeds, Community, Profile, category filters, symbolic karma, safe donation copy, privacy settings, and low-pressure blessing interactions.
+The mobile shell currently ports the prototype's core flows: Today, Map, Deeds, Community, Profile, category filters, symbolic karma, safe donation copy, privacy settings, and low-pressure blessing interactions. Expo Router is installed and the tab routes live under `apps/mobile/app/(tabs)`.
 
 ## API App
 

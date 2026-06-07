@@ -26,6 +26,7 @@ This file is the project-local memory. Keep it current whenever product directio
 - Tightened the API runtime after sub-agent contract review: added a deterministic dev bearer auth guard, `/me` user/profile/subscription shape, duplicate daily check-in conflict, OpenAPI-aligned blessing/donation validation, region filtering, cursor-style slicing, and public-ID database guidance.
 - Added Playwright visual regression coverage for Today, Map/Environment, and dark-mode Community prototype states across mobile and desktop Chromium. CI runs the visual job on `windows-latest` to match the committed `win32` screenshot baselines.
 - Installed NestJS 11, `@nestjs/swagger`, `@prisma/client` 7, and TypeScript tooling in `apps/api`; scaffolded a typed NestJS backend target with DTO validation, dev bearer auth guard, Swagger setup, and route modules mirroring the current contract runtime. Prisma CLI 7 install is blocked locally until Node is upgraded from `20.17.0` to `20.19+`. Added API dependency audit coverage to the root security gate.
+- Installed Expo Router and added route files for Today, Map, Deeds, Community, and Profile under `apps/mobile/app/(tabs)`, with the custom Foobow shell driving route-aware tab navigation.
 
 ## Working Principles
 

@@ -61,7 +61,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Move prototype screens into reusable components.
 - Add route/state management.
 - Add app-level test harness.
-- Current status: Expo/React Native shell exists under `apps/mobile` with a TypeScript typecheck gate.
+- Current status: Expo/React Native shell exists under `apps/mobile` with Expo Router tab routes and a TypeScript typecheck gate.
 
 ### Milestone 4: Backend Readiness
 

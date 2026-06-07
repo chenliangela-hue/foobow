@@ -24,7 +24,7 @@ npm test
 
 Result:
 
-- 14 tests passed.
+- 15 tests passed.
 - Unit checks passed.
 - Smoke checks passed.
 - PA checklist checks passed.
@@ -62,6 +62,7 @@ npm run test:mobile
 Result:
 
 - Expo TypeScript app shell passed `tsc --noEmit`.
+- Root tests now include an Expo Router route-structure check.
 - Local execution needed sandbox escalation for the same Node profile-path restriction that affects Playwright.
 
 Security audit:

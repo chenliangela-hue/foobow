@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { useRouter, type Href } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   Pressable,
@@ -20,16 +21,22 @@ import {
   moods
 } from "./src/foobowData";
 
-const tabs: { id: TabId; label: string }[] = [
-  { id: "today", label: "Today" },
-  { id: "map", label: "Map" },
-  { id: "deeds", label: "Deeds" },
-  { id: "community", label: "Community" },
-  { id: "profile", label: "Profile" }
+const tabs: { id: TabId; label: string; href: Href }[] = [
+  { id: "today", label: "Today", href: "/" },
+  { id: "map", label: "Map", href: "/map" },
+  { id: "deeds", label: "Deeds", href: "/deeds" },
+  { id: "community", label: "Community", href: "/community" },
+  { id: "profile", label: "Profile", href: "/profile" }
 ];
 
-export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>("today");
+export type FoobowAppProps = {
+  initialTab?: TabId;
+  routeMode?: boolean;
+};
+
+export default function App({ initialTab = "today", routeMode = false }: FoobowAppProps) {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
   const [activeCategory, setActiveCategory] = useState<CategoryId>("all");
   const [selectedMood, setSelectedMood] = useState<(typeof moods)[number]>(moods[0]);
   const [selectedSpotId, setSelectedSpotId] = useState("east-lake");
@@ -77,6 +84,13 @@ export default function App() {
     setBlessings((items) => [message, ...items]);
     setBlessingInput("");
     setKarma((value) => Math.min(100, value + 2));
+  }
+
+  function selectTab(tab: (typeof tabs)[number]) {
+    setActiveTab(tab.id);
+    if (routeMode) {
+      router.push(tab.href);
+    }
   }
 
   return (
@@ -265,7 +279,7 @@ export default function App() {
             key={tab.id}
             accessibilityRole="tab"
             accessibilityState={{ selected: activeTab === tab.id }}
-            onPress={() => setActiveTab(tab.id)}
+            onPress={() => selectTab(tab)}
             style={[styles.tab, activeTab === tab.id && styles.tabActive]}
           >
             <Text style={[styles.tabText, activeTab === tab.id && styles.tabTextActive]}>{tab.label}</Text>
