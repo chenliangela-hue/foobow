@@ -37,15 +37,20 @@
 - Scaffold typed NestJS production backend target under `apps/api/src/nest`.
 - Add Expo Router route structure for Today, Map, Deeds, Community, and Profile mobile routes.
 - Add Prisma schema draft mirroring the PostgreSQL migration and public API ID model.
-
-## In Progress
-
-- Push to `cranewang200/foobow.git`.
-  - Blocker: current GitHub credential `regwang3713` received 403 for the target repo.
+- Push `main` to `cranewang200/foobow.git`.
+- Run real PA audit from Chromium-rendered visual baselines and interaction coverage.
 
 ## Next
 
+- Fix P1 mobile prototype layout issues from PA audit:
+  - Bottom nav overlaps the Today primary CTA.
+  - Community heading clips on mobile and desktop.
+- Fix P2 prototype polish issues:
+  - Community list content is hidden behind bottom nav on mobile.
+  - Map filter/detail area is cramped near bottom nav.
+  - Desktop Today has excessive empty vertical space.
 - Upgrade local Node to `20.19.4+` so Prisma CLI 7 can be installed and migrations can be generated through the selected toolchain.
+- Fix remote CI mobile dependency resolution for Expo Router/react/react-dom.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Convert the in-memory API scaffold to persistent NestJS route modules after Prisma generation and database connection are available.
 - Add production authentication provider once account/session requirements and credentials are selected.

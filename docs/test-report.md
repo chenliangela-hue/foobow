@@ -122,6 +122,17 @@ Result:
 - Coverage runs across mobile Chromium and desktop Chromium through the shared Playwright projects.
 - CI runs visual regression on `windows-latest` so the committed `win32` Playwright snapshots are compared on the same platform family.
 
+### Manual PA Audit
+
+Artifact:
+
+- [`pa-audit-2026-06-07.md`](pa-audit-2026-06-07.md)
+
+Result:
+
+- Found P1 mobile layout regressions not caught by automated assertions: bottom nav overlaps the Today CTA, and Community headings clip on mobile/desktop.
+- Added follow-up tasks to `docs/task-board.md`.
+
 Known Limits:
 
 - Browser PA is now automated with Playwright in `tests/browser/foobow.pa.spec.mjs`.

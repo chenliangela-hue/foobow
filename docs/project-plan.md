@@ -21,6 +21,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Browser PA checks: Playwright validates mobile/desktop core flows.
 - Visual regression checks: Playwright screenshots protect core mobile/desktop prototype layouts.
 - Security checks: high/critical npm audit gates run for root and mobile packages.
+- Manual PA audits: record real visual/interaction findings in dated PA audit docs.
 - Future gates: production backend contract parity tests, migration tests, security checks.
 
 ## Sub-Agent Assignment Model
@@ -52,7 +53,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Replace hardcoded prototype content with structured sample data.
 - Add richer map/deed/ranking interactions.
 - Add keyboard and responsive interaction QA.
-- Add browser-driven tests once the runtime can reliably launch.
+- Current PA gap: fix mobile bottom-nav overlap and clipped Community headings found in `docs/pa-audit-2026-06-07.md`.
 
 ### Milestone 3: MVP App Scaffold
 

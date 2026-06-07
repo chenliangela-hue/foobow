@@ -29,6 +29,7 @@ This file is the project-local memory. Keep it current whenever product directio
 - Installed Expo Router and added route files for Today, Map, Deeds, Community, and Profile under `apps/mobile/app/(tabs)`, with the custom Foobow shell driving route-aware tab navigation.
 - Added `apps/api/prisma/schema.prisma` as a Prisma persistence target that mirrors the SQL migration draft, public IDs, moderation tables, subscription records, and donation idempotency constraints.
 - Cleaned the task board so completed framework, route, browser, and visual-regression work is no longer listed as future work; remaining next steps are credential/Node/service dependent.
+- Ran a real PA audit from Chromium-rendered visual baselines after local server/browser launch was blocked by the current environment. Found P1 prototype UI issues: mobile bottom nav overlaps the Today CTA and Community headings clip on mobile/desktop. Added `docs/pa-audit-2026-06-07.md` and next tasks.
 
 ## Working Principles
 

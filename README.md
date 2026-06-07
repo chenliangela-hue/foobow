@@ -77,6 +77,7 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [Task Board](docs/task-board.md)
 - [Acceptance Criteria](docs/acceptance-criteria.md)
 - [Test Report](docs/test-report.md)
+- [PA Audit 2026-06-07](docs/pa-audit-2026-06-07.md)
 - [ADR 001 Mobile Stack](docs/adr-001-mobile-stack.md)
 - [ADR 002 Backend Stack](docs/adr-002-backend-stack.md)
 - [Memory](memory.md)
