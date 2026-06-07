@@ -1,0 +1,751 @@
+:root {
+  --bg: #f6f1e8;
+  --surface: #fffaf1;
+  --surface-strong: #ffffff;
+  --ink: #23302f;
+  --muted: #6b706b;
+  --line: rgba(35, 48, 47, 0.14);
+  --teal: #0f6c64;
+  --blue: #315f94;
+  --moss: #6c7b38;
+  --coral: #c85d44;
+  --gold: #c69b3f;
+  --shadow: 0 24px 60px rgba(52, 44, 31, 0.18);
+  color-scheme: light;
+}
+
+body.dark {
+  --bg: #161b1b;
+  --surface: #202827;
+  --surface-strong: #26312f;
+  --ink: #eef3ec;
+  --muted: #aab5ad;
+  --line: rgba(238, 243, 236, 0.13);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 5%, rgba(198, 155, 63, 0.22), transparent 28rem),
+    radial-gradient(circle at 90% 0%, rgba(15, 108, 100, 0.18), transparent 24rem),
+    linear-gradient(145deg, var(--bg), #e9ede4);
+  color: var(--ink);
+  font-family: Cambria, "Iowan Old Style", Georgia, serif;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  width: min(100%, 460px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 94px;
+  position: relative;
+}
+
+.topbar,
+.section-heading,
+.profile-head,
+.top-actions,
+.layer-row,
+.badge-row,
+.donation-options {
+  display: flex;
+  align-items: center;
+}
+
+.topbar {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 4px 14px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 0.9;
+  letter-spacing: 0;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 8vw, 2.35rem);
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+h3 {
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.eyebrow {
+  color: var(--teal);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.top-actions {
+  gap: 8px;
+}
+
+.icon-button,
+.text-button,
+.nav-item,
+.layer,
+.blessing button,
+.donation-options button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.icon-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.screen {
+  display: none;
+  animation: rise 360ms ease both;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-panel,
+.panel,
+.deed-focus,
+.spot-detail,
+.ritual-panel,
+.blessing-form,
+.profile-head {
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.hero-panel {
+  min-height: 196px;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 18px;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-panel::before {
+  content: "";
+  position: absolute;
+  inset: auto -30px -55px 32%;
+  height: 120px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 26px, rgba(15, 108, 100, 0.13) 27px 28px),
+    linear-gradient(135deg, rgba(49, 95, 148, 0.22), rgba(198, 155, 63, 0.12));
+  transform: rotate(-5deg);
+  border-radius: 50%;
+}
+
+.hero-copy {
+  color: var(--muted);
+  max-width: 21rem;
+  margin-top: 12px;
+  line-height: 1.45;
+}
+
+.karma-ring {
+  width: 92px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  background:
+    radial-gradient(circle, var(--surface) 0 54%, transparent 55%),
+    conic-gradient(var(--teal) 0 68%, rgba(15, 108, 100, 0.14) 68% 100%);
+  position: relative;
+  z-index: 1;
+}
+
+.karma-ring span {
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.karma-ring small {
+  color: var(--muted);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.7rem;
+}
+
+.panel,
+.deed-focus,
+.spot-detail,
+.ritual-panel,
+.blessing-form,
+.profile-head {
+  margin-top: 14px;
+  padding: 16px;
+}
+
+.section-heading {
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.soft-pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.72rem;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mood {
+  min-height: 54px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  text-align: left;
+  padding: 12px;
+}
+
+.mood.selected,
+.layer.active,
+.deed-item.selected {
+  border-color: color-mix(in srgb, var(--teal) 70%, white);
+  box-shadow: inset 0 0 0 1px rgba(15, 108, 100, 0.28);
+}
+
+.deed-focus,
+.ritual-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.primary-action {
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--surface);
+  padding: 0 18px;
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-weight: 800;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  padding: 12px;
+  line-height: 1.45;
+}
+
+.map-stage {
+  min-height: 430px;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(140deg, rgba(49, 95, 148, 0.58), rgba(15, 108, 100, 0.2)),
+    linear-gradient(35deg, #d8c994 0 18%, #8ba36e 19% 34%, #d9e4d8 35% 48%, #8bb8bd 49% 100%);
+  box-shadow: var(--shadow);
+}
+
+.map-stage::before,
+.map-stage::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 45% 55% 50% 50%;
+  background: rgba(255, 250, 241, 0.18);
+}
+
+.map-stage::before {
+  width: 230px;
+  height: 126px;
+  left: -26px;
+  top: 142px;
+  transform: rotate(-17deg);
+}
+
+.map-stage::after {
+  width: 260px;
+  height: 150px;
+  right: -48px;
+  bottom: 60px;
+  transform: rotate(20deg);
+}
+
+.map-copy {
+  position: relative;
+  z-index: 2;
+  padding: 22px;
+  max-width: 330px;
+}
+
+.world-map {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.map-pin {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--surface);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.26);
+}
+
+.map-pin::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.map-pin.lake {
+  background: var(--blue);
+  left: 58%;
+  top: 43%;
+}
+
+.map-pin.street {
+  background: var(--coral);
+  left: 25%;
+  top: 36%;
+}
+
+.map-pin.forest {
+  background: var(--moss);
+  left: 41%;
+  top: 67%;
+}
+
+.map-pin.lantern {
+  background: var(--gold);
+  left: 72%;
+  top: 71%;
+}
+
+.map-pin.active {
+  outline: 8px solid rgba(255, 250, 241, 0.35);
+}
+
+.spot-detail p {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.layer-row {
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.layer {
+  border-radius: 999px;
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.deed-list {
+  display: grid;
+  gap: 10px;
+}
+
+.deed-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--surface);
+}
+
+.deed-item p,
+.ritual-panel p,
+.profile-head p {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.deed-mark {
+  width: 36px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: block;
+}
+
+.deed-mark.water {
+  background: linear-gradient(135deg, var(--blue), #9ac7d1);
+}
+
+.deed-mark.elder {
+  background: linear-gradient(135deg, var(--coral), #e8b79c);
+}
+
+.deed-mark.blessing {
+  background: linear-gradient(135deg, var(--gold), #f1dd9c);
+}
+
+.deed-mark.earth {
+  background: linear-gradient(135deg, var(--moss), #c3cf88);
+}
+
+.ritual-panel {
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+}
+
+.ritual-scene {
+  min-height: 160px;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #90bbc5, #315f94);
+}
+
+.ripple {
+  position: absolute;
+  width: 96px;
+  aspect-ratio: 1;
+  left: 28px;
+  top: 35px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  animation: pulse 2.2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.fish-shape {
+  position: absolute;
+  width: 38px;
+  height: 18px;
+  left: 52px;
+  top: 72px;
+  border-radius: 60% 45% 45% 60%;
+  background: #fff7d0;
+}
+
+.fish-shape::after {
+  content: "";
+  position: absolute;
+  right: -13px;
+  top: 3px;
+  border-left: 14px solid #fff7d0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+
+.shoreline {
+  position: absolute;
+  inset: auto -10px -24px;
+  height: 62px;
+  background: #d8c994;
+  transform: rotate(-4deg);
+}
+
+.ritual-scene.completed .fish-shape {
+  animation: release 900ms ease both;
+}
+
+@keyframes release {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(48px) scale(0.72);
+    opacity: 0.18;
+  }
+}
+
+.blessing-form {
+  display: grid;
+  gap: 10px;
+}
+
+.blessing-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.blessing {
+  border-left: 4px solid var(--gold);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.blessing p {
+  line-height: 1.45;
+}
+
+.blessing button {
+  margin-top: 10px;
+  border-radius: 999px;
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.avatar {
+  width: 68px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--teal), var(--gold));
+  color: white;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.profile-head {
+  gap: 14px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.stat-grid div {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.stat-grid strong,
+.stat-grid span {
+  display: block;
+}
+
+.stat-grid strong {
+  font-size: 1.45rem;
+}
+
+.stat-grid span {
+  color: var(--muted);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.75rem;
+}
+
+.text-button {
+  border-radius: 999px;
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.badge-row {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge-row span {
+  border-radius: 999px;
+  background: rgba(198, 155, 63, 0.18);
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+
+.settings-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-panel label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: min(calc(100% - 24px), 460px);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  box-shadow: var(--shadow);
+  z-index: 20;
+}
+
+.nav-item {
+  min-width: 0;
+  min-height: 46px;
+  border-radius: 6px;
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: clamp(0.64rem, 2.5vw, 0.78rem);
+}
+
+.nav-item.active {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+dialog {
+  border: 0;
+  border-radius: 8px;
+  padding: 0;
+  width: min(92vw, 380px);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+dialog::backdrop {
+  background: rgba(12, 18, 18, 0.48);
+}
+
+.dialog-body {
+  padding: 22px;
+}
+
+.dialog-body p {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.donation-options {
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.donation-options button {
+  flex: 1;
+  min-height: 46px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+@media (min-width: 800px) {
+  .app-shell {
+    width: min(100%, 980px);
+    padding-bottom: 26px;
+  }
+
+  main {
+    min-height: 680px;
+  }
+
+  .screen.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  #screen-map.active,
+  #screen-community.active {
+    grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.8fr);
+  }
+
+  .bottom-nav {
+    position: sticky;
+    transform: none;
+    left: auto;
+    bottom: 16px;
+    margin: 18px auto 0;
+  }
+
+  .map-stage {
+    min-height: 620px;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .karma-ring {
+    width: 78px;
+  }
+
+  .ritual-panel {
+    grid-template-columns: 1fr;
+  }
+}
