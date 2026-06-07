@@ -34,4 +34,23 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [Product Spec](docs/product-spec.md)
 - [User Stories](docs/user-stories.md)
 - [Reference Products](docs/reference-products.md)
+- [ODD Spec](docs/odd-spec.md)
+- [Database Structure](docs/database-structure.md)
+- [API Interface](docs/api-interface.md)
+- [Project Plan](docs/project-plan.md)
+- [Task Board](docs/task-board.md)
+- [Memory](memory.md)
 
+## Verification
+
+Run all current checks:
+
+```text
+npm test
+```
+
+The current test suite uses only built-in Node.js modules and covers:
+
+- Unit checks for required product components and documentation links.
+- Smoke checks for prototype JavaScript syntax and static HTTP serving.
+- PA checks for baseline accessibility, privacy, moderation, and donation safety wording.

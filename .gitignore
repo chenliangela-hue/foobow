@@ -4,4 +4,5 @@ build/
 .DS_Store
 Thumbs.db
 *.log
-
+server.err.log
+server.out.log

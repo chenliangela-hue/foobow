@@ -1,0 +1,17 @@
+{
+  "name": "foobow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Foobow virtual good karma app product docs and clickable prototype.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests",
+    "test:unit": "node --test tests/unit-content.test.mjs",
+    "test:smoke": "node --test tests/smoke-prototype.test.mjs",
+    "test:pa": "node --test tests/pa-checklist.test.mjs",
+    "serve": "python -m http.server 4173 --bind 127.0.0.1 --directory prototype"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
