@@ -48,6 +48,7 @@
 - Add localization workflow for `en` and `zh-Hans`, safety copy, accessibility labels, and QA.
 - Add mobile release checklist for App Store, Google Play, store assets, privacy, and build gates.
 - Add Node readiness marker and setup notes for the `20.19.4` runtime baseline.
+- Harden CI against upcoming GitHub Actions Node 20 runner deprecation and `windows-latest` redirect notices.
 
 ## Next
 

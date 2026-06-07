@@ -81,6 +81,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Localization readiness: `docs/localization-workflow.md` defines `en` and `zh-Hans` workflow, safety-copy review, and accessibility label translation requirements.
 - Mobile release readiness: `docs/mobile-release-checklist.md` captures App Store, Google Play, privacy, moderation, payment, and asset gates.
 - Runtime readiness: `.node-version` and `docs/node-readiness.md` record Node `20.19.4` as the project baseline.
+- CI readiness: GitHub Actions keeps project commands on Node `20.19.4`, opts JavaScript actions into Node 24, and pins visual regression to `windows-2025`.
 
 ### Milestone 5: Release Readiness
 

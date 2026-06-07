@@ -67,6 +67,18 @@ test("sprint readiness docs cover auth, maps, localization, mobile release, and 
   assert.deepEqual(missing, []);
 });
 
+test("CI workflow pins current runner and action runtime expectations", async () => {
+  const ci = await readText(".github/workflows/ci.yml");
+  const missing = hasAll(ci, [
+    "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true",
+    "node-version: 20.19.4",
+    "runs-on: windows-2025",
+    "npm run test:visual"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
+
 test("prototype exposes the required app screens and controls", async () => {
   const html = await readText("prototype/index.html");
   const missing = hasAll(html, [
