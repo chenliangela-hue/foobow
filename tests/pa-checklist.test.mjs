@@ -30,7 +30,25 @@ test("project docs define verification gates and privacy/moderation responsibili
     "moderation_status",
     "verified donation",
     "localStorage",
-    "reported"
+    "reported",
+    "idempotency_key",
+    "Privacy, Retention, And Audit",
+    "Migration Strategy"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
+
+test("API contract defines pagination, errors, rate limits, and donation idempotency", async () => {
+  const api = await readText("docs/api-interface.md");
+  const missing = hasAll(api, [
+    "Base path: `/api/v1`",
+    "cursor pagination",
+    "Error Shape",
+    "Rate Limits",
+    "Idempotency-Key",
+    "Payment / Donation Webhook Flow",
+    "unverified_campaign"
   ]);
 
   assert.deepEqual(missing, []);

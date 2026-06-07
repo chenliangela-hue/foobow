@@ -19,6 +19,7 @@
 - Add local prototype persistence, structured sample data, export/delete controls, and report actions.
 - Add object-level acceptance criteria.
 - Run real browser PA pass for core prototype flows.
+- Harden database and API docs with keys, relationships, indexes, retention, migration, errors, pagination, rate limits, and donation idempotency.
 
 ## In Progress
 
@@ -30,6 +31,7 @@
 - Add richer map/deed category filters.
 - Automate browser-driven PA tests in CI once a test framework is selected.
 - Add full keyboard traversal and contrast checks.
+- Select production backend/app framework.
 - Add browser-driven tests when local browser/server isolation is resolved.
 - Choose production app framework after prototype scope stabilizes.
 
