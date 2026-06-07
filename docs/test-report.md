@@ -10,9 +10,10 @@ npm run test:all
 
 Result:
 
-- Passed on 2026-06-07 after adding visual regression and NestJS scaffold work.
+- Passed on 2026-06-07 after fixing Claude Code settings, mobile dependency resolution, and PA layout issues.
 - Covered root contract/static checks, API runtime tests and NestJS typecheck, mobile TypeScript typecheck, browser PA checks, visual regression checks, and high/critical security audits.
 - Mobile audit still reports moderate Expo-template transitive advisories; high/critical audit gate passes and the force fix would downgrade Expo.
+- `npm --prefix apps/mobile ci` did not complete within the local 3-minute command timeout, but the dependency graph now resolves `react-dom@19.2.3` with `react` peer `^19.2.3`, and mobile typecheck passes. CI should run on the configured Node `20.19.4` environment.
 
 ### Automated Checks
 
@@ -121,6 +122,7 @@ Result:
 - Added Playwright screenshot baselines for Today, Map/Environment, and dark-mode Community states.
 - Coverage runs across mobile Chromium and desktop Chromium through the shared Playwright projects.
 - CI runs visual regression on `windows-latest` so the committed `win32` Playwright snapshots are compared on the same platform family.
+- Refreshed baselines after PA layout fixes for mobile nav/content overlap, Community clipping/list coverage, Map bottom spacing, and desktop Today vertical density.
 
 ### Manual PA Audit
 
@@ -131,11 +133,11 @@ Artifact:
 Result:
 
 - Found P1 mobile layout regressions not caught by automated assertions: bottom nav overlaps the Today CTA, and Community headings clip on mobile/desktop.
-- Added follow-up tasks to `docs/task-board.md`.
+- Fixed the recorded P1/P2 layout findings and refreshed visual baselines from inspected Playwright screenshots.
 
 Known Limits:
 
 - Browser PA is now automated with Playwright in `tests/browser/foobow.pa.spec.mjs`.
 - In the local Codex sandbox, Playwright CLI needs escalated execution because Node cannot `lstat` `C:\Users\crane` inside the restricted filesystem sandbox. GitHub Actions should run normally through the CI workflow.
 - On 2026-06-06, further escalated reruns were blocked by Codex usage limits after the latest docs/script updates.
-- Full visual regression remains future work.
+- Full visual regression now runs in `npm run test:all`.

@@ -58,7 +58,7 @@ button {
   width: min(100%, 460px);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 18px 14px 94px;
+  padding: 18px 14px 20px;
   position: relative;
 }
 
@@ -138,6 +138,7 @@ h3 {
 .screen {
   display: none;
   animation: rise 360ms ease both;
+  padding-inline: 2px;
 }
 
 .screen.active {
@@ -672,15 +673,13 @@ textarea {
 }
 
 .bottom-nav {
-  position: fixed;
-  left: 50%;
-  bottom: 14px;
-  transform: translateX(-50%);
-  width: min(calc(100% - 24px), 460px);
+  position: static;
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
   padding: 8px;
+  margin: 18px auto 0;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: color-mix(in srgb, var(--surface) 95%, transparent);
@@ -739,11 +738,12 @@ dialog::backdrop {
 @media (min-width: 800px) {
   .app-shell {
     width: min(100%, 980px);
+    min-height: auto;
     padding-bottom: 26px;
   }
 
   main {
-    min-height: 680px;
+    min-height: 0;
   }
 
   .screen.active {
@@ -760,10 +760,8 @@ dialog::backdrop {
 
   .bottom-nav {
     position: sticky;
-    transform: none;
-    left: auto;
     bottom: 16px;
-    margin: 18px auto 0;
+    max-width: 460px;
   }
 
   .map-stage {

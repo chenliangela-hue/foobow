@@ -30,6 +30,10 @@ This file is the project-local memory. Keep it current whenever product directio
 - Added `apps/api/prisma/schema.prisma` as a Prisma persistence target that mirrors the SQL migration draft, public IDs, moderation tables, subscription records, and donation idempotency constraints.
 - Cleaned the task board so completed framework, route, browser, and visual-regression work is no longer listed as future work; remaining next steps are credential/Node/service dependent.
 - Ran a real PA audit from Chromium-rendered visual baselines after local server/browser launch was blocked by the current environment. Found P1 prototype UI issues: mobile bottom nav overlaps the Today CTA and Community headings clip on mobile/desktop. Added `docs/pa-audit-2026-06-07.md` and next tasks.
+- Fixed Claude Code orchestration access by backing up `C:\Users\crane\.claude\settings.json` and removing stale custom API/proxy override keys that were taking precedence over the user's Claude.ai Pro OAuth login. A minimal `claude -p` call returned `CLAUDE_OK`. A later repo-context prompt to Claude was blocked by the approval layer because it would transmit private workspace context to an external model.
+- Fixed the Expo Router/react/react-dom CI dependency conflict by explicitly pinning `react-dom@19.2.3` to match the Expo-selected `react@19.2.3`; mobile typecheck passes after the lockfile update.
+- Fixed PA audit layout findings in `prototype/styles.css`: mobile bottom navigation no longer overlays the Today CTA or Community feed, Community headings have inner screen padding, Map content is not cramped by the nav, and desktop Today no longer forces a large blank lower viewport. Refreshed Playwright visual baselines after inspecting the new screenshots.
+- Ran `npm run test:all` successfully after the fixes: 16 root tests, 18 API tests/typecheck, mobile typecheck, 10 browser PA tests, 6 visual regression tests, and high/critical audit gates passed. Mobile still reports known moderate Expo transitive `uuid` advisories that require an unsafe breaking force fix.
 
 ## Working Principles
 

@@ -20,7 +20,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - PA checks: baseline accessibility, privacy, safety, and donation wording.
 - Browser PA checks: Playwright validates mobile/desktop core flows.
 - Visual regression checks: Playwright screenshots protect core mobile/desktop prototype layouts.
-- Security checks: high/critical npm audit gates run for root and mobile packages.
+- Security checks: high/critical npm audit gates run for root, API, and mobile packages.
 - Manual PA audits: record real visual/interaction findings in dated PA audit docs.
 - Future gates: production backend contract parity tests, migration tests, security checks.
 
@@ -53,7 +53,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Replace hardcoded prototype content with structured sample data.
 - Add richer map/deed/ranking interactions.
 - Add keyboard and responsive interaction QA.
-- Current PA gap: fix mobile bottom-nav overlap and clipped Community headings found in `docs/pa-audit-2026-06-07.md`.
+- Current status: PA audit layout findings from `docs/pa-audit-2026-06-07.md` are fixed in the prototype CSS and protected by refreshed mobile/desktop visual baselines.
 
 ### Milestone 3: MVP App Scaffold
 
@@ -75,6 +75,7 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Backend direction: ADR 002 selects NestJS + TypeScript + PostgreSQL + Prisma as the target production backend stack, with explicit SQL retained for database-specific safety controls.
 - Local blocker: Prisma CLI 7 requires Node `20.19+`; the current local Node `20.17.0` cannot install it, so Prisma migration generation waits for a Node upgrade.
 - Persistence target: `apps/api/prisma/schema.prisma` mirrors the SQL migration draft so future Prisma generation has an explicit schema target once Node is upgraded.
+- Mobile CI stability: Expo Router's optional web peer resolution is pinned through `react-dom@19.2.3` to match the Expo-selected `react@19.2.3` version.
 
 ### Milestone 5: Release Readiness
 
