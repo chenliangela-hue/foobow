@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -25,8 +24,10 @@ model User {
   karmaEvents    KarmaEvent[]
   journalEntries JournalEntry[]
   blessings      Blessing[]
+  blessingReactions BlessingReaction[]
   donations      Donation[]
   subscriptions  Subscription[]
+  safetyReports  SafetyReport[]
 
   @@map("users")
 }

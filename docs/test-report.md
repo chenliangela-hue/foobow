@@ -16,6 +16,8 @@ Result:
 - `npm --prefix apps/mobile ci` did not complete within the local 3-minute command timeout, but the dependency graph now resolves `react-dom@19.2.3` with `react` peer `^19.2.3`, and mobile typecheck passes. CI should run on the configured Node `20.19.4` environment.
 - Added root test coverage for auth strategy, map provider decision, localization workflow, mobile release checklist, and Node runtime readiness. Root tests now pass 17/17.
 - Latest GitHub Actions run for `6cb2681` passed both `verify` and `visual-regression`. It produced runner deprecation notices, so CI was hardened by upgrading checkout/setup-node to Node 24 runtime action majors and pinning visual regression to `windows-2025`.
+- API tests now cover 19 checks after adding Prisma config, generation support, configurable dev auth, and Nest Prisma read-path wiring.
+- API high/critical audit still passes after installing Prisma CLI 7. It reports a moderate transitive `@hono/node-server` advisory through Prisma dev tooling; the available force fix would downgrade Prisma and is not safe for the current Prisma 7 path.
 
 ### Automated Checks
 

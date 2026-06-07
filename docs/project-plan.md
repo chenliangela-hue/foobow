@@ -82,6 +82,8 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Mobile release readiness: `docs/mobile-release-checklist.md` captures App Store, Google Play, privacy, moderation, payment, and asset gates.
 - Runtime readiness: `.node-version` and `docs/node-readiness.md` record Node `20.19.4` as the project baseline.
 - CI readiness: GitHub Actions keeps project commands on Node `20.19.4`, uses Node 24 runtime major versions for checkout/setup-node actions, and pins visual regression to `windows-2025`.
+- Prisma readiness: Prisma CLI 7 is installed in `apps/api`, `prisma.config.ts` carries the database URL for Prisma 7, and `npm --prefix apps/api run prisma:generate` succeeds with a supported Node runtime.
+- Persistence bridge: Nest now provides `PrismaService`; read endpoints for deed types, map spots, blessings, and donation campaigns can switch to Prisma when `DATABASE_URL` is configured while retaining fixture fallback for no-database environments.
 
 ### Milestone 5: Release Readiness
 

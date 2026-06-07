@@ -8,6 +8,7 @@ import {
   RitualController
 } from "./foobow.controller.js";
 import { FoobowService } from "./foobow.service.js";
+import { PrismaService } from "./prisma.service.js";
 
 @Module({
   controllers: [
@@ -18,6 +19,6 @@ import { FoobowService } from "./foobow.service.js";
     CommunityController,
     DonationController
   ],
-  providers: [FoobowService]
+  providers: [FoobowService, PrismaService]
 })
 export class AppModule {}

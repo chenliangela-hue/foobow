@@ -20,6 +20,8 @@ The repository records this in:
 
 The last verified local shell reported Node `20.17.0`. That version can run most current tests but is below the required range for Prisma CLI 7 and newer Expo/React Native tooling.
 
+The Codex bundled runtime at `C:\Users\crane\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe` was verified at Node `24.14.0` and can run Prisma commands if its directory is prepended to `PATH`.
+
 ## Developer Setup
 
 Use one of these approaches:
@@ -42,9 +44,10 @@ Expected:
 - `node --version` is `v20.19.4` or newer within the supported engine range.
 - `npm run test:all` passes.
 - Prisma CLI generation can be attempted after the local version is upgraded.
+- Alternative: Prisma CLI generation can be run with the bundled Node 24 runtime by prepending that runtime directory to `PATH`.
 
 ## Blocked Until Fixed
 
-- Prisma migration generation through Prisma CLI 7.
+- Running Prisma commands directly through the default `node` on PATH.
 - Reliable local `npm ci` timing for the mobile app.
-- Any backend slice that requires generated Prisma Client output.
+- Database-backed write-path verification until a real PostgreSQL `DATABASE_URL` is provided.

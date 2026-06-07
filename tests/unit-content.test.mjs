@@ -43,16 +43,19 @@ test("ODD, database, API, project plan, task board, and memory docs exist in REA
 
 test("sprint readiness docs cover auth, maps, localization, mobile release, and Node runtime", async () => {
   const auth = await readText("docs/auth-strategy.md");
+  const envExample = await readText("apps/api/.env.example");
   const maps = await readText("docs/map-provider-decision.md");
   const localization = await readText("docs/localization-workflow.md");
   const release = await readText("docs/mobile-release-checklist.md");
   const nodeReadiness = await readText("docs/node-readiness.md");
   const nodeVersion = await readText(".node-version");
 
-  const missing = hasAll(auth + maps + localization + release + nodeReadiness + nodeVersion, [
+  const missing = hasAll(auth + envExample + maps + localization + release + nodeReadiness + nodeVersion, [
     "Auth0",
     "Clerk",
     "Apple Sign In",
+    "FOOBOW_DEV_BEARER_TOKEN",
+    "AUTH_PROVIDER",
     "Mapbox",
     "OpenStreetMap",
     "MapLibre",
@@ -74,6 +77,7 @@ test("CI workflow pins current runner and action runtime expectations", async ()
     "actions/setup-node@v6",
     "node-version: 20.19.4",
     "runs-on: windows-2025",
+    "Generate Prisma client",
     "npm run test:visual"
   ]);
 

@@ -7,6 +7,7 @@ import {
   DonationCreateDto,
   ReportCreateDto
 } from "./dto.js";
+import { PrismaService } from "./prisma.service.js";
 
 type Page<T> = {
   items: T[];
@@ -42,6 +43,8 @@ export class FoobowService {
   ];
   private readonly donations = new Map<string, { fingerprint: string; response: Record<string, unknown> }>();
 
+  constructor(private readonly prisma: PrismaService) {}
+
   health() {
     return { status: "ok", service: "foobow-api", version: "0.1.0" };
   }
@@ -64,11 +67,54 @@ export class FoobowService {
     };
   }
 
-  listDeedTypes(category?: string): Page<Record<string, unknown>> {
+  async listDeedTypes(category?: string): Promise<Page<Record<string, unknown>>> {
+    if (this.useDatabase()) {
+      const rows = await this.prisma.deedType.findMany({
+        where: {
+          status: "active",
+          ...(category && category !== "all" ? { category } : {})
+        },
+        orderBy: { slug: "asc" }
+      });
+
+      return this.page(
+        rows.map((deed) => ({
+          id: this.publicIdFromSlug("deed", deed.slug),
+          name: deed.name,
+          category: deed.category,
+          default_karma_points: Number(deed.defaultKarmaPoints),
+          status: deed.status
+        }))
+      );
+    }
+
     return this.page(deedTypes.filter((deed) => (!category || category === "all" || deed.category === category) && deed.status === "active"));
   }
 
-  listMapSpots(category?: string, region?: string): Page<Record<string, unknown>> {
+  async listMapSpots(category?: string, region?: string): Promise<Page<Record<string, unknown>>> {
+    if (this.useDatabase()) {
+      const rows = await this.prisma.mapSpot.findMany({
+        where: {
+          status: "active",
+          ...(category && category !== "all" ? { category } : {}),
+          ...(region ? { region: { contains: region, mode: "insensitive" } } : {})
+        },
+        orderBy: { slug: "asc" }
+      });
+
+      return this.page(
+        rows.map((spot) => ({
+          id: this.publicIdFromSlug("spot", spot.slug),
+          name: spot.name,
+          category: spot.category,
+          region: spot.region,
+          latitude: spot.latitude,
+          longitude: spot.longitude,
+          status: spot.status
+        }))
+      );
+    }
+
     return this.page(
       mapSpots.filter((spot) => {
         const categoryMatches = !category || category === "all" || spot.category === category;
@@ -78,7 +124,26 @@ export class FoobowService {
     );
   }
 
-  listBlessings(): Page<Record<string, unknown>> {
+  async listBlessings(): Promise<Page<Record<string, unknown>>> {
+    if (this.useDatabase()) {
+      const rows = await this.prisma.blessing.findMany({
+        where: { moderationStatus: "visible" },
+        orderBy: { createdAt: "desc" },
+        take: 50
+      });
+
+      return this.page(
+        rows.map((blessing) => ({
+          id: blessing.publicId,
+          body: blessing.body,
+          visibility: blessing.visibility,
+          moderation_status: blessing.moderationStatus,
+          reaction_count: Number(blessing.reactionCount),
+          created_at: blessing.createdAt.toISOString()
+        }))
+      );
+    }
+
     return this.page(this.blessings.filter((blessing) => blessing.moderation_status === "visible"));
   }
 
@@ -138,7 +203,28 @@ export class FoobowService {
     };
   }
 
-  listDonationCampaigns(): Page<Record<string, unknown>> {
+  async listDonationCampaigns(): Promise<Page<Record<string, unknown>>> {
+    if (this.useDatabase()) {
+      const rows = await this.prisma.donationCampaign.findMany({
+        where: {
+          status: "active",
+          verificationStatus: "verified"
+        },
+        orderBy: { slug: "asc" }
+      });
+
+      return this.page(
+        rows.map((campaign) => ({
+          id: this.publicIdFromSlug("campaign", campaign.slug),
+          name: campaign.name,
+          category: campaign.category,
+          partner_name: campaign.partnerName,
+          status: campaign.status,
+          verification_status: campaign.verificationStatus
+        }))
+      );
+    }
+
     return this.page(campaigns.filter((campaign) => campaign.status === "active" && campaign.verification_status === "verified"));
   }
 
@@ -192,5 +278,13 @@ export class FoobowService {
 
   private page<T>(items: T[]): Page<T> {
     return { items, page_info: { next_cursor: null, has_next_page: false } };
+  }
+
+  private useDatabase() {
+    return Boolean(process.env.DATABASE_URL);
+  }
+
+  private publicIdFromSlug(prefix: string, slug: string) {
+    return `${prefix}_${slug.replaceAll("-", "_")}`;
   }
 }

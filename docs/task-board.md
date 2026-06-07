@@ -49,13 +49,19 @@
 - Add mobile release checklist for App Store, Google Play, store assets, privacy, and build gates.
 - Add Node readiness marker and setup notes for the `20.19.4` runtime baseline.
 - Harden CI against upcoming GitHub Actions Node 20 runner deprecation and `windows-latest` redirect notices.
+- Install Prisma CLI 7 and generate Prisma Client from the API schema.
+- Move Prisma datasource URL into Prisma 7 `prisma.config.ts` and add generate/migrate scripts.
+- Add Nest `PrismaService` and Prisma-backed read paths for deed types, map spots, blessings, and donation campaigns with fixture fallback.
+- Add API `.env.example` and make the dev bearer token configurable.
 
 ## Next
 
-- Upgrade local Node to `20.19.4+` so Prisma CLI 7 can be installed and migrations can be generated through the selected toolchain.
-- Convert the in-memory API scaffold to persistent NestJS route modules after Prisma generation and database connection are available.
+- Upgrade default local Node to `20.19.4+` or consistently run Prisma commands with bundled Node `24.14.0`.
+- Add a real local PostgreSQL service or managed DATABASE_URL so Prisma migrations and write paths can be exercised against a database.
+- Convert Nest write paths for check-ins, deed actions, blessings, reports, and donations to Prisma-backed persistence.
 - Add production authentication provider once account/session requirements and credentials are selected.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
+- Monitor Prisma CLI 7 moderate transitive `@hono/node-server` advisory for safe upstream fixes.
 
 ## Backlog
 

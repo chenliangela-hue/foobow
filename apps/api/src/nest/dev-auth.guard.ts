@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 
-const devBearerToken = "dev-foobow-token";
+const devBearerToken = process.env.FOOBOW_DEV_BEARER_TOKEN ?? "dev-foobow-token";
 
 @Injectable()
 export class DevAuthGuard implements CanActivate {

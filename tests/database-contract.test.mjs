@@ -60,6 +60,7 @@ test("reference seed data includes MVP deed, map, badge, and donation records", 
 
 test("Prisma schema mirrors public IDs, donation idempotency, and moderation models", async () => {
   const schema = await readText("apps/api/prisma/schema.prisma");
+  const config = await readText("apps/api/prisma.config.ts");
   const missing = hasAll(schema, [
     "model User",
     "publicId",
@@ -67,14 +68,27 @@ test("Prisma schema mirrors public IDs, donation idempotency, and moderation mod
     "model MoodCheckin",
     "@@unique([userId, checkedInOn])",
     "model Blessing",
+    "blessingReactions",
     "moderationStatus",
     "model Donation",
     "idempotencyKey",
     "@map(\"idempotency_key\")",
     "model SafetyReport",
+    "safetyReports",
     "targetPublicId",
     "model Subscription"
   ]);
 
   assert.deepEqual(missing, []);
+
+  const configMissing = hasAll(config, [
+    "defineConfig",
+    "schema: \"prisma/schema.prisma\"",
+    "migrations",
+    "process.env.DATABASE_URL",
+    "127.0.0.1:1"
+  ]);
+
+  assert.deepEqual(configMissing, []);
+  assert.equal(schema.includes("url      = env(\"DATABASE_URL\")"), false);
 });
