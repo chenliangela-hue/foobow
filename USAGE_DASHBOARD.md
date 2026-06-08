@@ -1,12 +1,12 @@
 # Foobow AI Team Usage Dashboard
 
-Last updated: 2026-06-07 20:33 America/Toronto
+Last updated: 2026-06-07 20:44 America/Toronto
 
 ## Current Load
 
 | Agent | 5h Window Used | Weekly Used | Requests Today | Est. Tokens In/Out | Load % | Last Task |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Codex 5.5 | ~145 min | Unknown | 18 | ~103k in / ~22k out | 61% | Added local Postgres readiness, Prisma 7 adapter wiring, Nest Prisma write paths, and local write smoke verification |
+| Codex 5.5 | ~160 min | Unknown | 20 | ~118k in / ~26k out | 68% | Added local/CI Postgres smoke coverage, Prisma 7 adapter wiring, Nest Prisma write paths, and endpoint-level Nest DB smoke verification |
 | Claude 4.8 | ~4 min | Unknown | 3 | ~2.5k in / minimal out | 4% | Auth verified through Claude.ai Pro OAuth; minimal `claude -p` orchestration call now succeeds; repo-content prompt blocked by approval policy |
 | Gemini 3.5 | ~3 min | Unknown | 2 | ~5k in / ~1.5k out | 6% | Acknowledged executor readiness and produced full project plan + sprint backlog + Kanban |
 
@@ -31,6 +31,7 @@ Last updated: 2026-06-07 20:33 America/Toronto
 - Current top project concern: default local Node is still `20.17.0`; use the bundled Node 24 path or upgrade system Node before running Prisma CLI commands directly.
 - Local PostgreSQL now runs through `docker compose up -d foobow-postgres` on port `55432`; schema/seed have been applied and verified locally.
 - Nest Prisma write paths are now implemented for account bootstrap, daily check-in, deed action plus karma event, blessings, reports, and donation idempotency.
+- CI now includes an Ubuntu PostgreSQL service job that applies SQL migration/seed and runs both direct Prisma and endpoint-level Nest DB smoke scripts.
 
 ## Last Sync Notes
 
@@ -46,3 +47,5 @@ Last updated: 2026-06-07 20:33 America/Toronto
 - API backend progress: Prisma 7 config moved DB URL into `prisma.config.ts`, schema relations were fixed, Nest has `PrismaService`, and read endpoints can use Prisma when `DATABASE_URL` is present.
 - Local DB smoke progress: Prisma 7 required the official PostgreSQL driver adapter, so `@prisma/adapter-pg` was installed and `PrismaService` now constructs `PrismaClient` with `PrismaPg`.
 - `npm --prefix apps/api run prisma:smoke` passed against local Postgres after aligning the SQL migration with Prisma donation payment provider columns.
+- `npm --prefix apps/api run nest:db-smoke` passed after making Nest controller/service DI explicit for the `tsx` runtime used by local smoke and CI.
+- Remote CI run inspection is temporarily blocked by the Codex approval layer usage limit; local gates and pushes succeeded.
