@@ -57,6 +57,13 @@ Confirm the seed covers the database-backed read paths:
 docker exec foobow-postgres psql -U foobow -d foobow -c "select 'deed_types' as table_name, count(*) from deed_types union all select 'map_spots', count(*) from map_spots union all select 'blessings', count(*) from blessings union all select 'donation_campaigns', count(*) from donation_campaigns order by table_name;"
 ```
 
+Run the Prisma-backed Nest write smoke test:
+
+```text
+$env:DATABASE_URL="postgresql://foobow:foobow@localhost:55432/foobow?schema=public"
+npm --prefix apps/api run prisma:smoke
+```
+
 ## Verification
 
 Run:

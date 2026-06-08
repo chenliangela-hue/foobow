@@ -53,13 +53,16 @@
 - Move Prisma datasource URL into Prisma 7 `prisma.config.ts` and add generate/migrate scripts.
 - Add Nest `PrismaService` and Prisma-backed read paths for deed types, map spots, blessings, and donation campaigns with fixture fallback.
 - Add API `.env.example` and make the dev bearer token configurable.
+- Add local PostgreSQL service with documented schema/seed setup and verified read-path seed coverage.
+- Add Prisma 7 PostgreSQL driver adapter wiring for runtime database access.
+- Convert Nest account, check-in, deed action, blessing, report, and donation paths to Prisma-backed persistence with fixture fallback.
+- Add local Prisma write smoke script for account creation, daily check-in, deed completion, blessing/report creation, and donation idempotency.
 
 ## Next
 
 - Upgrade default local Node to `20.19.4+` or consistently run Prisma commands with bundled Node `24.14.0`.
-- Add a real local PostgreSQL service or managed DATABASE_URL so Prisma migrations and write paths can be exercised against a database.
-- Convert Nest write paths for check-ins, deed actions, blessings, reports, and donations to Prisma-backed persistence.
 - Add production authentication provider once account/session requirements and credentials are selected.
+- Add API integration tests that run against ephemeral PostgreSQL in CI.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Monitor Prisma CLI 7 moderate transitive `@hono/node-server` advisory for safe upstream fixes.
 

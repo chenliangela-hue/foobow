@@ -18,6 +18,9 @@ test("initial migration creates core product tables", async () => {
     "create table donations",
     "create table safety_reports",
     "idempotency_key text not null unique",
+    "payment_provider text",
+    "provider_payment_id text",
+    "paid_at timestamptz",
     "public_id text not null unique",
     "target_public_id text not null"
   ]);

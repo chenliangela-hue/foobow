@@ -84,6 +84,9 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - CI readiness: GitHub Actions keeps project commands on Node `20.19.4`, uses Node 24 runtime major versions for checkout/setup-node actions, and pins visual regression to `windows-2025`.
 - Prisma readiness: Prisma CLI 7 is installed in `apps/api`, `prisma.config.ts` carries the database URL for Prisma 7, and `npm --prefix apps/api run prisma:generate` succeeds with a supported Node runtime.
 - Persistence bridge: Nest now provides `PrismaService`; read endpoints for deed types, map spots, blessings, and donation campaigns can switch to Prisma when `DATABASE_URL` is configured while retaining fixture fallback for no-database environments.
+- Local database readiness: `docker-compose.yml` provides a PostgreSQL 17 service on port `55432`; the SQL migration/seed path has been applied locally and verified for deed types, map spots, blessings, and donation campaigns.
+- Runtime persistence: Prisma 7 is wired with the official PostgreSQL driver adapter, and Nest account, check-in, deed action, blessing, report, and donation creation paths can persist to PostgreSQL while retaining fixture fallback for no-database environments.
+- Local write verification: `npm --prefix apps/api run prisma:smoke` exercises account creation, daily check-in, deed completion plus karma, blessing/report creation, and donation idempotency against the local database.
 
 ### Milestone 5: Release Readiness
 

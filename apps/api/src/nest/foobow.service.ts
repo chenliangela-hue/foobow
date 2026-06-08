@@ -49,7 +49,27 @@ export class FoobowService {
     return { status: "ok", service: "foobow-api", version: "0.1.0" };
   }
 
-  me() {
+  async me() {
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+
+      return {
+        user: {
+          id: user.publicId,
+          account_status: user.accountStatus,
+          locale: user.locale,
+          timezone: user.timezone
+        },
+        profile: {
+          id: user.profile?.publicId ?? "profile_demo",
+          display_name: user.displayName,
+          privacy_mode: user.profile?.privacyMode ?? "private",
+          quiet_ranking_enabled: user.profile?.quietRankingEnabled ?? true
+        },
+        subscription: { plan: "free", status: "active", ads_enabled: true }
+      };
+    }
+
     return {
       user: { id: "user_demo", account_status: "registered", locale: "en", timezone: "America/Toronto" },
       profile: { id: "profile_demo", display_name: "Quiet Helper", privacy_mode: "private", quiet_ranking_enabled: true },
@@ -57,7 +77,44 @@ export class FoobowService {
     };
   }
 
-  today() {
+  async today() {
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const checkin = await this.prisma.moodCheckin.findFirst({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" }
+      });
+      const recommendedDeed = await this.prisma.deedType.findFirst({
+        where: { status: "active" },
+        orderBy: { slug: "asc" }
+      });
+      const activeCampaigns = await this.listDonationCampaigns();
+
+      return {
+        checkin: checkin
+          ? {
+              id: checkin.publicId,
+              mood: checkin.mood,
+              note: checkin.note ?? "",
+              checked_in_on: this.dateOnly(checkin.checkedInOn),
+              created_at: checkin.createdAt.toISOString()
+            }
+          : null,
+        recommended_deed: recommendedDeed
+          ? {
+              id: this.publicIdFromSlug("deed", recommendedDeed.slug),
+              name: recommendedDeed.name,
+              category: recommendedDeed.category,
+              default_karma_points: Number(recommendedDeed.defaultKarmaPoints),
+              status: recommendedDeed.status
+            }
+          : deedTypes[0],
+        journal_prompt: "What small kindness would make today feel lighter?",
+        active_campaigns: activeCampaigns.items,
+        streak: 8
+      };
+    }
+
     return {
       checkin: Array.from(this.checkins.values()).at(-1) ?? null,
       recommended_deed: deedTypes[0],
@@ -147,7 +204,31 @@ export class FoobowService {
     return this.page(this.blessings.filter((blessing) => blessing.moderation_status === "visible"));
   }
 
-  createBlessing(body: BlessingCreateDto) {
+  async createBlessing(body: BlessingCreateDto) {
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const blessing = await this.prisma.blessing.create({
+        data: {
+          publicId: `blessing_${randomUUID()}`,
+          authorUserId: user.id,
+          body: body.body.trim(),
+          visibility: body.visibility,
+          moderationStatus: "visible"
+        }
+      });
+
+      return {
+        blessing: {
+          id: blessing.publicId,
+          body: blessing.body,
+          visibility: blessing.visibility,
+          moderation_status: blessing.moderationStatus,
+          reaction_count: Number(blessing.reactionCount),
+          created_at: blessing.createdAt.toISOString()
+        }
+      };
+    }
+
     const blessing = {
       id: `blessing_${randomUUID()}`,
       body: body.body.trim(),
@@ -159,8 +240,55 @@ export class FoobowService {
     return { blessing };
   }
 
-  createCheckin(body: CheckinCreateDto) {
+  async createCheckin(body: CheckinCreateDto) {
     const checkedInOn = new Date().toISOString().slice(0, 10);
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const checkedInOnDate = this.dateFromIsoDay(checkedInOn);
+      const existing = await this.prisma.moodCheckin.findUnique({
+        where: { userId_checkedInOn: { userId: user.id, checkedInOn: checkedInOnDate } }
+      });
+
+      if (existing) {
+        throw new ConflictException("A check-in already exists for this user today.");
+      }
+
+      const recommendedDeed = await this.prisma.deedType.findFirst({
+        where: { status: "active" },
+        orderBy: { slug: "asc" }
+      });
+      const checkin = await this.prisma.moodCheckin.create({
+        data: {
+          publicId: `checkin_${randomUUID()}`,
+          userId: user.id,
+          mood: body.mood,
+          note: body.note ?? "",
+          checkedInOn: checkedInOnDate,
+          recommendedDeedTypeId: recommendedDeed?.id
+        }
+      });
+
+      return {
+        checkin: {
+          id: checkin.publicId,
+          mood: checkin.mood,
+          note: checkin.note ?? "",
+          checked_in_on: this.dateOnly(checkin.checkedInOn),
+          created_at: checkin.createdAt.toISOString()
+        },
+        recommended_deed: recommendedDeed
+          ? {
+              id: this.publicIdFromSlug("deed", recommendedDeed.slug),
+              name: recommendedDeed.name,
+              category: recommendedDeed.category,
+              default_karma_points: Number(recommendedDeed.defaultKarmaPoints),
+              status: recommendedDeed.status
+            }
+          : deedTypes[0],
+        streak: 9
+      };
+    }
+
     if (this.checkins.has(checkedInOn)) {
       throw new ConflictException("A check-in already exists for this user today.");
     }
@@ -176,7 +304,71 @@ export class FoobowService {
     return { checkin, recommended_deed: deedTypes[0], streak: 9 };
   }
 
-  createDeedAction(body: DeedActionCreateDto) {
+  async createDeedAction(body: DeedActionCreateDto) {
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const deedType = await this.prisma.deedType.findUnique({
+        where: { slug: this.slugFromPublicId("deed", body.deed_type_id) }
+      });
+
+      if (!deedType || deedType.status !== "active") {
+        throw new UnprocessableEntityException("Unknown deed type.");
+      }
+
+      const mapSpot = body.map_spot_id
+        ? await this.prisma.mapSpot.findUnique({
+            where: { slug: this.slugFromPublicId("spot", body.map_spot_id) }
+          })
+        : null;
+      const points = body.status === "completed" ? Number(deedType.defaultKarmaPoints) : 0;
+      const result = await this.prisma.$transaction(async (tx) => {
+        const deedAction = await tx.deedAction.create({
+          data: {
+            publicId: `action_${randomUUID()}`,
+            userId: user.id,
+            deedTypeId: deedType.id,
+            mapSpotId: mapSpot?.id,
+            status: body.status,
+            visibility: body.visibility ?? "private",
+            completedAt: body.status === "completed" ? new Date() : null
+          }
+        });
+        const karmaEvent =
+          body.status === "completed"
+            ? await tx.karmaEvent.create({
+                data: {
+                  publicId: `karma_${randomUUID()}`,
+                  userId: user.id,
+                  deedActionId: deedAction.id,
+                  eventType: "earned",
+                  points,
+                  reason: deedType.name
+                }
+              })
+            : null;
+
+        return { deedAction, karmaEvent };
+      });
+
+      return {
+        deed_action: {
+          id: result.deedAction.publicId,
+          deed_type_id: this.publicIdFromSlug("deed", deedType.slug),
+          map_spot_id: mapSpot ? this.publicIdFromSlug("spot", mapSpot.slug) : null,
+          status: result.deedAction.status,
+          visibility: result.deedAction.visibility,
+          completed_at: result.deedAction.completedAt?.toISOString() ?? null
+        },
+        karma_event: {
+          id: result.karmaEvent?.publicId ?? `karma_preview_${randomUUID()}`,
+          event_type: "earned",
+          points,
+          reason: deedType.name
+        },
+        badges_earned: body.status === "completed" ? [{ id: "badge_daily_light", name: "Daily Light" }] : []
+      };
+    }
+
     const deedType = deedTypes.find((deed) => deed.id === body.deed_type_id);
     if (!deedType) {
       throw new UnprocessableEntityException("Unknown deed type.");
@@ -228,9 +420,61 @@ export class FoobowService {
     return this.page(campaigns.filter((campaign) => campaign.status === "active" && campaign.verification_status === "verified"));
   }
 
-  createDonation(idempotencyKey: string | undefined, body: DonationCreateDto) {
+  async createDonation(idempotencyKey: string | undefined, body: DonationCreateDto) {
     if (!idempotencyKey) {
       throw new UnprocessableEntityException("Donation creation requires an Idempotency-Key header.");
+    }
+
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const campaign = await this.prisma.donationCampaign.findUnique({
+        where: { slug: this.slugFromPublicId("campaign", body.campaign_id) }
+      });
+
+      if (!campaign || campaign.status !== "active" || campaign.verificationStatus !== "verified") {
+        throw new UnprocessableEntityException("Donations can only be created for verified active campaigns.");
+      }
+
+      const existing = await this.prisma.donation.findUnique({
+        where: { idempotencyKey },
+        include: { campaign: true }
+      });
+
+      if (existing) {
+        const samePayload =
+          existing.campaignId === campaign.id &&
+          existing.currency === body.currency &&
+          existing.amount.toFixed(2) === body.amount;
+
+        if (!samePayload) {
+          throw new ConflictException("Idempotency-Key was reused with a different donation payload.");
+        }
+
+        return this.donationResponse(existing.publicId, this.publicIdFromSlug("campaign", existing.campaign.slug), body.amount, body.currency);
+      }
+
+      const donation = await this.prisma.$transaction(async (tx) => {
+        const created = await tx.donation.create({
+          data: {
+            publicId: `donation_${randomUUID()}`,
+            userId: user.id,
+            campaignId: campaign.id,
+            amount: body.amount,
+            currency: body.currency,
+            paymentStatus: "pending",
+            idempotencyKey
+          }
+        });
+
+        await tx.donationCampaign.update({
+          where: { id: campaign.id },
+          data: { currentAmount: { increment: body.amount } }
+        });
+
+        return created;
+      });
+
+      return this.donationResponse(donation.publicId, this.publicIdFromSlug("campaign", campaign.slug), body.amount, body.currency);
     }
 
     const campaign = campaigns.find((item) => item.id === body.campaign_id);
@@ -263,7 +507,32 @@ export class FoobowService {
     return response;
   }
 
-  createReport(body: ReportCreateDto) {
+  async createReport(body: ReportCreateDto) {
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const report = await this.prisma.safetyReport.create({
+        data: {
+          publicId: `report_${randomUUID()}`,
+          reporterUserId: user.id,
+          targetType: body.target_type,
+          targetPublicId: body.target_id,
+          reason: body.reason,
+          moderationStatus: "open"
+        }
+      });
+
+      return {
+        report: {
+          id: report.publicId,
+          target_type: report.targetType,
+          target_id: report.targetPublicId,
+          reason: report.reason,
+          moderation_status: report.moderationStatus,
+          created_at: report.createdAt.toISOString()
+        }
+      };
+    }
+
     return {
       report: {
         id: `report_${randomUUID()}`,
@@ -284,7 +553,59 @@ export class FoobowService {
     return Boolean(process.env.DATABASE_URL);
   }
 
+  private async demoUser() {
+    return this.prisma.user.upsert({
+      where: { publicId: "user_demo" },
+      update: {},
+      create: {
+        publicId: "user_demo",
+        displayName: "Quiet Helper",
+        locale: "en",
+        timezone: "America/Toronto",
+        accountStatus: "registered",
+        profile: {
+          create: {
+            publicId: "profile_demo",
+            privacyMode: "private",
+            quietRankingEnabled: true,
+            themePreference: "system",
+            notificationPreference: "daily"
+          }
+        }
+      },
+      include: { profile: true }
+    });
+  }
+
   private publicIdFromSlug(prefix: string, slug: string) {
     return `${prefix}_${slug.replaceAll("-", "_")}`;
+  }
+
+  private slugFromPublicId(prefix: string, publicId: string) {
+    const marker = `${prefix}_`;
+    return publicId.startsWith(marker) ? publicId.slice(marker.length).replaceAll("_", "-") : publicId;
+  }
+
+  private dateFromIsoDay(isoDay: string) {
+    return new Date(`${isoDay}T00:00:00.000Z`);
+  }
+
+  private dateOnly(date: Date) {
+    return date.toISOString().slice(0, 10);
+  }
+
+  private donationResponse(publicId: string, campaignId: string, amount: string, currency: string) {
+    return {
+      donation: {
+        id: publicId,
+        campaign_id: campaignId,
+        amount,
+        currency,
+        payment_status: "pending",
+        karma_points_awarded: 0
+      },
+      checkout: { url: `https://payments.example.test/checkout/${randomUUID()}` },
+      transparency_note: "Donation support is separate from symbolic karma and does not buy luck, virtue, or guaranteed outcomes."
+    };
   }
 }

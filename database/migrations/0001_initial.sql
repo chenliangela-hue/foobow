@@ -181,9 +181,12 @@ create table donations (
   idempotency_key text not null unique,
   amount numeric(12, 2) not null check (amount > 0),
   currency text not null default 'USD',
+  payment_provider text,
+  provider_payment_id text,
   payment_status text not null default 'pending' check (payment_status in ('pending', 'completed', 'failed', 'refunded')),
   receipt_url text,
   created_at timestamptz not null default now(),
+  paid_at timestamptz,
   updated_at timestamptz not null default now()
 );
 

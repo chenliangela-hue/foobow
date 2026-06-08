@@ -50,8 +50,9 @@ test("sprint readiness docs cover auth, maps, localization, mobile release, and 
   const release = await readText("docs/mobile-release-checklist.md");
   const nodeReadiness = await readText("docs/node-readiness.md");
   const nodeVersion = await readText(".node-version");
+  const apiPackage = await readText("apps/api/package.json");
 
-  const missing = hasAll(auth + envExample + compose + maps + localization + release + nodeReadiness + nodeVersion, [
+  const missing = hasAll(auth + envExample + compose + maps + localization + release + nodeReadiness + nodeVersion + apiPackage, [
     "Auth0",
     "Clerk",
     "Apple Sign In",
@@ -59,6 +60,7 @@ test("sprint readiness docs cover auth, maps, localization, mobile release, and 
     "AUTH_PROVIDER",
     "foobow-postgres",
     "55432:5432",
+    "prisma:smoke",
     "Mapbox",
     "OpenStreetMap",
     "MapLibre",

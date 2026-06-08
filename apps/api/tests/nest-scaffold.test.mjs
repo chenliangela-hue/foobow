@@ -32,6 +32,8 @@ test("NestJS scaffold defines production backend modules and guarded routes", as
   assert.match(guardSource, /\?\? "dev-foobow-token"/);
   assert.match(guardSource, /request\.headers\.authorization === `Bearer \$\{devBearerToken\}`/);
   assert.match(prismaSource, /extends PrismaClient/);
+  assert.match(prismaSource, /PrismaPg/);
+  assert.match(prismaSource, /super\(\{ adapter: new PrismaPg/);
   assert.match(prismaSource, /process\.env\.DATABASE_URL/);
   assert.match(prismaSource, /\$connect/);
   assert.match(prismaSource, /\$disconnect/);
@@ -70,6 +72,26 @@ test("NestJS service can switch read endpoints from fixtures to Prisma", async (
     "this.prisma.donationCampaign.findMany",
     "useDatabase()",
     "process.env.DATABASE_URL"
+  ]) {
+    assert.match(serviceSource, new RegExp(expected.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+});
+
+test("NestJS service can persist write endpoints through Prisma", async () => {
+  const serviceSource = await read("src/nest/foobow.service.ts");
+
+  for (const expected of [
+    "this.prisma.user.upsert",
+    "this.prisma.moodCheckin.create",
+    "tx.deedAction.create",
+    "tx.karmaEvent.create",
+    "this.prisma.blessing.create",
+    "this.prisma.safetyReport.create",
+    "this.prisma.donation.findUnique",
+    "tx.donation.create",
+    "tx.donationCampaign.update",
+    "slugFromPublicId",
+    "donationResponse"
   ]) {
     assert.match(serviceSource, new RegExp(expected.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
