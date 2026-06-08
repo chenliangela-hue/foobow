@@ -1,12 +1,12 @@
 # Foobow AI Team Usage Dashboard
 
-Last updated: 2026-06-08 09:43 America/Toronto
+Last updated: 2026-06-08 11:24 America/Toronto
 
 ## Current Load
 
 | Agent | 5h Window Used | Weekly Used | Requests Today | Est. Tokens In/Out | Load % | Last Task |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Codex 5.5 | ~290 min | Unknown | 43 | ~237k in / ~59k out | 99% | Verified remote CI success for advisory watchlist gate |
+| Codex 5.5 | ~300 min | Unknown | 44 | ~241k in / ~60k out | 99% | Heartbeat audit found repo clean and remaining work blocked by inputs/tooling |
 | Claude 4.8 | ~9 min | Unknown | 6 | ~5k in / ~2k out | 10% | Short orchestration prompt timed out at 60s with no output |
 | Gemini 3.5 | ~8 min | Unknown | 5 | ~9k in / ~3k out | 12% | Short orchestration prompt first hit sandbox EPERM, then timed out with elevation |
 
@@ -66,4 +66,5 @@ Last updated: 2026-06-08 09:43 America/Toronto
 - Latest heartbeat task: Added advisory watchlist and verification gate; `npm run test:advisories`, `npm test`, and `npm run test:all` passed locally before commit/push.
 - Latest remote CI gate: run `27140916474` for `d6806a9 Track accepted dependency advisories` completed successfully.
 - Latest external AI validation: Claude timed out on a short 60s orchestration prompt; Gemini first failed with a sandbox `EPERM` resolving `C:\Users\crane`, then timed out after elevated retry. Do not depend on either CLI for blocking-path work until a short prompt returns successfully.
+- Latest heartbeat audit: working tree was clean, `npm run test:advisories` passed, and `npm test` passed. No safe new local sprint task was available without provider credentials, local Node upgrade approval, or reliable external AI CLI rotation.
 - Rotation note: Codex is now above the 80% threshold; next orchestration pass should avoid assigning new heavy implementation work to Codex until capacity recovers. Claude/Gemini are low-load in the dashboard but currently unreliable due CLI timeouts.
