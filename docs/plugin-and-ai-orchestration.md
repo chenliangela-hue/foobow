@@ -30,8 +30,8 @@ No additional plugin is required for the current Foobow sprint. The useful setup
 | Agent | Primary Role | Good Assignments | Avoid |
 | --- | --- | --- | --- |
 | Codex 5.5 | Orchestrator, implementation, tests, integration, final review | Repo edits, CI, DB/API work, browser QA, commits | Long speculative planning when another agent is below quota |
-| Claude 4.8 | Architecture review, product critique, copy review | Abstract plans, non-sensitive docs, design critique | Private repo context unless the user explicitly approves external transfer |
-| Gemini 3.5 | Broad ideation, task decomposition, alternate approaches | High-volume backlog shaping, copy variants, lightweight plans | Final code authority or private repo dumps without approval |
+| Claude 4.8 | Architecture review, product critique, copy review | Architecture/resource planning and second-opinion reviews | Final code authority |
+| Gemini 3.5 | Broad ideation, task decomposition, alternate approaches | High-volume backlog shaping, copy variants, lightweight plans | Final code authority |
 
 ## Usage Rotation Rules
 
@@ -39,7 +39,7 @@ No additional plugin is required for the current Foobow sprint. The useful setup
 - 60-79% load: agent should receive only high-fit tasks.
 - 80% or higher: rotate away from that agent and record the expected recovery time if known.
 - Unknown recovery time: mark `Unknown` and recheck on the next orchestration pass.
-- External AI use must respect privacy: do not send private repository content outside the local environment without explicit user approval.
+- External AI use must respect privacy. As of 2026-06-08, the user approved sending Foobow repository context to Claude Code and Gemini for orchestration/planning. Still keep prompts scoped and avoid sending secrets.
 
 ## VibeOrchestrator Loop
 

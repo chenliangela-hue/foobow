@@ -87,6 +87,7 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [Node Readiness](docs/node-readiness.md)
 - [Plugin And AI Orchestration](docs/plugin-and-ai-orchestration.md)
 - [Shared Catalog Contract](docs/shared-catalog-contract.md)
+- [External Service Resources](docs/external-service-resources.md)
 - [Memory](memory.md)
 
 ## Verification

@@ -1,14 +1,14 @@
 # Foobow AI Team Usage Dashboard
 
-Last updated: 2026-06-08 00:10 America/Toronto
+Last updated: 2026-06-08 07:47 America/Toronto
 
 ## Current Load
 
 | Agent | 5h Window Used | Weekly Used | Requests Today | Est. Tokens In/Out | Load % | Last Task |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Codex 5.5 | ~195 min | Unknown | 24 | ~145k in / ~34k out | 79% | Added plugin/AI orchestration setup, heartbeat automation, shared catalog contract, and full local verification |
-| Claude 4.8 | ~4 min | Unknown | 3 | ~2.5k in / minimal out | 4% | Auth verified through Claude.ai Pro OAuth; minimal `claude -p` orchestration call now succeeds; repo-content prompt blocked by approval policy |
-| Gemini 3.5 | ~3 min | Unknown | 2 | ~5k in / ~1.5k out | 6% | Acknowledged executor readiness and produced full project plan + sprint backlog + Kanban |
+| Codex 5.5 | ~210 min | Unknown | 25 | ~158k in / ~37k out | 84% | Added external service env/resource contract and CLI input plan |
+| Claude 4.8 | ~6 min | Unknown | 4 | ~4k in / ~2k out | 7% | With user-approved repo access, reviewed production service/env resource checklist |
+| Gemini 3.5 | ~5 min | Unknown | 3 | ~8k in / ~3k out | 9% | Returned resource checklist but also hit Gemini server 429 capacity warning |
 
 ## Assignment Rules
 
@@ -35,6 +35,7 @@ Last updated: 2026-06-08 00:10 America/Toronto
 - Active automation: `foobow-vibeorchestrator-usage-check` wakes this thread every 30 minutes to recheck usage, rotate agents, inspect task state, and continue safe local sprint work.
 - Plugin setup status: Browser, GitHub, Chrome, Computer Use, Documents, Presentations, Spreadsheets, Canva, and thread/automation tools are available; no extra plugin install is required for the current sprint.
 - Shared catalog status: `shared/foobow-catalog.json` plus `npm run test:catalog` now verifies prototype, mobile, API fixture, and SQL seed product-object alignment.
+- External service setup status: root `.env.example`, ignored `.env.local`, `docs/external-service-resources.md`, and `npm run test:env` now define required Clerk/Supabase/Vercel/Stripe/Mapbox/Sentry/PostHog/Resend resources and keys.
 
 ## Last Sync Notes
 
@@ -52,6 +53,6 @@ Last updated: 2026-06-08 00:10 America/Toronto
 - `npm --prefix apps/api run prisma:smoke` passed against local Postgres after aligning the SQL migration with Prisma donation payment provider columns.
 - `npm --prefix apps/api run nest:db-smoke` passed after making Nest controller/service DI explicit for the `tsx` runtime used by local smoke and CI.
 - Remote CI run inspection is temporarily blocked by the Codex approval layer usage limit; local gates and pushes succeeded.
-- External AI policy: Claude/Gemini may be used for non-sensitive planning, but private repo context should not be sent externally without explicit user approval.
+- External AI policy: user explicitly approved sending Foobow repo context to Claude Code and Gemini; continue avoiding any secret values in prompts.
 - Latest local gate: `npm run test:all` passed after plugin orchestration and shared catalog changes; mobile/browser/visual gates are green after refreshing the mobile dark community baseline.
-- Rotation note: Codex is now near the 80% threshold; next orchestration pass should prefer Claude/Gemini for non-sensitive planning or pause external assignment until Codex capacity recovers.
+- Rotation note: Codex is now above the 80% threshold; next orchestration pass should avoid assigning new heavy implementation work to Codex until capacity recovers. Claude/Gemini remain available for planning, but Gemini may temporarily fail with server 429 capacity.

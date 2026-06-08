@@ -60,11 +60,13 @@
 - Add CI PostgreSQL service smoke job for schema, seed, Prisma-backed write-path verification, and endpoint-level Nest HTTP verification.
 - Add plugin inventory, AI agent role assignment, usage rotation rules, and VibeOrchestrator heartbeat automation.
 - Add shared catalog contract and verification gate for prototype/mobile/API/SQL seed product-object alignment.
+- Add root external-service `.env.example`, local `.env.local` placeholder, resource setup checklist, and env contract verification gate.
 
 ## Next
 
 - Upgrade default local Node to `20.19.4+` or consistently run Prisma commands with bundled Node `24.14.0`.
 - Add production authentication provider once account/session requirements and credentials are selected.
+- Use CLI to create development resources after user provides provider account inputs: Supabase org/region/password, Clerk app access, Vercel team, domain, Stripe mode, Mapbox account.
 - Expand endpoint-level Nest DB smoke into a full integration test suite with isolated database setup/teardown.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Monitor Prisma CLI 7 moderate transitive `@hono/node-server` advisory for safe upstream fixes.

@@ -37,6 +37,7 @@ test("ODD, database, API, project plan, task board, and memory docs exist in REA
     "Node Readiness",
     "Plugin And AI Orchestration",
     "Shared Catalog Contract",
+    "External Service Resources",
     "Memory"
   ]);
 
@@ -81,6 +82,35 @@ test("shared catalog contract protects cross-surface product sample data", async
     "deed_release_fish",
     "blessing_001",
     "operating-support"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
+
+test("external service env contract covers production resource setup", async () => {
+  const envExample = await readText(".env.example");
+  const serviceDocs = await readText("docs/external-service-resources.md");
+  const packageJson = await readText("package.json");
+
+  const missing = hasAll(envExample + serviceDocs + packageJson, [
+    "test:env",
+    "verify-env-contract.mjs",
+    "Clerk",
+    "Supabase",
+    "Vercel",
+    "Stripe",
+    "Mapbox",
+    "Sentry",
+    "PostHog",
+    "Resend",
+    "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY",
+    "DATABASE_URL",
+    "DIRECT_URL",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "VERCEL_PROJECT_ID",
+    "STRIPE_WEBHOOK_SECRET",
+    "EXPO_PUBLIC_MAPBOX_TOKEN",
+    "DONATION_TRANSPARENCY_COPY"
   ]);
 
   assert.deepEqual(missing, []);
