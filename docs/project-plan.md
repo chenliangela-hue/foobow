@@ -86,8 +86,8 @@ Move Foobow from a product concept into a disciplined MVP project with docs, tas
 - Persistence bridge: Nest now provides `PrismaService`; read endpoints for deed types, map spots, blessings, and donation campaigns can switch to Prisma when `DATABASE_URL` is configured while retaining fixture fallback for no-database environments.
 - Local database readiness: `docker-compose.yml` provides a PostgreSQL 17 service on port `55432`; the SQL migration/seed path has been applied locally and verified for deed types, map spots, blessings, and donation campaigns.
 - Runtime persistence: Prisma 7 is wired with the official PostgreSQL driver adapter, and Nest account, check-in, deed action, blessing, report, and donation creation paths can persist to PostgreSQL while retaining fixture fallback for no-database environments.
-- Local write verification: `npm --prefix apps/api run prisma:smoke` exercises account creation, daily check-in, deed completion plus karma, blessing/report creation, and donation idempotency against the local database.
-- CI database verification: GitHub Actions includes an Ubuntu PostgreSQL service job that applies the SQL migration/seed, runs the Prisma write smoke script, and boots the Nest app for endpoint-level HTTP smoke coverage.
+- Local database integration verification: `npm --prefix apps/api run test:db-integration` exercises Prisma service write paths and Nest HTTP DB endpoints for account bootstrap, daily check-in, deed completion plus karma, blessing/report creation, and donation idempotency against the local database.
+- CI database verification: GitHub Actions includes an Ubuntu PostgreSQL service job that applies the SQL migration/seed and runs the same `test:db-integration` acceptance command used locally.
 
 ### Milestone 5: Release Readiness
 

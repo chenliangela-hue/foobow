@@ -130,7 +130,7 @@ test("sprint readiness docs cover auth, maps, localization, mobile release, and 
     "AUTH_PROVIDER",
     "foobow-postgres",
     "55432:5432",
-    "prisma:smoke",
+    "test:db-integration",
     "Mapbox",
     "OpenStreetMap",
     "MapLibre",
@@ -156,8 +156,8 @@ test("CI workflow pins current runner and action runtime expectations", async ()
     "api-db-smoke",
     "postgres:17-alpine",
     "Apply SQL schema and seed",
-    "prisma:smoke",
-    "nest:db-smoke",
+    "Run API DB integration suite",
+    "test:db-integration",
     "npm run test:visual"
   ]);
 

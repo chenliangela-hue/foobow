@@ -85,11 +85,8 @@ jobs:
         run: |
           docker run --rm --network host -v "$PWD:/workspace" -w /workspace postgres:17-alpine sh -c "psql \"$DATABASE_URL\" -f database/migrations/0001_initial.sql && psql \"$DATABASE_URL\" -f database/seeds/0001_reference_data.sql"
 
-      - name: Run Prisma write smoke
-        run: npm --prefix apps/api run prisma:smoke
-
-      - name: Run Nest DB HTTP smoke
-        run: npm --prefix apps/api run nest:db-smoke
+      - name: Run API DB integration suite
+        run: npm --prefix apps/api run test:db-integration
 
   visual-regression:
     runs-on: windows-2025

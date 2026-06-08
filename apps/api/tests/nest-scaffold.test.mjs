@@ -97,3 +97,21 @@ test("NestJS service can persist write endpoints through Prisma", async () => {
     assert.match(serviceSource, new RegExp(expected.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 });
+
+test("API DB integration suite runs Prisma and Nest smoke gates in order", async () => {
+  const integrationSuite = await read("scripts/db-integration-suite.ts");
+  const packageJson = await read("package.json");
+  const readme = await read("README.md");
+  const ci = await readFile(new URL("../../../.github/workflows/ci.yml", import.meta.url), "utf8");
+
+  for (const expected of [
+    "DATABASE_URL is required for the DB integration suite",
+    "scripts/prisma-write-smoke.ts",
+    "scripts/nest-db-http-smoke.ts",
+    "DB integration suite passed",
+    "test:db-integration",
+    "Run API DB integration suite"
+  ]) {
+    assert.ok(`${integrationSuite}\n${packageJson}\n${readme}\n${ci}`.includes(expected), `missing ${expected}`);
+  }
+});

@@ -1,12 +1,12 @@
 # Foobow AI Team Usage Dashboard
 
-Last updated: 2026-06-08 08:20 America/Toronto
+Last updated: 2026-06-08 08:36 America/Toronto
 
 ## Current Load
 
 | Agent | 5h Window Used | Weekly Used | Requests Today | Est. Tokens In/Out | Load % | Last Task |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Codex 5.5 | ~225 min | Unknown | 29 | ~174k in / ~42k out | 88% | Integrated reduced mobile MVP env contract and beginner setup guide |
+| Codex 5.5 | ~238 min | Unknown | 31 | ~188k in / ~45k out | 91% | Added consolidated API DB integration suite and CI/local gate wiring |
 | Claude 4.8 | ~8 min | Unknown | 5 | ~5k in / ~2k out | 9% | Assigned env-simplification review; latest CLI call timed out at 120s with no output |
 | Gemini 3.5 | ~7 min | Unknown | 4 | ~9k in / ~3k out | 11% | Assigned env-simplification review; latest CLI call timed out at 120s after prior 429 risk |
 
@@ -37,6 +37,7 @@ Last updated: 2026-06-08 08:20 America/Toronto
 - Plugin setup status: Browser, GitHub, Chrome, Computer Use, Documents, Presentations, Spreadsheets, Canva, and thread/automation tools are available; no extra plugin install is required for the current sprint.
 - Shared catalog status: `shared/foobow-catalog.json` plus `npm run test:catalog` now verifies prototype, mobile, API fixture, and SQL seed product-object alignment.
 - External service setup status: root `.env.example`, ignored `.env.local`, `docs/external-service-resources.md`, and `npm run test:env` now define a reduced mobile MVP key set: Supabase/local Postgres, Clerk, Mapbox, API URL, and local dev token. Stripe is optional for donation mode; Vercel/Sentry/PostHog/Expo tokens are deferred; no email API key is required for MVP.
+- API DB integration status: `npm --prefix apps/api run test:db-integration` now runs both the Prisma service write-path smoke and Nest HTTP DB smoke; CI uses the same command after applying SQL schema/seed.
 
 ## Last Sync Notes
 
@@ -56,5 +57,5 @@ Last updated: 2026-06-08 08:20 America/Toronto
 - Remote CI run inspection is temporarily blocked by the Codex approval layer usage limit; local gates and pushes succeeded.
 - External AI policy: user explicitly approved sending Foobow repo context to Claude Code and Gemini; continue avoiding any secret values in prompts.
 - Latest external AI validation: Codex assigned the env/key-reduction review to both Claude Code and Gemini; both CLI calls timed out at 120 seconds with no usable output, so Codex completed the integration locally and recorded the timeout as the current blocker.
-- Latest local gate: `npm run test:all` passed after plugin orchestration and shared catalog changes; mobile/browser/visual gates are green after refreshing the mobile dark community baseline.
-- Rotation note: Codex is now above the 80% threshold; next orchestration pass should avoid assigning new heavy implementation work to Codex until capacity recovers. Claude/Gemini remain available for planning, but Gemini may temporarily fail with server 429 capacity.
+- Latest local gate: `npm run test:api` passed, Docker Postgres was verified healthy through elevated Docker access, and `npm --prefix apps/api run test:db-integration` passed against the local database.
+- Rotation note: Codex is now above the 80% threshold; next orchestration pass should avoid assigning new heavy implementation work to Codex until capacity recovers. Claude/Gemini remain available for planning, but Gemini may temporarily fail with server 429 capacity and both CLIs timed out in the latest env-review attempt.

@@ -11,6 +11,7 @@
     "prisma:migrate": "prisma migrate dev --schema prisma/schema.prisma",
     "prisma:smoke": "tsx scripts/prisma-write-smoke.ts",
     "nest:db-smoke": "tsx scripts/nest-db-http-smoke.ts",
+    "test:db-integration": "tsx scripts/db-integration-suite.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --test tests && npm run typecheck"
   },
