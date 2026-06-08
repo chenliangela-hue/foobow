@@ -44,18 +44,21 @@ test("ODD, database, API, project plan, task board, and memory docs exist in REA
 test("sprint readiness docs cover auth, maps, localization, mobile release, and Node runtime", async () => {
   const auth = await readText("docs/auth-strategy.md");
   const envExample = await readText("apps/api/.env.example");
+  const compose = await readText("docker-compose.yml");
   const maps = await readText("docs/map-provider-decision.md");
   const localization = await readText("docs/localization-workflow.md");
   const release = await readText("docs/mobile-release-checklist.md");
   const nodeReadiness = await readText("docs/node-readiness.md");
   const nodeVersion = await readText(".node-version");
 
-  const missing = hasAll(auth + envExample + maps + localization + release + nodeReadiness + nodeVersion, [
+  const missing = hasAll(auth + envExample + compose + maps + localization + release + nodeReadiness + nodeVersion, [
     "Auth0",
     "Clerk",
     "Apple Sign In",
     "FOOBOW_DEV_BEARER_TOKEN",
     "AUTH_PROVIDER",
+    "foobow-postgres",
+    "55432:5432",
     "Mapbox",
     "OpenStreetMap",
     "MapLibre",

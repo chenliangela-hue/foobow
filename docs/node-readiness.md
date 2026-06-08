@@ -30,6 +30,33 @@ Use one of these approaches:
 - Volta: pin Node `20.19.4` if adopted later.
 - GitHub Actions: already uses `20.19.4`.
 
+## Local Database
+
+Foobow includes a local PostgreSQL service in `docker-compose.yml`:
+
+```text
+docker compose up -d foobow-postgres
+```
+
+The matching development URL is:
+
+```text
+postgresql://foobow:foobow@localhost:55432/foobow?schema=public
+```
+
+Apply the current SQL schema and reference data:
+
+```text
+Get-Content database\migrations\0001_initial.sql -Raw | docker exec -i foobow-postgres psql -U foobow -d foobow
+Get-Content database\seeds\0001_reference_data.sql -Raw | docker exec -i foobow-postgres psql -U foobow -d foobow
+```
+
+Confirm the seed covers the database-backed read paths:
+
+```text
+docker exec foobow-postgres psql -U foobow -d foobow -c "select 'deed_types' as table_name, count(*) from deed_types union all select 'map_spots', count(*) from map_spots union all select 'blessings', count(*) from blessings union all select 'donation_campaigns', count(*) from donation_campaigns order by table_name;"
+```
+
 ## Verification
 
 Run:

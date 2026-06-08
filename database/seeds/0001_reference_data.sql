@@ -22,3 +22,8 @@ values
   ('lake-guardian', 'Lake guardian', 'animals', 'Complete symbolic release rituals at water map spots.', '{"category": "animals", "count": 3}', 'active'),
   ('quiet-supporter', 'Quiet supporter', 'support', 'Send anonymous blessings without public ranking pressure.', '{"category": "support", "count": 5}', 'active');
 
+insert into blessings (public_id, body, visibility, reaction_count, moderation_status)
+values
+  ('blessing_001', 'May your next step feel lighter than the last.', 'anonymous', 211, 'visible'),
+  ('blessing_002', 'For anyone carrying guilt today: one kind action is still real.', 'anonymous', 195, 'visible')
+on conflict (public_id) do nothing;
