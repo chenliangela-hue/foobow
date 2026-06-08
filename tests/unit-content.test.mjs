@@ -87,6 +87,7 @@ test("CI workflow pins current runner and action runtime expectations", async ()
     "postgres:17-alpine",
     "Apply SQL schema and seed",
     "prisma:smoke",
+    "nest:db-smoke",
     "npm run test:visual"
   ]);
 

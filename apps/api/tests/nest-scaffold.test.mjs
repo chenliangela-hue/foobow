@@ -28,6 +28,7 @@ test("NestJS scaffold defines production backend modules and guarded routes", as
   assert.match(controllerSource, /@ApiBearerAuth\(\)/);
   assert.match(controllerSource, /@UseGuards\(DevAuthGuard\)/);
   assert.match(controllerSource, /@Post\("donations"\)/);
+  assert.match(controllerSource, /@Inject\(FoobowService\)/);
   assert.match(guardSource, /process\.env\.FOOBOW_DEV_BEARER_TOKEN/);
   assert.match(guardSource, /\?\? "dev-foobow-token"/);
   assert.match(guardSource, /request\.headers\.authorization === `Bearer \$\{devBearerToken\}`/);
@@ -65,7 +66,7 @@ test("NestJS service can switch read endpoints from fixtures to Prisma", async (
   const serviceSource = await read("src/nest/foobow.service.ts");
 
   for (const expected of [
-    "constructor(private readonly prisma: PrismaService)",
+    "constructor(@Inject(PrismaService) private readonly prisma: PrismaService)",
     "this.prisma.deedType.findMany",
     "this.prisma.mapSpot.findMany",
     "this.prisma.blessing.findMany",

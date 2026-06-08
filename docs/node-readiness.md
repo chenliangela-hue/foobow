@@ -62,6 +62,7 @@ Run the Prisma-backed Nest write smoke test:
 ```text
 $env:DATABASE_URL="postgresql://foobow:foobow@localhost:55432/foobow?schema=public"
 npm --prefix apps/api run prisma:smoke
+npm --prefix apps/api run nest:db-smoke
 ```
 
 ## Verification

@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnprocessableEntityException } from "@nestjs/common";
+import { ConflictException, Inject, Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 import {
   BlessingCreateDto,
@@ -43,7 +43,7 @@ export class FoobowService {
   ];
   private readonly donations = new Map<string, { fingerprint: string; response: Record<string, unknown> }>();
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   health() {
     return { status: "ok", service: "foobow-api", version: "0.1.0" };

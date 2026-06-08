@@ -88,6 +88,9 @@ jobs:
       - name: Run Prisma write smoke
         run: npm --prefix apps/api run prisma:smoke
 
+      - name: Run Nest DB HTTP smoke
+        run: npm --prefix apps/api run nest:db-smoke
+
   visual-regression:
     runs-on: windows-2025
     steps:

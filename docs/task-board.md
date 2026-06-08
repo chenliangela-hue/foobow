@@ -57,13 +57,13 @@
 - Add Prisma 7 PostgreSQL driver adapter wiring for runtime database access.
 - Convert Nest account, check-in, deed action, blessing, report, and donation paths to Prisma-backed persistence with fixture fallback.
 - Add local Prisma write smoke script for account creation, daily check-in, deed completion, blessing/report creation, and donation idempotency.
-- Add CI PostgreSQL service smoke job for schema, seed, and Prisma-backed write-path verification.
+- Add CI PostgreSQL service smoke job for schema, seed, Prisma-backed write-path verification, and endpoint-level Nest HTTP verification.
 
 ## Next
 
 - Upgrade default local Node to `20.19.4+` or consistently run Prisma commands with bundled Node `24.14.0`.
 - Add production authentication provider once account/session requirements and credentials are selected.
-- Expand PostgreSQL CI coverage from smoke script to endpoint-level Nest integration tests.
+- Expand endpoint-level Nest DB smoke into a full integration test suite with isolated database setup/teardown.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Monitor Prisma CLI 7 moderate transitive `@hono/node-server` advisory for safe upstream fixes.
 

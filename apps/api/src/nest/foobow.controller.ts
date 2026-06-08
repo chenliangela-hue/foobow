@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Inject, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { DevAuthGuard } from "./dev-auth.guard.js";
 import {
@@ -13,7 +13,7 @@ import { FoobowService } from "./foobow.service.js";
 @ApiTags("health")
 @Controller()
 export class HealthController {
-  constructor(private readonly service: FoobowService) {}
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
 
   @Get("health")
   @ApiOperation({ summary: "Return API health metadata" })
@@ -25,7 +25,7 @@ export class HealthController {
 @ApiTags("discovery")
 @Controller("api/v1")
 export class DiscoveryController {
-  constructor(private readonly service: FoobowService) {}
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
 
   @Get("deed-types")
   listDeedTypes(@Query("category") category?: string) {
@@ -53,7 +53,7 @@ export class DiscoveryController {
 @UseGuards(DevAuthGuard)
 @Controller("api/v1")
 export class AccountController {
-  constructor(private readonly service: FoobowService) {}
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
 
   @Get("me")
   me() {
@@ -71,7 +71,7 @@ export class AccountController {
 @UseGuards(DevAuthGuard)
 @Controller("api/v1")
 export class RitualController {
-  constructor(private readonly service: FoobowService) {}
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
 
   @Post("checkins")
   createCheckin(@Body() body: CheckinCreateDto) {
@@ -87,7 +87,7 @@ export class RitualController {
 @ApiTags("community")
 @Controller("api/v1")
 export class CommunityController {
-  constructor(private readonly service: FoobowService) {}
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
 
   @Post("blessings")
   @ApiBearerAuth()
@@ -109,7 +109,7 @@ export class CommunityController {
 @UseGuards(DevAuthGuard)
 @Controller("api/v1")
 export class DonationController {
-  constructor(private readonly service: FoobowService) {}
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
 
   @Post("donations")
   createDonation(@Headers("idempotency-key") idempotencyKey: string | undefined, @Body() body: DonationCreateDto) {
