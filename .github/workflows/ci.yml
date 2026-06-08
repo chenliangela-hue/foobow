@@ -48,6 +48,46 @@ jobs:
       - name: Run browser PA checks
         run: npm run test:browser
 
+  api-db-smoke:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: foobow
+          POSTGRES_PASSWORD: foobow
+          POSTGRES_DB: foobow
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U foobow -d foobow"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DATABASE_URL: postgresql://foobow:foobow@localhost:55432/foobow?schema=public
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20.19.4
+
+      - name: Install API dependencies
+        run: npm --prefix apps/api ci
+
+      - name: Generate Prisma client
+        run: npm --prefix apps/api run prisma:generate
+
+      - name: Apply SQL schema and seed
+        run: |
+          docker run --rm --network host -v "$PWD:/workspace" -w /workspace postgres:17-alpine sh -c "psql \"$DATABASE_URL\" -f database/migrations/0001_initial.sql && psql \"$DATABASE_URL\" -f database/seeds/0001_reference_data.sql"
+
+      - name: Run Prisma write smoke
+        run: npm --prefix apps/api run prisma:smoke
+
   visual-regression:
     runs-on: windows-2025
     steps:

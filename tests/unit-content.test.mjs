@@ -83,6 +83,10 @@ test("CI workflow pins current runner and action runtime expectations", async ()
     "node-version: 20.19.4",
     "runs-on: windows-2025",
     "Generate Prisma client",
+    "api-db-smoke",
+    "postgres:17-alpine",
+    "Apply SQL schema and seed",
+    "prisma:smoke",
     "npm run test:visual"
   ]);
 
