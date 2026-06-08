@@ -97,20 +97,15 @@ test("external service env contract covers production resource setup", async () 
     "verify-env-contract.mjs",
     "Clerk",
     "Supabase",
-    "Vercel",
     "Stripe",
     "Mapbox",
-    "Sentry",
-    "PostHog",
-    "Resend",
+    "No email API key is required for the initial MVP",
+    "Optional Donation Mode",
     "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY",
     "DATABASE_URL",
-    "DIRECT_URL",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "VERCEL_PROJECT_ID",
-    "STRIPE_WEBHOOK_SECRET",
-    "EXPO_PUBLIC_MAPBOX_TOKEN",
-    "DONATION_TRANSPARENCY_COPY"
+    "FOOBOW_DEV_BEARER_TOKEN",
+    "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+    "EXPO_PUBLIC_MAPBOX_TOKEN"
   ]);
 
   assert.deepEqual(missing, []);

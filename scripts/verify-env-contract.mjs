@@ -4,53 +4,47 @@ import { readFile } from "node:fs/promises";
 const envExample = await readFile(".env.example", "utf8");
 const docs = await readFile("docs/external-service-resources.md", "utf8");
 
-const requiredKeys = [
-  "APP_ENV",
-  "APP_PUBLIC_URL",
-  "API_PUBLIC_URL",
+// These keys MUST be present and uncommented in .env.example
+const requiredMvpKeys = [
+  "DATABASE_URL",
   "FOOBOW_DEV_BEARER_TOKEN",
   "AUTH_PROVIDER",
   "AUTH_ISSUER_URL",
   "AUTH_AUDIENCE",
+  "EXPO_PUBLIC_API_URL",
   "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY",
   "CLERK_SECRET_KEY",
-  "CLERK_JWT_KEY",
-  "CLERK_WEBHOOK_SECRET",
-  "DATABASE_URL",
-  "DIRECT_URL",
-  "SUPABASE_URL",
-  "SUPABASE_ANON_KEY",
-  "SUPABASE_SERVICE_ROLE_KEY",
-  "SUPABASE_PROJECT_REF",
-  "SUPABASE_ACCESS_TOKEN",
-  "VERCEL_TOKEN",
-  "VERCEL_ORG_ID",
-  "VERCEL_PROJECT_ID",
-  "EXPO_TOKEN",
-  "EAS_PROJECT_ID",
-  "EXPO_PUBLIC_API_BASE_URL",
-  "STRIPE_SECRET_KEY",
+  "EXPO_PUBLIC_MAPBOX_TOKEN"
+];
+
+// These keys can be commented out or deferred
+const deferredKeys = [
   "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+  "STRIPE_SECRET_KEY",
   "STRIPE_WEBHOOK_SECRET",
-  "EXPO_PUBLIC_MAPBOX_TOKEN",
-  "MAPBOX_STYLE_URL",
   "SENTRY_DSN",
   "EXPO_PUBLIC_SENTRY_DSN_MOBILE",
   "POSTHOG_KEY",
   "EXPO_PUBLIC_POSTHOG_KEY",
-  "RESEND_API_KEY",
-  "RESEND_FROM",
-  "FEATURE_DONATIONS_ENABLED",
-  "FEATURE_SUBSCRIPTIONS_ENABLED",
-  "DONATION_TRANSPARENCY_COPY"
+  "EXPO_TOKEN",
+  "VERCEL_TOKEN"
 ];
 
-for (const key of requiredKeys) {
-  assert.match(envExample, new RegExp(`^${key}=`, "m"), `.env.example missing ${key}`);
+console.log("Checking MVP keys...");
+for (const key of requiredMvpKeys) {
+  assert.match(envExample, new RegExp(`^${key}=`, "m"), `.env.example missing REQUIRED MVP key: ${key}`);
 }
 
-for (const service of ["Clerk", "Supabase", "Vercel", "Stripe", "Mapbox", "Sentry", "PostHog", "Resend"]) {
+console.log("Checking deferred keys (can be commented out)...");
+for (const key of deferredKeys) {
+  assert.match(envExample, new RegExp(`^#?\\s*${key}=`, "m"), `.env.example missing DEFERRED key placeholder: ${key}`);
+}
+
+for (const service of ["Clerk", "Supabase", "Mapbox"]) {
   assert.ok(docs.includes(service), `external service docs missing ${service}`);
 }
 
-console.log("Foobow env contract is complete.");
+assert.ok(docs.includes("Optional Donation Mode"), "external service docs must mark Stripe donation mode as optional");
+assert.ok(docs.includes("No email API key is required for the initial MVP"), "external service docs must explain why email API keys are not required");
+
+console.log("Foobow env contract is complete (reduced mobile MVP focus).");

@@ -61,12 +61,14 @@
 - Add plugin inventory, AI agent role assignment, usage rotation rules, and VibeOrchestrator heartbeat automation.
 - Add shared catalog contract and verification gate for prototype/mobile/API/SQL seed product-object alignment.
 - Add root external-service `.env.example`, local `.env.local` placeholder, resource setup checklist, and env contract verification gate.
+- Reduce the mobile MVP env contract to Supabase/local Postgres, Clerk, Mapbox, API URL, and local dev token; mark Stripe as optional donation mode and remove any email-provider requirement from MVP setup.
 
 ## Next
 
 - Upgrade default local Node to `20.19.4+` or consistently run Prisma commands with bundled Node `24.14.0`.
 - Add production authentication provider once account/session requirements and credentials are selected.
-- Use CLI to create development resources after user provides provider account inputs: Supabase org/region/password, Clerk app access, Vercel team, domain, Stripe mode, Mapbox account.
+- Use CLI to create development resources after user provides provider account inputs: Supabase org/region/password, Clerk app access, Mapbox account, and optional Stripe mode if donation checkout should be tested now.
+- Keep assigning planning/review tasks to Claude/Gemini while Codex is above 80%, but record timeout/429 failures as orchestration blockers and validate their outputs before integration.
 - Expand endpoint-level Nest DB smoke into a full integration test suite with isolated database setup/teardown.
 - Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
 - Monitor Prisma CLI 7 moderate transitive `@hono/node-server` advisory for safe upstream fixes.

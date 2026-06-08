@@ -1,28 +1,213 @@
 # External Service Resources
 
-## Stack Decision
+## What Is Actually Required Now
 
-Foobow should use this MVP production stack:
+Foobow does not need every SaaS account on day one. The mobile MVP only needs enough infrastructure for accounts, an API database, and maps.
 
-| Capability | Recommended Service | Why |
-| --- | --- | --- |
-| Auth | Clerk | Fast Expo/mobile integration, social login, passkeys/MFA path, hosted account UX |
-| Database | Supabase Postgres | Matches PostgreSQL/Prisma direction, managed backups, storage option |
-| Static web/preview | Vercel | Strong preview workflow for prototype/marketing/docs and future web surface |
-| API runtime | Container host first, Vercel only for preview/simple API | NestJS + Prisma + Postgres is more predictable on a long-running runtime than serverless |
-| Payments | Stripe | Donations, subscriptions, receipts, webhook-driven payment confirmation |
-| Maps | Mapbox | Premium mobile map styling and layer control |
-| Errors | Sentry | Mobile and API crash/error monitoring |
-| Analytics | PostHog | Product analytics, feature flags, privacy-aware anonymous tracking |
-| Email | Resend | Transactional email for receipts, account notices, moderation/admin emails |
+| Tier | Capability | Service | Required Now | Why |
+| --- | --- | --- | --- | --- |
+| Core MVP | Database | Supabase Postgres or local Docker Postgres | Yes | Stores users, check-ins, deeds, blessings, donations, and moderation records |
+| Core MVP | Authentication | Clerk | Yes | Handles sign-in, account security, MFA/passkeys later, and hosted account UX |
+| Core MVP | Maps | Mapbox | Yes | Gives the mobile app a premium world-map surface and layer control |
+| Local dev | API guard token | Your own random string | Yes | Lets local/mobile smoke flows call protected development endpoints |
+| Donation mode | Payments | Stripe | Optional | Only needed when donation/subscription checkout is tested |
+| Deployment | Web/API preview | Vercel or container host | Deferred | Only needed when publishing previews or production environments |
+| Operations | Errors | Sentry | Deferred | Add before beta testers or production traffic |
+| Operations | Analytics | PostHog | Deferred | Add after privacy events and consent requirements are finalized |
+| Builds | Mobile cloud builds | Expo/EAS | Deferred | Add when App Store / Google Play builds begin |
+| Email | Transactional email | None for MVP | Deferred | Clerk sends account emails; Stripe sends receipts when payments are enabled |
+
+No email API key is required for the initial MVP. Do not create Resend, SendGrid, Mailgun, or SES keys until Foobow owns direct outbound email such as newsletters, admin notices, or custom receipts.
+
+## Mobile Environment Rule
+
+Expo embeds any variable prefixed with `EXPO_PUBLIC_` into the app bundle. Treat those values as public because users can inspect them from a built mobile app.
+
+Safe in `EXPO_PUBLIC_*`:
+
+- `EXPO_PUBLIC_API_URL`
+- `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `EXPO_PUBLIC_MAPBOX_TOKEN`
+- `EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY`, only when donation mode starts
+- `EXPO_PUBLIC_SENTRY_DSN_MOBILE`, later
+- `EXPO_PUBLIC_POSTHOG_KEY`, later
+
+Never put these in `EXPO_PUBLIC_*`:
+
+- `CLERK_SECRET_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- Supabase service-role keys
+- Database passwords or connection strings
+- CI/deployment tokens such as `EXPO_TOKEN` or `VERCEL_TOKEN`
 
 ## Environment Files
 
-- `.env.example`: tracked source-of-truth template.
-- `.env.local`: local ignored placeholder for the user to fill.
-- `apps/api/.env.example`: API-specific local example retained for the Nest/API package.
+- `.env.example`: tracked source-of-truth template for the repo.
+- `.env.local`: ignored local file for real values on this machine.
+- `apps/api/.env.example`: API-specific local template for the Nest/API package.
 
 Never commit real secret values.
+
+## Required MVP Keys
+
+### Database
+
+`DATABASE_URL`
+
+What it is: the PostgreSQL connection string used by the API and Prisma.
+
+How to get it:
+
+1. For local development, use the value already in `.env.example` and start the local database with `docker compose up -d foobow-postgres`.
+2. For Supabase, create a Supabase project.
+3. Open Supabase dashboard: Project Settings > Database.
+4. Copy the connection string.
+5. Replace the password placeholder with the database password you set.
+
+Mobile note: this is server-only. The Expo app must never receive `DATABASE_URL`.
+
+### API URL
+
+`EXPO_PUBLIC_API_URL`
+
+What it is: the public URL the mobile app calls for Foobow API requests.
+
+How to get it:
+
+1. Local development usually uses `http://localhost:8787`.
+2. On a physical phone, replace localhost with your computer LAN IP, for example `http://192.168.1.20:8787`.
+3. In preview/production, replace it with the deployed API URL.
+
+Mobile note: this is intentionally public.
+
+### Local API Guard
+
+`FOOBOW_DEV_BEARER_TOKEN`
+
+What it is: a local development bearer token for protected API smoke flows.
+
+How to get it:
+
+1. Make up a long random string for local development.
+2. Put the same value in the API runtime env.
+3. When testing manually, send it as `Authorization: Bearer <value>`.
+
+Provider note: this is not an external API key.
+
+### Clerk
+
+`EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`
+
+What it is: the mobile-safe Clerk key used by the Expo app.
+
+How to get it:
+
+1. Create or open a Clerk app.
+2. Open Configure > API Keys.
+3. Copy the publishable key for the environment.
+4. Use the Expo-specific env name shown in Clerk docs.
+
+`CLERK_SECRET_KEY`
+
+What it is: the server-side Clerk key used by the API for token/user verification.
+
+How to get it:
+
+1. In the same Clerk dashboard, copy the secret key from API Keys.
+2. Store it only in `.env.local`, API hosting env vars, or CI secrets.
+
+Mobile note: only the publishable key belongs in the app. The secret key is server-only.
+
+### Auth Settings
+
+`AUTH_PROVIDER`
+
+Recommended value: `clerk`.
+
+`AUTH_ISSUER_URL`
+
+What it is: the Clerk issuer URL used by the API when validating tokens.
+
+How to get it:
+
+1. Open Clerk dashboard.
+2. Use the issuer/domain value from JWT/session token configuration.
+3. Keep the placeholder until real token validation is wired.
+
+`AUTH_AUDIENCE`
+
+Recommended value: `foobow-api`.
+
+Provider note: these are configuration values, not billing-provider API keys.
+
+### Mapbox
+
+`EXPO_PUBLIC_MAPBOX_TOKEN`
+
+What it is: the public token used by the mobile map SDK to load maps, styles, and tiles.
+
+How to get it:
+
+1. Create or open a Mapbox account.
+2. Open Access Tokens.
+3. Start with the default public token or create a new public token for Foobow development.
+4. Keep only the scopes needed for public map display.
+5. Later, restrict the token by mobile app identifiers and production domains.
+
+Mobile note: this token is public. Use restrictions and least-privilege scopes instead of treating it as a secret.
+
+## Optional Donation Mode
+
+Only add these when the donation/subscription flow is actively being tested.
+
+`EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+
+What it is: the mobile-safe Stripe key used to initialize checkout/payment UI.
+
+How to get it:
+
+1. Open Stripe Dashboard in test mode.
+2. Go to Developers > API keys.
+3. Copy the publishable key.
+
+`STRIPE_SECRET_KEY`
+
+What it is: the server-only key used by the API to create checkout sessions, payment intents, or subscription sessions.
+
+How to get it:
+
+1. In Stripe Dashboard test mode, go to Developers > API keys.
+2. Copy the secret key.
+3. Store it only in server env or CI/deployment secrets.
+
+`STRIPE_WEBHOOK_SECRET`
+
+What it is: the server-only signing secret for verifying Stripe webhook events.
+
+When to get it: after a real webhook endpoint exists.
+
+## Deferred Keys
+
+`SENTRY_DSN`
+
+Server error tracking. Add before beta/production.
+
+`EXPO_PUBLIC_SENTRY_DSN_MOBILE`
+
+Mobile error tracking DSN. Safe to expose, but still deferred.
+
+`POSTHOG_KEY` and `EXPO_PUBLIC_POSTHOG_KEY`
+
+Analytics and feature flags. Defer until privacy copy, consent, and event taxonomy are ready.
+
+`EXPO_TOKEN`
+
+Expo/EAS automation token. Only needed for cloud builds and app-store release pipelines.
+
+`VERCEL_TOKEN`
+
+Vercel automation token. Only needed if CI/CD deploys previews or production through Vercel.
 
 ## CLI Status On This Machine
 
@@ -30,152 +215,62 @@ Never commit real secret values.
 | --- | --- | --- |
 | GitHub CLI | Installed | Use for repo/CI/secrets after approval layer permits remote calls |
 | Supabase CLI | Installed | Can link/create/manage once `SUPABASE_ACCESS_TOKEN`, org, region, and DB password are known |
-| Vercel CLI | Installed but blocked in sandbox by local Node realpath permissions | Retry with elevated shell or bundled Node when needed |
-| Clerk CLI | Not installed | Use dashboard or install only if we decide Clerk CLI is required |
-| Expo/EAS CLI | Not confirmed | Install/use when mobile build setup starts |
+| Vercel CLI | Installed but previously blocked in sandbox by local Node realpath permissions | Retry with elevated shell or bundled Node when deployment work starts |
+| Clerk CLI | Not installed | Dashboard is enough for MVP; install only if automation becomes useful |
+| Expo/EAS CLI | Not confirmed | Install/use when mobile cloud build setup starts |
 | Stripe CLI | Not confirmed | Install/use when webhook/payment implementation starts |
 | Sentry CLI | Not confirmed | Install/use when release/source-map upload starts |
 
-## Inputs Needed Before I Can Create Real Resources
+## Inputs Needed Before Creating Real Resources
 
-### Required First
+Required first:
 
-- Final app/domain decision: `foobow.com`, subdomains for API/web, and whether this repo should own them.
-- Primary region/data residency: North America, EU, or other.
-- Environment model: development + production only, or add staging.
+- App/domain decision: `foobow.com`, API subdomain, and whether this repo owns DNS/deployments.
+- Primary region/data residency: North America, EU, or another region.
+- Environment model: development + production, or development + staging + production.
 - Billing owner/account for paid services.
 
-### Clerk
-
-Needed from you:
-
-- Permission to create/use a Clerk app under your Clerk account.
-- Clerk account login available in browser/CLI.
-- App name confirmation: `Foobow`.
-- Required login providers: email, Google, Apple.
-- Redirect URLs and deep link scheme confirmation.
-
-Resources to create:
-
-- Clerk app for development and production.
-- JWT template for `foobow-api`.
-- Webhook endpoint placeholder for user sync.
-
-### Supabase
-
-Needed from you:
+For Supabase:
 
 - Supabase org ID or confirmation to create under the default org.
 - Region.
 - Database password.
-- Project names, recommended: `foobow-dev`, `foobow-prod`.
-- Whether storage buckets should be public or private by default.
+- Project names, recommended: `foobow-dev` and `foobow-prod`.
 
-Resources to create:
+For Clerk:
 
-- Supabase projects.
-- Postgres connection strings.
-- Storage buckets: `avatars`, `journal-attachments`, `campaign-assets`.
-- Optional local/remote migration link.
+- Permission to create/use a Clerk app under your Clerk account.
+- Login providers: email code, Google, Apple, or another set.
+- Mobile redirect/deep-link scheme, recommended draft: `foobow://`.
 
-### Vercel
-
-Needed from you:
-
-- Vercel team/org slug.
-- Confirmation whether Vercel hosts only prototype/web or also API preview.
-- Production domain mapping decision.
-
-Resources to create:
-
-- Vercel project linked to GitHub repo.
-- Preview and production environment variables.
-- Domain mapping when DNS is ready.
-
-### Stripe
-
-Needed from you:
-
-- Stripe account access and live/test mode choice.
-- Donation model: one-time custom amounts, fixed products, or both.
-- Subscription tiers and prices.
-- Business/legal details handled in Stripe dashboard.
-
-Resources to create:
-
-- Donation product/price or checkout configuration.
-- Subscription products/prices.
-- Webhook endpoint and secret.
-
-### Mapbox
-
-Needed from you:
+For Mapbox:
 
 - Mapbox account access.
-- Preferred map style direction: use Mapbox standard style first or create custom calm style.
-- Mobile app identifiers for token restrictions.
+- Whether to start with Mapbox Standard or a custom calm Foobow style.
+- Mobile app identifiers for token restrictions later.
 
-Resources to create:
+For Stripe, only if donation mode starts now:
 
-- Restricted public token.
-- Optional custom style.
+- Stripe account access.
+- One-time donations, fixed donation products, subscriptions, or all of them.
+- Test-mode product/price names.
+- Legal/business details handled in Stripe dashboard.
 
-### Sentry
+## Proposed Setup Order
 
-Needed from you:
-
-- Sentry org slug.
-- Whether to use one project or separate `foobow-api` and `foobow-mobile`.
-
-Resources to create:
-
-- API project.
-- Mobile project.
-- CI auth token for release/source-map upload.
-
-### PostHog
-
-Needed from you:
-
-- Data residency: US or EU.
-- Whether session replay is allowed for this app.
-
-Resources to create:
-
-- PostHog project.
-- Feature flag keys.
-
-### Resend
-
-Needed from you:
-
-- Sending domain.
-- DNS access for SPF/DKIM/DMARC.
-- Sender address, recommended `noreply@foobow.com`.
-
-Resources to create:
-
-- Domain verification.
-- Sending API key.
-
-## Proposed CLI Order
-
-1. Confirm domain, region, and environment model.
-2. Create/link Supabase dev project and apply DB migration/seed.
-3. Create Clerk dev app and collect JWT/webhook settings.
-4. Link Vercel project and load non-secret/public env plus placeholder secrets.
-5. Add Stripe test products/webhooks.
-6. Add Mapbox token.
-7. Add Sentry/PostHog/Resend only after app/API integration begins.
+1. Run locally with Docker Postgres and placeholder Clerk/Mapbox values while UI/API wiring continues.
+2. Create Supabase development project and replace `DATABASE_URL`.
+3. Create Clerk development app and add Clerk keys.
+4. Create Mapbox development token and add mobile token restrictions later.
+5. Add Stripe test keys only when the donation flow needs real checkout.
+6. Add Vercel, Sentry, PostHog, and Expo/EAS tokens only when deployment, telemetry, and build automation become active.
 
 ## Current Recommendation
 
-Do not create production resources yet. Create development resources first:
+Keep the MVP env small:
 
-- `foobow-dev` Supabase project.
-- Clerk development app.
-- Vercel preview project.
-- Stripe test mode resources.
-- Mapbox development token.
+- Required now: Supabase/local Postgres, Clerk, Mapbox, local API token.
+- Optional now: Stripe test keys if we want to validate donation checkout.
+- Not needed now: email provider, Sentry, PostHog, Vercel token, Expo token.
 
-This lets the repo move from local-only smoke tests to real-provider integration without prematurely committing to production billing, domain, or compliance setup.
+This keeps Foobow beginner-friendly while preserving a production path for payments, observability, deployments, and mobile releases.

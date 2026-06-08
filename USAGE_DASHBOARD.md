@@ -1,21 +1,22 @@
 # Foobow AI Team Usage Dashboard
 
-Last updated: 2026-06-08 07:47 America/Toronto
+Last updated: 2026-06-08 08:20 America/Toronto
 
 ## Current Load
 
 | Agent | 5h Window Used | Weekly Used | Requests Today | Est. Tokens In/Out | Load % | Last Task |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Codex 5.5 | ~210 min | Unknown | 25 | ~158k in / ~37k out | 84% | Added external service env/resource contract and CLI input plan |
-| Claude 4.8 | ~6 min | Unknown | 4 | ~4k in / ~2k out | 7% | With user-approved repo access, reviewed production service/env resource checklist |
-| Gemini 3.5 | ~5 min | Unknown | 3 | ~8k in / ~3k out | 9% | Returned resource checklist but also hit Gemini server 429 capacity warning |
+| Codex 5.5 | ~225 min | Unknown | 29 | ~174k in / ~42k out | 88% | Integrated reduced mobile MVP env contract and beginner setup guide |
+| Claude 4.8 | ~8 min | Unknown | 5 | ~5k in / ~2k out | 9% | Assigned env-simplification review; latest CLI call timed out at 120s with no output |
+| Gemini 3.5 | ~7 min | Unknown | 4 | ~9k in / ~3k out | 11% | Assigned env-simplification review; latest CLI call timed out at 120s after prior 429 risk |
 
 ## Assignment Rules
 
 - Claude 4.8: deep planning, architecture, documentation. Use only while under 60% 5h load.
 - Gemini 3.5: high-volume execution, implementation support, creative alternatives. Prefer while under 70% load.
 - Codex 5.5: orchestration, diff review, integration, tests, DevOps, final decisions.
-- Reassign future tasks away from any agent at or above 80% 5h load and record recovery time when visible.
+- Reassign future heavy tasks away from any agent at or above 80% 5h load and record recovery time when visible.
+- When Codex is above 80%, keep Codex focused on orchestration, patch integration, verification, and final acceptance; push research/planning review prompts to Claude/Gemini when the CLI responds.
 
 ## Current Repo State
 
@@ -35,7 +36,7 @@ Last updated: 2026-06-08 07:47 America/Toronto
 - Active automation: `foobow-vibeorchestrator-usage-check` wakes this thread every 30 minutes to recheck usage, rotate agents, inspect task state, and continue safe local sprint work.
 - Plugin setup status: Browser, GitHub, Chrome, Computer Use, Documents, Presentations, Spreadsheets, Canva, and thread/automation tools are available; no extra plugin install is required for the current sprint.
 - Shared catalog status: `shared/foobow-catalog.json` plus `npm run test:catalog` now verifies prototype, mobile, API fixture, and SQL seed product-object alignment.
-- External service setup status: root `.env.example`, ignored `.env.local`, `docs/external-service-resources.md`, and `npm run test:env` now define required Clerk/Supabase/Vercel/Stripe/Mapbox/Sentry/PostHog/Resend resources and keys.
+- External service setup status: root `.env.example`, ignored `.env.local`, `docs/external-service-resources.md`, and `npm run test:env` now define a reduced mobile MVP key set: Supabase/local Postgres, Clerk, Mapbox, API URL, and local dev token. Stripe is optional for donation mode; Vercel/Sentry/PostHog/Expo tokens are deferred; no email API key is required for MVP.
 
 ## Last Sync Notes
 
@@ -54,5 +55,6 @@ Last updated: 2026-06-08 07:47 America/Toronto
 - `npm --prefix apps/api run nest:db-smoke` passed after making Nest controller/service DI explicit for the `tsx` runtime used by local smoke and CI.
 - Remote CI run inspection is temporarily blocked by the Codex approval layer usage limit; local gates and pushes succeeded.
 - External AI policy: user explicitly approved sending Foobow repo context to Claude Code and Gemini; continue avoiding any secret values in prompts.
+- Latest external AI validation: Codex assigned the env/key-reduction review to both Claude Code and Gemini; both CLI calls timed out at 120 seconds with no usable output, so Codex completed the integration locally and recorded the timeout as the current blocker.
 - Latest local gate: `npm run test:all` passed after plugin orchestration and shared catalog changes; mobile/browser/visual gates are green after refreshing the mobile dark community baseline.
 - Rotation note: Codex is now above the 80% threshold; next orchestration pass should avoid assigning new heavy implementation work to Codex until capacity recovers. Claude/Gemini remain available for planning, but Gemini may temporarily fail with server 429 capacity.
