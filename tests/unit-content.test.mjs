@@ -38,6 +38,7 @@ test("ODD, database, API, project plan, task board, and memory docs exist in REA
     "Plugin And AI Orchestration",
     "Shared Catalog Contract",
     "External Service Resources",
+    "Dependency Advisory Watchlist",
     "Memory"
   ]);
 
@@ -159,6 +160,24 @@ test("CI workflow pins current runner and action runtime expectations", async ()
     "Run API DB integration suite",
     "test:db-integration",
     "npm run test:visual"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
+
+test("dependency advisory watchlist tracks accepted moderate transitive risks", async () => {
+  const advisories = await readText("docs/dependency-advisory-watchlist.md");
+  const packageJson = await readText("package.json");
+  const taskBoard = await readText("docs/task-board.md");
+
+  const missing = hasAll(advisories + packageJson + taskBoard, [
+    "test:advisories",
+    "verify-advisory-watchlist.mjs",
+    "npm run test:security",
+    "Do not run `npm audit fix --force`",
+    "prisma -> @prisma/dev -> @hono/node-server",
+    "expo -> @expo/cli -> @expo/config-plugins -> xcode -> uuid",
+    "Dependency advisory watchlist"
   ]);
 
   assert.deepEqual(missing, []);

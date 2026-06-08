@@ -63,6 +63,7 @@
 - Add root external-service `.env.example`, local `.env.local` placeholder, resource setup checklist, and env contract verification gate.
 - Reduce the mobile MVP env contract to Supabase/local Postgres, Clerk, Mapbox, API URL, and local dev token; mark Stripe as optional donation mode and remove any email-provider requirement from MVP setup.
 - Add a consolidated API DB integration suite that runs Prisma write-path and Nest HTTP DB smoke checks locally and in CI, tags each run, and cleans up its own smoke records.
+- Add a Dependency advisory watchlist and verification gate for accepted moderate Prisma/Expo transitive advisories.
 
 ## Next
 
@@ -71,8 +72,7 @@
 - Use CLI to create development resources after user provides provider account inputs: Supabase org/region/password, Clerk app access, Mapbox account, and optional Stripe mode if donation checkout should be tested now.
 - Keep assigning planning/review tasks to Claude/Gemini while Codex is above 80%, but record timeout/429 failures as orchestration blockers and validate their outputs before integration.
 - Expand the API DB integration suite toward isolated throwaway schemas or databases for parallel CI jobs.
-- Monitor Expo SDK 56 moderate transitive audit advisories for safe upstream fixes.
-- Monitor Prisma CLI 7 moderate transitive `@hono/node-server` advisory for safe upstream fixes.
+- Monitor Expo SDK 56 and Prisma CLI 7 moderate transitive audit advisories for safe upstream fixes without force-downgrading the stack.
 
 ## Backlog
 
