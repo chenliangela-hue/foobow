@@ -58,6 +58,8 @@
 - Convert Nest account, check-in, deed action, blessing, report, and donation paths to Prisma-backed persistence with fixture fallback.
 - Add local Prisma write smoke script for account creation, daily check-in, deed completion, blessing/report creation, and donation idempotency.
 - Add CI PostgreSQL service smoke job for schema, seed, Prisma-backed write-path verification, and endpoint-level Nest HTTP verification.
+- Add plugin inventory, AI agent role assignment, usage rotation rules, and VibeOrchestrator heartbeat automation.
+- Add shared catalog contract and verification gate for prototype/mobile/API/SQL seed product-object alignment.
 
 ## Next
 

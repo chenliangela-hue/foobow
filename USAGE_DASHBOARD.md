@@ -1,12 +1,12 @@
 # Foobow AI Team Usage Dashboard
 
-Last updated: 2026-06-07 20:44 America/Toronto
+Last updated: 2026-06-08 00:10 America/Toronto
 
 ## Current Load
 
 | Agent | 5h Window Used | Weekly Used | Requests Today | Est. Tokens In/Out | Load % | Last Task |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| Codex 5.5 | ~160 min | Unknown | 20 | ~118k in / ~26k out | 68% | Added local/CI Postgres smoke coverage, Prisma 7 adapter wiring, Nest Prisma write paths, and endpoint-level Nest DB smoke verification |
+| Codex 5.5 | ~195 min | Unknown | 24 | ~145k in / ~34k out | 79% | Added plugin/AI orchestration setup, heartbeat automation, shared catalog contract, and full local verification |
 | Claude 4.8 | ~4 min | Unknown | 3 | ~2.5k in / minimal out | 4% | Auth verified through Claude.ai Pro OAuth; minimal `claude -p` orchestration call now succeeds; repo-content prompt blocked by approval policy |
 | Gemini 3.5 | ~3 min | Unknown | 2 | ~5k in / ~1.5k out | 6% | Acknowledged executor readiness and produced full project plan + sprint backlog + Kanban |
 
@@ -15,7 +15,7 @@ Last updated: 2026-06-07 20:44 America/Toronto
 - Claude 4.8: deep planning, architecture, documentation. Use only while under 60% 5h load.
 - Gemini 3.5: high-volume execution, implementation support, creative alternatives. Prefer while under 70% load.
 - Codex 5.5: orchestration, diff review, integration, tests, DevOps, final decisions.
-- Reassign future tasks away from any agent at or above 80% 5h load.
+- Reassign future tasks away from any agent at or above 80% 5h load and record recovery time when visible.
 
 ## Current Repo State
 
@@ -32,6 +32,9 @@ Last updated: 2026-06-07 20:44 America/Toronto
 - Local PostgreSQL now runs through `docker compose up -d foobow-postgres` on port `55432`; schema/seed have been applied and verified locally.
 - Nest Prisma write paths are now implemented for account bootstrap, daily check-in, deed action plus karma event, blessings, reports, and donation idempotency.
 - CI now includes an Ubuntu PostgreSQL service job that applies SQL migration/seed and runs both direct Prisma and endpoint-level Nest DB smoke scripts.
+- Active automation: `foobow-vibeorchestrator-usage-check` wakes this thread every 30 minutes to recheck usage, rotate agents, inspect task state, and continue safe local sprint work.
+- Plugin setup status: Browser, GitHub, Chrome, Computer Use, Documents, Presentations, Spreadsheets, Canva, and thread/automation tools are available; no extra plugin install is required for the current sprint.
+- Shared catalog status: `shared/foobow-catalog.json` plus `npm run test:catalog` now verifies prototype, mobile, API fixture, and SQL seed product-object alignment.
 
 ## Last Sync Notes
 
@@ -49,3 +52,6 @@ Last updated: 2026-06-07 20:44 America/Toronto
 - `npm --prefix apps/api run prisma:smoke` passed against local Postgres after aligning the SQL migration with Prisma donation payment provider columns.
 - `npm --prefix apps/api run nest:db-smoke` passed after making Nest controller/service DI explicit for the `tsx` runtime used by local smoke and CI.
 - Remote CI run inspection is temporarily blocked by the Codex approval layer usage limit; local gates and pushes succeeded.
+- External AI policy: Claude/Gemini may be used for non-sensitive planning, but private repo context should not be sent externally without explicit user approval.
+- Latest local gate: `npm run test:all` passed after plugin orchestration and shared catalog changes; mobile/browser/visual gates are green after refreshing the mobile dark community baseline.
+- Rotation note: Codex is now near the 80% threshold; next orchestration pass should prefer Claude/Gemini for non-sensitive planning or pause external assignment until Codex capacity recovers.

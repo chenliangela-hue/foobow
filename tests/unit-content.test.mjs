@@ -35,7 +35,52 @@ test("ODD, database, API, project plan, task board, and memory docs exist in REA
     "Localization Workflow",
     "Mobile Release Checklist",
     "Node Readiness",
+    "Plugin And AI Orchestration",
+    "Shared Catalog Contract",
     "Memory"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
+
+test("plugin and AI orchestration docs define available tools, roles, rotation, and automation", async () => {
+  const orchestration = await readText("docs/plugin-and-ai-orchestration.md");
+  const dashboard = await readText("USAGE_DASHBOARD.md");
+
+  const missing = hasAll(orchestration + dashboard, [
+    "Browser",
+    "GitHub",
+    "Computer Use",
+    "Documents",
+    "Presentations",
+    "Spreadsheets",
+    "Canva",
+    "Codex 5.5",
+    "Claude 4.8",
+    "Gemini 3.5",
+    "80%",
+    "foobow-vibeorchestrator-usage-check",
+    "External AI"
+  ]);
+
+  assert.deepEqual(missing, []);
+});
+
+test("shared catalog contract protects cross-surface product sample data", async () => {
+  const contract = await readText("docs/shared-catalog-contract.md");
+  const catalog = await readText("shared/foobow-catalog.json");
+  const packageJson = await readText("package.json");
+
+  const missing = hasAll(contract + catalog + packageJson, [
+    "test:catalog",
+    "verify-shared-catalog.mjs",
+    "prototypeId",
+    "apiPublicId",
+    "seedSlug",
+    "release-fish",
+    "deed_release_fish",
+    "blessing_001",
+    "operating-support"
   ]);
 
   assert.deepEqual(missing, []);

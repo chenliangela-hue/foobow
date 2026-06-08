@@ -17,14 +17,14 @@ window.FOOBOW_DATA = {
     },
     blessings: [
       {
-        id: "vancouver-path",
-        body: "Someone in Vancouver lit a path home for a stranger.",
+        id: "blessing_001",
+        body: "May your next step feel lighter than the last.",
         reaction: "Bless",
         reported: false
       },
       {
-        id: "wuhan-ripple",
-        body: "Someone in Wuhan released a fish and wrote: let worry return to water.",
+        id: "blessing_002",
+        body: "For anyone carrying guilt today: one kind action is still real.",
         reaction: "Support",
         reported: false
       }

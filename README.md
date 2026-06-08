@@ -85,6 +85,8 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [Localization Workflow](docs/localization-workflow.md)
 - [Mobile Release Checklist](docs/mobile-release-checklist.md)
 - [Node Readiness](docs/node-readiness.md)
+- [Plugin And AI Orchestration](docs/plugin-and-ai-orchestration.md)
+- [Shared Catalog Contract](docs/shared-catalog-contract.md)
 - [Memory](memory.md)
 
 ## Verification

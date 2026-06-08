@@ -105,6 +105,6 @@ export const mapSpots: MapSpot[] = [
 ];
 
 export const initialBlessings = [
-  "Someone in Vancouver lit a path home for a stranger.",
-  "Someone in Wuhan released a fish and wrote: let worry return to water."
+  "May your next step feel lighter than the last.",
+  "For anyone carrying guilt today: one kind action is still real."
 ];

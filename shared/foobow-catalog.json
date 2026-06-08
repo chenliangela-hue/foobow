@@ -1,0 +1,91 @@
+{
+  "version": "2026-06-08",
+  "categories": [
+    { "id": "all", "label": "All" },
+    { "id": "animals", "label": "Animals" },
+    { "id": "elders", "label": "Elders" },
+    { "id": "environment", "label": "Nature" },
+    { "id": "support", "label": "Blessings" }
+  ],
+  "deeds": [
+    {
+      "prototypeId": "release-fish",
+      "apiPublicId": "deed_release_fish",
+      "seedSlug": "release-fish",
+      "category": "animals",
+      "title": "Virtual \u653e\u751f",
+      "points": 5
+    },
+    {
+      "prototypeId": "elder-crosswalk",
+      "apiPublicId": "deed_elder_crossing",
+      "seedSlug": "elder-crosswalk",
+      "category": "elders",
+      "title": "\u6276\u8001\u5976\u5976\u8fc7\u9a6c\u8def",
+      "points": 5
+    },
+    {
+      "prototypeId": "anonymous-blessing",
+      "apiPublicId": "deed_send_blessing",
+      "seedSlug": "anonymous-blessing",
+      "category": "support",
+      "title": "Anonymous blessing",
+      "points": 2
+    },
+    {
+      "prototypeId": "coastline-cleanup",
+      "apiPublicId": "deed_clean_beach",
+      "seedSlug": "coastline-cleanup",
+      "category": "environment",
+      "title": "Clean a coastline",
+      "points": 4
+    }
+  ],
+  "mapSpots": [
+    {
+      "prototypeId": "east-lake",
+      "apiPublicId": "spot_east_lake",
+      "seedSlug": "east-lake-wuhan",
+      "category": "animals",
+      "name": "East Lake, Wuhan"
+    },
+    {
+      "prototypeId": "toronto-crosswalk",
+      "apiPublicId": "spot_toronto_crosswalk",
+      "seedSlug": "toronto-crosswalk",
+      "category": "elders",
+      "name": "Toronto crosswalk"
+    },
+    {
+      "prototypeId": "amazon-grove",
+      "apiPublicId": "spot_amazon_restoration_grove",
+      "seedSlug": "amazon-restoration-grove",
+      "category": "environment",
+      "name": "Amazon restoration grove"
+    },
+    {
+      "prototypeId": "night-corridor",
+      "apiPublicId": "spot_night_walk_corridor",
+      "seedSlug": "night-walk-corridor",
+      "category": "support",
+      "name": "Night walk corridor"
+    }
+  ],
+  "blessings": [
+    {
+      "id": "blessing_001",
+      "body": "May your next step feel lighter than the last."
+    },
+    {
+      "id": "blessing_002",
+      "body": "For anyone carrying guilt today: one kind action is still real."
+    }
+  ],
+  "donationCampaigns": [
+    {
+      "apiPublicId": "campaign_operating_support",
+      "seedSlug": "operating-support",
+      "name": "Foobow operating support"
+    }
+  ]
+}
