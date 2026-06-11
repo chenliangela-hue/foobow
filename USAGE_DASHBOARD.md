@@ -1,6 +1,6 @@
 # Foobow AI Team Usage Dashboard
 
-Last updated: 2026-06-11 12:55 America/Toronto
+Last updated: 2026-06-11 13:05 America/Toronto
 
 ## Current Load
 
@@ -78,3 +78,4 @@ Last updated: 2026-06-11 12:55 America/Toronto
 - Latest local gates: `npm test` passed with 25/25 tests; `npm run test:api`, `npm run test:env`, and `npm run test:advisories` passed elevated after sandbox EPERM; `database/migrations/0002_focus_sessions.sql` applied cleanly to local `foobow-postgres`; `npm --prefix apps/api run test:db-integration` passed against local Postgres.
 - Provider-backed PA status: not runnable yet because real Clerk, Supabase/Postgres connection values, and Mapbox token are not configured. Current browser PA remains valid for prototype flows, but authenticated provider-backed PA is blocked on credentials.
 - Latest CI fix: run `27364694883` failed in `api-db-smoke` because CI applied only `0001_initial.sql` while Prisma expected `0002_focus_sessions.sql`. The workflow now applies `0002_focus_sessions.sql` before seed data, and `npm test` plus local `npm --prefix apps/api run test:db-integration` pass after the fix.
+- Latest remote CI gate: run `27364947871` for `b5b0198 Apply focus session migration in CI` completed successfully.
