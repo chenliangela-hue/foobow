@@ -31,6 +31,6 @@ The next production sprint depends on provider inputs or local environment chang
 
 - Supabase organization, region, project password, and database URL.
 - Clerk application keys and redirect settings.
-- Mapbox public token and preferred map style.
+- Map provider decision. Default MVP path is OpenStreetMap-derived tiles with MapLibre/Leaflet; Mapbox is optional later if paid/premium styling is approved.
 - Optional Stripe donation mode details.
 - Default local Node upgrade to `20.19.4+`, or consistently using the bundled Node 24 runtime for Prisma.

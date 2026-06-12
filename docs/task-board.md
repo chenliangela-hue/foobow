@@ -61,7 +61,7 @@
 - Add plugin inventory, AI agent role assignment, usage rotation rules, and VibeOrchestrator heartbeat automation.
 - Add shared catalog contract and verification gate for prototype/mobile/API/SQL seed product-object alignment.
 - Add root external-service `.env.example`, local `.env.local` placeholder, resource setup checklist, and env contract verification gate.
-- Reduce the mobile MVP env contract to Supabase/local Postgres, Clerk, Mapbox, API URL, and local dev token; mark Stripe as optional donation mode and remove any email-provider requirement from MVP setup.
+- Reduce the mobile MVP env contract to Supabase/local Postgres, Clerk, OSM/MapLibre map config, API URL, and local dev token; mark Stripe as optional donation mode and remove any email-provider requirement from MVP setup.
 - Add a consolidated API DB integration suite that runs Prisma write-path and Nest HTTP DB smoke checks locally and in CI, tags each run, and cleans up its own smoke records.
 - Add a Dependency advisory watchlist and verification gate for accepted moderate Prisma/Expo transitive advisories.
 - Add durable `AGENTS.md` rules for Codex, Claude Code, and Gemini usage rotation.
@@ -69,16 +69,16 @@
 - Add Calm Ritual feature spec for optional ambient focus sessions around symbolic good deeds.
 - Prototype the Calm Ritual flow in the static prototype and Expo shell: optional soundscape, focus timer, guided steps, accessible completion, quiet progress, and reduced-motion-safe copy.
 - Add focus-session API/database draft: OpenAPI paths, SQL migration, Prisma models, idempotent completion, private reflections, and contract tests.
-- Add provider CLI setup plan for Supabase, Clerk, Mapbox, optional Stripe, and provider-backed PA gates.
+- Add provider CLI setup plan for Supabase, Clerk, OSM/MapLibre maps, optional Stripe, and provider-backed PA gates.
 - Add `.nvmrc` so nvm-compatible shells standardize Node on `20.19.4`.
 
 ## Next
 
 - Upgrade default local Node to `20.19.4+`; until then, continue running Prisma commands with bundled Node `24.14.0`.
 - Add production authentication provider once account/session requirements and credentials are selected.
-- Use CLI to create development resources after user provides provider account inputs: Supabase org/region/password, Clerk app access, Mapbox account, and optional Stripe mode if donation checkout should be tested now.
+- Use CLI to create development resources after user provides provider account inputs: Supabase org/region/password, Clerk app access, and optional Stripe mode if donation checkout should be tested now. Mapbox is no longer required for MVP.
 - Keep assigning planning/review tasks to Claude/Gemini while Codex is above 80%, record timeout/429 failures as orchestration blockers, and validate their outputs before integration.
-- Run provider-backed PA once Clerk, Supabase/Postgres, and Mapbox values are available and wired.
+- Run provider-backed PA once Clerk, Supabase/Postgres, and OSM/MapLibre map values are available and wired.
 - Expand the API DB integration suite toward isolated throwaway schemas or databases for parallel CI jobs.
 - Monitor Expo SDK 56 and Prisma CLI 7 moderate transitive audit advisories for safe upstream fixes without force-downgrading the stack.
 

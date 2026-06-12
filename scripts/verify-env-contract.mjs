@@ -14,7 +14,9 @@ const requiredMvpKeys = [
   "EXPO_PUBLIC_API_URL",
   "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY",
   "CLERK_SECRET_KEY",
-  "EXPO_PUBLIC_MAPBOX_TOKEN"
+  "EXPO_PUBLIC_MAP_PROVIDER",
+  "EXPO_PUBLIC_MAP_TILE_URL",
+  "EXPO_PUBLIC_MAP_ATTRIBUTION"
 ];
 
 // These keys can be commented out or deferred
@@ -22,6 +24,7 @@ const deferredKeys = [
   "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY",
   "STRIPE_SECRET_KEY",
   "STRIPE_WEBHOOK_SECRET",
+  "EXPO_PUBLIC_MAPBOX_TOKEN",
   "SENTRY_DSN",
   "EXPO_PUBLIC_SENTRY_DSN_MOBILE",
   "POSTHOG_KEY",
@@ -40,7 +43,7 @@ for (const key of deferredKeys) {
   assert.match(envExample, new RegExp(`^#?\\s*${key}=`, "m"), `.env.example missing DEFERRED key placeholder: ${key}`);
 }
 
-for (const service of ["Clerk", "Supabase", "Mapbox"]) {
+for (const service of ["Clerk", "Supabase", "OpenStreetMap", "MapLibre"]) {
   assert.ok(docs.includes(service), `external service docs missing ${service}`);
 }
 

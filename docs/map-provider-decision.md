@@ -6,15 +6,17 @@ The map is Foobow's primary exploration surface. It must support calm discovery,
 
 ## Provider Shortlist
 
-- Mapbox: best polished mobile SDKs, styled maps, performant clustering, and enterprise support.
+- OpenStreetMap with MapLibre/Leaflet: no credit-card-gated account for the MVP, strong open ecosystem, styling control, and lower vendor lock-in. Public OSM tiles are acceptable only for light development/prototype use with attribution, caching, and policy compliance.
+- Mapbox: best polished mobile SDKs, styled maps, performant clustering, and enterprise support, but account setup may require billing information.
 - Google Maps Platform: strongest global POI familiarity and geocoding ecosystem, but visual differentiation and cost control require care.
-- OpenStreetMap with MapLibre: strongest open ecosystem and styling control, lower vendor lock-in, but requires more operational ownership for tiles/geocoding.
 
 ## Recommended MVP Direction
 
-Use Mapbox for the first production mobile MVP if budget allows. It fits the premium visual direction and reduces implementation risk for clustering, camera control, offline-adjacent behavior, and polished thematic layers.
+Use OpenStreetMap-derived tiles with MapLibre/Leaflet for the first no-credit-card MVP. This lets Foobow keep moving without Mapbox billing friction while preserving an open, popular map stack.
 
-Use OpenStreetMap plus MapLibre if vendor independence and cost control outweigh launch speed. This is a strong fallback for web/prototype expansion, but mobile production will need more tile, caching, and geocoding decisions.
+Use Mapbox later only if budget allows and the app needs premium styled maps, native clustering support, or enterprise-grade hosted tile reliability.
+
+Important constraint: OpenStreetMap data is free, but the public `tile.openstreetmap.org` servers are best-effort community infrastructure. Production traffic should use a compliant hosted OSM-derived tile provider or self-hosted tiles before launch.
 
 ## Foobow Map Layers
 
@@ -41,6 +43,6 @@ Use OpenStreetMap plus MapLibre if vendor independence and cost control outweigh
 
 ## Open Decisions
 
-- Final provider contract and API key ownership.
+- Final production tile host if public OSM tiles become too limited for beta/production traffic.
 - Whether map tiles are cached for low-connectivity use.
 - Whether public user-created spots are available at MVP or held for post-launch.

@@ -8,7 +8,8 @@ Foobow does not need every SaaS account on day one. The mobile MVP only needs en
 | --- | --- | --- | --- | --- |
 | Core MVP | Database | Supabase Postgres or local Docker Postgres | Yes | Stores users, check-ins, deeds, blessings, donations, and moderation records |
 | Core MVP | Authentication | Clerk | Yes | Handles sign-in, account security, MFA/passkeys later, and hosted account UX |
-| Core MVP | Maps | Mapbox | Yes | Gives the mobile app a premium world-map surface and layer control |
+| Core MVP | Maps | OpenStreetMap-derived tiles with MapLibre/Leaflet | Yes | Gives the mobile app a popular keyless map path for MVP exploration |
+| Later option | Premium maps | Mapbox or another hosted tile provider | Optional | Add only if premium styling, SLA-backed tiles, or managed native SDK features justify billing |
 | Local dev | API guard token | Your own random string | Yes | Lets local/mobile smoke flows call protected development endpoints |
 | Donation mode | Payments | Stripe | Optional | Only needed when donation/subscription checkout is tested |
 | Deployment | Web/API preview | Vercel or container host | Deferred | Only needed when publishing previews or production environments |
@@ -27,8 +28,11 @@ Safe in `EXPO_PUBLIC_*`:
 
 - `EXPO_PUBLIC_API_URL`
 - `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`
-- `EXPO_PUBLIC_MAPBOX_TOKEN`
+- `EXPO_PUBLIC_MAP_PROVIDER`
+- `EXPO_PUBLIC_MAP_TILE_URL`
+- `EXPO_PUBLIC_MAP_ATTRIBUTION`
 - `EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY`, only when donation mode starts
+- `EXPO_PUBLIC_MAPBOX_TOKEN`, only if Mapbox is chosen later
 - `EXPO_PUBLIC_SENTRY_DSN_MOBILE`, later
 - `EXPO_PUBLIC_POSTHOG_KEY`, later
 
@@ -141,21 +145,36 @@ Recommended value: `foobow-api`.
 
 Provider note: these are configuration values, not billing-provider API keys.
 
-### Mapbox
+### Maps
 
-`EXPO_PUBLIC_MAPBOX_TOKEN`
+`EXPO_PUBLIC_MAP_PROVIDER`
 
-What it is: the public token used by the mobile map SDK to load maps, styles, and tiles.
+Recommended value: `osm`.
+
+`EXPO_PUBLIC_MAP_TILE_URL`
+
+Recommended development value: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`.
+
+`EXPO_PUBLIC_MAP_ATTRIBUTION`
+
+Recommended value: `OpenStreetMap contributors`.
+
+What it is: public map configuration for the mobile/web map surface.
 
 How to get it:
 
-1. Create or open a Mapbox account.
-2. Open Access Tokens.
-3. Start with the default public token or create a new public token for Foobow development.
-4. Keep only the scopes needed for public map display.
-5. Later, restrict the token by mobile app identifiers and production domains.
+1. Use the defaults in `.env.example` for local MVP development.
+2. Keep OpenStreetMap attribution visible on the map.
+3. Follow OpenStreetMap tile policy: identify the app, cache tiles, avoid bulk download/offline prefetch, and be ready to switch tile URLs without an app rebuild.
+4. Before beta/production traffic, choose a compliant hosted OSM-derived tile provider or self-host tiles if usage exceeds light prototype traffic.
 
-Mobile note: this token is public. Use restrictions and least-privilege scopes instead of treating it as a secret.
+Mobile note: these values are public. Do not use the public OSM tile service for heavy production traffic.
+
+Optional later:
+
+`EXPO_PUBLIC_MAPBOX_TOKEN`
+
+Add this only if Foobow chooses Mapbox or another paid/premium provider later. Mapbox may require billing details, so it is no longer required for the MVP.
 
 ## Optional Donation Mode
 
@@ -217,6 +236,7 @@ Vercel automation token. Only needed if CI/CD deploys previews or production thr
 | Supabase CLI | Installed | Can link/create/manage once `SUPABASE_ACCESS_TOKEN`, org, region, and DB password are known |
 | Vercel CLI | Installed but previously blocked in sandbox by local Node realpath permissions | Retry with elevated shell or bundled Node when deployment work starts |
 | Clerk CLI | Not installed | Dashboard is enough for MVP; install only if automation becomes useful |
+| Map CLI | Not needed for default MVP | OSM/MapLibre/Leaflet path uses public config; choose hosted tile automation only when production traffic needs it |
 | Expo/EAS CLI | Not confirmed | Install/use when mobile cloud build setup starts |
 | Stripe CLI | Not confirmed | Install/use when webhook/payment implementation starts |
 | Sentry CLI | Not confirmed | Install/use when release/source-map upload starts |
@@ -243,11 +263,11 @@ For Clerk:
 - Login providers: email code, Google, Apple, or another set.
 - Mobile redirect/deep-link scheme, recommended draft: `foobow://`.
 
-For Mapbox:
+For maps:
 
-- Mapbox account access.
-- Whether to start with Mapbox Standard or a custom calm Foobow style.
-- Mobile app identifiers for token restrictions later.
+- Confirmation to use the default OSM/MapLibre path for MVP.
+- Whether to choose a hosted OSM-derived tile provider before beta/production.
+- Mobile app identifiers only if a token-restricted provider is later selected.
 
 For Stripe, only if donation mode starts now:
 
@@ -258,10 +278,10 @@ For Stripe, only if donation mode starts now:
 
 ## Proposed Setup Order
 
-1. Run locally with Docker Postgres and placeholder Clerk/Mapbox values while UI/API wiring continues.
+1. Run locally with Docker Postgres, Clerk values, and default OSM map values while UI/API wiring continues.
 2. Create Supabase development project and replace `DATABASE_URL`.
 3. Create Clerk development app and add Clerk keys.
-4. Create Mapbox development token and add mobile token restrictions later.
+4. Keep the keyless OSM/MapLibre map path for MVP; select a production tile host only when traffic requires it.
 5. Add Stripe test keys only when the donation flow needs real checkout.
 6. Add Vercel, Sentry, PostHog, and Expo/EAS tokens only when deployment, telemetry, and build automation become active.
 
@@ -269,7 +289,7 @@ For Stripe, only if donation mode starts now:
 
 Keep the MVP env small:
 
-- Required now: Supabase/local Postgres, Clerk, Mapbox, local API token.
+- Required now: Supabase/local Postgres, Clerk, OSM/MapLibre map config, local API token.
 - Optional now: Stripe test keys if we want to validate donation checkout.
 - Not needed now: email provider, Sentry, PostHog, Vercel token, Expo token.
 

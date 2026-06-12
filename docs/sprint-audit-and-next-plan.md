@@ -10,7 +10,7 @@ The current working tree was clean at the latest audit. The latest checked GitHu
 
 ## Current Blockers
 
-- Provider inputs are not available yet: Supabase organization/region/password, Clerk app keys, Mapbox token/style, and optional Stripe mode.
+- Provider inputs are partly available: Clerk app keys were provided but the pasted secret should be rotated; Supabase organization/region/password are still needed. Mapbox token/style is no longer required for MVP because Foobow can use the OSM/MapLibre path.
 - The default local Node version is still recorded below the project baseline; Prisma work should use bundled Node 24 or the system Node should be upgraded to `20.19.4+`.
 - Claude Code and Gemini are low usage in the dashboard, but prior health checks timed out. They can receive future work only after short health checks succeed.
 - Codex is recorded above the 80% rotation threshold, so Codex should orchestrate and verify rather than take heavy implementation tasks.
@@ -57,7 +57,7 @@ External AI prompts must exclude secrets and should contain only scoped repo con
 2. Add a prototype or mobile-shell screen for optional ambient focus before completing a deed.
 3. Add backend/API contract fields for focus session completion if product scope accepts it.
 4. Run Claude Code and Gemini health checks; if healthy, assign each one non-secret review work and validate their output locally.
-5. Resolve production setup blockers: choose provider accounts, fill `.env.local`, create Supabase/Clerk/Mapbox resources, and upgrade or standardize Node.
+5. Resolve production setup blockers: choose provider accounts, fill `.env.local`, create Supabase/Clerk resources, keep OSM/MapLibre maps for MVP, and upgrade or standardize Node.
 
 ## Acceptance Criteria For Next Sprint
 
