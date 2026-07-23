@@ -93,6 +93,23 @@ test("keyboard users can reach controls and activate deed cards", async ({ page 
   await expect(page.locator("#ritualTitle")).toHaveText("Clean a coastline");
 });
 
+test("senior readability mode enlarges type and persists", async ({ page }) => {
+  const toggle = page.getByRole("button", { name: "Toggle senior readability mode" });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+
+  await toggle.click();
+  await expect(page.locator("body")).toHaveClass(/senior-mode/);
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  const fontSize = await page.evaluate(() => getComputedStyle(document.body).fontSize);
+  expect(Number.parseFloat(fontSize)).toBeGreaterThan(16);
+
+  await page.reload();
+  await expect(page.locator("body")).toHaveClass(/senior-mode/);
+
+  await page.getByRole("button", { name: "Toggle senior readability mode" }).click();
+  await expect(page.locator("body")).not.toHaveClass(/senior-mode/);
+});
+
 test("core design tokens meet WCAG contrast thresholds", async ({ page }) => {
   const ratios = await page.evaluate(() => {
     const styles = getComputedStyle(document.documentElement);

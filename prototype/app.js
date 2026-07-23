@@ -396,6 +396,8 @@ function renderSettings() {
 
 function renderAll() {
   document.body.classList.toggle("dark", state.theme === "dark");
+  document.body.classList.toggle("senior-mode", Boolean(state.settings.seniorMode));
+  document.getElementById("seniorToggle").setAttribute("aria-pressed", String(Boolean(state.settings.seniorMode)));
   applyTranslations();
   renderStats();
   renderCategoryFilters();
@@ -469,6 +471,12 @@ document.getElementById("blessingForm").addEventListener("submit", (event) => {
 
 document.getElementById("themeToggle").addEventListener("click", () => {
   state.theme = state.theme === "dark" ? "light" : "dark";
+  saveState();
+  renderAll();
+});
+
+document.getElementById("seniorToggle").addEventListener("click", () => {
+  state.settings.seniorMode = !state.settings.seniorMode;
   saveState();
   renderAll();
 });

@@ -16,7 +16,8 @@ window.FOOBOW_DATA = {
     settings: {
       privateJournal: true,
       quietRanking: true,
-      donationReceipts: true
+      donationReceipts: true,
+      seniorMode: false
     },
     blessings: [
       {

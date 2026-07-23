@@ -69,6 +69,9 @@ This file is the project-local memory. Keep it current whenever product directio
 - Implemented mobile localization per `docs/localization-workflow.md` using `expo-localization` + `i18n-js` (standard Expo stack): `src/i18n/translations.ts` holds grouped stable keys for `en` and `zh-Hans` (ported from the prototype dictionary plus new mobile strings), `src/i18n/LocaleContext.tsx` resolves device locale with a persisted System/English/中文 override, and the Profile screen gained a language selector. All components now render through `t()`; accessibility labels are translated alongside visible labels.
 - CI `npm ci` failed after the audit fix because the mobile lockfile lost the `react-native-worklets` entry; re-synced with `npm install` and validated all three lockfiles with `npm ci --dry-run`. Lesson: after any `npm audit fix`, validate lockfiles the same way CI installs them.
 
+- CI is fully green again as of commit `2ee0b72` (verify, api-db-smoke, and visual-regression jobs all pass).
+- Added the missing senior-mode toggle to the prototype header (`Aa` icon button with `aria-pressed`), wired to persisted `settings.seniorMode` and `body.senior-mode`, making the previously dead `.senior-mode` CSS reachable and matching the mobile toggle. Added a browser PA test for enlarge/persist/restore behavior (12 PA tests now) and regenerated the today-screen visual baselines, which had been within diff tolerance but not showing the new button — note `--update-snapshots` skips rewriting snapshots that pass within `maxDiffPixelRatio`; delete the files first to force a truthful refresh.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.
