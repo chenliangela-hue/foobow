@@ -42,6 +42,17 @@ npm run test:mobile
 
 The mobile shell currently ports the prototype's core flows: Today, Map, Deeds, Community, Profile, category filters, symbolic karma, safe donation copy, privacy settings, and low-pressure blessing interactions. Expo Router is installed and the tab routes live under `apps/mobile/app/(tabs)`.
 
+The app follows an MVC-style modular architecture under `apps/mobile/src`:
+
+- `theme/` — zen design tokens (light and dark palettes) and a `ThemeProvider` that follows the system color scheme.
+- `i18n/` — `en` and `zh-Hans` string catalogs with a device-driven locale and a persisted in-app language override.
+- `types/` — view models plus snake_case wire DTOs mirroring the OpenAPI contract.
+- `services/` — typed API client (env-driven base URL, offline fallback to bundled sample data), DTO mappers, and AsyncStorage persistence.
+- `controllers/` — hook-based controllers that hydrate from the API and keep view components presentation-only.
+- `components/` — per-screen view components with 48dp+ touch targets and an optional senior high-readability mode.
+
+Configure the API endpoint with `EXPO_PUBLIC_API_URL` (defaults to `http://localhost:8787`); authed dev writes use the optional `EXPO_PUBLIC_FOOBOW_DEV_TOKEN`. See `.env.example`.
+
 ## API App
 
 The API scaffold lives in:
