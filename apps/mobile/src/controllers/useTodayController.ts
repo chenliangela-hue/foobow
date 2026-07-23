@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { apiService, moods } from "../services/foobowService";
+import { storageKeys, usePersistentState } from "../services/storageService";
 import { MoodOption } from "../types";
 
 export function useTodayController(
@@ -7,8 +8,8 @@ export function useTodayController(
   initialStreak = 7
 ) {
   const [selectedMood, setSelectedMood] = useState<MoodOption>(moods[0]);
-  const [streak, setStreak] = useState(initialStreak);
-  const [journal, setJournal] = useState("");
+  const [streak, setStreak] = usePersistentState(storageKeys.streak, initialStreak);
+  const [journal, setJournal] = usePersistentState(storageKeys.journal, "");
 
   const completeDaily = () => {
     if (onKarmaAdd) {

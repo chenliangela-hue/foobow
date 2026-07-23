@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 import { CategoryFilters } from "../common/CategoryFilters";
 import { CategoryId, MapSpot } from "../../types";
 
@@ -20,13 +21,17 @@ export function MapView({
   visibleSpots,
   seniorMode
 }: MapViewProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
+  const eyebrowColor = { color: currentColors.muted };
+  const headingColor = { color: currentColors.ink };
 
   return (
     <View style={styles.container}>
       <View style={[styles.mapStage, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
-        <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>World map</Text>
-        <Text style={[styles.title, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
+        <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+          World map
+        </Text>
+        <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
           Explore places that need a little light.
         </Text>
         {visibleSpots.map((spot) => {
@@ -60,13 +65,13 @@ export function MapView({
       />
 
       <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
-        <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>
+        <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
           {selectedSpot.categoryLabel}
         </Text>
-        <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
           {selectedSpot.name}
         </Text>
-        <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+        <Text style={[styles.body, eyebrowColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
           {selectedSpot.description}
         </Text>
       </View>
@@ -88,7 +93,6 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: typography.sizes.eyebrow,
-    color: colors.light.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8,
     marginBottom: layout.spacing.xs
@@ -96,7 +100,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: typography.sizes.title,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif,
     maxWidth: "80%"
   },
@@ -122,12 +125,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: typography.sizes.title,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   body: {
     fontSize: typography.sizes.body,
-    color: colors.light.muted,
     lineHeight: 22
   }
 });

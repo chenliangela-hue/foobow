@@ -11,9 +11,9 @@ for (const expected of [
   "Do not run `npm audit fix --force`",
   "prisma -> @prisma/dev -> @hono/node-server",
   "repeated-slash",
+  "Resolved 2026-07-23",
   "expo -> @expo/cli -> @expo/config-plugins -> xcode -> uuid",
   "buffer bounds",
-  "Monitor Prisma upstream",
   "Monitor Expo SDK upstream"
 ]) {
   assert.ok(docs.includes(expected), `dependency advisory watchlist missing: ${expected}`);

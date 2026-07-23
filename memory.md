@@ -58,6 +58,14 @@ This file is the project-local memory. Keep it current whenever product directio
 - Deleted dead `apps/mobile/src/foobowData.ts` and repointed `scripts/verify-shared-catalog.mjs` at `src/services/foobowService.ts`, which now holds the single mobile copy of the shared catalog sample data.
 - Verified end-to-end against the running contract runtime on `:8787`: GET deed-types/map-spots/blessings return items; POST checkins/deed-actions/blessings return 201 with the dev bearer token. Added a root contract test for the mobile service layer (root suite now 26 tests).
 
+## 2026-07-23 (overnight autonomous session)
+
+- CI failed after the refactor push on the security audit gates (new upstream advisories since the last green run on 2026-06-12). Fixed API advisories via non-breaking `npm audit fix` (0 vulnerabilities now) and mobile high advisories the same way (`brace-expansion` 5.0.7, `js-yaml` 4.3.0, `shell-quote` 1.10.0); only the accepted moderate Expo `uuid` chain remains. Note: local npm advisory data lagged CI's — always treat CI as the audit source of truth.
+- Moved the resolved Prisma/`@hono/node-server` advisory to a Resolved section in the watchlist doc and updated its verification script.
+- Implemented dark mode: new `src/theme/ThemeContext.tsx` (`ThemeProvider` + `useThemeColors` driven by `useColorScheme`), converted all 10 view components and App shell off hardcoded `colors.light`; status bar flips with the scheme. The dark palette already existed in `theme.ts`.
+- Implemented local persistence with `@react-native-async-storage/async-storage` 2.2.0 (installed via `npx expo install`): `src/services/storageService.ts` provides versioned keys, best-effort JSON storage, `clearStoredProfile`, and a `usePersistentState` hook that hydrates before it ever writes. Karma, streak, journal, quiet mode, private journal, and senior mode now survive restarts, honoring the "stored locally on your device" promise in the Profile UI.
+- Node 20.19.4 is now installed via nvm-windows (`nvm install 20.19.4`) at `C:\Users\crane\AppData\Local\nvm\v20.19.4`; Prisma and Expo tooling run against it by prepending it to PATH. The machine default is still 20.17.0 — switching requires an elevated `nvm use 20.19.4`.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

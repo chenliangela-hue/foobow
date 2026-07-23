@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 import { TabId } from "../../types";
 
 type TabOption = {
@@ -22,7 +23,7 @@ type NavBarProps = {
 };
 
 export function NavBar({ activeTab, onSelectTab, seniorMode }: NavBarProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
 
   return (
     <View style={[styles.navBar, { backgroundColor: currentColors.surface, borderTopColor: currentColors.line }]}>

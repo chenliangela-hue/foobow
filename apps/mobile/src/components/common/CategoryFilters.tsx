@@ -1,5 +1,6 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 import { CategoryId } from "../../types";
 import { categories } from "../../services/foobowService";
 
@@ -10,7 +11,7 @@ type CategoryFiltersProps = {
 };
 
 export function CategoryFilters({ activeCategory, onSelect, seniorMode }: CategoryFiltersProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
 
   return (
     <ScrollView

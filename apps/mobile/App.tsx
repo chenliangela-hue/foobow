@@ -1,8 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
-import { colors, layout } from "./src/theme/theme";
+import { SafeAreaView, ScrollView, StyleSheet, useColorScheme } from "react-native";
+import { storageKeys, usePersistentState } from "./src/services/storageService";
+import { layout } from "./src/theme/theme";
+import { ThemeProvider, useThemeColors } from "./src/theme/ThemeContext";
 import { TabId } from "./src/types";
 
 // Controllers
@@ -27,10 +29,19 @@ export type FoobowAppProps = {
   routeMode?: boolean;
 };
 
-export default function App({ initialTab = "today", routeMode = false }: FoobowAppProps) {
+export default function App(props: FoobowAppProps) {
+  return (
+    <ThemeProvider>
+      <FoobowShell {...props} />
+    </ThemeProvider>
+  );
+}
+
+function FoobowShell({ initialTab = "today", routeMode = false }: FoobowAppProps) {
   const router = useRouter();
+  const scheme = useColorScheme();
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
-  const [sharedKarma, setSharedKarma] = useState(68);
+  const [sharedKarma, setSharedKarma] = usePersistentState(storageKeys.karma, 68);
 
   const addKarma = (points: number) => {
     setSharedKarma((prev) => Math.min(100, prev + points));
@@ -52,12 +63,12 @@ export default function App({ initialTab = "today", routeMode = false }: FoobowA
     }
   };
 
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
 
   return (
     <SafeAreaView style={[styles.shell, { backgroundColor: currentColors.bg }]}>
-      <StatusBar style="dark" />
-      
+      <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+
       <Header karma={sharedKarma} seniorMode={profileCtrl.seniorMode} />
 
       <ScrollView style={styles.content} contentContainerStyle={styles.contentInner}>

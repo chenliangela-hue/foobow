@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 
 type ProfileViewProps = {
   quietMode: boolean;
@@ -22,36 +23,52 @@ export function ProfileView({
   karma,
   streak
 }: ProfileViewProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
+  const eyebrowColor = { color: currentColors.muted };
+  const headingColor = { color: currentColors.ink };
+  const bodyColor = { color: currentColors.muted };
+  const panelTheme = { backgroundColor: currentColors.surface, borderColor: currentColors.line };
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>Profile & Preferences</Text>
-      <Text style={[styles.title, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
+      <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+        Profile & Preferences
+      </Text>
+      <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
         Your virtual footprint.
       </Text>
 
-      <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
-        <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>Statistics</Text>
+      <View style={[styles.panel, panelTheme]}>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+          Statistics
+        </Text>
         <View style={styles.statsRow}>
-          <View style={styles.statBox}>
+          <View style={[styles.statBox, { backgroundColor: currentColors.surfaceStrong }]}>
             <Text style={[styles.statValue, { color: currentColors.gold }, seniorMode && { fontSize: 28 }]}>{karma}</Text>
-            <Text style={[styles.statLabel, seniorMode && { fontSize: typography.sizes.caption }]}>Total Karma</Text>
+            <Text style={[styles.statLabel, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+              Total Karma
+            </Text>
           </View>
-          <View style={styles.statBox}>
+          <View style={[styles.statBox, { backgroundColor: currentColors.surfaceStrong }]}>
             <Text style={[styles.statValue, { color: currentColors.jade }, seniorMode && { fontSize: 28 }]}>{streak}</Text>
-            <Text style={[styles.statLabel, seniorMode && { fontSize: typography.sizes.caption }]}>Day Streak</Text>
+            <Text style={[styles.statLabel, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+              Day Streak
+            </Text>
           </View>
         </View>
       </View>
 
-      <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
-        <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>Preferences</Text>
-        
+      <View style={[styles.panel, panelTheme]}>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+          Preferences
+        </Text>
+
         <View style={styles.switchRow}>
           <View style={styles.flexOne}>
-            <Text style={[styles.switchLabel, seniorMode && { fontSize: typography.sizes.bodySenior }]}>Quiet Mode</Text>
-            <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.caption }]}>
+            <Text style={[styles.switchLabel, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+              Quiet Mode
+            </Text>
+            <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
               Suppress loud notifications and sound effects.
             </Text>
           </View>
@@ -64,8 +81,10 @@ export function ProfileView({
 
         <View style={styles.switchRow}>
           <View style={styles.flexOne}>
-            <Text style={[styles.switchLabel, seniorMode && { fontSize: typography.sizes.bodySenior }]}>Private Journal</Text>
-            <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.caption }]}>
+            <Text style={[styles.switchLabel, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+              Private Journal
+            </Text>
+            <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
               Keep reflections stored locally on your device.
             </Text>
           </View>
@@ -78,10 +97,10 @@ export function ProfileView({
 
         <View style={styles.switchRow}>
           <View style={styles.flexOne}>
-            <Text style={[styles.switchLabel, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+            <Text style={[styles.switchLabel, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
               Senior / High Readability Mode
             </Text>
-            <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.caption }]}>
+            <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
               Enlarge text font sizes and touch targets for comfortable reading.
             </Text>
           </View>
@@ -93,10 +112,18 @@ export function ProfileView({
         </View>
       </View>
 
-      <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
-        <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>Data Controls</Text>
+      <View style={[styles.panel, panelTheme]}>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+          Data Controls
+        </Text>
         <Pressable style={[styles.secondaryButton, { borderColor: currentColors.line }]}>
-          <Text style={[styles.secondaryButtonText, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+          <Text
+            style={[
+              styles.secondaryButtonText,
+              headingColor,
+              seniorMode && { fontSize: typography.sizes.bodySenior }
+            ]}
+          >
             Export local backup
           </Text>
         </Pressable>
@@ -111,19 +138,16 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: typography.sizes.eyebrow,
-    color: colors.light.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8
   },
   title: {
     fontSize: typography.sizes.header,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   body: {
     fontSize: typography.sizes.caption,
-    color: colors.light.muted,
     lineHeight: 18
   },
   panel: {
@@ -135,7 +159,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: typography.sizes.title,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   statsRow: {
@@ -145,7 +168,6 @@ const styles = StyleSheet.create({
   statBox: {
     flex: 1,
     padding: layout.spacing.sm,
-    backgroundColor: colors.light.surfaceStrong,
     borderRadius: layout.borderRadius.md,
     alignItems: "center"
   },
@@ -155,7 +177,6 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: colors.light.muted,
     textTransform: "uppercase"
   },
   switchRow: {
@@ -170,8 +191,7 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     fontSize: typography.sizes.body,
-    fontWeight: "600",
-    color: colors.light.ink
+    fontWeight: "600"
   },
   secondaryButton: {
     minHeight: layout.minTouchTarget,
@@ -183,7 +203,6 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     fontSize: typography.sizes.body,
-    fontWeight: "600",
-    color: colors.light.ink
+    fontWeight: "600"
   }
 });

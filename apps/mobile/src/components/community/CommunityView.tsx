@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 
 type CommunityViewProps = {
   blessingInput: string;
@@ -16,12 +17,26 @@ export function CommunityView({
   onSendBlessing,
   seniorMode
 }: CommunityViewProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>Community</Text>
-      <Text style={[styles.title, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
+      <Text
+        style={[
+          styles.eyebrow,
+          { color: currentColors.muted },
+          seniorMode && { fontSize: typography.sizes.caption }
+        ]}
+      >
+        Community
+      </Text>
+      <Text
+        style={[
+          styles.title,
+          { color: currentColors.ink },
+          seniorMode && { fontSize: typography.sizes.headerSenior }
+        ]}
+      >
         A low-pressure kindness wall.
       </Text>
       <TextInput
@@ -46,7 +61,15 @@ export function CommunityView({
           key={`${blessing}-${index}`}
           style={[styles.blessingCard, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}
         >
-          <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.bodySenior }]}>{blessing}</Text>
+          <Text
+            style={[
+              styles.body,
+              { color: currentColors.muted },
+              seniorMode && { fontSize: typography.sizes.bodySenior }
+            ]}
+          >
+            {blessing}
+          </Text>
           <View style={styles.inlineActions}>
             <Text style={[styles.linkText, { color: currentColors.jade }]}>Bless</Text>
             <Text style={[styles.linkText, { color: currentColors.muted }]}>Report</Text>
@@ -63,19 +86,16 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: typography.sizes.eyebrow,
-    color: colors.light.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8
   },
   title: {
     fontSize: typography.sizes.header,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   body: {
     fontSize: typography.sizes.body,
-    color: colors.light.muted,
     lineHeight: 22
   },
   input: {

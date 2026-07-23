@@ -77,6 +77,10 @@
 - Verify the mobile MVC refactor against all local test gates and refresh stale Playwright visual baselines after inspection.
 - Wire the mobile service layer to the API contract (env-driven base URL, typed DTO mappers, offline fallback, fire-and-forget check-in/deed/blessing writes) with end-to-end verification against the contract runtime.
 - Restore GitHub push access via `chenliangela-hue/foobow.git`.
+- Clear new upstream high-severity audit advisories in API and mobile dependency trees via non-breaking `npm audit fix`.
+- Implement system-driven dark mode across the mobile app with a `ThemeProvider`/`useThemeColors` context over the existing zen dark palette.
+- Add AsyncStorage-backed local persistence for karma, streak, journal, and preference toggles with a hydration-safe `usePersistentState` hook.
+- Install Node `20.19.4` via nvm-windows for Prisma/Expo tooling (machine default still `20.17.0`).
 
 
 ## Next

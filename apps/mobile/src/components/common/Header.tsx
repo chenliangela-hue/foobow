@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 
 type HeaderProps = {
   karma: number;
@@ -7,15 +8,27 @@ type HeaderProps = {
 };
 
 export function Header({ karma, seniorMode }: HeaderProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
 
   return (
     <View style={[styles.header, { borderBottomColor: currentColors.line }]}>
       <View>
-        <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>
+        <Text
+          style={[
+            styles.eyebrow,
+            { color: currentColors.muted },
+            seniorMode && { fontSize: typography.sizes.caption }
+          ]}
+        >
           Virtual good karma map
         </Text>
-        <Text style={[styles.logo, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
+        <Text
+          style={[
+            styles.logo,
+            { color: currentColors.ink },
+            seniorMode && { fontSize: typography.sizes.headerSenior }
+          ]}
+        >
           Foobow 浮宝
         </Text>
       </View>
@@ -38,14 +51,12 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: typography.sizes.eyebrow,
-    color: colors.light.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8
   },
   logo: {
     fontSize: typography.sizes.header,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   karmaRing: {

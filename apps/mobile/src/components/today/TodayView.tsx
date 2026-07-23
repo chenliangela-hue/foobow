@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 import { MoodOption } from "../../types";
 
 type TodayViewProps = {
@@ -23,23 +24,28 @@ export function TodayView({
   seniorMode,
   moods
 }: TodayViewProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
+  const eyebrowColor = { color: currentColors.muted };
+  const headingColor = { color: currentColors.ink };
+  const bodyColor = { color: currentColors.muted };
 
   return (
     <View style={styles.container}>
       <View style={styles.hero}>
-        <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>Today</Text>
-        <Text style={[styles.title, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
+        <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+          Today
+        </Text>
+        <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
           Do one quiet good deed.
         </Text>
-        <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+        <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
           Check in, choose a small symbolic action, and leave the day a little lighter.
         </Text>
       </View>
 
       <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
         <View style={styles.rowBetween}>
-          <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+          <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
             How are you arriving?
           </Text>
           <View style={[styles.pill, { backgroundColor: currentColors.goldGlow }]}>
@@ -79,11 +85,13 @@ export function TodayView({
       </View>
 
       <View style={[styles.focusCard, { backgroundColor: currentColors.surface, borderColor: currentColors.gold }]}>
-        <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>Recommended deed</Text>
-        <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+        <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+          Recommended deed
+        </Text>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
           {selectedMood.deed}
         </Text>
-        <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+        <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
           A symbolic action that keeps comfort separate from real-world claims.
         </Text>
         <Pressable
@@ -97,7 +105,7 @@ export function TodayView({
       </View>
 
       <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
-        <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
           Karma journal
         </Text>
         <TextInput
@@ -122,7 +130,6 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: typography.sizes.eyebrow,
-    color: colors.light.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8,
     marginBottom: layout.spacing.xs
@@ -130,13 +137,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: typography.sizes.header,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif,
     marginBottom: layout.spacing.xs
   },
   body: {
     fontSize: typography.sizes.body,
-    color: colors.light.muted,
     lineHeight: 22
   },
   panel: {
@@ -153,7 +158,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: typography.sizes.title,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   pill: {

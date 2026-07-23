@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { storageKeys, usePersistentState } from "../services/storageService";
 
 export function useProfileController() {
-  const [quietMode, setQuietMode] = useState(true);
-  const [privateJournal, setPrivateJournal] = useState(true);
-  const [seniorMode, setSeniorMode] = useState(false);
+  const [quietMode, setQuietMode] = usePersistentState(storageKeys.quietMode, true);
+  const [privateJournal, setPrivateJournal] = usePersistentState(storageKeys.privateJournal, true);
+  const [seniorMode, setSeniorMode] = usePersistentState(storageKeys.seniorMode, false);
 
   return {
     quietMode,

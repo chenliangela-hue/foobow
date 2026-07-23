@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { colors, layout, typography } from "../../theme/theme";
+import { layout, typography } from "../../theme/theme";
+import { useThemeColors } from "../../theme/ThemeContext";
 import { CategoryFilters } from "../common/CategoryFilters";
 import { CalmRitualCard } from "./CalmRitualCard";
 import { CategoryId, Deed } from "../../types";
@@ -33,14 +34,19 @@ export function DeedCatalogView({
   onCompleteFocused,
   seniorMode
 }: DeedCatalogViewProps) {
-  const currentColors = colors.light;
+  const currentColors = useThemeColors();
+  const eyebrowColor = { color: currentColors.muted };
+  const headingColor = { color: currentColors.ink };
+  const bodyColor = { color: currentColors.muted };
 
   return (
     <View style={styles.container}>
       <View style={styles.rowBetween}>
         <View>
-          <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>Deed catalog</Text>
-          <Text style={[styles.title, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
+          <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+            Deed catalog
+          </Text>
+          <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
             Small rituals, clear categories.
           </Text>
         </View>
@@ -71,10 +77,10 @@ export function DeedCatalogView({
               }
             ]}
           >
-            <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+            <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
               {deed.title}
             </Text>
-            <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+            <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
               {deed.description}
             </Text>
           </Pressable>
@@ -82,11 +88,13 @@ export function DeedCatalogView({
       })}
 
       <View style={[styles.focusCard, { backgroundColor: currentColors.surface, borderColor: currentColors.gold }]}>
-        <Text style={[styles.eyebrow, seniorMode && { fontSize: typography.sizes.caption }]}>Ritual preview</Text>
-        <Text style={[styles.sectionTitle, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+        <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+          Ritual preview
+        </Text>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
           {selectedDeed.title}
         </Text>
-        <Text style={[styles.body, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+        <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
           {selectedDeed.description}
         </Text>
         <Pressable
@@ -122,25 +130,21 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: typography.sizes.eyebrow,
-    color: colors.light.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8
   },
   title: {
     fontSize: typography.sizes.header,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   body: {
     fontSize: typography.sizes.body,
-    color: colors.light.muted,
     lineHeight: 22
   },
   sectionTitle: {
     fontSize: typography.sizes.title,
     fontWeight: "700",
-    color: colors.light.ink,
     fontFamily: typography.fontFamilySerif
   },
   pill: {

@@ -15,8 +15,13 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 
 | Area | Package Path | Advisory | Current Decision | Review Trigger |
 | --- | --- | --- | --- | --- |
-| API tooling | `prisma -> @prisma/dev -> @hono/node-server` | `@hono/node-server` repeated-slash `serveStatic` middleware bypass | Monitor Prisma upstream; current force fix would downgrade Prisma from 7.x to 6.x and break the selected Prisma 7 path | Re-check when Prisma publishes a compatible patched chain |
 | Mobile tooling | `expo -> @expo/cli -> @expo/config-plugins -> xcode -> uuid` | `uuid` buffer bounds issue for v3/v5/v6 with explicit buffer use | Monitor Expo SDK upstream; current force fix would downgrade Expo to an incompatible old version | Re-check when Expo SDK updates its transitive dependency chain |
+
+## Resolved Advisories
+
+| Area | Package Path | Advisory | Resolution |
+| --- | --- | --- | --- |
+| API tooling | `prisma -> @prisma/dev -> @hono/node-server` | `@hono/node-server` repeated-slash `serveStatic` middleware bypass | Resolved 2026-07-23 by non-breaking `npm audit fix` in `apps/api`; Prisma stayed on the 7.x line and the API audit reports 0 vulnerabilities |
 
 ## Acceptance Rule
 
