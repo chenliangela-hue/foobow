@@ -98,6 +98,44 @@ test("Prisma schema mirrors public IDs, donation idempotency, and moderation mod
   assert.equal(schema.includes("url      = env(\"DATABASE_URL\")"), false);
 });
 
+test("media and commerce migration defines enterprise media, AI, and admin tables", async () => {
+  const sql = await readText("database/migrations/0003_media_and_commerce.sql");
+  const missing = hasAll(sql, [
+    "create table media_assets",
+    "create table ai_generations",
+    "create table blessing_intentions",
+    "create table wish_lamps",
+    "create table catalog_items",
+    "create table orders",
+    "create table admin_users",
+    "create table admin_audit_log",
+    "check (bucket in ('public-assets', 'user-uploads', 'ai-generated'))",
+    "cost_usd numeric(10, 4)",
+    "idempotency_key text not null unique",
+    "unique (bucket, storage_key)"
+  ]);
+  assert.deepEqual(missing, []);
+});
+
+test("storage provisioning and docs keep binaries out of the database", async () => {
+  const storageScript = await readText("apps/api/scripts/supabase-storage-provision.ts");
+  const provisionScript = await readText("apps/api/scripts/supabase-provision.ts");
+  const docs = await readText("docs/database-structure.md");
+  const apiPackage = await readText("apps/api/package.json");
+
+  const missing = hasAll(storageScript + provisionScript + docs + apiPackage, [
+    "public-assets",
+    "user-uploads",
+    "ai-generated",
+    "0003_media_and_commerce.sql",
+    "db:supabase-storage",
+    "No large binary objects are ever stored in the database",
+    "media_assets",
+    "signed URLs"
+  ]);
+  assert.deepEqual(missing, []);
+});
+
 test("focus session migration and Prisma draft support Calm Ritual persistence", async () => {
   const sql = await readText("database/migrations/0002_focus_sessions.sql");
   const schema = await readText("apps/api/prisma/schema.prisma");

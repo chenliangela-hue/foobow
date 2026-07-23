@@ -14,11 +14,15 @@
     "test:db-integration": "tsx scripts/db-integration-suite.ts",
     "auth:clerk-smoke": "tsx scripts/clerk-auth-smoke.ts",
     "db:supabase-provision": "tsx scripts/supabase-provision.ts",
+    "db:supabase-storage": "tsx scripts/supabase-storage-provision.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --test tests && npm run typecheck"
   },
   "engines": {
     "node": ">=20.19.4"
+  },
+  "overrides": {
+    "find-my-way": "^9.7.0"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.24",

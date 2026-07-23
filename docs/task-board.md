@@ -93,6 +93,8 @@
 - Add opt-in synthesized soundscapes (water/rain/forest) to the Calm Ritual with PA coverage.
 - Add key-gated Clerk sign-in/sign-up/sign-out UI to the mobile Profile with secure token cache and guest mode preserved.
 - Phase 1 (福报 elevation): restructure the site into a marketing landing (`/`) + app (`/app/`); build the multilingual 福报 landing page (en/zh-Hans/fr/es/th/ja) with brand rebrand, rotating blessing couplets, five grouped "gates of kindness", and an ethics band; add landing tests + hero visual baseline.
+- Web top navigation: sticky top bar on all pages with clickable logo → landing, section nav, and a top-right account/profile menu.
+- Phase 2 (storage + enterprise DB): Supabase Storage buckets (public/private, no binaries in DB), `0003_media_and_commerce.sql` (media_assets, ai_generations, blessing_intentions, wish_lamps, catalog_items, orders, admin_users, admin_audit_log), provisioning scripts, CI wiring, and enterprise DB docs.
 
 
 ## Next

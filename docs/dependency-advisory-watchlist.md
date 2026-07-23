@@ -24,6 +24,7 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 | Area | Package Path | Advisory | Resolution |
 | --- | --- | --- | --- |
 | API tooling | `prisma -> @prisma/dev -> @hono/node-server` | `@hono/node-server` repeated-slash `serveStatic` middleware bypass | Resolved 2026-07-23 by non-breaking `npm audit fix` in `apps/api`; Prisma stayed on the 7.x line and the API audit reports 0 vulnerabilities |
+| API tooling | `prisma -> @prisma/dev -> find-my-way` | `find-my-way` HTTP/2 DoS (GHSA-c96f-x56v-gq3h) | Resolved 2026-07-23 by pinning `find-my-way ^9.7.0` via an `overrides` entry in `apps/api/package.json` (audit fix could not resolve within Prisma's range); only affects Prisma dev tooling, not runtime; Prisma generate + API tests still pass |
 
 ## Acceptance Rule
 

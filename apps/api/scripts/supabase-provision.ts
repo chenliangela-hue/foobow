@@ -23,10 +23,14 @@ function loadRootEnvLocal(): void {
   }
 }
 
-const steps: { file: string; guardTable: string | null }[] = [
+// `guardTable`: skip the step if that table already exists (migrations).
+// `guardRowsTable`: skip the step if that table already has any rows (seeds),
+// so re-provisioning a live database does not fail on duplicate seed inserts.
+const steps: { file: string; guardTable: string | null; guardRowsTable?: string }[] = [
   { file: "database/migrations/0001_initial.sql", guardTable: "users" },
   { file: "database/migrations/0002_focus_sessions.sql", guardTable: "focus_sessions" },
-  { file: "database/seeds/0001_reference_data.sql", guardTable: null }
+  { file: "database/migrations/0003_media_and_commerce.sql", guardTable: "media_assets" },
+  { file: "database/seeds/0001_reference_data.sql", guardTable: null, guardRowsTable: "deed_types" }
 ];
 
 async function main(): Promise<void> {
@@ -59,6 +63,13 @@ async function main(): Promise<void> {
         );
         if ((existing.rowCount ?? 0) > 0) {
           console.log(`skip ${step.file} (table ${step.guardTable} already exists)`);
+          continue;
+        }
+      }
+      if (step.guardRowsTable) {
+        const seeded = await client.query(`select 1 from ${step.guardRowsTable} limit 1`);
+        if ((seeded.rowCount ?? 0) > 0) {
+          console.log(`skip ${step.file} (${step.guardRowsTable} already seeded)`);
           continue;
         }
       }

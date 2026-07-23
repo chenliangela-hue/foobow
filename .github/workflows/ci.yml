@@ -84,7 +84,7 @@ jobs:
 
       - name: Apply SQL schema and seed
         run: |
-          docker run --rm --network host -v "$PWD:/workspace" -w /workspace postgres:17-alpine sh -c "psql \"$PSQL_DATABASE_URL\" -f database/migrations/0001_initial.sql && psql \"$PSQL_DATABASE_URL\" -f database/migrations/0002_focus_sessions.sql && psql \"$PSQL_DATABASE_URL\" -f database/seeds/0001_reference_data.sql"
+          docker run --rm --network host -v "$PWD:/workspace" -w /workspace postgres:17-alpine sh -c "psql \"$PSQL_DATABASE_URL\" -f database/migrations/0001_initial.sql && psql \"$PSQL_DATABASE_URL\" -f database/migrations/0002_focus_sessions.sql && psql \"$PSQL_DATABASE_URL\" -f database/migrations/0003_media_and_commerce.sql && psql \"$PSQL_DATABASE_URL\" -f database/seeds/0001_reference_data.sql"
 
       - name: Run API DB integration suite
         run: npm --prefix apps/api run test:db-integration

@@ -322,6 +322,46 @@ Use `bigint generated always as identity` for internal primary keys. Expose stab
 - Add foreign-key indexes manually because PostgreSQL does not create them automatically.
 - Seed data should include initial deed types, map spots, badges, and verified test donation campaigns.
 
+## Media And Object Storage (enterprise principle)
+
+**No large binary objects are ever stored in the database.** Images, GIFs, short video, Lottie animations, and audio live in object storage (Supabase Storage, S3-compatible, CDN-backed). The database stores only a `media_assets` row per file — bucket, storage key, content type, dimensions, duration, checksum, and moderation status — and everything references media by `media_asset_id`.
+
+Buckets (provisioned by `apps/api/scripts/supabase-storage-provision.ts`):
+
+- `public-assets` — public, CDN-served: curated animations (release fish, wish lamp), location views, soundscape art, decorative media.
+- `user-uploads` — private: user photos (e.g. "Pray for family"). Served only through short-lived signed URLs; never public.
+- `ai-generated` — private by default: AI-produced images, promoted to public only after moderation approval.
+
+Delivery: public bucket via CDN URL; private buckets via signed URLs minted server-side with a short TTL. Uploads are validated for content type and size, checksummed, virus/no-op scanned, and set to `status = 'pending'` until processed, then `ready`.
+
+## Media, AI, Commerce, And Admin Tables (Phase 2)
+
+See [`database/migrations/0003_media_and_commerce.sql`](../database/migrations/0003_media_and_commerce.sql).
+
+- `media_assets` — object-storage pointers only (bucket, storage_key, kind, content_type, byte_size, width/height/duration_ms, checksum_sha256, alt_text, status, moderation_status). Unique `(bucket, storage_key)`.
+- `ai_generations` — one row per AI response (kind, locale, model, input/output tokens, `cost_usd`, response_text, status, moderation_status). Tokens and cost are tracked per request for budgeting and rate-limit accounting. AI outputs are warm reflections, never predictions or guaranteed outcomes.
+- `blessing_intentions` — "Pray for family" and similar (category, recipient_label, message, locale, optional `ai_generation_id` and `media_asset_id`, visibility). Private by default.
+- `wish_lamps` — symbolic 心灯 offerings that expire (lamp_type, wish_text, optional media/AI links, lit_at, expires_at).
+- `catalog_items` — pricing (商品定价): kind (donation/premium_pack/lamp_offering/subscription), price, currency, billing_interval, status, sort_order.
+- `orders` — commerce (订单): amount, currency, payment_provider (stripe/applepay/googlepay/wechatpay/manual), payment_status, review_status, unique `idempotency_key`. Backs the admin income/orders dashboard.
+- `admin_users` — admin backend operators (role: owner/admin/reviewer). Separate from app `users`.
+- `admin_audit_log` — every admin action (审计日志): action, target, detail jsonb, ip_address.
+
+### Phase 2 data rules
+
+- Symbolic karma/福报 remains non-purchasable; only real donations and optional premium content (packs, subscriptions, lamp offerings) are paid, and money is always transparent and separate.
+- Every money path carries a unique idempotency key (`orders.idempotency_key`).
+- User-generated and AI content carry a moderation status; private buckets and private-by-default visibility protect user photos and intentions.
+- AI generation is rate-limited and cost-tracked; long generations should run through a background job queue rather than blocking requests.
+- Retention: `user-uploads` and blessing intentions are deleted on account deletion; `ai_generations` retains minimal non-PII context and cost records for accounting.
+
+### Enterprise scaling notes
+
+- Time-partition high-volume append tables (`ai_generations`, `karma_events`, `orders`, `admin_audit_log`) by month once volume warrants; keep hot partitions indexed.
+- Add row-level security so users can only read their own owned rows; admin/service access uses the service role.
+- Serve all media through a CDN; never proxy binaries through the API.
+- Keep the SQL migration the source of truth for DB-specific constraints and indexes; Prisma models mirror it as the ORM surface is needed (added alongside the Phase 3 AI endpoints).
+
 ## Future PostgreSQL Extensions
 
 - PostGIS for real map spots, radius filters, route paths, and geospatial campaign queries.
