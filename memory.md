@@ -72,6 +72,14 @@ This file is the project-local memory. Keep it current whenever product directio
 - CI is fully green again as of commit `2ee0b72` (verify, api-db-smoke, and visual-regression jobs all pass).
 - Added the missing senior-mode toggle to the prototype header (`Aa` icon button with `aria-pressed`), wired to persisted `settings.seniorMode` and `body.senior-mode`, making the previously dead `.senior-mode` CSS reachable and matching the mobile toggle. Added a browser PA test for enlarge/persist/restore behavior (12 PA tests now) and regenerated the today-screen visual baselines, which had been within diff tolerance but not showing the new button — note `--update-snapshots` skips rewriting snapshots that pass within `maxDiffPixelRatio`; delete the files first to force a truthful refresh.
 
+## 2026-07-23 (deployment session)
+
+- Audited `.env.local`: Clerk test keys (publishable + secret) and Supabase URL/anon/service-role keys are present; Stripe/EAS/Sentry/PostHog/Resend/OpenAI keys are intentionally empty. Filled derivable values: `AUTH_ISSUER_URL` (from the Clerk publishable key: funky-racer-2.clerk.accounts.dev) and the new Vercel project ID/team slug.
+- Found `www.foobow.com` was never deployed — DNS still points at the Namecheap parking page (`registrar-servers.com` nameservers). The Supabase project `ifujcchqlotxenuitrey` recorded in `.env.local` no longer resolves (NXDOMAIN; likely removed after free-tier pause) and must be recreated by the user before database work.
+- Created Vercel project `foobow` (`prj_SaxS3F8THrSBX0g4qgy33FsXsR08`, team `team_AqCSnEbzhqzfRQ6rdvKOEgCd`) with the token from `.env.local`, deployed `prototype/` to production (`https://foobow.vercel.app`, HTTP 200 verified), and attached `foobow.com` + `www.foobow.com` (verified but misconfigured until Namecheap DNS is updated; required records documented in `docs/deployment.md`).
+- Added a `deploy-web` CI job that deploys `prototype/` to Vercel production on `main` pushes after all test jobs pass; it is gated on repo variable `VERCEL_DEPLOY_ENABLED=true` plus `VERCEL_*` secrets, which the user must set themselves (the permission layer correctly blocked uploading the token on their behalf).
+- Recorded the future multi-provider payments direction (Stripe first, Apple Pay/Google Pay via Stripe rails, store-policy IAP caveats, WeChat Pay evaluation) in `docs/payments-roadmap.md`; payments stay deferred for MVP.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

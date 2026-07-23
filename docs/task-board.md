@@ -84,6 +84,9 @@
 - Implement mobile `en`/`zh-Hans` localization with expo-localization + i18n-js, persisted language preference, Profile language selector, and translated accessibility labels.
 - Add prototype senior readability toggle with persistence, PA coverage, and refreshed today-screen visual baselines.
 - Restore full CI green across verify, api-db-smoke, and visual-regression jobs.
+- Create Vercel project `foobow`, deploy the prototype to production (`https://foobow.vercel.app`), and attach `foobow.com`/`www.foobow.com`.
+- Add gated `deploy-web` CI job for Vercel production deploys on `main`.
+- Add deployment runbook and multi-provider payments roadmap docs.
 
 
 ## Next

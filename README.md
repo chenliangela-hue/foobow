@@ -103,6 +103,8 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [External Service Resources](docs/external-service-resources.md)
 - [Provider CLI Setup Plan](docs/provider-cli-setup-plan.md)
 - [Dependency Advisory Watchlist](docs/dependency-advisory-watchlist.md)
+- [Deployment](docs/deployment.md)
+- [Payments Roadmap](docs/payments-roadmap.md)
 - [Memory](memory.md)
 
 ## Verification
