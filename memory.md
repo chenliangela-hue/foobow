@@ -93,6 +93,8 @@ This file is the project-local memory. Keep it current whenever product directio
 - Implemented Clerk sign-in UI in the mobile app with `@clerk/clerk-expo` + `expo-secure-store` token cache: `ClerkProvider` activates only when `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` is set (guest/offline mode otherwise), and a warm gold-bordered `AccountCard` in Profile handles username+password sign-in/sign-up/sign-out (matching the username-based Clerk instance) with gentle, no-pressure copy in en/zh. Root contract test added (28 root tests).
 - New Clerk high advisory (GHSA-w24r-5266-9c3c authorization bypass in @clerk/clerk-js) appeared with the install; cleared via non-breaking `npm audit fix`, lockfile validated with `npm ci --dry-run`.
 
+- CI `verify` failed again on `npm ci` (missing `react-native-worklets` from the mobile lockfile) after the Clerk audit fix — the recurring Expo-tree corruption. Durable fix: raised `@clerk/clerk-expo` floor to `^2.19.42` in package.json (the patched version for GHSA-w24r-5266-9c3c) and regenerated the lockfile from a clean `rm -rf node_modules package-lock.json && npm install`. Recorded the policy in `docs/dependency-advisory-watchlist.md`: never `npm audit fix` the mobile tree — raise the floor and clean-regenerate instead. Verified worklets present, high audit clean, `npm ci --dry-run` OK.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

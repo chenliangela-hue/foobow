@@ -8,6 +8,8 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 
 - Run `npm run test:security` before push.
 - Treat high or critical advisories as blockers.
+- Prefer raising the dependency's version floor in `package.json` over running `npm audit fix` in `apps/mobile`. On the Expo dependency tree, `npm audit fix` has repeatedly written an incomplete lockfile (dropping nested optional-peer entries such as `react-native-worklets`) that passes a local `npm ci --dry-run` but fails CI's `npm ci`. Raising the floor makes a clean `npm install` resolve the patched version deterministically.
+- After any dependency change in `apps/mobile`, regenerate the lockfile from a clean state (`rm -rf node_modules package-lock.json && npm install`) rather than patching it in place.
 - Track moderate advisories when the available automated fix would downgrade major framework/runtime packages or break the selected stack.
 - Do not run `npm audit fix --force` unless a maintainer has reviewed the dependency graph and verified the resulting package versions still match the project architecture.
 
