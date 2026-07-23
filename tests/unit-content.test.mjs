@@ -223,8 +223,39 @@ test("dependency advisory watchlist tracks accepted moderate transitive risks", 
   assert.deepEqual(missing, []);
 });
 
-test("prototype exposes the required app screens and controls", async () => {
+test("landing page carries brand, tagline, six locales, gates, and the ethics disclaimer", async () => {
   const html = await readText("prototype/index.html");
+  const i18n = await readText("prototype/landing.i18n.js");
+
+  const missingHtml = hasAll(html, [
+    "Foobow",
+    "福",
+    "coupletTagline",
+    "id=\"langSelect\"",
+    "href=\"/app/\"",
+    "gateGrid",
+    "phrase-rotator",
+    "ethics"
+  ]);
+  assert.deepEqual(missingHtml, []);
+
+  const missingI18n = hasAll(i18n, [
+    "积善德，得福报；种善因，收福果",
+    "\"en\"",
+    "\"zh-Hans\"",
+    "\"fr\"",
+    "\"es\"",
+    "\"th\"",
+    "\"ja\"",
+    "善有善报，福从善来",
+    "一念善心，万福临门",
+    "symbolic comfort only"
+  ]);
+  assert.deepEqual(missingI18n, []);
+});
+
+test("prototype exposes the required app screens and controls", async () => {
+  const html = await readText("prototype/app/index.html");
   const missing = hasAll(html, [
     "screen-today",
     "screen-map",

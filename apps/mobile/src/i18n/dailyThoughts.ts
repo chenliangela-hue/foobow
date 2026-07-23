@@ -15,7 +15,12 @@ const thoughts: Record<LocaleTag, string[]> = {
     "One gentle act can soften a whole afternoon.",
     "You are allowed to move slowly.",
     "Light a small lamp; darkness handles itself.",
-    "Rest is also a good deed."
+    "Rest is also a good deed.",
+    "Good begets good; blessings flow from kindness.",
+    "Gather good virtue, and blessings come.",
+    "Plant kind causes, harvest kind fruit.",
+    "A spark of kindness blesses a lifetime.",
+    "One good deed, one measure of merit."
   ],
   "zh-Hans": [
     "微小的善意，也是善意。",
@@ -27,7 +32,12 @@ const thoughts: Record<LocaleTag, string[]> = {
     "一个温和的举动，能柔软整个下午。",
     "你可以慢慢来。",
     "点一盏小灯，黑暗自会退让。",
-    "休息，也是一件善事。"
+    "休息，也是一件善事。",
+    "善有善报，福从善来。",
+    "积善德，得福报。",
+    "种善因，收福果。",
+    "善心一点，福泽一生。",
+    "一念善心，万福临门。"
   ]
 };
 

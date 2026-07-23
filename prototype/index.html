@@ -1,262 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Foobow Prototype</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foobow · 福报</title>
+    <meta name="description" id="metaDescription" content="Foobow turns small symbolic kindnesses into a calm daily ritual for your peace of mind." />
+    <meta property="og:title" content="Foobow · 福报" />
+    <meta property="og:description" content="Gentle good, done gently — a calm daily ritual for your peace of mind." />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="landing.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow" data-i18n="eyebrow">Virtual good karma map</p>
-          <h1>Foobow</h1>
-        </div>
-        <div class="top-actions">
-          <button class="icon-button" id="languageToggle" type="button" aria-label="Switch language">中</button>
-          <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button>
-          <button class="icon-button" id="seniorToggle" type="button" aria-label="Toggle senior readability mode" aria-pressed="false">Aa</button>
-        </div>
-      </header>
+    <div class="aurora" aria-hidden="true"></div>
 
-      <main>
-        <section class="screen active" id="screen-today" aria-labelledby="today-title">
-          <div class="hero-panel">
-            <div>
-              <p class="eyebrow" data-i18n="todayEyebrow">Today</p>
-              <h2 id="today-title" data-i18n="todayTitle">Do one quiet good deed.</h2>
-              <p class="hero-copy" data-i18n="todayCopy">Check in, choose a small symbolic action, and leave the day a little lighter.</p>
-              <p class="daily-thought" id="dailyThought"></p>
-            </div>
-            <div class="karma-ring" aria-label="Karma progress">
-              <span id="karmaValue">68</span>
-              <small data-i18n="karmaLabel">karma</small>
-            </div>
-          </div>
-
-          <section class="panel">
-            <div class="section-heading">
-              <h3 data-i18n="moodTitle">How are you arriving?</h3>
-              <span class="soft-pill" id="streakLabel">7 day streak</span>
-            </div>
-            <div class="mood-grid" id="moodGrid">
-              <button class="mood selected" type="button" data-mood="calm" data-deed="Release fish at East Lake">Calm</button>
-              <button class="mood" type="button" data-mood="heavy" data-deed="Light a path home">Heavy</button>
-              <button class="mood" type="button" data-mood="lonely" data-deed="Send an anonymous blessing">Lonely</button>
-              <button class="mood" type="button" data-mood="grateful" data-deed="Help elder cross safely">Grateful</button>
-            </div>
-          </section>
-
-          <section class="deed-focus" aria-live="polite">
-            <div>
-              <p class="eyebrow" data-i18n="recommended">Recommended deed</p>
-              <h3 id="recommendedDeed">Release fish at East Lake</h3>
-              <p data-i18n="recommendedCopy">A symbolic release that avoids real-world ecological harm.</p>
-            </div>
-            <button class="primary-action" id="completeDaily" type="button" data-i18n="completeDeed">Complete deed</button>
-          </section>
-
-          <section class="panel">
-            <div class="section-heading">
-              <h3 data-i18n="journalTitle">Karma journal</h3>
-              <span class="soft-pill">private</span>
-            </div>
-            <textarea id="journalEntry" rows="3" data-i18n-placeholder="journalPlaceholder" placeholder="Today I want to release one worry and do one kind thing."></textarea>
-          </section>
-        </section>
-
-        <section class="screen" id="screen-map" aria-labelledby="map-title">
-          <div class="map-stage">
-            <div class="map-copy">
-              <p class="eyebrow" data-i18n="mapEyebrow">World map</p>
-              <h2 id="map-title" data-i18n="mapTitle">Explore places that need a little light.</h2>
-            </div>
-            <div class="world-map" aria-label="Stylized good deed world map">
-              <button class="map-pin lake active" type="button" data-spot-id="east-lake" aria-label="East Lake good deed spot" aria-pressed="true"></button>
-              <button class="map-pin street" type="button" data-spot-id="toronto-crosswalk" aria-label="Toronto crosswalk good deed spot" aria-pressed="false"></button>
-              <button class="map-pin forest" type="button" data-spot-id="amazon-grove" aria-label="Amazon restoration good deed spot" aria-pressed="false"></button>
-              <button class="map-pin lantern" type="button" data-spot-id="night-corridor" aria-label="Night walk good deed spot" aria-pressed="false"></button>
-            </div>
-          </div>
-          <section class="spot-detail">
-            <p class="eyebrow" id="spotCategory">Animal kindness</p>
-            <h3 id="spotName">East Lake, Wuhan</h3>
-            <p id="spotText">Release a digital fish into the lake and add one ripple to the shared kindness map.</p>
-            <div class="layer-row" id="mapLayerRow" aria-label="Map category filters"></div>
-          </section>
-        </section>
-
-        <section class="screen" id="screen-deeds" aria-labelledby="deeds-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow" data-i18n="deedsEyebrow">Deed catalog</p>
-              <h2 id="deeds-title" data-i18n="deedsTitle">Small rituals, clear categories.</h2>
-            </div>
-            <span class="soft-pill" id="deedTypeCount">4 shown</span>
-          </div>
-          <div class="layer-row deed-filter-row" id="deedCategoryRow" aria-label="Deed category filters"></div>
-          <div class="deed-list" id="deedList">
-            <article class="deed-item selected" data-title="Virtual 放生" data-desc="Release a digital fish into a selected lake or river.">
-              <span class="deed-mark water"></span>
-              <div>
-                <h3>Virtual 放生</h3>
-                <p>Release a digital fish without ecological harm.</p>
-              </div>
-            </article>
-            <article class="deed-item" data-title="扶老奶奶过马路" data-desc="Guide an elder through a calm crosswalk scene.">
-              <span class="deed-mark elder"></span>
-              <div>
-                <h3>扶老奶奶过马路</h3>
-                <p>Guide an elder through a safe crosswalk.</p>
-              </div>
-            </article>
-            <article class="deed-item" data-title="Anonymous blessing" data-desc="Send one quiet supportive sentence to another user.">
-              <span class="deed-mark blessing"></span>
-              <div>
-                <h3>Anonymous blessing</h3>
-                <p>Send support without pressure or identity exposure.</p>
-              </div>
-            </article>
-            <article class="deed-item" data-title="Clean a coastline" data-desc="Remove virtual litter from a beach and add to a city mission.">
-              <span class="deed-mark earth"></span>
-              <div>
-                <h3>Clean a coastline</h3>
-                <p>Restore a shared beach, park, or riverbank.</p>
-              </div>
-            </article>
-          </div>
-          <section class="ritual-panel">
-            <div class="ritual-scene" id="ritualScene">
-              <div class="ripple"></div>
-              <div class="fish-shape"></div>
-              <div class="shoreline"></div>
-            </div>
-            <div>
-              <p class="eyebrow" data-i18n="ritualPreview">Ritual preview</p>
-              <h3 id="ritualTitle">Virtual 放生</h3>
-              <p id="ritualDesc">Release a digital fish into a selected lake or river.</p>
-              <button class="primary-action" id="performRitual" type="button" data-i18n="performRitual">Perform ritual</button>
-            </div>
-          </section>
-
-          <section class="calm-ritual-card" aria-labelledby="calm-ritual-title" aria-live="polite">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow" data-i18n="calmEyebrow">Calm ritual</p>
-                <h3 id="calm-ritual-title" data-i18n="calmTitle">Take a focused moment first.</h3>
-              </div>
-              <span class="soft-pill" id="calmStatus">optional</span>
-            </div>
-            <p class="calm-copy" data-i18n="calmCopy">Use a short presence timer, optional soundscape, and quiet reflection before recording a symbolic deed.</p>
-            <div class="breath-orb" aria-hidden="true"></div>
-            <div class="soundscape-row" id="soundscapeRow" aria-label="Optional soundscape choices"></div>
-            <div class="sound-control">
-              <button class="text-button" id="soundscapeToggle" type="button" aria-pressed="false">Play soundscape</button>
-              <span class="sound-wave" id="soundWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-            </div>
-            <div class="focus-meter" aria-label="Calm ritual focus progress">
-              <span id="focusProgress"></span>
-            </div>
-            <ol class="guided-steps">
-              <li data-i18n="guidedStepOne">Breathe once and name the intention.</li>
-              <li data-i18n="guidedStepTwo">Hold the action gently until the timer completes.</li>
-              <li data-i18n="guidedStepThree">Record how you feel without pressure.</li>
-            </ol>
-            <div class="calm-actions">
-              <button class="text-button" id="startFocusSession" type="button" data-i18n="startFocus">Start 20s focus</button>
-              <button class="primary-action" id="completeFocusedRitual" type="button" data-i18n="completeFocused" disabled>Complete with focus</button>
-            </div>
-            <p class="safety-note" data-i18n="calmSafety">This is symbolic comfort only. It does not guarantee luck, virtue, health, or real-world impact.</p>
-          </section>
-        </section>
-
-        <section class="screen" id="screen-community" aria-labelledby="community-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow" data-i18n="communityEyebrow">Community</p>
-              <h2 id="community-title" data-i18n="communityTitle">A low-pressure kindness wall.</h2>
-            </div>
-            <span class="soft-pill">anonymous</span>
-          </div>
-          <form class="blessing-form" id="blessingForm">
-            <textarea id="blessingInput" rows="3" maxlength="140" data-i18n-placeholder="blessingPlaceholder" placeholder="May your road feel less heavy today."></textarea>
-            <button class="primary-action" type="submit" data-i18n="sendBlessing">Send blessing</button>
-          </form>
-          <div class="blessing-list" id="blessingList">
-            <article class="blessing">
-              <p>May your next step feel lighter than the last.</p>
-              <button type="button">Bless</button>
-            </article>
-            <article class="blessing">
-              <p>For anyone carrying guilt today: one kind action is still real.</p>
-              <button type="button">Support</button>
-            </article>
-          </div>
-        </section>
-
-        <section class="screen" id="screen-profile" aria-labelledby="profile-title">
-          <div class="profile-head">
-            <div class="avatar">F</div>
-            <div>
-              <p class="eyebrow" data-i18n="profileEyebrow">Profile</p>
-              <h2 id="profile-title">Quiet Helper</h2>
-              <p data-i18n="profileCopy">Private journal on. Ranking visibility set to quiet mode.</p>
-            </div>
-          </div>
-          <div class="stat-grid">
-            <div><strong id="deedCount">42</strong><span>deeds</span></div>
-            <div><strong>9</strong><span>badges</span></div>
-            <div><strong>$18</strong><span>donated</span></div>
-          </div>
-          <section class="panel">
-            <div class="section-heading">
-              <h3 data-i18n="badgesTitle">Badges</h3>
-              <button class="text-button" id="donateButton" type="button" data-i18n="donate">Donate</button>
-            </div>
-            <div class="badge-row">
-              <span>7-day ritual</span>
-              <span>Lake guardian</span>
-              <span>Quiet supporter</span>
-            </div>
-          </section>
-          <section class="panel settings-panel">
-            <h3 data-i18n="settingsTitle">Enterprise settings</h3>
-            <label><input id="settingPrivateJournal" data-setting-key="privateJournal" type="checkbox" checked> <span data-i18n="settingPrivacy">Private journal</span></label>
-            <label><input id="settingQuietRanking" data-setting-key="quietRanking" type="checkbox" checked> <span data-i18n="settingQuiet">Quiet rankings</span></label>
-            <label><input id="settingDonationReceipts" data-setting-key="donationReceipts" type="checkbox" checked> <span data-i18n="settingReceipts">Donation receipts</span></label>
-            <div class="privacy-actions">
-              <button class="text-button" id="exportDataButton" type="button" data-i18n="exportData">Export data</button>
-              <button class="text-button danger" id="deleteDataButton" type="button" data-i18n="deleteData">Delete local data</button>
-            </div>
-          </section>
-        </section>
-      </main>
-
-      <nav class="bottom-nav" aria-label="Primary">
-        <button class="nav-item active" type="button" data-target="today">Today</button>
-        <button class="nav-item" type="button" data-target="map">Map</button>
-        <button class="nav-item" type="button" data-target="deeds">Deeds</button>
-        <button class="nav-item" type="button" data-target="community">Community</button>
-        <button class="nav-item" type="button" data-target="profile">Profile</button>
-      </nav>
-    </div>
-
-    <dialog id="impactDialog">
-      <div class="dialog-body">
-        <p class="eyebrow" data-i18n="dialogEyebrow">Real impact option</p>
-        <h2 data-i18n="dialogTitle">Support a verified cause</h2>
-        <p data-i18n="dialogCopy">This donation supports real operating costs or partner campaigns. It does not buy luck, virtue, or guaranteed karma.</p>
-        <div class="donation-options">
-          <button type="button">$1</button>
-          <button type="button">$3</button>
-          <button type="button">$9</button>
-        </div>
-        <button class="primary-action" id="closeDialog" type="button" data-i18n="closeDialog">Close</button>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Foobow 福报 home">
+        <span class="brand-mark" aria-hidden="true">福</span>
+        <span class="brand-word">Foobow<em>· 福报</em></span>
+      </a>
+      <div class="lang-switch">
+        <label class="visually-hidden" for="langSelect" id="langSwitchLabel">Language</label>
+        <select id="langSelect" aria-labelledby="langSwitchLabel"></select>
       </div>
-    </dialog>
+    </header>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <main id="top">
+      <section class="hero">
+        <p class="kicker" data-i18n="heroKicker">A virtual good-karma companion</p>
+        <h1 class="hero-title" data-i18n="heroTitle">Gather a little light, every day.</h1>
+        <p class="couplet" id="coupletTagline">积善德，得福报；种善因，收福果</p>
+        <p class="hero-sub" data-i18n="heroSubtitle"></p>
+
+        <div class="hero-orb" aria-hidden="true"><span class="orb"></span></div>
+
+        <blockquote class="phrase-rotator" aria-live="polite">
+          <p class="phrase-zh" id="phraseZh"></p>
+          <p class="phrase-gloss" id="phraseGloss"></p>
+        </blockquote>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" id="enterCta" href="/app/" data-i18n="enter">Enter Foobow</a>
+          <a class="btn btn-ghost" href="#gates" data-i18n="learnMore">See how it works</a>
+        </div>
+      </section>
+
+      <section class="gates" id="gates" aria-labelledby="gatesTitle">
+        <p class="section-eyebrow" data-i18n="gatesTitle" id="gatesTitle">Gates of kindness</p>
+        <p class="section-sub" data-i18n="gatesSubtitle"></p>
+        <div class="gate-grid" id="gateGrid"></div>
+      </section>
+
+      <section class="steps" aria-labelledby="stepsTitle">
+        <p class="section-eyebrow" data-i18n="stepsTitle" id="stepsTitle">How it works</p>
+        <ol class="step-list" id="stepList"></ol>
+      </section>
+
+      <section class="merit" aria-labelledby="meritTitle">
+        <div class="merit-inner">
+          <p class="section-eyebrow" data-i18n="meritTitle" id="meritTitle">A merit journey</p>
+          <p class="merit-body" data-i18n="meritBody"></p>
+        </div>
+      </section>
+
+      <section class="phrases" aria-labelledby="phrasesTitle">
+        <p class="section-eyebrow" data-i18n="phrasesTitle" id="phrasesTitle">Words to carry with you</p>
+        <p class="section-sub" data-i18n="phrasesSubtitle"></p>
+        <div class="phrase-wall" id="phraseWall"></div>
+      </section>
+
+      <section class="ethics" aria-labelledby="ethicsTitle">
+        <div class="ethics-inner">
+          <p class="section-eyebrow" data-i18n="ethicsTitle" id="ethicsTitle">Gentle by promise</p>
+          <p class="ethics-body" data-i18n="ethicsBody"></p>
+        </div>
+      </section>
+
+      <section class="final-cta">
+        <a class="btn btn-primary btn-lg" href="/app/" data-i18n="enter">Enter Foobow</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="footer-blessing" data-i18n="footerBlessing"></p>
+      <p class="footer-note" data-i18n="footerNote"></p>
+    </footer>
+
+    <script src="landing.i18n.js"></script>
+    <script src="landing.js"></script>
   </body>
 </html>

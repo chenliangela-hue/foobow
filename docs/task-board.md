@@ -92,6 +92,7 @@
 - Ship the calm design elevation: daily rotating thought (web + mobile), breathing orb, ambient drift, micro-interactions, glass nav.
 - Add opt-in synthesized soundscapes (water/rain/forest) to the Calm Ritual with PA coverage.
 - Add key-gated Clerk sign-in/sign-up/sign-out UI to the mobile Profile with secure token cache and guest mode preserved.
+- Phase 1 (福报 elevation): restructure the site into a marketing landing (`/`) + app (`/app/`); build the multilingual 福报 landing page (en/zh-Hans/fr/es/th/ja) with brand rebrand, rotating blessing couplets, five grouped "gates of kindness", and an ethics band; add landing tests + hero visual baseline.
 
 
 ## Next

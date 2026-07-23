@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { pathToFileURL } from "node:url";
 
-const prototypeUrl = pathToFileURL(`${process.cwd()}/prototype/index.html`).toString();
+const prototypeUrl = pathToFileURL(`${process.cwd()}/prototype/app/index.html`).toString();
 
 test.beforeEach(async ({ page }) => {
   await page.goto(prototypeUrl);

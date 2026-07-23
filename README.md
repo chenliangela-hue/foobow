@@ -9,15 +9,18 @@ The first deliverable in this repository is intentionally product-led:
 - Reference-product notes from map, wellness, charity, cleanup, and social-good apps.
 - A clickable static prototype that shows the expected product shape.
 
-## Prototype
+## Landing page and prototype
 
-Open the prototype directly in a browser:
+The deployed site (foobow.com) is now a marketing landing page plus the app:
 
 ```text
-prototype/index.html
+prototype/index.html        # Foobow · 福报 landing page (foobow.com/)
+prototype/app/index.html    # the clickable app (foobow.com/app/)
 ```
 
-The prototype includes:
+The **landing** (`prototype/index.html` + `landing.css` + `landing.js` + `landing.i18n.js`) is a calm, cinematic 福报-themed page: brand lockup, the couplet tagline 积善德，得福报；种善因，收福果, a rotating blessing from fifteen Buddhist couplets, five grouped "gates of kindness", and full localization in English, 简体中文, Français, Español, ไทย, and 日本語.
+
+The **app** (`prototype/app/`) includes:
 
 - Today check-in and recommended deed.
 - Map-first exploration surface.

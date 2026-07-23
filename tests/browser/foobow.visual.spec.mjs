@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { pathToFileURL } from "node:url";
 
-const prototypeUrl = pathToFileURL(`${process.cwd()}/prototype/index.html`).toString();
+const prototypeUrl = pathToFileURL(`${process.cwd()}/prototype/app/index.html`).toString();
+const landingUrl = pathToFileURL(`${process.cwd()}/prototype/index.html`).toString();
 
 async function resetPrototype(page) {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -11,9 +12,24 @@ async function resetPrototype(page) {
   await page.locator(".app-shell").waitFor();
 }
 
-test.beforeEach(async ({ page }) => {
-  await resetPrototype(page);
+test("landing hero visual baseline", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto(landingUrl);
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await page.locator(".hero").waitFor();
+  // The blessing rotator content changes daily, so mask it for a stable baseline.
+  await expect(page.locator(".hero")).toHaveScreenshot("landing-hero.png", {
+    animations: "disabled",
+    mask: [page.locator(".phrase-rotator")],
+    maxDiffPixelRatio: 0.006
+  });
 });
+
+test.describe("app screens", () => {
+  test.beforeEach(async ({ page }) => {
+    await resetPrototype(page);
+  });
 
 test("today screen visual baseline", async ({ page }) => {
   await expect(page.locator(".app-shell")).toHaveScreenshot("today-screen.png", {
@@ -41,4 +57,5 @@ test("dark community visual baseline", async ({ page }) => {
     animations: "disabled",
     maxDiffPixelRatio: 0.006
   });
+});
 });

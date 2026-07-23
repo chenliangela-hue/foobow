@@ -11,7 +11,7 @@ async function readText(path) {
 }
 
 async function readPrototypeData() {
-  const source = await readText("prototype/data.js");
+  const source = await readText("prototype/app/data.js");
   const context = { window: {} };
   vm.runInNewContext(source, context);
   return context.window.FOOBOW_DATA;

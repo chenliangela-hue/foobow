@@ -61,7 +61,12 @@ const translations = {
       "One gentle act can soften a whole afternoon.",
       "You are allowed to move slowly.",
       "Light a small lamp; darkness handles itself.",
-      "Rest is also a good deed."
+      "Rest is also a good deed.",
+      "Good begets good; blessings flow from kindness.",
+      "Gather good virtue, and blessings come.",
+      "Plant kind causes, harvest kind fruit.",
+      "A spark of kindness blesses a lifetime.",
+      "One good deed, one measure of merit."
     ]
   },
   zh: {
@@ -123,7 +128,12 @@ const translations = {
       "\u4e00\u4e2a\u6e29\u548c\u7684\u4e3e\u52a8\uff0c\u80fd\u67d4\u8f6f\u6574\u4e2a\u4e0b\u5348\u3002",
       "\u4f60\u53ef\u4ee5\u6162\u6162\u6765\u3002",
       "\u70b9\u4e00\u76cf\u5c0f\u706f\uff0c\u9ed1\u6697\u81ea\u4f1a\u9000\u8ba9\u3002",
-      "\u4f11\u606f\uff0c\u4e5f\u662f\u4e00\u4ef6\u5584\u4e8b\u3002"
+      "\u4f11\u606f\uff0c\u4e5f\u662f\u4e00\u4ef6\u5584\u4e8b\u3002",
+      "\u5584\u6709\u5584\u62a5\uff0c\u798f\u4ece\u5584\u6765\u3002",
+      "\u79ef\u5584\u5fb7\uff0c\u5f97\u798f\u62a5\u3002",
+      "\u79cd\u5584\u56e0\uff0c\u6536\u798f\u679c\u3002",
+      "\u5584\u5fc3\u4e00\u70b9\uff0c\u798f\u6cfd\u4e00\u751f\u3002",
+      "\u4e00\u5ff5\u5584\u5fc3\uff0c\u4e07\u798f\u4e34\u95e8\u3002"
     ]
   }
 };
