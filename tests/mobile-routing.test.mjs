@@ -18,10 +18,14 @@ test("mobile app is wired for Expo Router tab routes", async () => {
   assert.deepEqual(appJson.expo.plugins, ["expo-router"]);
   assert.match(rootLayout, /<Stack screenOptions=\{\{ headerShown: false \}\}/);
   assert.match(tabLayout, /<Tabs/);
-  assert.match(appSource, /Calm ritual/);
-  assert.match(appSource, /Start 20s focus/);
-  assert.match(appSource, /Complete with focus/);
-  assert.match(appSource, /symbolic comfort only/);
+  const calmCardSource = await read("apps/mobile/src/components/deeds/CalmRitualCard.tsx");
+  const safetySource = await read("apps/mobile/src/components/common/SafetyNotice.tsx");
+  const combinedAppSource = appSource + calmCardSource + safetySource;
+
+  assert.match(combinedAppSource, /Calm ritual/);
+  assert.match(combinedAppSource, /Start 20s focus/);
+  assert.match(combinedAppSource, /Complete with focus/);
+  assert.match(combinedAppSource, /symbolic comfort only/);
 
   for (const route of ["index", "map", "deeds", "community", "profile"]) {
     const source = await read(`apps/mobile/app/(tabs)/${route}.tsx`);

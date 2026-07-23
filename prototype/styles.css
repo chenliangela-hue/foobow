@@ -129,8 +129,8 @@ h3 {
 }
 
 .icon-button {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   font-weight: 800;
 }
@@ -852,3 +852,23 @@ dialog::backdrop {
     transition-duration: 0.001ms !important;
   }
 }
+
+body.senior-mode {
+  font-size: 1.15rem;
+  --ink: #121818;
+}
+
+body.senior-mode button,
+body.senior-mode .nav-item {
+  min-height: 52px;
+  font-size: 1rem;
+}
+
+body.senior-mode h1 {
+  font-size: 2.4rem;
+}
+
+body.senior-mode h2 {
+  font-size: 2.1rem;
+}
+

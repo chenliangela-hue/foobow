@@ -39,6 +39,20 @@ This file is the project-local memory. Keep it current whenever product directio
 - Used the Codex bundled Node `24.14.0` runtime to install Prisma CLI 7 in `apps/api` and run Prisma Client generation. Updated Prisma for v7 by moving `DATABASE_URL` to `apps/api/prisma.config.ts`, adding a generate-only unreachable fallback URL, fixing missing inverse relations, and adding `PrismaService` plus Prisma-backed Nest read paths for deed types, map spots, blessings, and donation campaigns. Added `apps/api/.env.example` and configurable dev bearer token support.
 - `npm run test:all` passed after Prisma/Nest changes. Security gates remain high/critical clean, but API audit now reports a moderate Prisma dev-tooling transitive `@hono/node-server` advisory whose force fix would downgrade Prisma; track for upstream fix rather than forcing.
 
+## 2026-07-19
+
+- Refactored `apps/mobile` into an enterprise-grade MVC / Modular Architecture (`src/theme/`, `src/types/`, `src/services/`, `src/controllers/`, `src/components/`).
+- Implemented Zen and Senior-Friendly UI design tokens with warm sand, tea/jade, bamboo, and soft amber gold tones, high contrast text ratios, senior font scaling, and extra-large 48dp+ tap targets.
+- Created custom controller hooks (`useTodayController`, `useMapController`, `useDeedController`, `useCalmRitualController`, `useCommunityController`, `useProfileController`) isolating state logic from view components.
+- Extracted isolated view components (`Header`, `NavBar`, `CategoryFilters`, `SafetyNotice`, `TodayView`, `MapView`, `DeedCatalogView`, `CalmRitualCard`, `CommunityView`, `ProfileView`).
+- Updated `prototype/styles.css` with 48px minimum touch targets and `.senior-mode` high-readability rules.
+
+## 2026-07-22
+
+- Verified the mobile MVC refactor against all local gates: root 25 tests, API 21 tests + typecheck, mobile typecheck, mobile routing test, 10 browser PA tests, and the dependency advisory watchlist.
+- Simplified `useTodayController` to drop its duplicated internal karma state and take an `addKarma(points)` callback, matching the deed/community controller signatures so app-level `sharedKarma` is the single source of truth.
+- Found the Playwright community visual baselines stale since `aad9272` (that commit changed `prototype/data.js` sample blessings without refreshing snapshots). Refreshed all six visual baselines after inspecting the new screenshots; the diffs were the intended 48px touch targets plus current sample data. `npm run test:visual` passes 6/6.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

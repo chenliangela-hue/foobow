@@ -71,6 +71,11 @@
 - Add focus-session API/database draft: OpenAPI paths, SQL migration, Prisma models, idempotent completion, private reflections, and contract tests.
 - Add provider CLI setup plan for Supabase, Clerk, OSM/MapLibre maps, optional Stripe, and provider-backed PA gates.
 - Add `.nvmrc` so nvm-compatible shells standardize Node on `20.19.4`.
+- Refactor `apps/mobile` into enterprise MVC / Modular Architecture (`src/theme`, `src/types`, `src/services`, `src/controllers`, `src/components`).
+- Add Zen & Senior-Friendly UI design tokens with warm sand, tea/jade, bamboo, and soft gold palette, high contrast text ratios, senior font scaling, and extra-large 48dp+ tap targets.
+- Add `.senior-mode` high-readability rules and 48px minimum touch targets to `prototype/styles.css`.
+- Verify the mobile MVC refactor against all local test gates and refresh stale Playwright visual baselines after inspection.
+
 
 ## Next
 
