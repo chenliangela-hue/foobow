@@ -13,6 +13,7 @@
     "nest:db-smoke": "tsx scripts/nest-db-http-smoke.ts",
     "test:db-integration": "tsx scripts/db-integration-suite.ts",
     "auth:clerk-smoke": "tsx scripts/clerk-auth-smoke.ts",
+    "db:supabase-provision": "tsx scripts/supabase-provision.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --test tests && npm run typecheck"
   },

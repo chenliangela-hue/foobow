@@ -88,6 +88,8 @@
 - Add gated `deploy-web` CI job for Vercel production deploys on `main`.
 - Add deployment runbook and multi-provider payments roadmap docs.
 - Add Clerk session JWT verification to the Nest auth guard with a real-instance mint-and-verify smoke script.
+- Bring foobow.com live on Vercel nameservers and provision the Supabase production database (schema + seeds via pooler).
+- Ship the calm design elevation: daily rotating thought (web + mobile), breathing orb, ambient drift, micro-interactions, glass nav.
 
 
 ## Next

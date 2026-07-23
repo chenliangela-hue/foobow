@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { dailyThoughtFor } from "../../i18n/dailyThoughts";
 import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
@@ -26,7 +27,7 @@ export function TodayView({
   moods
 }: TodayViewProps) {
   const currentColors = useThemeColors();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const eyebrowColor = { color: currentColors.muted };
   const headingColor = { color: currentColors.ink };
   const bodyColor = { color: currentColors.muted };
@@ -42,6 +43,15 @@ export function TodayView({
         </Text>
         <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
           {t("today.copy")}
+        </Text>
+        <Text
+          style={[
+            styles.dailyThought,
+            { color: currentColors.muted, borderLeftColor: currentColors.gold },
+            seniorMode && { fontSize: typography.sizes.bodySenior }
+          ]}
+        >
+          {dailyThoughtFor(locale)}
         </Text>
       </View>
 
@@ -147,6 +157,14 @@ const styles = StyleSheet.create({
   body: {
     fontSize: typography.sizes.body,
     lineHeight: 22
+  },
+  dailyThought: {
+    fontSize: typography.sizes.body,
+    fontStyle: "italic",
+    lineHeight: 22,
+    marginTop: layout.spacing.sm,
+    paddingLeft: layout.spacing.sm,
+    borderLeftWidth: 3
   },
   panel: {
     padding: layout.spacing.md,

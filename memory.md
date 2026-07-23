@@ -83,6 +83,12 @@ This file is the project-local memory. Keep it current whenever product directio
 - Implemented Clerk JWT verification in the Nest guard: `src/nest/clerk-jwt.ts` verifies session tokens against the instance JWKS (issuer from `AUTH_ISSUER_URL`) via `jose`, and `DevAuthGuard` now accepts either the local dev bearer token or a verified Clerk JWT, attaching `request.auth` with the user id and source. Proved end-to-end with `npm --prefix apps/api run auth:clerk-smoke`, which mints a real session JWT via the Clerk Backend API (this instance is username-based — `email_address` is rejected on user creation), verifies it, and rejects a tampered token. The smoke skips cleanly when Clerk credentials are absent, prefers an existing user, and revokes its session afterward.
 - CI stayed green through the deployment commit (`5b5db85`) with `deploy-web` correctly skipped pending the user-set secrets/variable.
 
+## 2026-07-23 (production wiring + design elevation)
+
+- foobow.com is LIVE: the user switched Namecheap nameservers to `ns1/ns2.vercel-dns.com`; apex resolves to Vercel and serves HTTP 200. `www` was still propagating locally but Vercel's authoritative NS already answers correctly.
+- Supabase project `ifujcchqlotxenuitrey` is back online (region `us-east-2`). Provisioned the production database via new `apps/api/scripts/supabase-provision.ts` (`npm --prefix apps/api run db:supabase-provision`): applied both SQL migrations and the reference seed through the IPv4 session pooler `aws-1-us-east-2.pooler.supabase.com:5432` (direct `db.*` hosts are IPv6-only). Verified counts: 4 deed types, 4 map spots, 1 campaign. Script is idempotent (skips when guard tables exist) and tolerates the curly quotes in `.env.local`. Filled `DIRECT_URL` with the URL-encoded pooler connection string.
+- Design elevation of the prototype ("astonish, a piece of mind everyday"): daily rotating gentle thought in the Today hero (`#dailyThought`, deterministic by day-of-year, en+zh, same lines on web and mobile via `apps/mobile/src/i18n/dailyThoughts.ts`), breathing pearl orb in the Calm Ritual card (8s cycle, reduced-motion safe), slow ambient background drift, 16px card geometry, hover lift/press micro-interactions, gradient primary buttons, karma-ring glow on gain, and a frosted-glass bottom nav. Contrast tokens untouched; all 12 PA tests pass; visual baselines regenerated and inspected.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

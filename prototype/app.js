@@ -48,7 +48,19 @@ const translations = {
     dialogEyebrow: "Real impact option",
     dialogTitle: "Support a verified cause",
     dialogCopy: "This donation supports real operating costs or partner campaigns. It does not buy luck, virtue, or guaranteed karma.",
-    closeDialog: "Close"
+    closeDialog: "Close",
+    dailyThoughts: [
+      "A small kindness is still kindness.",
+      "You can begin the day again at any hour.",
+      "Let one worry rest; it will keep without you.",
+      "Quiet effort counts, even unseen.",
+      "Breathe once for yourself, once for someone far away.",
+      "Today does not need to be heavy to matter.",
+      "One gentle act can soften a whole afternoon.",
+      "You are allowed to move slowly.",
+      "Light a small lamp; darkness handles itself.",
+      "Rest is also a good deed."
+    ]
   },
   zh: {
     eyebrow: "\u865a\u62df\u5584\u7f18\u5730\u56fe",
@@ -96,7 +108,19 @@ const translations = {
     dialogEyebrow: "\u771f\u5b9e\u5f71\u54cd\u9009\u9879",
     dialogTitle: "\u652f\u6301\u5df2\u9a8c\u8bc1\u7684\u516c\u76ca\u9879\u76ee",
     dialogCopy: "\u6350\u52a9\u7528\u4e8e\u771f\u5b9e\u8fd0\u8425\u6210\u672c\u6216\u5408\u4f5c\u516c\u76ca\u9879\u76ee\u3002\u5b83\u4e0d\u4f1a\u8d2d\u4e70\u597d\u8fd0\u3001\u7f8e\u5fb7\u6216\u4fdd\u8bc1\u5584\u62a5\u3002",
-    closeDialog: "\u5173\u95ed"
+    closeDialog: "\u5173\u95ed",
+    dailyThoughts: [
+      "\u5fae\u5c0f\u7684\u5584\u610f\uff0c\u4e5f\u662f\u5584\u610f\u3002",
+      "\u4e00\u5929\u4e2d\u7684\u4efb\u4f55\u65f6\u523b\uff0c\u90fd\u53ef\u4ee5\u91cd\u65b0\u5f00\u59cb\u3002",
+      "\u653e\u4e0b\u4e00\u4ef6\u62c5\u5fc3\uff0c\u5b83\u81ea\u5df1\u4f1a\u5b89\u597d\u3002",
+      "\u5b89\u9759\u7684\u52aa\u529b\uff0c\u5373\u4f7f\u65e0\u4eba\u770b\u89c1\uff0c\u4e5f\u7b97\u6570\u3002",
+      "\u4e3a\u81ea\u5df1\u547c\u5438\u4e00\u6b21\uff0c\u4e5f\u4e3a\u8fdc\u65b9\u7684\u4eba\u547c\u5438\u4e00\u6b21\u3002",
+      "\u4eca\u5929\u4e0d\u5fc5\u6c89\u91cd\uff0c\u4e5f\u4e00\u6837\u6709\u610f\u4e49\u3002",
+      "\u4e00\u4e2a\u6e29\u548c\u7684\u4e3e\u52a8\uff0c\u80fd\u67d4\u8f6f\u6574\u4e2a\u4e0b\u5348\u3002",
+      "\u4f60\u53ef\u4ee5\u6162\u6162\u6765\u3002",
+      "\u70b9\u4e00\u76cf\u5c0f\u706f\uff0c\u9ed1\u6697\u81ea\u4f1a\u9000\u8ba9\u3002",
+      "\u4f11\u606f\uff0c\u4e5f\u662f\u4e00\u4ef6\u5584\u4e8b\u3002"
+    ]
   }
 };
 
@@ -142,6 +166,23 @@ function updateKarma(delta) {
   state.deeds += 1;
   saveState();
   renderStats();
+
+  const ring = document.querySelector(".karma-ring");
+  if (ring) {
+    ring.classList.remove("glow");
+    void ring.offsetWidth;
+    ring.classList.add("glow");
+    window.setTimeout(() => ring.classList.remove("glow"), 1200);
+  }
+}
+
+function renderDailyThought() {
+  const node = document.getElementById("dailyThought");
+  if (!node) return;
+  const thoughts = dictionary().dailyThoughts;
+  const start = Date.UTC(new Date().getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((Date.now() - start) / 86400000);
+  node.textContent = thoughts[dayOfYear % thoughts.length];
 }
 
 function renderStats() {
@@ -399,6 +440,7 @@ function renderAll() {
   document.body.classList.toggle("senior-mode", Boolean(state.settings.seniorMode));
   document.getElementById("seniorToggle").setAttribute("aria-pressed", String(Boolean(state.settings.seniorMode)));
   applyTranslations();
+  renderDailyThought();
   renderStats();
   renderCategoryFilters();
   renderSoundscapes();
