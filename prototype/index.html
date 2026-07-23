@@ -18,9 +18,13 @@
         <span class="brand-mark" aria-hidden="true">福</span>
         <span class="brand-word">Foobow<em>· 福报</em></span>
       </a>
-      <div class="lang-switch">
-        <label class="visually-hidden" for="langSelect" id="langSwitchLabel">Language</label>
-        <select id="langSelect" aria-labelledby="langSwitchLabel"></select>
+      <nav class="site-nav" id="siteNav" aria-label="Sections"></nav>
+      <div class="header-actions">
+        <div class="lang-switch">
+          <label class="visually-hidden" for="langSelect" id="langSwitchLabel">Language</label>
+          <select id="langSelect" aria-labelledby="langSwitchLabel"></select>
+        </div>
+        <a class="btn btn-primary btn-sm" id="headerEnter" href="/app/" data-i18n="enter">Enter Foobow</a>
       </div>
     </header>
 
@@ -50,7 +54,7 @@
         <div class="gate-grid" id="gateGrid"></div>
       </section>
 
-      <section class="steps" aria-labelledby="stepsTitle">
+      <section class="steps" id="how" aria-labelledby="stepsTitle">
         <p class="section-eyebrow" data-i18n="stepsTitle" id="stepsTitle">How it works</p>
         <ol class="step-list" id="stepList"></ol>
       </section>
@@ -62,7 +66,7 @@
         </div>
       </section>
 
-      <section class="phrases" aria-labelledby="phrasesTitle">
+      <section class="phrases" id="wisdom" aria-labelledby="phrasesTitle">
         <p class="section-eyebrow" data-i18n="phrasesTitle" id="phrasesTitle">Words to carry with you</p>
         <p class="section-sub" data-i18n="phrasesSubtitle"></p>
         <div class="phrase-wall" id="phraseWall"></div>

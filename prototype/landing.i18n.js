@@ -17,6 +17,13 @@ window.FOOBOW_LANDING_I18N = {
   // The signature couplet, shown in Chinese under the brand in every locale.
   coupletTagline: "积善德，得福报；种善因，收福果",
 
+  // Top-navigation links (anchor to landing sections).
+  navLinks: [
+    { href: "#gates", label: { en: "Gates", "zh-Hans": "善门", fr: "Portes", es: "Puertas", th: "ประตู", ja: "門" } },
+    { href: "#how", label: { en: "Path", "zh-Hans": "步骤", fr: "Parcours", es: "Camino", th: "ขั้นตอน", ja: "歩み" } },
+    { href: "#wisdom", label: { en: "Wisdom", "zh-Hans": "箴言", fr: "Sagesse", es: "Sabiduría", th: "ปัญญา", ja: "言葉" } }
+  ],
+
   ui: {
     en: {
       htmlLang: "en",

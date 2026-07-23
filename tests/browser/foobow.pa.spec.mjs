@@ -11,7 +11,9 @@ test.beforeEach(async ({ page }) => {
 
 test("daily ritual, map, deed, community, and profile flows work", async ({ page }) => {
   await expect(page).toHaveTitle("Foobow Prototype");
-  await expect(page.getByRole("heading", { name: "Foobow" })).toBeVisible();
+  const brand = page.getByRole("link", { name: /Foobow home/ });
+  await expect(brand).toBeVisible();
+  await expect(brand).toHaveAttribute("href", "/");
 
   await page.getByRole("button", { name: "Heavy" }).click();
   await expect(page.locator("#recommendedDeed")).toHaveText("Light a path home");
@@ -77,7 +79,9 @@ test("category filters narrow map spots and deed catalog", async ({ page }) => {
 
 test("keyboard users can reach controls and activate deed cards", async ({ page }) => {
   const focusedNames = [];
-  for (let index = 0; index < 7; index += 1) {
+  // Tab depth accommodates the top navigation (brand + section links on
+  // desktop) ahead of the header controls and mood buttons.
+  for (let index = 0; index < 14; index += 1) {
     await page.keyboard.press("Tab");
     focusedNames.push(await page.evaluate(() => document.activeElement?.ariaLabel || document.activeElement?.textContent?.trim()));
   }
@@ -133,6 +137,27 @@ test("soundscape audio control is opt-in, toggles, and survives retuning", async
   await page.reload();
   await page.getByRole("button", { name: "Deeds" }).click();
   await expect(page.locator("#soundscapeToggle")).toHaveAttribute("aria-pressed", "false");
+});
+
+test("profile menu opens, shows merit, and can open the profile screen", async ({ page }) => {
+  await expect(page.locator("#profileDropdown")).toBeHidden();
+  await page.locator("#profileMenuButton").click();
+  await expect(page.locator("#profileDropdown")).toBeVisible();
+  await expect(page.locator("#profileMenuStats")).not.toBeEmpty();
+
+  await page.locator("#openProfileMenuItem").click();
+  await expect(page.locator("#screen-profile")).toHaveClass(/active/);
+  await expect(page.locator("#profileDropdown")).toBeHidden();
+});
+
+test("top navigation switches screens and stays in sync on wide viewports", async ({ page }) => {
+  const topNav = page.locator("#topNav");
+  if (!(await topNav.isVisible())) {
+    test.skip(true, "top nav is hidden on narrow viewports; bottom nav is primary there");
+  }
+  await topNav.getByText("Community", { exact: true }).click();
+  await expect(page.locator("#screen-community")).toHaveClass(/active/);
+  await expect(page.locator(".bottom-nav .nav-item.active")).toHaveText("Community");
 });
 
 test("core design tokens meet WCAG contrast thresholds", async ({ page }) => {

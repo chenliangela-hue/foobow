@@ -51,6 +51,10 @@ const translations = {
     closeDialog: "Close",
     playSoundscape: "Play soundscape",
     stopSoundscape: "Stop sound",
+    profileMenuTitle: "Your merit",
+    profileMenuStats: "%{karma} karma · %{streak}-day streak",
+    profileMenuOpen: "Open profile",
+    profileMenuNote: "Sign in for a synced account in the Foobow mobile app.",
     dailyThoughts: [
       "A small kindness is still kindness.",
       "You can begin the day again at any hour.",
@@ -118,6 +122,10 @@ const translations = {
     closeDialog: "\u5173\u95ed",
     playSoundscape: "\u64ad\u653e\u58f0\u666f",
     stopSoundscape: "\u505c\u6b62\u58f0\u97f3",
+    profileMenuTitle: "\u4f60\u7684\u798f\u62a5",
+    profileMenuStats: "%{karma} \u5584\u7f18 \u00b7 \u8fde\u7eed %{streak} \u5929",
+    profileMenuOpen: "\u6253\u5f00\u4e2a\u4eba\u9875",
+    profileMenuNote: "\u5728 Foobow \u624b\u673a\u5e94\u7528\u767b\u5f55\uff0c\u5373\u53ef\u540c\u6b65\u8d26\u6237\u3002",
     dailyThoughts: [
       "\u5fae\u5c0f\u7684\u5584\u610f\uff0c\u4e5f\u662f\u5584\u610f\u3002",
       "\u4e00\u5929\u4e2d\u7684\u4efb\u4f55\u65f6\u523b\uff0c\u90fd\u53ef\u4ee5\u91cd\u65b0\u5f00\u59cb\u3002",
@@ -203,6 +211,10 @@ function renderStats() {
   setText("karmaValue", state.karma);
   setText("deedCount", state.deeds);
   setText("streakLabel", `${state.streak} day streak`);
+  const stats = dictionary().profileMenuStats
+    .replace("%{karma}", state.karma)
+    .replace("%{streak}", state.streak);
+  setText("profileMenuStats", stats);
 }
 
 function renderMoods() {
@@ -587,15 +599,62 @@ function renderAll() {
   setText("recommendedDeed", mood.deed);
 }
 
+function navigateTo(target) {
+  document.querySelectorAll(".nav-item, .top-nav-item").forEach((item) => {
+    item.classList.toggle("active", item.dataset.target === target);
+  });
+  document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));
+  const screen = document.getElementById(`screen-${target}`);
+  if (screen) screen.classList.add("active");
+}
+
+// Both the bottom tab bar (buttons) and the top nav (links) drive the same
+// single-page navigation and stay in sync.
 document.querySelectorAll(".nav-item").forEach((button) => {
-  button.addEventListener("click", () => {
-    const target = button.dataset.target;
-    document.querySelectorAll(".nav-item").forEach((item) => item.classList.remove("active"));
-    document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));
-    button.classList.add("active");
-    document.getElementById(`screen-${target}`).classList.add("active");
+  button.addEventListener("click", () => navigateTo(button.dataset.target));
+});
+
+document.querySelectorAll(".top-nav-item").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    navigateTo(link.dataset.target);
   });
 });
+
+// Profile menu (top-right): opens on click, closes on outside click or Escape.
+(function setupProfileMenu() {
+  const trigger = document.getElementById("profileMenuButton");
+  const dropdown = document.getElementById("profileDropdown");
+  if (!trigger || !dropdown) return;
+
+  function setOpen(open) {
+    dropdown.hidden = !open;
+    trigger.setAttribute("aria-expanded", String(open));
+  }
+
+  trigger.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setOpen(dropdown.hidden);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!dropdown.hidden && !dropdown.contains(event.target) && event.target !== trigger) {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setOpen(false);
+  });
+
+  const openProfile = document.getElementById("openProfileMenuItem");
+  if (openProfile) {
+    openProfile.addEventListener("click", () => {
+      navigateTo("profile");
+      setOpen(false);
+    });
+  }
+})();
 
 document.querySelectorAll(".map-pin").forEach((pin) => {
   pin.addEventListener("click", () => renderSpot(pin.dataset.spotId));

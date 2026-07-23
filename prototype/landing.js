@@ -68,6 +68,19 @@
     });
   }
 
+  function buildNav() {
+    var nav = document.getElementById("siteNav");
+    if (!nav) return;
+    nav.replaceChildren();
+    (I18N.navLinks || []).forEach(function (link) {
+      var anchor = document.createElement("a");
+      anchor.href = link.href;
+      anchor.className = "site-nav-item";
+      anchor.textContent = link.label[state.locale] || link.label.en;
+      nav.appendChild(anchor);
+    });
+  }
+
   function buildGates() {
     var ui = copy();
     var grid = document.getElementById("gateGrid");
@@ -164,6 +177,7 @@
 
   function render() {
     applyText();
+    buildNav();
     buildGates();
     buildSteps();
     buildPhraseWall();

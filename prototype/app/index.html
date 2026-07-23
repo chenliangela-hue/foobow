@@ -9,14 +9,39 @@
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <div>
-          <p class="eyebrow" data-i18n="eyebrow">Virtual good karma map</p>
-          <h1>Foobow</h1>
-        </div>
+        <a class="app-brand" href="/" aria-label="Foobow home — back to landing page">
+          <span class="brand-mark" aria-hidden="true">福</span>
+          <span class="brand-word">Foobow<em>· 福报</em></span>
+        </a>
+
+        <nav class="top-nav" id="topNav" aria-label="Sections">
+          <a class="top-nav-item active" href="#screen-today" data-target="today">Today</a>
+          <a class="top-nav-item" href="#screen-map" data-target="map">Map</a>
+          <a class="top-nav-item" href="#screen-deeds" data-target="deeds">Deeds</a>
+          <a class="top-nav-item" href="#screen-community" data-target="community">Community</a>
+          <a class="top-nav-item" href="#screen-profile" data-target="profile">Profile</a>
+        </nav>
+
         <div class="top-actions">
           <button class="icon-button" id="languageToggle" type="button" aria-label="Switch language">中</button>
           <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button>
           <button class="icon-button" id="seniorToggle" type="button" aria-label="Toggle senior readability mode" aria-pressed="false">Aa</button>
+          <div class="profile-menu">
+            <button class="profile-trigger" id="profileMenuButton" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown" aria-label="Your account menu">
+              <span class="avatar-mini" aria-hidden="true">☺</span>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown" role="menu" aria-labelledby="profileMenuButton" hidden>
+              <div class="profile-card">
+                <span class="avatar-lg" aria-hidden="true">☺</span>
+                <div>
+                  <p class="profile-name" data-i18n="profileMenuTitle">Your merit</p>
+                  <p class="profile-sub" id="profileMenuStats"></p>
+                </div>
+              </div>
+              <button class="menu-link" id="openProfileMenuItem" type="button" role="menuitem" data-i18n="profileMenuOpen">Open profile</button>
+              <p class="menu-note" data-i18n="profileMenuNote">Sign in for a synced account in the Foobow mobile app.</p>
+            </div>
+          </div>
         </div>
       </header>
 
