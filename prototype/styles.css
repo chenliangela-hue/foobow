@@ -315,6 +315,71 @@ button:active:not(:disabled) {
   line-height: 1.5;
 }
 
+.sound-control {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sound-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+  opacity: 0.25;
+  transition: opacity 400ms ease;
+}
+
+.sound-wave i {
+  width: 3px;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--gold), var(--teal));
+}
+
+.sound-wave i:nth-child(2),
+.sound-wave i:nth-child(4) {
+  height: 14px;
+}
+
+.sound-wave i:nth-child(3) {
+  height: 18px;
+}
+
+.sound-wave.playing {
+  opacity: 1;
+}
+
+.sound-wave.playing i {
+  animation: sound-bar 1.8s ease-in-out infinite;
+}
+
+.sound-wave.playing i:nth-child(2) {
+  animation-delay: 220ms;
+}
+
+.sound-wave.playing i:nth-child(3) {
+  animation-delay: 440ms;
+}
+
+.sound-wave.playing i:nth-child(4) {
+  animation-delay: 660ms;
+}
+
+.sound-wave.playing i:nth-child(5) {
+  animation-delay: 880ms;
+}
+
+@keyframes sound-bar {
+  0%,
+  100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1.5);
+  }
+}
+
 .breath-orb {
   width: 76px;
   aspect-ratio: 1;

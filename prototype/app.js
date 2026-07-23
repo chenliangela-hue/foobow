@@ -49,6 +49,8 @@ const translations = {
     dialogTitle: "Support a verified cause",
     dialogCopy: "This donation supports real operating costs or partner campaigns. It does not buy luck, virtue, or guaranteed karma.",
     closeDialog: "Close",
+    playSoundscape: "Play soundscape",
+    stopSoundscape: "Stop sound",
     dailyThoughts: [
       "A small kindness is still kindness.",
       "You can begin the day again at any hour.",
@@ -109,6 +111,8 @@ const translations = {
     dialogTitle: "\u652f\u6301\u5df2\u9a8c\u8bc1\u7684\u516c\u76ca\u9879\u76ee",
     dialogCopy: "\u6350\u52a9\u7528\u4e8e\u771f\u5b9e\u8fd0\u8425\u6210\u672c\u6216\u5408\u4f5c\u516c\u76ca\u9879\u76ee\u3002\u5b83\u4e0d\u4f1a\u8d2d\u4e70\u597d\u8fd0\u3001\u7f8e\u5fb7\u6216\u4fdd\u8bc1\u5584\u62a5\u3002",
     closeDialog: "\u5173\u95ed",
+    playSoundscape: "\u64ad\u653e\u58f0\u666f",
+    stopSoundscape: "\u505c\u6b62\u58f0\u97f3",
     dailyThoughts: [
       "\u5fae\u5c0f\u7684\u5584\u610f\uff0c\u4e5f\u662f\u5584\u610f\u3002",
       "\u4e00\u5929\u4e2d\u7684\u4efb\u4f55\u65f6\u523b\uff0c\u90fd\u53ef\u4ee5\u91cd\u65b0\u5f00\u59cb\u3002",
@@ -281,9 +285,125 @@ function renderSoundscapes() {
       state.soundscape = soundscape.id;
       saveState();
       renderSoundscapes();
+      retuneSoundscapeAudio();
     });
     row.append(button);
   });
+}
+
+// --- Ambient soundscape engine -------------------------------------------
+// All sound is synthesized with the Web Audio API (filtered noise with a
+// slow LFO), so no audio assets are shipped. Playback is strictly opt-in,
+// never persisted, and fades in and out gently.
+
+const soundscapeProfiles = {
+  water: { noise: "brown", filterType: "lowpass", frequency: 460, q: 0.8, lfoRate: 0.07, lfoDepth: 160, level: 0.12 },
+  rain: { noise: "white", filterType: "bandpass", frequency: 2400, q: 0.55, lfoRate: 0.35, lfoDepth: 480, level: 0.05 },
+  forest: { noise: "brown", filterType: "bandpass", frequency: 700, q: 0.45, lfoRate: 0.05, lfoDepth: 260, level: 0.1 }
+};
+
+let soundscapeAudio = null;
+let soundscapePlaying = false;
+
+function buildNoiseBuffer(ctx, kind) {
+  const length = ctx.sampleRate * 4;
+  const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+  const channel = buffer.getChannelData(0);
+  let last = 0;
+  for (let index = 0; index < length; index += 1) {
+    const white = Math.random() * 2 - 1;
+    if (kind === "brown") {
+      last = (last + 0.02 * white) / 1.02;
+      channel[index] = last * 3.5;
+    } else {
+      channel[index] = white;
+    }
+  }
+  return buffer;
+}
+
+function activeSoundscapeProfile() {
+  return soundscapeProfiles[state.soundscape] || soundscapeProfiles.water;
+}
+
+function retuneSoundscapeAudio() {
+  if (!soundscapeAudio) return;
+  const profile = activeSoundscapeProfile();
+  const { ctx, filter, lfo, lfoGain, master } = soundscapeAudio;
+
+  if (soundscapeAudio.source) {
+    try {
+      soundscapeAudio.source.stop();
+    } catch {
+      // Already stopped.
+    }
+    soundscapeAudio.source.disconnect();
+  }
+
+  const source = ctx.createBufferSource();
+  source.buffer = buildNoiseBuffer(ctx, profile.noise);
+  source.loop = true;
+  source.connect(filter);
+  filter.type = profile.filterType;
+  filter.frequency.value = profile.frequency;
+  filter.Q.value = profile.q;
+  lfo.frequency.value = profile.lfoRate;
+  lfoGain.gain.value = profile.lfoDepth;
+  master.gain.cancelScheduledValues(ctx.currentTime);
+  master.gain.linearRampToValueAtTime(profile.level, ctx.currentTime + 1.4);
+  source.start();
+  soundscapeAudio.source = source;
+}
+
+function startSoundscapeAudio() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+  stopSoundscapeAudio();
+
+  const ctx = new AudioContextClass();
+  const master = ctx.createGain();
+  master.gain.value = 0;
+  master.connect(ctx.destination);
+
+  const filter = ctx.createBiquadFilter();
+  filter.connect(master);
+
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.connect(lfoGain);
+  lfoGain.connect(filter.frequency);
+  lfo.start();
+
+  soundscapeAudio = { ctx, master, filter, lfo, lfoGain, source: null };
+  retuneSoundscapeAudio();
+
+  if (ctx.state === "suspended") {
+    ctx.resume().catch(() => {});
+  }
+}
+
+function stopSoundscapeAudio() {
+  if (!soundscapeAudio) return;
+  const { ctx, master } = soundscapeAudio;
+  try {
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+  } catch {
+    // Context may already be closed.
+  }
+  window.setTimeout(() => {
+    ctx.close().catch(() => {});
+  }, 620);
+  soundscapeAudio = null;
+}
+
+function renderSoundscapeToggle() {
+  const toggle = document.getElementById("soundscapeToggle");
+  const wave = document.getElementById("soundWave");
+  if (!toggle || !wave) return;
+  toggle.textContent = dictionary()[soundscapePlaying ? "stopSoundscape" : "playSoundscape"];
+  toggle.setAttribute("aria-pressed", String(soundscapePlaying));
+  wave.classList.toggle("playing", soundscapePlaying);
 }
 
 function renderFocusSession() {
@@ -441,6 +561,7 @@ function renderAll() {
   document.getElementById("seniorToggle").setAttribute("aria-pressed", String(Boolean(state.settings.seniorMode)));
   applyTranslations();
   renderDailyThought();
+  renderSoundscapeToggle();
   renderStats();
   renderCategoryFilters();
   renderSoundscapes();
@@ -521,6 +642,16 @@ document.getElementById("seniorToggle").addEventListener("click", () => {
   state.settings.seniorMode = !state.settings.seniorMode;
   saveState();
   renderAll();
+});
+
+document.getElementById("soundscapeToggle").addEventListener("click", () => {
+  soundscapePlaying = !soundscapePlaying;
+  if (soundscapePlaying) {
+    startSoundscapeAudio();
+  } else {
+    stopSoundscapeAudio();
+  }
+  renderSoundscapeToggle();
 });
 
 document.getElementById("languageToggle").addEventListener("click", () => {

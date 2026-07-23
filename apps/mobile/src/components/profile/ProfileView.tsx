@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import { clerkEnabled } from "../../auth/clerkConfig";
 import { LocalePreference, useI18n } from "../../i18n/LocaleContext";
+import { AccountCard } from "./AccountCard";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 
@@ -45,6 +47,8 @@ export function ProfileView({
       <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
         {t("profile.title")}
       </Text>
+
+      {clerkEnabled && <AccountCard seniorMode={seniorMode} />}
 
       <View style={[styles.panel, panelTheme]}>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>

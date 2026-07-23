@@ -90,6 +90,8 @@
 - Add Clerk session JWT verification to the Nest auth guard with a real-instance mint-and-verify smoke script.
 - Bring foobow.com live on Vercel nameservers and provision the Supabase production database (schema + seeds via pooler).
 - Ship the calm design elevation: daily rotating thought (web + mobile), breathing orb, ambient drift, micro-interactions, glass nav.
+- Add opt-in synthesized soundscapes (water/rain/forest) to the Calm Ritual with PA coverage.
+- Add key-gated Clerk sign-in/sign-up/sign-out UI to the mobile Profile with secure token cache and guest mode preserved.
 
 
 ## Next

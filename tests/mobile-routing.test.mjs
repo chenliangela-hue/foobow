@@ -15,7 +15,7 @@ test("mobile app is wired for Expo Router tab routes", async () => {
 
   assert.equal(packageJson.main, "expo-router/entry");
   assert.ok(packageJson.dependencies["expo-router"]);
-  assert.deepEqual(appJson.expo.plugins, ["expo-router", "expo-localization"]);
+  assert.deepEqual(appJson.expo.plugins, ["expo-router", "expo-localization", "expo-secure-store"]);
   assert.match(rootLayout, /<Stack screenOptions=\{\{ headerShown: false \}\}/);
   assert.match(tabLayout, /<Tabs/);
   const calmCardSource = await read("apps/mobile/src/components/deeds/CalmRitualCard.tsx");
@@ -65,6 +65,27 @@ test("mobile service layer follows the API contract with offline fallback", asyn
     assert.match(source, /apiService\.get/);
     assert.match(source, /useEffect/);
   }
+});
+
+test("mobile Clerk auth is key-gated with guest mode preserved", async () => {
+  const appSource = await read("apps/mobile/App.tsx");
+  const clerkConfig = await read("apps/mobile/src/auth/clerkConfig.ts");
+  const accountCard = await read("apps/mobile/src/components/profile/AccountCard.tsx");
+  const profileView = await read("apps/mobile/src/components/profile/ProfileView.tsx");
+
+  // Clerk only activates when the publishable key exists; the app must run
+  // without it (guest/offline mode).
+  assert.match(clerkConfig, /EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY/);
+  assert.match(appSource, /if \(!clerkEnabled\)/);
+  assert.match(appSource, /ClerkProvider/);
+  assert.match(appSource, /tokenCache/);
+  assert.match(profileView, /clerkEnabled && <AccountCard/);
+
+  // Username+password flows matching the Clerk instance configuration.
+  assert.match(accountCard, /useSignIn/);
+  assert.match(accountCard, /useSignUp/);
+  assert.match(accountCard, /signOut/);
+  assert.match(accountCard, /secureTextEntry/);
 });
 
 test("mobile localization covers en and zh-Hans with required safety copy", async () => {

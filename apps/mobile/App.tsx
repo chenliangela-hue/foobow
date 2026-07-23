@@ -1,7 +1,10 @@
+import { ClerkProvider } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, useColorScheme } from "react-native";
+import { clerkEnabled, clerkPublishableKey } from "./src/auth/clerkConfig";
 import { LocaleProvider } from "./src/i18n/LocaleContext";
 import { storageKeys, usePersistentState } from "./src/services/storageService";
 import { layout } from "./src/theme/theme";
@@ -31,12 +34,22 @@ export type FoobowAppProps = {
 };
 
 export default function App(props: FoobowAppProps) {
-  return (
+  const content = (
     <ThemeProvider>
       <LocaleProvider>
         <FoobowShell {...props} />
       </LocaleProvider>
     </ThemeProvider>
+  );
+
+  if (!clerkEnabled) {
+    return content;
+  }
+
+  return (
+    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
+      {content}
+    </ClerkProvider>
   );
 }
 

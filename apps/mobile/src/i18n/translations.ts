@@ -87,6 +87,23 @@ export const en = {
     bless: "Bless",
     report: "Report"
   },
+  account: {
+    eyebrow: "Account",
+    signInTitle: "Welcome back, quietly.",
+    signUpTitle: "Keep your karma with you.",
+    copy: "An account keeps your karma and streak safe across devices. No pressure — guest mode always works.",
+    usernamePlaceholder: "Username",
+    passwordPlaceholder: "Password",
+    signIn: "Sign in",
+    signUp: "Create account",
+    switchToSignUp: "New here? Create a quiet account",
+    switchToSignIn: "Already have an account? Sign in",
+    signedInAs: "Signed in as %{name}",
+    signedInCopy: "Your karma and streak follow you now. Your journal stays on this device.",
+    signOut: "Sign out",
+    gentleError: "That did not work — no rush, try once more.",
+    guestNote: "You can keep using Foobow without an account."
+  },
   profile: {
     eyebrow: "Profile & Preferences",
     title: "Your virtual footprint.",
@@ -193,6 +210,23 @@ export const zhHans: TranslationShape = {
     sendBlessing: "送出祝福",
     bless: "祝福",
     report: "举报"
+  },
+  account: {
+    eyebrow: "账户",
+    signInTitle: "安静地，欢迎回来。",
+    signUpTitle: "把善缘带在身边。",
+    copy: "账户可以让善缘和连续记录在不同设备间保留。没有压力——访客模式始终可用。",
+    usernamePlaceholder: "用户名",
+    passwordPlaceholder: "密码",
+    signIn: "登录",
+    signUp: "创建账户",
+    switchToSignUp: "第一次来？创建一个安静的账户",
+    switchToSignIn: "已有账户？直接登录",
+    signedInAs: "已登录：%{name}",
+    signedInCopy: "善缘和连续记录会跟随你。日记仍只保存在本设备。",
+    signOut: "退出登录",
+    gentleError: "这次没有成功——不着急，再试一次。",
+    guestNote: "不登录也可以继续使用浮宝。"
   },
   profile: {
     eyebrow: "个人与偏好",

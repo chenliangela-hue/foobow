@@ -110,6 +110,31 @@ test("senior readability mode enlarges type and persists", async ({ page }) => {
   await expect(page.locator("body")).not.toHaveClass(/senior-mode/);
 });
 
+test("soundscape audio control is opt-in, toggles, and survives retuning", async ({ page }) => {
+  await page.getByRole("button", { name: "Deeds" }).click();
+  const toggle = page.locator("#soundscapeToggle");
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("#soundWave")).not.toHaveClass(/playing/);
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await expect(toggle).toHaveText("Stop sound");
+  await expect(page.locator("#soundWave")).toHaveClass(/playing/);
+
+  await page.locator("#soundscapeRow").getByRole("button", { name: "Rain" }).click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await expect(toggle).toHaveText("Play soundscape");
+  await expect(page.locator("#soundWave")).not.toHaveClass(/playing/);
+
+  // Reload must never resume audio on its own.
+  await page.reload();
+  await page.getByRole("button", { name: "Deeds" }).click();
+  await expect(page.locator("#soundscapeToggle")).toHaveAttribute("aria-pressed", "false");
+});
+
 test("core design tokens meet WCAG contrast thresholds", async ({ page }) => {
   const ratios = await page.evaluate(() => {
     const styles = getComputedStyle(document.documentElement);
