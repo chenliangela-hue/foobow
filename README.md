@@ -14,9 +14,12 @@ The first deliverable in this repository is intentionally product-led:
 The deployed site (foobow.com) is now a marketing landing page plus the app:
 
 ```text
-prototype/index.html        # Foobow · 福报 landing page (foobow.com/)
-prototype/app/index.html    # the clickable app (foobow.com/app/)
+prototype/index.html          # Foobow · 福报 landing page (foobow.com/)
+prototype/app/index.html      # the clickable app (foobow.com/app/)
+prototype/admin/index.html    # the admin management console (foobow.com/admin/)
 ```
+
+The **admin console** (`prototype/admin/`) is a bilingual (中文/English) dark-themed management dashboard matching the product's back-office needs: a data board (support received, users, support records), order review with approve/reject, users, pricing, and an audit log. It reads live figures from the admin API when configured in Settings, and otherwise shows clearly-labelled demo data. It is `noindex` and, in production, is gated by backend admin accounts; money is always transparent donations and voluntary support — never "buying luck".
 
 The **landing** (`prototype/index.html` + `landing.css` + `landing.js` + `landing.i18n.js`) is a calm, cinematic 福报-themed page: brand lockup, the couplet tagline 积善德，得福报；种善因，收福果, a rotating blessing from fifteen Buddhist couplets, five grouped "gates of kindness", and full localization in English, 简体中文, Français, Español, ไทย, and 日本語.
 

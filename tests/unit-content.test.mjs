@@ -254,6 +254,32 @@ test("landing page carries brand, tagline, six locales, gates, and the ethics di
   assert.deepEqual(missingI18n, []);
 });
 
+test("admin console carries the management sections and keeps money ethical", async () => {
+  const html = await readText("prototype/admin/index.html");
+  const data = await readText("prototype/admin/admin.data.js");
+
+  const missingHtml = hasAll(html, [
+    "管理后台",
+    "sideNav",
+    "adminView",
+    "demoBadge",
+    "href=\"/\"",
+    "noindex"
+  ]);
+  assert.deepEqual(missingHtml, []);
+
+  const missingData = hasAll(data, [
+    "订单审核",
+    "商品定价",
+    "审计日志",
+    "never from buying luck",
+    "wechatpay",
+    "applepay",
+    "googlepay"
+  ]);
+  assert.deepEqual(missingData, []);
+});
+
 test("prototype exposes the required app screens and controls", async () => {
   const html = await readText("prototype/app/index.html");
   const missing = hasAll(html, [

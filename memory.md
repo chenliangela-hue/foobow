@@ -109,6 +109,13 @@ This file is the project-local memory. Keep it current whenever product directio
 - New upstream **high advisory** `find-my-way` (HTTP/2 DoS, via Prisma dev tooling) appeared; `npm audit fix` couldn't resolve within Prisma's range, so pinned `find-my-way ^9.7.0` via `overrides` in `apps/api/package.json` — API-tree overrides are safe (unlike the fragile Expo/mobile tree). Recorded in the advisory watchlist.
 - **Provisioning commands** (run with Node 20.19.4 on PATH): `npm --prefix apps/api run db:supabase-provision` (schema+seed) and `npm --prefix apps/api run db:supabase-storage` (buckets). Both idempotent.
 
+## 2026-07-23 (Phase 4: admin management console)
+
+- Built the admin backend the user asked for (菩提苑-style) as a bilingual (zh/en) dark-themed SPA at `prototype/admin/` → foobow.com/admin/ (`noindex`). Matches the reference screenshot: sidebar nav + data board (support today/total income cards, user stat tiles, support-record tiles), order review with approve/reject, users, pricing, audit log, and settings. Files: `index.html`, `admin.css`, `admin.js`, `admin.data.js`.
+- Ethics preserved: "income" is framed as transparent donations + voluntary support ("never from buying luck"), not fortune unlocks. Payment channels shown: stripe/applepay/googlepay/wechatpay (per the payments roadmap).
+- Wiring: reads live figures from `${apiUrl}/admin/overview` with a bearer token entered in Settings (persisted to localStorage); falls back to clearly-labelled demo data with a "Demo data" badge when no API is configured. The live admin API endpoints (Nest `/admin/*`) are Phase 4b, pending API hosting — the DB tables (admin_users, admin_audit_log, orders, catalog_items) already exist from Phase 2.
+- Tests: `tests/browser/foobow.admin.spec.mjs` (10: dashboard cards/tiles/demo-badge, logo→/, nav switching, order approve dequeues, zh/en toggle) + admin content assertions in unit-content (root suite now 32). `test:browser` runs pa+landing+admin specs.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

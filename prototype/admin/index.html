@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Foobow 福报 · 管理后台</title>
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="sidebar">
+        <a class="side-brand" href="/" aria-label="Foobow home">
+          <span class="brand-mark" aria-hidden="true">福</span>
+          <span class="brand-text">
+            <strong id="brandName">Foobow 福报</strong>
+            <small id="brandSub">管理后台</small>
+          </span>
+        </a>
+        <nav class="side-nav" id="sideNav" aria-label="Sections"></nav>
+        <div class="side-foot">
+          <label class="visually-hidden" for="langSelect" id="langLabel">Language</label>
+          <select id="langSelect" aria-labelledby="langLabel"></select>
+        </div>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-top">
+          <h1 id="viewTitle">数据看板</h1>
+          <div class="admin-top-actions">
+            <span class="demo-badge" id="demoBadge" hidden>演示数据</span>
+            <button class="ghost-btn" id="refreshBtn" type="button">刷新</button>
+          </div>
+        </header>
+        <section class="admin-view" id="adminView" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <script src="admin.data.js"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>
