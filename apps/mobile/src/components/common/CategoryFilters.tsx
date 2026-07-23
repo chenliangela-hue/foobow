@@ -1,4 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { CategoryId } from "../../types";
@@ -12,6 +13,7 @@ type CategoryFiltersProps = {
 
 export function CategoryFilters({ activeCategory, onSelect, seniorMode }: CategoryFiltersProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
 
   return (
     <ScrollView
@@ -43,7 +45,7 @@ export function CategoryFilters({ activeCategory, onSelect, seniorMode }: Catego
                 seniorMode && { fontSize: typography.sizes.body }
               ]}
             >
-              {cat.label}
+              {t(`categories.${cat.id}`, { defaultValue: cat.label })}
             </Text>
           </Pressable>
         );

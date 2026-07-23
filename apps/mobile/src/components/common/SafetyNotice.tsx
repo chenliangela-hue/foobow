@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 
@@ -8,6 +9,7 @@ type SafetyNoticeProps = {
 
 export function SafetyNotice({ seniorMode }: SafetyNoticeProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
 
   return (
     <View
@@ -23,7 +25,7 @@ export function SafetyNotice({ seniorMode }: SafetyNoticeProps) {
           seniorMode && { fontSize: typography.sizes.body }
         ]}
       >
-        This is symbolic comfort only. It does not guarantee luck, virtue, health, or real-world impact.
+        {t("safety.notice")}
       </Text>
     </View>
   );

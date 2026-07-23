@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { CategoryFilters } from "../common/CategoryFilters";
@@ -35,6 +36,7 @@ export function DeedCatalogView({
   seniorMode
 }: DeedCatalogViewProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
   const eyebrowColor = { color: currentColors.muted };
   const headingColor = { color: currentColors.ink };
   const bodyColor = { color: currentColors.muted };
@@ -44,14 +46,16 @@ export function DeedCatalogView({
       <View style={styles.rowBetween}>
         <View>
           <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-            Deed catalog
+            {t("deeds.eyebrow")}
           </Text>
           <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
-            Small rituals, clear categories.
+            {t("deeds.title")}
           </Text>
         </View>
         <View style={[styles.pill, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
-          <Text style={[styles.pillText, { color: currentColors.muted }]}>{visibleDeeds.length} shown</Text>
+          <Text style={[styles.pillText, { color: currentColors.muted }]}>
+            {t("deeds.shown", { count: visibleDeeds.length })}
+          </Text>
         </View>
       </View>
 
@@ -89,7 +93,7 @@ export function DeedCatalogView({
 
       <View style={[styles.focusCard, { backgroundColor: currentColors.surface, borderColor: currentColors.gold }]}>
         <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-          Ritual preview
+          {t("deeds.ritualPreview")}
         </Text>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
           {selectedDeed.title}
@@ -102,7 +106,7 @@ export function DeedCatalogView({
           onPress={onPerformRitual}
         >
           <Text style={[styles.primaryButtonText, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-            Perform ritual
+            {t("deeds.performRitual")}
           </Text>
         </Pressable>
       </View>

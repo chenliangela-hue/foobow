@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { CategoryFilters } from "../common/CategoryFilters";
@@ -22,6 +23,7 @@ export function MapView({
   seniorMode
 }: MapViewProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
   const eyebrowColor = { color: currentColors.muted };
   const headingColor = { color: currentColors.ink };
 
@@ -29,17 +31,17 @@ export function MapView({
     <View style={styles.container}>
       <View style={[styles.mapStage, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
         <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-          World map
+          {t("map.eyebrow")}
         </Text>
         <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
-          Explore places that need a little light.
+          {t("map.title")}
         </Text>
         {visibleSpots.map((spot) => {
           const isSelected = selectedSpot.id === spot.id;
           return (
             <Pressable
               key={spot.id}
-              accessibilityLabel={`${spot.name} good deed spot`}
+              accessibilityLabel={t("map.spotLabel", { name: spot.name })}
               accessibilityRole="button"
               accessibilityState={{ selected: isSelected }}
               onPress={() => onSelectSpot(spot.id)}

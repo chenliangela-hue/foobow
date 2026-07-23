@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { SafetyNotice } from "../common/SafetyNotice";
@@ -21,6 +22,7 @@ export function CalmRitualCard({
   seniorMode
 }: CalmRitualCardProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
   const eyebrowColor = { color: currentColors.muted };
   const headingColor = { color: currentColors.ink };
   const bodyColor = { color: currentColors.muted };
@@ -30,21 +32,21 @@ export function CalmRitualCard({
       <View style={styles.rowBetween}>
         <View style={styles.flexOne}>
           <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-            Calm ritual
+            {t("calm.eyebrow")}
           </Text>
           <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-            Take a focused moment first.
+            {t("calm.title")}
           </Text>
         </View>
         <View style={[styles.pill, { backgroundColor: focusReady ? currentColors.goldGlow : currentColors.line }]}>
           <Text style={[styles.pillText, { color: focusReady ? currentColors.gold : currentColors.muted }]}>
-            {focusReady ? "ready" : "optional"}
+            {focusReady ? t("calm.ready") : t("calm.optional")}
           </Text>
         </View>
       </View>
 
       <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-        Use a short presence timer, optional soundscape, and quiet reflection before recording a symbolic deed.
+        {t("calm.copy")}
       </Text>
 
       <View style={styles.soundscapeRow}>
@@ -71,7 +73,7 @@ export function CalmRitualCard({
                   seniorMode && { fontSize: typography.sizes.body }
                 ]}
               >
-                {item}
+                {t(`calm.soundscapes.${item.toLowerCase()}`, { defaultValue: item })}
               </Text>
             </Pressable>
           );
@@ -84,13 +86,13 @@ export function CalmRitualCard({
 
       <View style={styles.guidedList}>
         <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-          1. Breathe once and name the intention.
+          {t("calm.guidedStepOne")}
         </Text>
         <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-          2. Hold the action gently until the timer completes.
+          {t("calm.guidedStepTwo")}
         </Text>
         <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-          3. Record how you feel without pressure.
+          {t("calm.guidedStepThree")}
         </Text>
       </View>
 
@@ -106,7 +108,7 @@ export function CalmRitualCard({
               seniorMode && { fontSize: typography.sizes.bodySenior }
             ]}
           >
-            Start 20s focus
+            {t("calm.startFocus")}
           </Text>
         </Pressable>
         <Pressable
@@ -118,7 +120,7 @@ export function CalmRitualCard({
           onPress={onCompleteFocused}
         >
           <Text style={[styles.primaryButtonText, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-            Complete with focus
+            {t("calm.completeFocused")}
           </Text>
         </Pressable>
       </View>

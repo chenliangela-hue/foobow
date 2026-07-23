@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { MoodOption } from "../../types";
@@ -25,6 +26,7 @@ export function TodayView({
   moods
 }: TodayViewProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
   const eyebrowColor = { color: currentColors.muted };
   const headingColor = { color: currentColors.ink };
   const bodyColor = { color: currentColors.muted };
@@ -33,23 +35,25 @@ export function TodayView({
     <View style={styles.container}>
       <View style={styles.hero}>
         <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-          Today
+          {t("today.eyebrow")}
         </Text>
         <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
-          Do one quiet good deed.
+          {t("today.title")}
         </Text>
         <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-          Check in, choose a small symbolic action, and leave the day a little lighter.
+          {t("today.copy")}
         </Text>
       </View>
 
       <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
         <View style={styles.rowBetween}>
           <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-            How are you arriving?
+            {t("today.moodTitle")}
           </Text>
           <View style={[styles.pill, { backgroundColor: currentColors.goldGlow }]}>
-            <Text style={[styles.pillText, { color: currentColors.gold }]}>{streak} day streak</Text>
+            <Text style={[styles.pillText, { color: currentColors.gold }]}>
+              {t("today.streak", { count: streak })}
+            </Text>
           </View>
         </View>
         <View style={styles.grid}>
@@ -76,7 +80,7 @@ export function TodayView({
                     seniorMode && { fontSize: typography.sizes.bodySenior }
                   ]}
                 >
-                  {mood.label}
+                  {t(`moods.${mood.id}`, { defaultValue: mood.label })}
                 </Text>
               </Pressable>
             );
@@ -86,33 +90,33 @@ export function TodayView({
 
       <View style={[styles.focusCard, { backgroundColor: currentColors.surface, borderColor: currentColors.gold }]}>
         <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-          Recommended deed
+          {t("today.recommended")}
         </Text>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-          {selectedMood.deed}
+          {t(`moodDeeds.${selectedMood.id}`, { defaultValue: selectedMood.deed })}
         </Text>
         <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-          A symbolic action that keeps comfort separate from real-world claims.
+          {t("today.recommendedCopy")}
         </Text>
         <Pressable
           style={[styles.primaryButton, { backgroundColor: currentColors.jade }]}
           onPress={onCompleteDaily}
         >
           <Text style={[styles.primaryButtonText, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-            Complete deed
+            {t("today.completeDeed")}
           </Text>
         </Pressable>
       </View>
 
       <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-          Karma journal
+          {t("today.journalTitle")}
         </Text>
         <TextInput
           multiline
           value={journal}
           onChangeText={onChangeJournal}
-          placeholder="Today I want to release one worry and do one kind thing."
+          placeholder={t("today.journalPlaceholder")}
           placeholderTextColor={currentColors.muted}
           style={[styles.input, { color: currentColors.ink, borderColor: currentColors.line }]}
         />

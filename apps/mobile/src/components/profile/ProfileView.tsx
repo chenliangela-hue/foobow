@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import { LocalePreference, useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 
@@ -24,35 +25,42 @@ export function ProfileView({
   streak
 }: ProfileViewProps) {
   const currentColors = useThemeColors();
+  const { t, preference, setPreference } = useI18n();
   const eyebrowColor = { color: currentColors.muted };
   const headingColor = { color: currentColors.ink };
   const bodyColor = { color: currentColors.muted };
   const panelTheme = { backgroundColor: currentColors.surface, borderColor: currentColors.line };
 
+  const languageOptions: { value: LocalePreference; label: string }[] = [
+    { value: "system", label: t("profile.languageSystem") },
+    { value: "en", label: "English" },
+    { value: "zh-Hans", label: "中文" }
+  ];
+
   return (
     <View style={styles.container}>
       <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-        Profile & Preferences
+        {t("profile.eyebrow")}
       </Text>
       <Text style={[styles.title, headingColor, seniorMode && { fontSize: typography.sizes.headerSenior }]}>
-        Your virtual footprint.
+        {t("profile.title")}
       </Text>
 
       <View style={[styles.panel, panelTheme]}>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-          Statistics
+          {t("profile.statistics")}
         </Text>
         <View style={styles.statsRow}>
           <View style={[styles.statBox, { backgroundColor: currentColors.surfaceStrong }]}>
             <Text style={[styles.statValue, { color: currentColors.gold }, seniorMode && { fontSize: 28 }]}>{karma}</Text>
             <Text style={[styles.statLabel, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-              Total Karma
+              {t("profile.totalKarma")}
             </Text>
           </View>
           <View style={[styles.statBox, { backgroundColor: currentColors.surfaceStrong }]}>
             <Text style={[styles.statValue, { color: currentColors.jade }, seniorMode && { fontSize: 28 }]}>{streak}</Text>
             <Text style={[styles.statLabel, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-              Day Streak
+              {t("profile.dayStreak")}
             </Text>
           </View>
         </View>
@@ -60,16 +68,16 @@ export function ProfileView({
 
       <View style={[styles.panel, panelTheme]}>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-          Preferences
+          {t("profile.preferences")}
         </Text>
 
         <View style={styles.switchRow}>
           <View style={styles.flexOne}>
             <Text style={[styles.switchLabel, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-              Quiet Mode
+              {t("profile.quietMode")}
             </Text>
             <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-              Suppress loud notifications and sound effects.
+              {t("profile.quietModeCopy")}
             </Text>
           </View>
           <Switch
@@ -82,10 +90,10 @@ export function ProfileView({
         <View style={styles.switchRow}>
           <View style={styles.flexOne}>
             <Text style={[styles.switchLabel, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-              Private Journal
+              {t("profile.privateJournal")}
             </Text>
             <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-              Keep reflections stored locally on your device.
+              {t("profile.privateJournalCopy")}
             </Text>
           </View>
           <Switch
@@ -98,10 +106,10 @@ export function ProfileView({
         <View style={styles.switchRow}>
           <View style={styles.flexOne}>
             <Text style={[styles.switchLabel, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-              Senior / High Readability Mode
+              {t("profile.seniorMode")}
             </Text>
             <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-              Enlarge text font sizes and touch targets for comfortable reading.
+              {t("profile.seniorModeCopy")}
             </Text>
           </View>
           <Switch
@@ -110,11 +118,50 @@ export function ProfileView({
             trackColor={{ false: currentColors.line, true: currentColors.jade }}
           />
         </View>
+
+        <View style={styles.languageBlock}>
+          <Text style={[styles.switchLabel, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+            {t("profile.language")}
+          </Text>
+          <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+            {t("profile.languageCopy")}
+          </Text>
+          <View style={styles.languageRow}>
+            {languageOptions.map((option) => {
+              const isActive = preference === option.value;
+              return (
+                <Pressable
+                  key={option.value}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isActive }}
+                  onPress={() => setPreference(option.value)}
+                  style={[
+                    styles.languageChip,
+                    {
+                      backgroundColor: isActive ? currentColors.jade : currentColors.surfaceStrong,
+                      borderColor: isActive ? currentColors.jade : currentColors.line
+                    }
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.languageChipText,
+                      { color: isActive ? currentColors.surfaceStrong : currentColors.ink },
+                      seniorMode && { fontSize: typography.sizes.body }
+                    ]}
+                  >
+                    {option.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
       </View>
 
       <View style={[styles.panel, panelTheme]}>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-          Data Controls
+          {t("profile.dataControls")}
         </Text>
         <Pressable style={[styles.secondaryButton, { borderColor: currentColors.line }]}>
           <Text
@@ -124,7 +171,7 @@ export function ProfileView({
               seniorMode && { fontSize: typography.sizes.bodySenior }
             ]}
           >
-            Export local backup
+            {t("profile.exportBackup")}
           </Text>
         </Pressable>
       </View>
@@ -191,6 +238,29 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     fontSize: typography.sizes.body,
+    fontWeight: "600"
+  },
+  languageBlock: {
+    paddingVertical: layout.spacing.xs,
+    gap: layout.spacing.xs
+  },
+  languageRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: layout.spacing.xs,
+    marginTop: layout.spacing.xs
+  },
+  languageChip: {
+    minHeight: layout.minTouchTarget,
+    paddingHorizontal: layout.spacing.md,
+    paddingVertical: layout.spacing.xs,
+    borderRadius: layout.borderRadius.full,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  languageChipText: {
+    fontSize: typography.sizes.caption,
     fontWeight: "600"
   },
   secondaryButton: {

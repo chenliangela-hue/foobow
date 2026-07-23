@@ -9,7 +9,8 @@ export const storageKeys = {
   journal: "foobow.v1.journal",
   quietMode: "foobow.v1.quietMode",
   privateJournal: "foobow.v1.privateJournal",
-  seniorMode: "foobow.v1.seniorMode"
+  seniorMode: "foobow.v1.seniorMode",
+  locale: "foobow.v1.locale"
 } as const;
 
 async function getStoredValue<T>(key: string): Promise<T | null> {

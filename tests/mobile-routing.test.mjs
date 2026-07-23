@@ -15,12 +15,13 @@ test("mobile app is wired for Expo Router tab routes", async () => {
 
   assert.equal(packageJson.main, "expo-router/entry");
   assert.ok(packageJson.dependencies["expo-router"]);
-  assert.deepEqual(appJson.expo.plugins, ["expo-router"]);
+  assert.deepEqual(appJson.expo.plugins, ["expo-router", "expo-localization"]);
   assert.match(rootLayout, /<Stack screenOptions=\{\{ headerShown: false \}\}/);
   assert.match(tabLayout, /<Tabs/);
   const calmCardSource = await read("apps/mobile/src/components/deeds/CalmRitualCard.tsx");
   const safetySource = await read("apps/mobile/src/components/common/SafetyNotice.tsx");
-  const combinedAppSource = appSource + calmCardSource + safetySource;
+  const translationsSource = await read("apps/mobile/src/i18n/translations.ts");
+  const combinedAppSource = appSource + calmCardSource + safetySource + translationsSource;
 
   assert.match(combinedAppSource, /Calm ritual/);
   assert.match(combinedAppSource, /Start 20s focus/);
@@ -64,4 +65,22 @@ test("mobile service layer follows the API contract with offline fallback", asyn
     assert.match(source, /apiService\.get/);
     assert.match(source, /useEffect/);
   }
+});
+
+test("mobile localization covers en and zh-Hans with required safety copy", async () => {
+  const translations = await read("apps/mobile/src/i18n/translations.ts");
+  const localeContext = await read("apps/mobile/src/i18n/LocaleContext.tsx");
+
+  // Both MVP locales exist and zh-Hans must satisfy the en key shape.
+  assert.match(translations, /export const en = \{/);
+  assert.match(translations, /export const zhHans: TranslationShape = \{/);
+
+  // Safety copy stays translated and avoids buying-luck claims in both locales.
+  assert.match(translations, /It does not guarantee luck, virtue, health, or real-world impact\./);
+  assert.match(translations, /不保证好运、美德、健康或真实影响/);
+
+  // Locale preference is device-driven with a persisted override.
+  assert.match(localeContext, /expo-localization/);
+  assert.match(localeContext, /usePersistentState/);
+  assert.match(localeContext, /"zh-Hans"/);
 });

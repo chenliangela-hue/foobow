@@ -1,20 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { TabId } from "../../types";
 
-type TabOption = {
-  id: TabId;
-  label: string;
-};
-
-const tabs: TabOption[] = [
-  { id: "today", label: "Today" },
-  { id: "map", label: "Map" },
-  { id: "deeds", label: "Deeds" },
-  { id: "community", label: "Community" },
-  { id: "profile", label: "Profile" }
-];
+const tabIds: TabId[] = ["today", "map", "deeds", "community", "profile"];
 
 type NavBarProps = {
   activeTab: TabId;
@@ -24,6 +14,8 @@ type NavBarProps = {
 
 export function NavBar({ activeTab, onSelectTab, seniorMode }: NavBarProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
+  const tabs = tabIds.map((id) => ({ id, label: t(`nav.${id}`) }));
 
   return (
     <View style={[styles.navBar, { backgroundColor: currentColors.surface, borderTopColor: currentColors.line }]}>
@@ -34,7 +26,7 @@ export function NavBar({ activeTab, onSelectTab, seniorMode }: NavBarProps) {
             key={tab.id}
             accessibilityRole="tab"
             accessibilityState={{ selected: isActive }}
-            accessibilityLabel={`${tab.label} tab`}
+            accessibilityLabel={`${tab.label} ${t("nav.tabSuffix")}`}
             onPress={() => onSelectTab(tab.id)}
             style={[
               styles.navItem,

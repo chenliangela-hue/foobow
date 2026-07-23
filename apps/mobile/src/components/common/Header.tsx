@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 
@@ -9,6 +10,7 @@ type HeaderProps = {
 
 export function Header({ karma, seniorMode }: HeaderProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
 
   return (
     <View style={[styles.header, { borderBottomColor: currentColors.line }]}>
@@ -20,7 +22,7 @@ export function Header({ karma, seniorMode }: HeaderProps) {
             seniorMode && { fontSize: typography.sizes.caption }
           ]}
         >
-          Virtual good karma map
+          {t("header.eyebrow")}
         </Text>
         <Text
           style={[
@@ -34,7 +36,7 @@ export function Header({ karma, seniorMode }: HeaderProps) {
       </View>
       <View style={[styles.karmaRing, { backgroundColor: currentColors.surface, borderColor: currentColors.gold }]}>
         <Text style={[styles.karmaValue, { color: currentColors.gold }]}>{karma}</Text>
-        <Text style={[styles.karmaLabel, { color: currentColors.muted }]}>karma</Text>
+        <Text style={[styles.karmaLabel, { color: currentColors.muted }]}>{t("header.karmaLabel")}</Text>
       </View>
     </View>
   );

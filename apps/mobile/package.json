@@ -5,8 +5,10 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~56.0.9",
+    "expo-localization": "~56.0.6",
     "expo-router": "~56.2.9",
     "expo-status-bar": "~56.0.4",
+    "i18n-js": "^4.5.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.85.3",

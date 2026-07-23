@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 
@@ -18,6 +19,7 @@ export function CommunityView({
   seniorMode
 }: CommunityViewProps) {
   const currentColors = useThemeColors();
+  const { t } = useI18n();
 
   return (
     <View style={styles.container}>
@@ -28,7 +30,7 @@ export function CommunityView({
           seniorMode && { fontSize: typography.sizes.caption }
         ]}
       >
-        Community
+        {t("community.eyebrow")}
       </Text>
       <Text
         style={[
@@ -37,13 +39,13 @@ export function CommunityView({
           seniorMode && { fontSize: typography.sizes.headerSenior }
         ]}
       >
-        A low-pressure kindness wall.
+        {t("community.title")}
       </Text>
       <TextInput
         multiline
         value={blessingInput}
         onChangeText={onChangeBlessingInput}
-        placeholder="May your road feel less heavy today."
+        placeholder={t("community.blessingPlaceholder")}
         placeholderTextColor={currentColors.muted}
         style={[styles.input, { color: currentColors.ink, borderColor: currentColors.line }]}
       />
@@ -52,7 +54,7 @@ export function CommunityView({
         onPress={onSendBlessing}
       >
         <Text style={[styles.primaryButtonText, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
-          Send blessing
+          {t("community.sendBlessing")}
         </Text>
       </Pressable>
 
@@ -71,8 +73,8 @@ export function CommunityView({
             {blessing}
           </Text>
           <View style={styles.inlineActions}>
-            <Text style={[styles.linkText, { color: currentColors.jade }]}>Bless</Text>
-            <Text style={[styles.linkText, { color: currentColors.muted }]}>Report</Text>
+            <Text style={[styles.linkText, { color: currentColors.jade }]}>{t("community.bless")}</Text>
+            <Text style={[styles.linkText, { color: currentColors.muted }]}>{t("community.report")}</Text>
           </View>
         </View>
       ))}

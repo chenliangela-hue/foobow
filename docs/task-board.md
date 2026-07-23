@@ -81,6 +81,7 @@
 - Implement system-driven dark mode across the mobile app with a `ThemeProvider`/`useThemeColors` context over the existing zen dark palette.
 - Add AsyncStorage-backed local persistence for karma, streak, journal, and preference toggles with a hydration-safe `usePersistentState` hook.
 - Install Node `20.19.4` via nvm-windows for Prisma/Expo tooling (machine default still `20.17.0`).
+- Implement mobile `en`/`zh-Hans` localization with expo-localization + i18n-js, persisted language preference, Profile language selector, and translated accessibility labels.
 
 
 ## Next

@@ -66,6 +66,9 @@ This file is the project-local memory. Keep it current whenever product directio
 - Implemented local persistence with `@react-native-async-storage/async-storage` 2.2.0 (installed via `npx expo install`): `src/services/storageService.ts` provides versioned keys, best-effort JSON storage, `clearStoredProfile`, and a `usePersistentState` hook that hydrates before it ever writes. Karma, streak, journal, quiet mode, private journal, and senior mode now survive restarts, honoring the "stored locally on your device" promise in the Profile UI.
 - Node 20.19.4 is now installed via nvm-windows (`nvm install 20.19.4`) at `C:\Users\crane\AppData\Local\nvm\v20.19.4`; Prisma and Expo tooling run against it by prepending it to PATH. The machine default is still 20.17.0 — switching requires an elevated `nvm use 20.19.4`.
 
+- Implemented mobile localization per `docs/localization-workflow.md` using `expo-localization` + `i18n-js` (standard Expo stack): `src/i18n/translations.ts` holds grouped stable keys for `en` and `zh-Hans` (ported from the prototype dictionary plus new mobile strings), `src/i18n/LocaleContext.tsx` resolves device locale with a persisted System/English/中文 override, and the Profile screen gained a language selector. All components now render through `t()`; accessibility labels are translated alongside visible labels.
+- CI `npm ci` failed after the audit fix because the mobile lockfile lost the `react-native-worklets` entry; re-synced with `npm install` and validated all three lockfiles with `npm ci --dry-run`. Lesson: after any `npm audit fix`, validate lockfiles the same way CI installs them.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

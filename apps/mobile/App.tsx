@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, useColorScheme } from "react-native";
+import { LocaleProvider } from "./src/i18n/LocaleContext";
 import { storageKeys, usePersistentState } from "./src/services/storageService";
 import { layout } from "./src/theme/theme";
 import { ThemeProvider, useThemeColors } from "./src/theme/ThemeContext";
@@ -32,7 +33,9 @@ export type FoobowAppProps = {
 export default function App(props: FoobowAppProps) {
   return (
     <ThemeProvider>
-      <FoobowShell {...props} />
+      <LocaleProvider>
+        <FoobowShell {...props} />
+      </LocaleProvider>
     </ThemeProvider>
   );
 }
