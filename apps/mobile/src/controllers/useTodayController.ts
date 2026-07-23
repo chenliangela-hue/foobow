@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { moods } from "../services/foobowService";
+import { apiService, moods } from "../services/foobowService";
 import { MoodOption } from "../types";
 
 export function useTodayController(
@@ -16,6 +16,7 @@ export function useTodayController(
     }
     setStreak((prev) => prev + 1);
     setJournal((prev) => prev || "I completed one quiet deed and chose a lighter next step.");
+    void apiService.submitCheckin(selectedMood.id);
   };
 
   return {

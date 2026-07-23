@@ -53,6 +53,11 @@ This file is the project-local memory. Keep it current whenever product directio
 - Simplified `useTodayController` to drop its duplicated internal karma state and take an `addKarma(points)` callback, matching the deed/community controller signatures so app-level `sharedKarma` is the single source of truth.
 - Found the Playwright community visual baselines stale since `aad9272` (that commit changed `prototype/data.js` sample blessings without refreshing snapshots). Refreshed all six visual baselines after inspecting the new screenshots; the diffs were the intended 48px touch targets plus current sample data. `npm run test:visual` passes 6/6.
 
+- GitHub push works again after the user re-logged in; `origin` now points to `chenliangela-hue/foobow.git` and `main` is pushed.
+- Wired the mobile app to the real API contract: new `src/services/apiClient.ts` (env-driven `EXPO_PUBLIC_API_URL` + `/api/v1` base path, optional `EXPO_PUBLIC_FOOBOW_DEV_TOKEN`, 5s timeout, every failure resolves to `{ ok: false }`), `src/types/api.ts` snake_case DTOs, and `src/services/mappers.ts` (DTO→view-model mapping with lat/lng→canvas projection and moderation filtering). Deed/map/community controllers hydrate from the API with bundled offline fallback; check-ins, deed completions, and blessings post fire-and-forget.
+- Deleted dead `apps/mobile/src/foobowData.ts` and repointed `scripts/verify-shared-catalog.mjs` at `src/services/foobowService.ts`, which now holds the single mobile copy of the shared catalog sample data.
+- Verified end-to-end against the running contract runtime on `:8787`: GET deed-types/map-spots/blessings return items; POST checkins/deed-actions/blessings return 201 with the dev bearer token. Added a root contract test for the mobile service layer (root suite now 26 tests).
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

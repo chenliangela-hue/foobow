@@ -1,4 +1,15 @@
 import { Deed, MapSpot, CategoryOption, MoodOption } from "../types";
+import {
+  ApiBlessing,
+  ApiBlessingCreateRequest,
+  ApiCheckinCreateRequest,
+  ApiDeedActionCreateRequest,
+  ApiDeedType,
+  ApiMapSpot,
+  ApiPage
+} from "../types/api";
+import { apiGet, apiPost } from "./apiClient";
+import { toBlessingBody, toDeed, toMapSpot } from "./mappers";
 
 export const categories: CategoryOption[] = [
   { id: "all", label: "All" },
@@ -91,36 +102,56 @@ export const initialBlessings = [
 ];
 
 export class FoobowApiService {
-  private apiBaseUrl: string;
-
-  constructor(baseUrl = "http://localhost:3000/v1") {
-    this.apiBaseUrl = baseUrl;
-  }
-
   async getDeeds(): Promise<Deed[]> {
-    try {
-      const response = await fetch(`${this.apiBaseUrl}/deeds`);
-      if (response.ok) {
-        const data = await response.json();
-        if (Array.isArray(data.items)) return data.items;
-      }
-    } catch {
-      // Graceful offline fallback
+    const result = await apiGet<ApiPage<ApiDeedType>>("/deed-types");
+    if (result.ok && Array.isArray(result.data.items)) {
+      const mapped = result.data.items.map(toDeed).filter((deed): deed is Deed => deed !== null);
+      if (mapped.length > 0) return mapped;
     }
     return deeds;
   }
 
   async getMapSpots(): Promise<MapSpot[]> {
-    try {
-      const response = await fetch(`${this.apiBaseUrl}/map-spots`);
-      if (response.ok) {
-        const data = await response.json();
-        if (Array.isArray(data.items)) return data.items;
-      }
-    } catch {
-      // Graceful offline fallback
+    const result = await apiGet<ApiPage<ApiMapSpot>>("/map-spots");
+    if (result.ok && Array.isArray(result.data.items)) {
+      const mapped = result.data.items.map(toMapSpot).filter((spot): spot is MapSpot => spot !== null);
+      if (mapped.length > 0) return mapped;
     }
     return mapSpots;
+  }
+
+  async getBlessings(): Promise<string[]> {
+    const result = await apiGet<ApiPage<ApiBlessing>>("/blessings");
+    if (result.ok && Array.isArray(result.data.items)) {
+      const mapped = result.data.items
+        .map(toBlessingBody)
+        .filter((body): body is string => body !== null);
+      if (mapped.length > 0) return mapped;
+    }
+    return initialBlessings;
+  }
+
+  async submitCheckin(mood: string, note?: string): Promise<boolean> {
+    const body: ApiCheckinCreateRequest = note ? { mood, note } : { mood };
+    const result = await apiPost("/checkins", body);
+    return result.ok;
+  }
+
+  async submitDeedCompletion(deedTypeId: string, mapSpotId?: string): Promise<boolean> {
+    const body: ApiDeedActionCreateRequest = {
+      deed_type_id: deedTypeId,
+      ...(mapSpotId ? { map_spot_id: mapSpotId } : {}),
+      status: "completed",
+      visibility: "anonymous"
+    };
+    const result = await apiPost("/deed-actions", body);
+    return result.ok;
+  }
+
+  async submitBlessing(bodyText: string): Promise<boolean> {
+    const body: ApiBlessingCreateRequest = { body: bodyText, visibility: "anonymous" };
+    const result = await apiPost("/blessings", body);
+    return result.ok;
   }
 }
 

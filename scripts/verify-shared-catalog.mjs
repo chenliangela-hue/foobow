@@ -19,7 +19,7 @@ async function readPrototypeData() {
 
 const catalog = await readJson("shared/foobow-catalog.json");
 const prototypeData = await readPrototypeData();
-const mobileDataSource = await readText("apps/mobile/src/foobowData.ts");
+const mobileDataSource = await readText("apps/mobile/src/services/foobowService.ts");
 const seedSql = await readText("database/seeds/0001_reference_data.sql");
 const apiFixtures = await import("../apps/api/src/fixtures.mjs");
 

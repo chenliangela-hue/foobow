@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiService } from "../services/foobowService";
 import { Deed } from "../types";
 
 export function useCalmRitualController(
@@ -21,6 +22,7 @@ export function useCalmRitualController(
     if (onJournalAdd) {
       onJournalAdd("I took a calm moment before completing one symbolic deed.");
     }
+    void apiService.submitDeedCompletion(selectedDeed.id);
     setFocusReady(false);
   };
 

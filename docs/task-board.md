@@ -75,6 +75,8 @@
 - Add Zen & Senior-Friendly UI design tokens with warm sand, tea/jade, bamboo, and soft gold palette, high contrast text ratios, senior font scaling, and extra-large 48dp+ tap targets.
 - Add `.senior-mode` high-readability rules and 48px minimum touch targets to `prototype/styles.css`.
 - Verify the mobile MVC refactor against all local test gates and refresh stale Playwright visual baselines after inspection.
+- Wire the mobile service layer to the API contract (env-driven base URL, typed DTO mappers, offline fallback, fire-and-forget check-in/deed/blessing writes) with end-to-end verification against the contract runtime.
+- Restore GitHub push access via `chenliangela-hue/foobow.git`.
 
 
 ## Next

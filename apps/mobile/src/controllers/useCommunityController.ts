@@ -1,9 +1,19 @@
-import { useState } from "react";
-import { initialBlessings } from "../services/foobowService";
+import { useEffect, useState } from "react";
+import { apiService, initialBlessings } from "../services/foobowService";
 
 export function useCommunityController(onKarmaAdd?: (points: number) => void) {
   const [blessingInput, setBlessingInput] = useState("");
   const [blessings, setBlessings] = useState<string[]>(initialBlessings);
+
+  useEffect(() => {
+    let active = true;
+    apiService.getBlessings().then((items) => {
+      if (active) setBlessings(items);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const sendBlessing = () => {
     const message = blessingInput.trim();
@@ -13,6 +23,7 @@ export function useCommunityController(onKarmaAdd?: (points: number) => void) {
     if (onKarmaAdd) {
       onKarmaAdd(2);
     }
+    void apiService.submitBlessing(message);
   };
 
   return {
