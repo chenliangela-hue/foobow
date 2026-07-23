@@ -87,6 +87,7 @@
 - Create Vercel project `foobow`, deploy the prototype to production (`https://foobow.vercel.app`), and attach `foobow.com`/`www.foobow.com`.
 - Add gated `deploy-web` CI job for Vercel production deploys on `main`.
 - Add deployment runbook and multi-provider payments roadmap docs.
+- Add Clerk session JWT verification to the Nest auth guard with a real-instance mint-and-verify smoke script.
 
 
 ## Next

@@ -12,6 +12,7 @@
     "prisma:smoke": "tsx scripts/prisma-write-smoke.ts",
     "nest:db-smoke": "tsx scripts/nest-db-http-smoke.ts",
     "test:db-integration": "tsx scripts/db-integration-suite.ts",
+    "auth:clerk-smoke": "tsx scripts/clerk-auth-smoke.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node --test tests && npm run typecheck"
   },
@@ -27,6 +28,7 @@
     "@prisma/client": "^7.8.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
+    "jose": "^6.2.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },

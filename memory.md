@@ -80,6 +80,9 @@ This file is the project-local memory. Keep it current whenever product directio
 - Added a `deploy-web` CI job that deploys `prototype/` to Vercel production on `main` pushes after all test jobs pass; it is gated on repo variable `VERCEL_DEPLOY_ENABLED=true` plus `VERCEL_*` secrets, which the user must set themselves (the permission layer correctly blocked uploading the token on their behalf).
 - Recorded the future multi-provider payments direction (Stripe first, Apple Pay/Google Pay via Stripe rails, store-policy IAP caveats, WeChat Pay evaluation) in `docs/payments-roadmap.md`; payments stay deferred for MVP.
 
+- Implemented Clerk JWT verification in the Nest guard: `src/nest/clerk-jwt.ts` verifies session tokens against the instance JWKS (issuer from `AUTH_ISSUER_URL`) via `jose`, and `DevAuthGuard` now accepts either the local dev bearer token or a verified Clerk JWT, attaching `request.auth` with the user id and source. Proved end-to-end with `npm --prefix apps/api run auth:clerk-smoke`, which mints a real session JWT via the Clerk Backend API (this instance is username-based — `email_address` is rejected on user creation), verifies it, and rejects a tampered token. The smoke skips cleanly when Clerk credentials are absent, prefers an existing user, and revokes its session afterward.
+- CI stayed green through the deployment commit (`5b5db85`) with `deploy-web` correctly skipped pending the user-set secrets/variable.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

@@ -31,7 +31,13 @@ test("NestJS scaffold defines production backend modules and guarded routes", as
   assert.match(controllerSource, /@Inject\(FoobowService\)/);
   assert.match(guardSource, /process\.env\.FOOBOW_DEV_BEARER_TOKEN/);
   assert.match(guardSource, /\?\? "dev-foobow-token"/);
-  assert.match(guardSource, /request\.headers\.authorization === `Bearer \$\{devBearerToken\}`/);
+  assert.match(guardSource, /authorization === `Bearer \$\{devBearerToken\}`/);
+  assert.match(guardSource, /verifyClerkToken/);
+
+  const clerkJwtSource = await read("src/nest/clerk-jwt.ts");
+  assert.match(clerkJwtSource, /AUTH_ISSUER_URL/);
+  assert.match(clerkJwtSource, /\.well-known\/jwks\.json/);
+  assert.match(clerkJwtSource, /jwtVerify/);
   assert.match(prismaSource, /extends PrismaClient/);
   assert.match(prismaSource, /PrismaPg/);
   assert.match(prismaSource, /super\(\{ adapter: new PrismaPg/);
