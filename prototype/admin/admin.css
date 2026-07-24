@@ -1,16 +1,16 @@
 :root {
-  --bg: #0e1211;
-  --panel: #161c1b;
-  --panel-2: #1c2423;
-  --line: rgba(240, 245, 238, 0.1);
-  --ink: #eef3ec;
-  --muted: #93a09a;
+  --bg: #120d0b;
+  --panel: #1c1512;
+  --panel-2: #241b16;
+  --line: rgba(246, 236, 224, 0.1);
+  --ink: #f6ece0;
+  --muted: #a2907f;
   --gold: #e6b95c;
   --gold-soft: rgba(230, 185, 92, 0.14);
-  --jade-color: #3bbfad;
-  --green: #59c98a;
-  --amber: #e6b95c;
-  --red: #e77a63;
+  --vermilion: #e0705c;
+  --positive: #e0b36a;
+  --amber: #e79a4d;
+  --red: #d4553f;
   --radius: 14px;
   color-scheme: dark;
 }
@@ -75,8 +75,8 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 11px;
-  background: linear-gradient(135deg, var(--jade-color), var(--gold));
-  color: #0e1211;
+  background: linear-gradient(135deg, var(--vermilion), var(--gold));
+  color: #120d0b;
   font-size: 1.25rem;
   font-weight: 800;
 }
@@ -227,7 +227,7 @@ body {
 }
 
 .income-card.total {
-  background: linear-gradient(150deg, rgba(59, 191, 173, 0.16), rgba(15, 108, 100, 0.12));
+  background: linear-gradient(150deg, rgba(230, 185, 92, 0.14), rgba(157, 43, 32, 0.16));
 }
 
 .income-label {
@@ -247,7 +247,7 @@ body {
 }
 
 .income-card.total .income-value {
-  color: var(--green);
+  color: var(--positive);
 }
 
 .income-icon {
@@ -298,9 +298,9 @@ body {
   margin: 0;
 }
 
-.value.green { color: var(--green); }
+.value.positive { color: var(--positive); }
 .value.amber { color: var(--amber); }
-.value.jade { color: var(--jade-color); }
+.value.review { color: var(--vermilion); }
 
 /* --- Tables --- */
 .table-wrap {
@@ -347,11 +347,11 @@ tbody tr:hover {
   font-weight: 700;
 }
 
-.pill.paid { background: rgba(89, 201, 138, 0.16); color: var(--green); }
+.pill.paid { background: rgba(224, 179, 106, 0.16); color: var(--positive); }
 .pill.pending { background: var(--gold-soft); color: var(--gold); }
-.pill.review { background: rgba(59, 191, 173, 0.16); color: var(--jade-color); }
+.pill.review { background: rgba(224, 112, 92, 0.16); color: var(--vermilion); }
 .pill.failed, .pill.rejected { background: rgba(231, 122, 99, 0.16); color: var(--red); }
-.pill.active { background: rgba(89, 201, 138, 0.16); color: var(--green); }
+.pill.active { background: rgba(224, 179, 106, 0.16); color: var(--positive); }
 .pill.hidden, .pill.retired { background: rgba(147, 160, 154, 0.16); color: var(--muted); }
 
 .row-actions {
@@ -372,7 +372,7 @@ tbody tr:hover {
   color: var(--ink);
 }
 
-.mini-btn.approve { border-color: rgba(89, 201, 138, 0.5); color: var(--green); }
+.mini-btn.approve { border-color: rgba(224, 179, 106, 0.55); color: var(--positive); }
 .mini-btn.reject { border-color: rgba(231, 122, 99, 0.5); color: var(--red); }
 .mini-btn:disabled { opacity: 0.5; cursor: default; }
 
@@ -438,8 +438,8 @@ tbody tr:hover {
   padding: 0 22px;
   border-radius: 10px;
   border: 0;
-  background: linear-gradient(135deg, var(--jade-color), var(--gold));
-  color: #0e1211;
+  background: linear-gradient(135deg, var(--vermilion), var(--gold));
+  color: #120d0b;
   font: inherit;
   font-weight: 800;
   cursor: pointer;

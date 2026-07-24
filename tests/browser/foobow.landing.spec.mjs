@@ -74,7 +74,7 @@ test("landing body tokens meet WCAG contrast thresholds", async ({ page }) => {
     return {
       inkOnSurface: contrast(token("--ink"), token("--surface")),
       mutedOnSurface: contrast(token("--muted"), token("--surface")),
-      tealOnSurface: contrast(token("--teal"), token("--surface"))
+      vermilionOnSurface: contrast(token("--vermilion"), token("--surface"))
     };
   });
 

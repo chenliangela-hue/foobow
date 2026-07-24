@@ -120,9 +120,9 @@
     var orderRow = el("div", "stat-row");
     [
       { label: c.ordersTotal, value: m.ordersTotal, cls: "" },
-      { label: c.ordersPaid, value: m.ordersPaid, cls: "green" },
+      { label: c.ordersPaid, value: m.ordersPaid, cls: "positive" },
       { label: c.ordersPending, value: m.ordersPending, cls: "amber" },
-      { label: c.ordersReview, value: m.ordersReview, cls: "jade" }
+      { label: c.ordersReview, value: m.ordersReview, cls: "review" }
     ].forEach(function (tile) {
       var box = el("div", "stat-tile");
       box.append(el("p", "label", tile.label));
