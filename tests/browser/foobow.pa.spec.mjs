@@ -186,6 +186,51 @@ test("app localizes across all six locales, including nav and safety copy", asyn
   await expect(page.locator("html")).toHaveAttribute("lang", "th");
 });
 
+test("text stays readable in all four theme combinations", async ({ page }) => {
+  // Regression: senior mode once hardcoded a dark ink, which made dark mode
+  // unreadable (near-black text on a near-black background).
+  const measure = () =>
+    page.evaluate(() => {
+      const styles = getComputedStyle(document.body);
+      const token = (name) => styles.getPropertyValue(name).trim();
+      const hexToRgb = (hex) => {
+        const n = hex.replace("#", "");
+        return [
+          Number.parseInt(n.slice(0, 2), 16) / 255,
+          Number.parseInt(n.slice(2, 4), 16) / 255,
+          Number.parseInt(n.slice(4, 6), 16) / 255
+        ];
+      };
+      const lin = (v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+      const lum = (hex) => {
+        const [r, g, b] = hexToRgb(hex).map(lin);
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const contrast = (a, b) => {
+        const x = lum(a);
+        const y = lum(b);
+        return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+      };
+      return {
+        ink: contrast(token("--ink"), token("--surface")),
+        muted: contrast(token("--muted"), token("--surface"))
+      };
+    });
+
+  const dark = page.getByRole("button", { name: "Toggle dark mode" });
+  const senior = page.getByRole("button", { name: "Toggle senior readability mode" });
+
+  for (const combo of ["light", "light+senior", "dark+senior", "dark"]) {
+    if (combo === "light+senior") await senior.click();
+    if (combo === "dark+senior") await dark.click();
+    if (combo === "dark") await senior.click();
+
+    const ratios = await measure();
+    expect.soft(ratios.ink, `${combo}: ink on surface`).toBeGreaterThanOrEqual(4.5);
+    expect.soft(ratios.muted, `${combo}: muted on surface`).toBeGreaterThanOrEqual(4.5);
+  }
+});
+
 test("core design tokens meet WCAG contrast thresholds", async ({ page }) => {
   const ratios = await page.evaluate(() => {
     const styles = getComputedStyle(document.documentElement);

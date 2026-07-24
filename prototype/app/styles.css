@@ -1439,15 +1439,32 @@ dialog::backdrop {
   transform: translateY(0);
 }
 
+/* Senior / high-readability mode boosts size AND contrast. It must set ink
+   per theme — hardcoding a dark ink here would invert dark mode into
+   unreadable near-black text on a near-black background. */
 body.senior-mode {
   font-size: 1.15rem;
-  --ink: #121818;
+  --ink: #1a120c;
+  --muted: #5a4738;
+}
+
+body.dark.senior-mode {
+  --ink: #fff8ee;
+  --muted: #cdbcab;
 }
 
 body.senior-mode button,
 body.senior-mode .nav-item {
   min-height: 52px;
   font-size: 1rem;
+}
+
+/* Six tabs cannot also carry the senior font bump without clipping the
+   longest label, so the bar keeps a readable-but-compact size. */
+body.senior-mode .nav-item {
+  font-size: clamp(0.62rem, 2.2vw, 0.84rem);
+  padding-inline: 1px;
+  letter-spacing: -0.01em;
 }
 
 body.senior-mode h1 {
