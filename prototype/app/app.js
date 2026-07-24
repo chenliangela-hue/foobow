@@ -1,190 +1,8 @@
 const data = window.FOOBOW_DATA;
 const storageKey = "foobow.prototype.state.v1";
 
-const translations = {
-  en: {
-    eyebrow: "Virtual good karma map",
-    todayEyebrow: "Today",
-    todayTitle: "Do one quiet good deed.",
-    todayCopy: "Check in, choose a small symbolic action, and leave the day a little lighter.",
-    karmaLabel: "karma",
-    moodTitle: "How are you arriving?",
-    recommended: "Recommended deed",
-    recommendedCopy: "A symbolic release that avoids real-world ecological harm.",
-    completeDeed: "Complete deed",
-    journalTitle: "Karma journal",
-    journalPlaceholder: "Today I want to release one worry and do one kind thing.",
-    mapEyebrow: "World map",
-    mapTitle: "Explore places that need a little light.",
-    deedsEyebrow: "Deed catalog",
-    deedsTitle: "Small rituals, clear categories.",
-    ritualPreview: "Ritual preview",
-    performRitual: "Perform ritual",
-    calmEyebrow: "Calm ritual",
-    calmTitle: "Take a focused moment first.",
-    calmCopy: "Use a short presence timer, optional soundscape, and quiet reflection before recording a symbolic deed.",
-    guidedStepOne: "Breathe once and name the intention.",
-    guidedStepTwo: "Hold the action gently until the timer completes.",
-    guidedStepThree: "Record how you feel without pressure.",
-    startFocus: "Start 20s focus",
-    completeFocused: "Complete with focus",
-    calmSafety: "This is symbolic comfort only. It does not guarantee luck, virtue, health, or real-world impact.",
-    communityEyebrow: "Community",
-    communityTitle: "A low-pressure kindness wall.",
-    blessingPlaceholder: "May your road feel less heavy today.",
-    sendBlessing: "Send blessing",
-    profileEyebrow: "Profile",
-    profileCopy: "Private journal on. Ranking visibility set to quiet mode.",
-    badgesTitle: "Badges",
-    donate: "Donate",
-    settingsTitle: "Enterprise settings",
-    settingPrivacy: "Private journal",
-    settingQuiet: "Quiet rankings",
-    settingReceipts: "Donation receipts",
-    exportData: "Export data",
-    deleteData: "Delete local data",
-    report: "Report",
-    reported: "Reported for review",
-    dialogEyebrow: "Real impact option",
-    dialogTitle: "Support a verified cause",
-    dialogCopy: "This donation supports real operating costs or partner campaigns. It does not buy luck, virtue, or guaranteed karma.",
-    closeDialog: "Close",
-    playSoundscape: "Play soundscape",
-    stopSoundscape: "Stop sound",
-    profileMenuTitle: "Your merit",
-    profileMenuStats: "%{karma} karma · %{streak}-day streak",
-    profileMenuOpen: "Open profile",
-    profileMenuNote: "Sign in for a synced account in the Foobow mobile app.",
-    blessingsEyebrow: "Blessings · 祈福",
-    blessingsTitle: "Offer a blessing for someone you love.",
-    blessingsCopy: "Choose who it is for, add a few words, and receive a warm blessing to hold. Symbolic comfort only — never a promise of luck.",
-    blessingsRecipient: "For whom? (optional)",
-    blessingsMessage: "A wish or worry you want to release (optional)",
-    blessingsReceive: "Receive a blessing",
-    blessingsGenerating: "Composing a blessing…",
-    blessingsSave: "Keep this blessing",
-    blessingsSaved: "Kept ✓",
-    blessingReplySource: "A gentle blessing · symbolic comfort",
-    prayCatFamily: "Family",
-    prayCatHealth: "Health",
-    prayCatStudy: "Study",
-    prayCatTravel: "Safe travel",
-    prayCatRemembrance: "Remembrance",
-    prayCatGratitude: "Gratitude",
-    lampEyebrow: "Wish lamp · 心灯",
-    lampTitle: "Light a small lamp.",
-    lampPlaceholder: "A quiet wish...",
-    lampLight: "Light the lamp",
-    dailyThoughts: [
-      "A small kindness is still kindness.",
-      "You can begin the day again at any hour.",
-      "Let one worry rest; it will keep without you.",
-      "Quiet effort counts, even unseen.",
-      "Breathe once for yourself, once for someone far away.",
-      "Today does not need to be heavy to matter.",
-      "One gentle act can soften a whole afternoon.",
-      "You are allowed to move slowly.",
-      "Light a small lamp; darkness handles itself.",
-      "Rest is also a good deed.",
-      "Good begets good; blessings flow from kindness.",
-      "Gather good virtue, and blessings come.",
-      "Plant kind causes, harvest kind fruit.",
-      "A spark of kindness blesses a lifetime.",
-      "One good deed, one measure of merit."
-    ]
-  },
-  zh: {
-    eyebrow: "\u865a\u62df\u5584\u7f18\u5730\u56fe",
-    todayEyebrow: "\u4eca\u65e5",
-    todayTitle: "\u505a\u4e00\u4ef6\u5b89\u9759\u7684\u5c0f\u5584\u4e8b\u3002",
-    todayCopy: "\u7b7e\u5230\u3001\u9009\u62e9\u4e00\u4e2a\u8c61\u5f81\u6027\u5584\u4e3e\uff0c\u8ba9\u4eca\u5929\u7a0d\u5fae\u8f7b\u4e00\u70b9\u3002",
-    karmaLabel: "\u5584\u7f18",
-    moodTitle: "\u4eca\u5929\u7684\u5fc3\u60c5\u5982\u4f55\uff1f",
-    recommended: "\u63a8\u8350\u5584\u4e3e",
-    recommendedCopy: "\u8c61\u5f81\u6027\u653e\u751f\uff0c\u907f\u514d\u771f\u5b9e\u653e\u751f\u5e26\u6765\u7684\u751f\u6001\u98ce\u9669\u3002",
-    completeDeed: "\u5b8c\u6210\u5584\u4e3e",
-    journalTitle: "\u5584\u7f18\u65e5\u8bb0",
-    journalPlaceholder: "\u4eca\u5929\u6211\u60f3\u653e\u4e0b\u4e00\u70b9\u62c5\u5fc3\uff0c\u505a\u4e00\u4ef6\u6e29\u548c\u7684\u5c0f\u4e8b\u3002",
-    mapEyebrow: "\u4e16\u754c\u5730\u56fe",
-    mapTitle: "\u63a2\u7d22\u9700\u8981\u4e00\u70b9\u5149\u7684\u5730\u65b9\u3002",
-    deedsEyebrow: "\u5584\u4e3e\u76ee\u5f55",
-    deedsTitle: "\u5c0f\u4eea\u5f0f\uff0c\u6e05\u6670\u5206\u7c7b\u3002",
-    ritualPreview: "\u4eea\u5f0f\u9884\u89c8",
-    performRitual: "\u6267\u884c\u4eea\u5f0f",
-    calmEyebrow: "\u9759\u5fc3\u4eea\u5f0f",
-    calmTitle: "\u5148\u7559\u4e00\u4e2a\u4e13\u6ce8\u7684\u7247\u523b\u3002",
-    calmCopy: "\u5728\u8bb0\u5f55\u8c61\u5f81\u6027\u5584\u4e3e\u524d\uff0c\u4f7f\u7528\u77ed\u6682\u8ba1\u65f6\u3001\u53ef\u9009\u58f0\u666f\u548c\u5b89\u9759\u53cd\u601d\u3002",
-    guidedStepOne: "\u547c\u5438\u4e00\u6b21\uff0c\u8bf4\u51fa\u4eca\u5929\u7684\u5fc3\u610f\u3002",
-    guidedStepTwo: "\u8f7b\u8f7b\u6309\u4f4f\u52a8\u4f5c\uff0c\u76f4\u5230\u8ba1\u65f6\u5b8c\u6210\u3002",
-    guidedStepThree: "\u65e0\u538b\u529b\u5730\u8bb0\u5f55\u6b64\u523b\u7684\u611f\u53d7\u3002",
-    startFocus: "\u5f00\u59cb 20 \u79d2\u4e13\u6ce8",
-    completeFocused: "\u4e13\u6ce8\u5b8c\u6210",
-    calmSafety: "\u8fd9\u53ea\u662f\u8c61\u5f81\u6027\u5b89\u6170\uff0c\u4e0d\u4fdd\u8bc1\u597d\u8fd0\u3001\u7f8e\u5fb7\u3001\u5065\u5eb7\u6216\u771f\u5b9e\u5f71\u54cd\u3002",
-    communityEyebrow: "\u793e\u533a",
-    communityTitle: "\u4f4e\u538b\u529b\u7684\u795d\u798f\u5899\u3002",
-    blessingPlaceholder: "\u613f\u4f60\u4eca\u5929\u7684\u8def\u4e0d\u90a3\u4e48\u6c89\u91cd\u3002",
-    sendBlessing: "\u9001\u51fa\u795d\u798f",
-    profileEyebrow: "\u4e2a\u4eba",
-    profileCopy: "\u79c1\u4eba\u65e5\u8bb0\u5df2\u5f00\u542f\uff0c\u6392\u540d\u663e\u793a\u4e3a\u5b89\u9759\u6a21\u5f0f\u3002",
-    badgesTitle: "\u5fbd\u7ae0",
-    donate: "\u6350\u52a9",
-    settingsTitle: "\u4f01\u4e1a\u7ea7\u8bbe\u7f6e",
-    settingPrivacy: "\u79c1\u4eba\u65e5\u8bb0",
-    settingQuiet: "\u5b89\u9759\u6392\u540d",
-    settingReceipts: "\u6350\u52a9\u6536\u636e",
-    exportData: "\u5bfc\u51fa\u6570\u636e",
-    deleteData: "\u5220\u9664\u672c\u5730\u6570\u636e",
-    report: "\u4e3e\u62a5",
-    reported: "\u5df2\u63d0\u4ea4\u5ba1\u6838",
-    dialogEyebrow: "\u771f\u5b9e\u5f71\u54cd\u9009\u9879",
-    dialogTitle: "\u652f\u6301\u5df2\u9a8c\u8bc1\u7684\u516c\u76ca\u9879\u76ee",
-    dialogCopy: "\u6350\u52a9\u7528\u4e8e\u771f\u5b9e\u8fd0\u8425\u6210\u672c\u6216\u5408\u4f5c\u516c\u76ca\u9879\u76ee\u3002\u5b83\u4e0d\u4f1a\u8d2d\u4e70\u597d\u8fd0\u3001\u7f8e\u5fb7\u6216\u4fdd\u8bc1\u5584\u62a5\u3002",
-    closeDialog: "\u5173\u95ed",
-    playSoundscape: "\u64ad\u653e\u58f0\u666f",
-    stopSoundscape: "\u505c\u6b62\u58f0\u97f3",
-    profileMenuTitle: "\u4f60\u7684\u798f\u62a5",
-    profileMenuStats: "%{karma} \u5584\u7f18 \u00b7 \u8fde\u7eed %{streak} \u5929",
-    profileMenuOpen: "\u6253\u5f00\u4e2a\u4eba\u9875",
-    profileMenuNote: "\u5728 Foobow \u624b\u673a\u5e94\u7528\u767b\u5f55\uff0c\u5373\u53ef\u540c\u6b65\u8d26\u6237\u3002",
-    blessingsEyebrow: "\u7948\u798f \u00b7 Blessings",
-    blessingsTitle: "\u4e3a\u4f60\u6240\u7231\u7684\u4eba\uff0c\u9001\u4e0a\u4e00\u4efd\u795d\u798f\u3002",
-    blessingsCopy: "\u9009\u62e9\u795d\u798f\u7684\u5bf9\u8c61\uff0c\u5199\u4e0b\u51e0\u53e5\u8bdd\uff0c\u6536\u4e0b\u4e00\u4efd\u53ef\u4ee5\u505c\u7559\u7684\u6e29\u67d4\u795d\u798f\u3002\u4ec5\u4e3a\u8c61\u5f81\u6027\u5b89\u6170\u2014\u2014\u7edd\u4e0d\u627f\u8bfa\u597d\u8fd0\u3002",
-    blessingsRecipient: "\u795d\u798f\u7ed9\u8c01\uff1f\uff08\u53ef\u9009\uff09",
-    blessingsMessage: "\u60f3\u653e\u4e0b\u7684\u4e00\u4e2a\u5fc3\u613f\u6216\u62c5\u5fc3\uff08\u53ef\u9009\uff09",
-    blessingsReceive: "\u6536\u4e0b\u795d\u798f",
-    blessingsGenerating: "\u6b63\u5728\u5199\u4e0b\u795d\u798f\u2026\u2026",
-    blessingsSave: "\u7559\u4e0b\u8fd9\u4efd\u795d\u798f",
-    blessingsSaved: "\u5df2\u7559\u4e0b \u2713",
-    blessingReplySource: "\u4e00\u4efd\u6e29\u67d4\u7684\u795d\u798f \u00b7 \u8c61\u5f81\u6027\u5b89\u6170",
-    prayCatFamily: "\u5bb6\u4eba",
-    prayCatHealth: "\u5065\u5eb7",
-    prayCatStudy: "\u5b66\u4e1a",
-    prayCatTravel: "\u5e73\u5b89\u51fa\u884c",
-    prayCatRemembrance: "\u8ffd\u601d",
-    prayCatGratitude: "\u611f\u6069",
-    lampEyebrow: "\u5fc3\u706f \u00b7 Wish lamp",
-    lampTitle: "\u70b9\u4e00\u76cf\u5c0f\u706f\u3002",
-    lampPlaceholder: "\u4e00\u4e2a\u5b89\u9759\u7684\u5fc3\u613f\u2026\u2026",
-    lampLight: "\u70b9\u4eae\u5fc3\u706f",
-    dailyThoughts: [
-      "\u5fae\u5c0f\u7684\u5584\u610f\uff0c\u4e5f\u662f\u5584\u610f\u3002",
-      "\u4e00\u5929\u4e2d\u7684\u4efb\u4f55\u65f6\u523b\uff0c\u90fd\u53ef\u4ee5\u91cd\u65b0\u5f00\u59cb\u3002",
-      "\u653e\u4e0b\u4e00\u4ef6\u62c5\u5fc3\uff0c\u5b83\u81ea\u5df1\u4f1a\u5b89\u597d\u3002",
-      "\u5b89\u9759\u7684\u52aa\u529b\uff0c\u5373\u4f7f\u65e0\u4eba\u770b\u89c1\uff0c\u4e5f\u7b97\u6570\u3002",
-      "\u4e3a\u81ea\u5df1\u547c\u5438\u4e00\u6b21\uff0c\u4e5f\u4e3a\u8fdc\u65b9\u7684\u4eba\u547c\u5438\u4e00\u6b21\u3002",
-      "\u4eca\u5929\u4e0d\u5fc5\u6c89\u91cd\uff0c\u4e5f\u4e00\u6837\u6709\u610f\u4e49\u3002",
-      "\u4e00\u4e2a\u6e29\u548c\u7684\u4e3e\u52a8\uff0c\u80fd\u67d4\u8f6f\u6574\u4e2a\u4e0b\u5348\u3002",
-      "\u4f60\u53ef\u4ee5\u6162\u6162\u6765\u3002",
-      "\u70b9\u4e00\u76cf\u5c0f\u706f\uff0c\u9ed1\u6697\u81ea\u4f1a\u9000\u8ba9\u3002",
-      "\u4f11\u606f\uff0c\u4e5f\u662f\u4e00\u4ef6\u5584\u4e8b\u3002",
-      "\u5584\u6709\u5584\u62a5\uff0c\u798f\u4ece\u5584\u6765\u3002",
-      "\u79ef\u5584\u5fb7\uff0c\u5f97\u798f\u62a5\u3002",
-      "\u79cd\u5584\u56e0\uff0c\u6536\u798f\u679c\u3002",
-      "\u5584\u5fc3\u4e00\u70b9\uff0c\u798f\u6cfd\u4e00\u751f\u3002",
-      "\u4e00\u5ff5\u5584\u5fc3\uff0c\u4e07\u798f\u4e34\u95e8\u3002"
-    ]
-  }
-};
+const I18N = window.FOOBOW_APP_I18N;
+const translations = I18N.ui;
 
 let state = loadState();
 let focusTimer = null;
@@ -216,8 +34,14 @@ function saveState() {
   localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
+// Legacy saved states used "zh"; normalize to the full locale set.
+function normalizeLocale(locale) {
+  if (locale === "zh") return "zh-Hans";
+  return I18N.locales.indexOf(locale) === -1 ? "en" : locale;
+}
+
 function dictionary() {
-  return translations[state.language];
+  return translations[normalizeLocale(state.language)];
 }
 
 function setText(id, value) {
@@ -252,7 +76,7 @@ function renderDailyThought() {
 function renderStats() {
   setText("karmaValue", state.karma);
   setText("deedCount", state.deeds);
-  setText("streakLabel", `${state.streak} day streak`);
+  setText("streakLabel", dictionary().streakLabel.replace("%{count}", state.streak));
   const stats = dictionary().profileMenuStats
     .replace("%{karma}", state.karma)
     .replace("%{streak}", state.streak);
@@ -269,7 +93,8 @@ function renderMoods() {
     button.type = "button";
     button.dataset.mood = mood.id;
     button.dataset.deed = mood.deed;
-    button.textContent = mood.label;
+    const moodKey = "mood" + mood.id.charAt(0).toUpperCase() + mood.id.slice(1);
+    button.textContent = dictionary()[moodKey] || mood.label;
     button.setAttribute("aria-pressed", String(state.mood === mood.id));
     button.addEventListener("click", () => {
       state.mood = mood.id;
@@ -608,50 +433,7 @@ function renderBlessings() {
 // No provider ever promises luck or outcomes — only warm reflection.
 const PRAY_CATEGORIES = ["family", "health", "study", "travel", "remembrance", "gratitude"];
 
-const BLESSING_LINES = {
-  en: {
-    family: [
-      "May your home hold a little more warmth tonight.",
-      "May the ones you love feel quietly held.",
-      "May kindness pass easily between you and yours."
-    ],
-    health: [
-      "May your body find some ease, and your mind a little rest.",
-      "May each breath feel a touch lighter.",
-      "May gentle days find their way to you."
-    ],
-    study: [
-      "May your focus settle like still water.",
-      "May what you learn stay close when you need it.",
-      "May effort and calm walk together for you."
-    ],
-    travel: [
-      "May your road be smooth and your return be safe.",
-      "May every mile feel a little kinder.",
-      "May you arrive rested and whole."
-    ],
-    remembrance: [
-      "May the one you miss feel near in the quiet.",
-      "May your memories keep their warmth.",
-      "May grief soften, slowly, into gratitude."
-    ],
-    gratitude: [
-      "May the good you have noticed grow roots.",
-      "May thankfulness lighten the whole day.",
-      "May you feel, for a moment, how much is already enough."
-    ],
-    close: ["Carry this lightly.", "Rest a moment here.", "You are not carrying it alone.", "Let it be gentle."]
-  },
-  zh: {
-    family: ["愿你的家，今晚多一分温暖。", "愿你所爱的人，被静静地守护。", "愿善意在你们之间轻轻流动。"],
-    health: ["愿你的身体得些安适，心得些休息。", "愿每一次呼吸，都轻一点。", "愿温和的日子，慢慢向你走来。"],
-    study: ["愿你的专注，如止水般安定。", "愿所学在需要时，仍在身边。", "愿努力与平静，与你同行。"],
-    travel: ["愿你一路平顺，归途平安。", "愿每一段路，都温柔一点。", "愿你安然抵达，身心俱全。"],
-    remembrance: ["愿你思念的人，在安静里离你很近。", "愿回忆一直温热。", "愿悲伤慢慢，化作感恩。"],
-    gratitude: ["愿你留意到的好，慢慢扎根。", "愿感恩，让一整天都轻一些。", "愿你此刻感到，拥有的已经足够。"],
-    close: ["轻轻地，把它带着。", "在这里，停一会儿。", "你不是一个人在担着。", "让它温柔地存在。"]
-  }
-};
+const BLESSING_LINES = I18N.blessingLines;
 
 function pickFrom(list) {
   return list[Math.floor(Math.random() * list.length)];
@@ -660,17 +442,16 @@ function pickFrom(list) {
 var blessingEngine = {
   provider: "mock",
   generate: function (request) {
-    var lines = BLESSING_LINES[request.locale] || BLESSING_LINES.en;
+    var locale = normalizeLocale(request.locale);
+    var lines = BLESSING_LINES[locale] || BLESSING_LINES.en;
     var body = pickFrom(lines[request.category] || lines.family);
     var close = pickFrom(lines.close);
     var who = (request.recipient || "").trim();
-    var text;
-    if (request.locale === "zh") {
-      text = body + close;
-      if (who) text = "给" + who + "：" + text;
-    } else {
-      text = body + " " + close;
-      if (who) text = "For " + who + " — " + text;
+    var joiner = I18N.noSpaceJoin.indexOf(locale) === -1 ? " " : "";
+    var text = body + joiner + close;
+    if (who) {
+      var prefix = I18N.recipientPrefix[locale] || I18N.recipientPrefix.en;
+      text = prefix(who, text);
     }
     // Simulate an async provider call; swap this for a fetch when a key exists.
     return new Promise(function (resolve) {
@@ -782,9 +563,30 @@ function setupBlessings() {
 }
 
 function applyTranslations() {
+  const locale = normalizeLocale(state.language);
   const copy = dictionary();
-  document.documentElement.lang = state.language === "en" ? "en" : "zh-Hans";
-  document.getElementById("languageToggle").textContent = state.language === "en" ? "\u4e2d" : "EN";
+  document.documentElement.lang = I18N.htmlLang[locale] || "en";
+
+  const select = document.getElementById("languageSelect");
+  if (select) {
+    if (select.options.length !== I18N.locales.length) {
+      select.replaceChildren();
+      I18N.locales.forEach((code) => {
+        const option = document.createElement("option");
+        option.value = code;
+        option.textContent = I18N.langNames[code];
+        select.append(option);
+      });
+    }
+    select.value = locale;
+    select.setAttribute("aria-label", copy.langLabel);
+  }
+
+  // Navigation labels live in both the top and bottom bars.
+  document.querySelectorAll(".nav-item, .top-nav-item").forEach((item) => {
+    const key = "nav" + item.dataset.target.charAt(0).toUpperCase() + item.dataset.target.slice(1);
+    if (copy[key]) item.textContent = copy[key];
+  });
 
   document.querySelectorAll("[data-i18n]").forEach((node) => {
     node.textContent = copy[node.dataset.i18n];
@@ -918,7 +720,7 @@ document.getElementById("blessingForm").addEventListener("submit", (event) => {
   state.blessings.unshift({
     id: `local-${Date.now()}`,
     body: message,
-    reaction: state.language === "en" ? "Thank you" : "\u8c22\u8c22",
+    reaction: dictionary().thankYou,
     reported: false
   });
   input.value = "";
@@ -949,8 +751,8 @@ document.getElementById("soundscapeToggle").addEventListener("click", () => {
   renderSoundscapeToggle();
 });
 
-document.getElementById("languageToggle").addEventListener("click", () => {
-  state.language = state.language === "en" ? "zh" : "en";
+document.getElementById("languageSelect").addEventListener("change", (event) => {
+  state.language = normalizeLocale(event.target.value);
   saveState();
   renderAll();
 });

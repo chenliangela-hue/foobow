@@ -52,7 +52,7 @@ test("theme, language, and local persistence work", async ({ page }) => {
   await page.getByRole("button", { name: "Toggle dark mode" }).click();
   await expect(page.locator("body")).toHaveClass(/dark/);
 
-  await page.getByRole("button", { name: "Switch language" }).click();
+  await page.selectOption("#languageSelect", "zh-Hans");
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hans");
 
   await page.locator("#journalEntry").fill("A private note that should persist.");
@@ -158,6 +158,32 @@ test("top navigation switches screens and stays in sync on wide viewports", asyn
   await topNav.getByText("Community", { exact: true }).click();
   await expect(page.locator("#screen-community")).toHaveClass(/active/);
   await expect(page.locator(".bottom-nav .nav-item.active")).toHaveText("Community");
+});
+
+test("app localizes across all six locales, including nav and safety copy", async ({ page }) => {
+  const cases = [
+    { locale: "en", lang: "en", title: "Do one quiet good deed.", nav: "Today" },
+    { locale: "zh-Hans", lang: "zh-Hans", title: "做一件安静的小善事。", nav: "今日" },
+    { locale: "fr", lang: "fr", title: "Faites une bonne action, en silence.", nav: "Aujourd'hui" },
+    { locale: "es", lang: "es", title: "Haz una buena acción, en silencio.", nav: "Hoy" },
+    { locale: "th", lang: "th", title: "ทำความดีเงียบๆ สักอย่าง", nav: "วันนี้" },
+    { locale: "ja", lang: "ja", title: "静かな善いことを、ひとつ。", nav: "今日" }
+  ];
+
+  for (const testCase of cases) {
+    await page.selectOption("#languageSelect", testCase.locale);
+    await expect(page.locator("html")).toHaveAttribute("lang", testCase.lang);
+    await expect(page.locator("#today-title")).toHaveText(testCase.title);
+    // Navigation labels localize too.
+    await expect(page.locator('.bottom-nav .nav-item[data-target="today"]')).toHaveText(testCase.nav);
+    // The symbolic-comfort disclaimer is never dropped in any locale.
+    await expect(page.locator(".safety-note").first()).not.toBeEmpty();
+  }
+
+  // Choice persists across reload.
+  await page.selectOption("#languageSelect", "th");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("lang", "th");
 });
 
 test("core design tokens meet WCAG contrast thresholds", async ({ page }) => {

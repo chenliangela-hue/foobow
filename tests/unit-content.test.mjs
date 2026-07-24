@@ -288,7 +288,7 @@ test("prototype exposes the required app screens and controls", async () => {
     "screen-deeds",
     "screen-community",
     "screen-profile",
-    "languageToggle",
+    "languageSelect",
     "themeToggle",
     "calm-ritual-title",
     "soundscapeRow",

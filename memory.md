@@ -123,6 +123,15 @@ This file is the project-local memory. Keep it current whenever product directio
 - Bottom nav is now 6 columns; nav labels stay English for consistency (bottom-nav Blessings label is English — tests scope to `.bottom-nav` to avoid the "Blessings" deed-category filter name collision). Keyboard-traversal test (14 tabs) still covers the added desktop top-nav link.
 - Tests: `tests/browser/foobow.blessings.spec.mjs` (pray→mock blessing→keep→karma; light lamp; persistence) + content assertions; `test:browser` runs 5 specs (pa+landing+admin+blessings). Regenerated today-screen visual baseline (6-tab nav). Root suite now 33; browser 42 pass +1 skipped.
 
+## 2026-07-24 (Phase 5a: six-language web app)
+
+- Extracted the app dictionary from `app.js` into `prototype/app/i18n.js` (mirroring `landing.i18n.js`) and expanded it to all six locales: en, zh-Hans, fr, es, th, ja. Covers UI strings, nav labels, mood labels, streak label, `thankYou`, blessing-engine lines, recipient prefixes, and per-locale daily thoughts. Safety copy ("symbolic comfort only… never a promise of luck") is translated in every locale, never dropped.
+- Replaced the binary 中/EN toggle with a six-locale `<select id="languageSelect">` (kept `aria-label="Switch language"` so PA checks hold). Added `normalizeLocale()` so legacy saved `"zh"` states migrate to `"zh-Hans"` and unknown values fall back to `en`.
+- Blessing engine is now locale-aware for all six: `I18N.blessingLines`, `recipientPrefix` per locale ("For X —" / "给X：" / "Xへ —" …), and `noSpaceJoin` for zh/ja/th sentence joining.
+- **Regression caught by tests:** the wider language select made the sticky topbar overflow horizontally on mobile (449px content in a 412px viewport), which shifted layout and made bottom-nav clicks land on the journal textarea — 5 mobile PA tests timed out. Fixed responsively (<560px: hide `.brand-word`, tighten select + gaps); verified `document.scrollWidth === innerWidth` on Pixel 7 and iPhone 12. Lesson: check horizontal overflow after adding topbar controls.
+- New PA test covers all six locales (html lang + title + localized nav + safety copy present + persistence). Browser suite now 45 pass / 1 skipped; root 33.
+- Catalog data (deed/spot names) intentionally stays canonical — the API's `localized_name` field (Phase 2 schema) is the proper mechanism for localizing catalog entries.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

@@ -97,6 +97,7 @@
 - Phase 2 (storage + enterprise DB): Supabase Storage buckets (public/private, no binaries in DB), `0003_media_and_commerce.sql` (media_assets, ai_generations, blessing_intentions, wish_lamps, catalog_items, orders, admin_users, admin_audit_log), provisioning scripts, CI wiring, and enterprise DB docs.
 - Phase 4 (admin backend): bilingual dark-themed admin console at `/admin` (dashboard, order review, users, pricing, audit, settings) with API-ready wiring + demo fallback; browser + content tests.
 - Phase 3 (Blessings 祈福, mock AI): a 祈福 app tab with Pray-for-someone (provider-agnostic mock blessing engine, en/zh) and a Wish lamp (心灯) with animated flame; kept blessings + lamps persist and award symbolic karma; provider design documented (Anthropic/OpenAI/Gemini keys plug in later).
+- Phase 5a (six-language web app): extract `prototype/app/i18n.js` and localize the whole app into en/zh-Hans/fr/es/th/ja including nav, moods, streak, and blessing-engine lines; six-locale selector with legacy-locale migration; fix the mobile topbar horizontal-overflow regression.
 
 
 ## Next
