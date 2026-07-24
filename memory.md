@@ -145,6 +145,12 @@ This file is the project-local memory. Keep it current whenever product directio
 - **CI/CD automation (no GitHub secrets needed):** linked the Vercel project to `chenliangela-hue/foobow` via the API (production branch `main`, `rootDirectory: prototype`), so **every push to main auto-deploys** and PRs get previews. Removed the secret-gated `deploy-web` job from CI; GitHub Actions now purely runs quality gates. Updated `docs/deployment.md`.
 - Reminder: consumer OAuth for ChatGPT/Claude/Gemini is not a supported programmatic path; the pack approach gives the same "no bill" outcome legitimately.
 
+## 2026-07-24 (dark-mode fix + profile progress/activity)
+
+- **BUG (user-reported, live):** dark mode was unreadable. Root cause: `body.senior-mode { --ink: #121818 }` hardcoded a near-black ink that overrode the dark theme's light ink (same specificity, later in the file), so headings/stat numbers/nav went near-black on near-black. **Senior mode — the readability feature — was destroying readability.** Fixed by setting ink+muted per theme (`body.senior-mode` deepens for light, `body.dark.senior-mode` brightens for dark). Also stopped the six-tab bar clipping "Community" at senior sizes. Regression test asserts WCAG contrast for ink+muted across **all four** combinations (light, light+senior, dark+senior, dark) — the previous contrast test only checked one, which is why this slipped through.
+- Added a **supportive profile page**: progress panel (gradient bar toward the next milestone from `MILESTONES = [10,25,50,75,100]`, milestone chips that fill when reached) and a **Recent activity** timeline. New `state.activity` log (capped at 60 entries) written by `logActivity()` on check-in, deed ritual, kept blessing, and lamp lit; persisted and localized in all six locales.
+- Research for the deed catalog expansion is done (sources in docs) but the expanded catalog, the Reddit/Zhihu-style community feed, and per-feature workflow animations are still open — see task board.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

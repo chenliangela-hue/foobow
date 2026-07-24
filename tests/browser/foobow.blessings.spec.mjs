@@ -40,6 +40,26 @@ test("wish lamp: lighting adds a lamp and records the wish", async ({ page }) =>
   await expect(page.locator("#lampStage")).toHaveClass(/lit/);
 });
 
+test("profile records progress and a running activity history", async ({ page }) => {
+  await page.locator("#lampWish").fill("peace");
+  await page.getByRole("button", { name: "Light the lamp" }).click();
+  await page.locator(".bottom-nav .nav-item[data-target='profile']").click();
+
+  // Progress toward the next milestone.
+  await expect(page.locator("#progressNext")).not.toBeEmpty();
+  await expect(page.locator(".milestone")).toHaveCount(5);
+  await expect(page.locator(".milestone.reached").first()).toBeVisible();
+
+  // The lamp shows up in the activity history.
+  await expect(page.locator(".activity-item")).toHaveCount(1);
+  await expect(page.locator(".activity-item .activity-text").first()).toHaveText("Lit a wish lamp");
+
+  // History survives a reload.
+  await page.reload();
+  await page.locator(".bottom-nav .nav-item[data-target='profile']").click();
+  await expect(page.locator(".activity-item")).toHaveCount(1);
+});
+
 test("kept blessings and lamps persist across reload", async ({ page }) => {
   await page.locator("#lampWish").fill("a quiet year");
   await page.getByRole("button", { name: "Light the lamp" }).click();

@@ -106,6 +106,11 @@
 
 ## Next
 
+- Expand the deed catalog with more good deeds grouped into project categories (research done: elderly care, animals, environment, community/food-security, learning).
+- Build a community feed in the Reddit/RedNote/Zhihu spirit: users post a good deed or ask for help, with replies, reactions, tags, and moderation.
+- Add per-feature workflow detail: step-through states, transition animations, quotes and imagery, and a clear response/result for every user action.
+- Localize the remaining hardcoded profile stat labels (deeds/badges/donated) and deed catalog names via API `localized_name`.
+
 - Upgrade default local Node to `20.19.4+`; until then, continue running Prisma commands with bundled Node `24.14.0`.
 - Add production authentication provider once account/session requirements and credentials are selected.
 - Use CLI to create development resources after user provides provider account inputs: Supabase org/region/password, Clerk app access, and optional Stripe mode if donation checkout should be tested now. Mapbox is no longer required for MVP.

@@ -26,7 +26,8 @@ function mergeState(base, saved) {
     },
     blessings: Array.isArray(saved.blessings) ? saved.blessings : base.blessings,
     keptBlessings: Array.isArray(saved.keptBlessings) ? saved.keptBlessings : base.keptBlessings,
-    lamps: Array.isArray(saved.lamps) ? saved.lamps : base.lamps
+    lamps: Array.isArray(saved.lamps) ? saved.lamps : base.lamps,
+    activity: Array.isArray(saved.activity) ? saved.activity : base.activity
   };
 }
 
@@ -71,6 +72,70 @@ function renderDailyThought() {
   const start = Date.UTC(new Date().getFullYear(), 0, 0);
   const dayOfYear = Math.floor((Date.now() - start) / 86400000);
   node.textContent = thoughts[dayOfYear % thoughts.length];
+}
+
+// Records what the user just did so the profile can show a gentle history.
+// Capped so local storage never grows without bound.
+function logActivity(kind) {
+  state.activity.unshift({ kind: kind, at: Date.now() });
+  if (state.activity.length > 60) state.activity.length = 60;
+  saveState();
+  renderProfileActivity();
+}
+
+const MILESTONES = [10, 25, 50, 75, 100];
+
+function renderProgress() {
+  const bar = document.getElementById("progressFill");
+  const label = document.getElementById("progressNext");
+  if (!bar || !label) return;
+  const next = MILESTONES.find((m) => state.karma < m) || MILESTONES[MILESTONES.length - 1];
+  const percent = Math.max(0, Math.min(100, (state.karma / next) * 100));
+  bar.style.width = percent + "%";
+  const remaining = Math.max(0, next - state.karma);
+  label.textContent = dictionary().progressNext.replace("%{n}", remaining);
+
+  const row = document.getElementById("milestoneRow");
+  if (row) {
+    row.replaceChildren();
+    MILESTONES.forEach((m) => {
+      const chip = document.createElement("span");
+      chip.className = "milestone" + (state.karma >= m ? " reached" : "");
+      chip.textContent = m;
+      row.append(chip);
+    });
+  }
+}
+
+function renderProfileActivity() {
+  const list = document.getElementById("activityList");
+  if (!list) return;
+  const dict = dictionary();
+  const labels = { deed: dict.actDeed, blessing: dict.actBlessing, lamp: dict.actLamp, checkin: dict.actCheckin };
+  list.replaceChildren();
+  if (!state.activity.length) {
+    const empty = document.createElement("li");
+    empty.className = "activity-empty";
+    empty.textContent = dict.activityEmpty;
+    list.append(empty);
+    return;
+  }
+  state.activity.slice(0, 8).forEach((entry) => {
+    const li = document.createElement("li");
+    li.className = "activity-item";
+    const dot = document.createElement("span");
+    dot.className = "activity-dot";
+    dot.setAttribute("aria-hidden", "true");
+    const text = document.createElement("span");
+    text.className = "activity-text";
+    text.textContent = labels[entry.kind] || entry.kind;
+    const when = document.createElement("time");
+    when.className = "activity-when";
+    when.dateTime = new Date(entry.at).toISOString();
+    when.textContent = new Date(entry.at).toLocaleDateString();
+    li.append(dot, text, when);
+    list.append(li);
+  });
 }
 
 function renderStats() {
@@ -592,6 +657,7 @@ function setupBlessings() {
     state.keptBlessings.unshift({ id: "kept_" + Date.now(), body: lastBlessing });
     updateKarma(1);
     saveState();
+    logActivity("blessing");
     saveButton.textContent = dictionary().blessingsSaved;
     saveButton.disabled = true;
   });
@@ -606,6 +672,7 @@ function setupBlessings() {
     void lampStage.offsetWidth;
     lampStage.classList.add("lit");
     renderLamps();
+    logActivity("lamp");
     showActionWhisper("lampWhispers");
   });
 }
@@ -668,6 +735,8 @@ function renderAll() {
   renderBlessings();
   renderPrayCategories();
   renderLamps();
+  renderProgress();
+  renderProfileActivity();
   renderSettings();
   renderFocusSession();
   document.getElementById("journalEntry").value = state.journal;
@@ -738,6 +807,7 @@ document.querySelectorAll(".map-pin").forEach((pin) => {
 
 document.getElementById("completeDaily").addEventListener("click", () => {
   updateKarma(4);
+  logActivity("checkin");
   state.streak += 1;
   state.journal = state.journal || "I completed one quiet deed and chose a lighter next step.";
   saveState();
@@ -745,6 +815,7 @@ document.getElementById("completeDaily").addEventListener("click", () => {
 });
 
 document.getElementById("performRitual").addEventListener("click", () => {
+  logActivity("deed");
   updateKarma(5);
   const scene = document.getElementById("ritualScene");
   scene.classList.remove("completed");

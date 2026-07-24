@@ -16,6 +16,7 @@ window.FOOBOW_DATA = {
     prayCategory: "family",
     keptBlessings: [],
     lamps: [],
+    activity: [],
     settings: {
       privateJournal: true,
       quietRanking: true,
