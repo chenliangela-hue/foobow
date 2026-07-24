@@ -27,7 +27,8 @@ function mergeState(base, saved) {
     blessings: Array.isArray(saved.blessings) ? saved.blessings : base.blessings,
     keptBlessings: Array.isArray(saved.keptBlessings) ? saved.keptBlessings : base.keptBlessings,
     lamps: Array.isArray(saved.lamps) ? saved.lamps : base.lamps,
-    activity: Array.isArray(saved.activity) ? saved.activity : base.activity
+    activity: Array.isArray(saved.activity) ? saved.activity : base.activity,
+    posts: Array.isArray(saved.posts) ? saved.posts : base.posts
   };
 }
 
@@ -737,6 +738,8 @@ function renderAll() {
   renderLamps();
   renderProgress();
   renderProfileActivity();
+  // The community feed lives in community.js, which loads after this module.
+  if (typeof renderCommunityFeed === "function") renderCommunityFeed();
   renderSettings();
   renderFocusSession();
   document.getElementById("journalEntry").value = state.journal;

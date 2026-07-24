@@ -10,7 +10,7 @@
     "test:smoke": "node --test tests/smoke-prototype.test.mjs",
     "test:pa": "node --test tests/pa-checklist.test.mjs",
     "test:api": "npm --prefix apps/api test",
-    "test:browser": "playwright test tests/browser/foobow.pa.spec.mjs tests/browser/foobow.landing.spec.mjs tests/browser/foobow.admin.spec.mjs tests/browser/foobow.blessings.spec.mjs",
+    "test:browser": "playwright test tests/browser/foobow.pa.spec.mjs tests/browser/foobow.landing.spec.mjs tests/browser/foobow.admin.spec.mjs tests/browser/foobow.blessings.spec.mjs tests/browser/foobow.community.spec.mjs",
     "test:visual": "playwright test tests/browser/foobow.visual.spec.mjs",
     "test:mobile": "npm --prefix apps/mobile run typecheck",
     "test:catalog": "node scripts/verify-shared-catalog.mjs",

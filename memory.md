@@ -151,6 +151,14 @@ This file is the project-local memory. Keep it current whenever product directio
 - Added a **supportive profile page**: progress panel (gradient bar toward the next milestone from `MILESTONES = [10,25,50,75,100]`, milestone chips that fill when reached) and a **Recent activity** timeline. New `state.activity` log (capped at 60 entries) written by `logActivity()` on check-in, deed ritual, kept blessing, and lamp lit; persisted and localized in all six locales.
 - Research for the deed catalog expansion is done (sources in docs) but the expanded catalog, the Reddit/Zhihu-style community feed, and per-feature workflow animations are still open — see task board.
 
+## 2026-07-24 (community feed — TDD + ODD)
+
+- Built the Reddit/Zhihu-style **community feed** test-first, per the user's TDD instruction: wrote `tests/browser/foobow.community.spec.mjs` (7 specs × 2 projects) describing the behaviour, confirmed the **red** phase (all failing), then implemented to **green**.
+- **ODD modelling** (added to `docs/odd-spec.md` Core Objects): `Community Post` (kind `share`|`ask`, optional tag, moderation status), `Post Reply`, `Post Reaction` (one press per person, reversible — deliberately no pile-on score, consistent with the product's no-leaderboard stance), `Post Tag` (animals/elders/environment/community/learning). Shape follows open-source forum conventions (Discourse, Lemmy): a post owns its replies and carries a moderation status from creation, so reporting withdraws it immediately.
+- Implemented as its own module `prototype/app/community.js` (loaded after app.js) rather than growing app.js — `renderAll()` calls it defensively via `typeof renderCommunityFeed === "function"` because the module loads later. Localized in all six locales. Posting also triggers the pre-generated content-pack whisper (still zero AI tokens).
+- **Flaky test caught and fixed properly:** the dark-community visual baseline began racing the feed's first render. Rather than re-baseline repeatedly, added an explicit wait on `#feedList`/`.feed-empty`; verified stable across three consecutive runs.
+- Note for future edits: bash heredocs (`<<'PYEOF'`) break on content containing French apostrophes/triple quotes — write such files with the Write tool instead.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

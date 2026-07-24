@@ -21,6 +21,10 @@ Build a map-first virtual good karma app where users complete small symbolic dee
 | Donation | User contribution to a campaign | pending, completed, refunded, receipted | User/System |
 | Badge | Milestone or category recognition | locked, earned, hidden | System |
 | Group Mission | Family, city, school, company, or community challenge | open, active, completed, archived | Group Owner/Admin |
+| Community Post | A shared good deed or a request for help, posted to the feed | visible, reported, hidden, removed | User/Moderator |
+| Post Reply | A supportive answer to a Community Post | visible, reported, hidden, removed | User/Moderator |
+| Post Reaction | One press of support per person for a post (never a pile-on score) | added, withdrawn | User |
+| Post Tag | Project category used to browse the feed | active, retired | Product/Admin |
 | Safety Report | Report against content, profile, campaign, or behavior | open, reviewing, actioned, dismissed | Moderator |
 | Subscription | Optional paid support plan | trial, active, past_due, canceled | User/System |
 
@@ -32,6 +36,7 @@ Build a map-first virtual good karma app where users complete small symbolic dee
 - Deed Action/Karma Event/Badge: ritual completion, symbolic progress, category ranking, badges, map stamps.
 - Journal Entry: private reflection, user-controlled export/delete.
 - Blessing/Group Mission: anonymous wall, kindness chains, group challenges, low-pressure reactions.
+- Community Post/Post Reply/Post Reaction/Post Tag: a feed where people share a good deed or ask for help, answer each other, and offer support. Shape follows conventions common to open-source forums (Discourse, Lemmy): a post owns its replies, carries a kind (`share` | `ask`) and an optional project tag, and holds a moderation status from creation so reporting withdraws it immediately. Support is deliberately one-press-per-person and reversible — the product avoids leaderboards and pile-on scoring. Implemented in `prototype/app/community.js`, specified test-first in `tests/browser/foobow.community.spec.mjs`.
 - Donation Campaign/Donation/Subscription: verified donation prompts, receipts, sponsorships, ad-free premium support.
 - Safety Report: content moderation, fake charity controls, block/report/mute.
 

@@ -250,6 +250,18 @@
             <textarea id="blessingInput" rows="3" maxlength="140" data-i18n-placeholder="blessingPlaceholder" placeholder="May your road feel less heavy today."></textarea>
             <button class="primary-action" type="submit" data-i18n="sendBlessing">Send blessing</button>
           </form>
+          <section class="feed-composer" aria-labelledby="feed-title">
+            <p class="eyebrow" data-i18n="feedEyebrow">Community feed</p>
+            <h3 id="feed-title" data-i18n="feedTitle">Share a good deed, or ask for help.</h3>
+            <div class="post-kind-row" id="postKindRow" aria-label="Post kind"></div>
+            <div class="post-tag-row" id="postTagRow" aria-label="Post tags"></div>
+            <textarea class="pray-input" id="postBody" rows="3" maxlength="400" data-i18n-placeholder="postPlaceholder"></textarea>
+            <button class="primary-action" id="postSubmit" type="button" data-i18n="postSubmit">Post</button>
+          </section>
+
+          <div class="feed-filter-row" id="feedFilterRow" aria-label="Feed filters"></div>
+          <div class="feed-list" id="feedList" aria-live="polite"></div>
+
           <div class="blessing-list" id="blessingList">
             <article class="blessing">
               <p>May your next step feel lighter than the last.</p>
@@ -348,5 +360,6 @@
     <script src="data.js"></script>
     <script src="i18n.js"></script>
     <script src="app.js"></script>
+    <script src="community.js"></script>
   </body>
 </html>

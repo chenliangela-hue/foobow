@@ -17,6 +17,10 @@ window.FOOBOW_DATA = {
     keptBlessings: [],
     lamps: [],
     activity: [],
+    posts: [],
+    postKind: "share",
+    postTag: null,
+    feedFilter: "all",
     settings: {
       privateJournal: true,
       quietRanking: true,

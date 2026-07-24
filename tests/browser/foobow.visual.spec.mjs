@@ -53,6 +53,11 @@ test("dark community visual baseline", async ({ page }) => {
   await page.locator("#blessingInput").fill("May your next step feel lighter.");
   await page.getByRole("button", { name: "Send blessing" }).click();
 
+  // The community screen now hosts the feed; wait for it to settle so the
+  // shot is not raced by its first render.
+  await page.locator("#feedList").waitFor();
+  await expect(page.locator(".feed-empty")).toBeVisible();
+
   await expect(page.locator("#screen-community")).toHaveScreenshot("community-dark-screen.png", {
     animations: "disabled",
     maxDiffPixelRatio: 0.006

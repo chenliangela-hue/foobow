@@ -1439,6 +1439,208 @@ dialog::backdrop {
   transform: translateY(0);
 }
 
+/* --- Community feed --- */
+.feed-composer {
+  margin-top: 14px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 12px;
+}
+
+.post-kind-row,
+.post-tag-row,
+.feed-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feed-filter-row {
+  margin: 16px 0 10px;
+}
+
+.post-kind,
+.post-tag,
+.feed-filter {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+.post-kind.active,
+.feed-filter.active {
+  background: var(--vermilion);
+  border-color: var(--vermilion);
+  color: #fffaf1;
+}
+
+.post-tag.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #2b1f18;
+}
+
+.feed-list {
+  display: grid;
+  gap: 12px;
+}
+
+.feed-post {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  background: var(--surface);
+  display: grid;
+  gap: 10px;
+  animation: rise 320ms ease both;
+}
+
+.post-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-kind-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.post-kind-badge.share {
+  background: color-mix(in srgb, var(--vermilion) 14%, transparent);
+  color: var(--vermilion);
+}
+
+.post-kind-badge.ask {
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  color: var(--gold);
+}
+
+.post-tag-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.72rem;
+}
+
+.post-when {
+  margin-left: auto;
+  color: var(--muted);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.74rem;
+}
+
+.post-body {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.post-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.post-support,
+.post-reply-toggle,
+.post-report {
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+.post-support.active {
+  color: var(--vermilion);
+  border-color: color-mix(in srgb, var(--vermilion) 55%, transparent);
+  background: color-mix(in srgb, var(--vermilion) 10%, transparent);
+}
+
+.post-report {
+  margin-left: auto;
+}
+
+.post-reply-list {
+  display: grid;
+  gap: 8px;
+}
+
+.post-reply {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-strong);
+  border-left: 3px solid var(--vermilion);
+  color: var(--ink);
+  font-size: 0.94rem;
+  line-height: 1.45;
+  animation: rise 300ms ease both;
+}
+
+.post-reply-form {
+  display: flex;
+  gap: 8px;
+}
+
+.post-reply-form[hidden] {
+  display: none;
+}
+
+.reply-input {
+  flex: 1;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+}
+
+.reply-submit {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 0;
+  background: var(--vermilion);
+  color: #fffaf1;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.feed-empty {
+  color: var(--muted);
+  font-style: italic;
+  padding: 18px 4px;
+  text-align: center;
+}
+
 /* --- Profile: progress + activity --- */
 .progress-track {
   height: 12px;
