@@ -462,6 +462,53 @@ var blessingEngine = {
 
 var lastBlessing = null;
 
+// --- Pre-generated content pack -------------------------------------------
+// Authored once (see content/blessing-pack.v1.json) and served from the
+// public-assets bucket over CDN, so runtime AI token spend stays at zero.
+// Loading is best-effort: if the CDN is unreachable the app simply shows no
+// extra line, and nothing else changes.
+var CONTENT_PACK_URL =
+  "https://ifujcchqlotxenuitrey.supabase.co/storage/v1/object/public/public-assets/content/blessing-pack.v1.json";
+var contentPack = null;
+var contentPackReady = null;
+
+function loadContentPack() {
+  contentPackReady = fetch(CONTENT_PACK_URL)
+    .then(function (response) { return response.ok ? response.json() : null; })
+    .then(function (pack) { contentPack = pack; })
+    .catch(function () { contentPack = null; });
+  return contentPackReady;
+}
+
+function packLine(group) {
+  if (!contentPack || !contentPack[group]) return "";
+  var lines = contentPack[group][normalizeLocale(state.language)];
+  return Array.isArray(lines) && lines.length ? pickFrom(lines) : "";
+}
+
+// Shows a short, warm line in response to something the user just did.
+// Waits for an in-flight pack load so an early tap still gets its line.
+function showActionWhisper(group) {
+  Promise.resolve(contentPackReady).then(function () {
+    renderActionWhisper(group);
+  });
+}
+
+function renderActionWhisper(group) {
+  var line = packLine(group);
+  if (!line) return;
+  var node = document.getElementById("actionWhisper");
+  if (!node) return;
+  node.textContent = line;
+  node.classList.remove("show");
+  void node.offsetWidth;
+  node.classList.add("show");
+  window.clearTimeout(node.dataset.timer);
+  node.dataset.timer = window.setTimeout(function () {
+    node.classList.remove("show");
+  }, 4200);
+}
+
 function renderPrayCategories() {
   const row = document.getElementById("prayCats");
   if (!row) return;
@@ -559,6 +606,7 @@ function setupBlessings() {
     void lampStage.offsetWidth;
     lampStage.classList.add("lit");
     renderLamps();
+    showActionWhisper("lampWhispers");
   });
 }
 
@@ -798,4 +846,5 @@ document.getElementById("closeDialog").addEventListener("click", () => {
 });
 
 setupBlessings();
+loadContentPack();
 renderAll();

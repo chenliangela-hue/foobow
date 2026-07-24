@@ -1414,6 +1414,31 @@ dialog::backdrop {
   font-size: 1.1rem;
 }
 
+/* A short warm line that answers something the user just did. Text comes
+   from the pre-generated content pack (no runtime AI cost). */
+.action-whisper {
+  position: sticky;
+  bottom: 84px;
+  z-index: 25;
+  margin: 0 auto;
+  max-width: 22rem;
+  padding: 0 16px;
+  text-align: center;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+.action-whisper.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 body.senior-mode {
   font-size: 1.15rem;
   --ink: #121818;

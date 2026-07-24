@@ -310,6 +310,27 @@ test("prototype exposes the required app screens and controls", async () => {
   assert.deepEqual(missing, []);
 });
 
+test("pre-generated content pack covers every locale and stays token-free", async () => {
+  const pack = JSON.parse(await readText("content/blessing-pack.v1.json"));
+  const app = await readText("prototype/app/app.js");
+
+  assert.deepEqual(pack.locales, ["en", "zh-Hans", "fr", "es", "th", "ja"]);
+  for (const group of ["deedReflections", "lampWhispers"]) {
+    for (const locale of pack.locales) {
+      assert.ok(
+        Array.isArray(pack[group][locale]) && pack[group][locale].length >= 3,
+        `${group} missing enough lines for ${locale}`
+      );
+    }
+  }
+
+  // The app reads the pack from the CDN and degrades gracefully — it must
+  // never call a model at runtime.
+  assert.match(app, /public-assets\/content\/blessing-pack/);
+  assert.match(app, /contentPackReady/);
+  assert.match(app, /zero/i);
+});
+
 test("blessings feature ships a provider-agnostic mock engine and safe copy", async () => {
   const app = await readText("prototype/app/app.js");
   const missing = hasAll(app, [

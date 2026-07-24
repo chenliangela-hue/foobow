@@ -138,6 +138,13 @@ This file is the project-local memory. Keep it current whenever product directio
 - `LocaleContext.tsx` now exports `supportedLocales` + `localeNames` and builds one `catalog` object; `deviceLocale()` maps the device language across all six with an `en` fallback. The Profile language selector is generated from `supportedLocales`, so adding a locale is now a one-file change.
 - Mobile typecheck passes; extended the mobile routing contract test to assert all six locale exports. Phase 5 (web + mobile) is complete.
 
+## 2026-07-24 (palette, zero-token content pack, auto-deploy)
+
+- **Palette overhaul (user: "Chinese don't like green"):** researched Buddhist colour symbolism — gold = enlightenment, vermilion/朱红 = sacred + protective (one of the five Buddhas), saffron = monk robes/renunciation. Removed EVERY green from landing, app, admin, and mobile theme. Tokens renamed `--teal`→`--vermilion`, `--bamboo`/`--moss`→`--saffron`, admin `--green`→`--positive` (gold); added `--lapis` for water and `--lotus`. Map land recoloured sand/ochre, waterline lapis. `theme.ts` keeps the `jade` key name for compatibility but it now carries vermilion. WCAG contrast still passes light + dark (tests updated to `--vermilion`).
+- **Zero-token AI (user worried about the bill):** implemented "generate once → bucket → reuse forever". `content/blessing-pack.v1.json` holds AI-authored interaction lines (deed reflections + lamp whispers, all 6 locales); `apps/api/scripts/upload-content-pack.ts` (`npm --prefix apps/api run content:upload`) validates and publishes it to the `public-assets` bucket over CDN. The app fetches it once per session (`contentPackReady` promise so an early tap still gets its line) and picks lines locally — **runtime AI token spend is zero**, and growing the library needs no code deploy. Documented the cost model + bounding strategy in `docs/ai-blessings.md`. New UI: `.action-whisper` line that answers a user action (lamp lit → warm line).
+- **CI/CD automation (no GitHub secrets needed):** linked the Vercel project to `chenliangela-hue/foobow` via the API (production branch `main`, `rootDirectory: prototype`), so **every push to main auto-deploys** and PRs get previews. Removed the secret-gated `deploy-web` job from CI; GitHub Actions now purely runs quality gates. Updated `docs/deployment.md`.
+- Reminder: consumer OAuth for ChatGPT/Claude/Gemini is not a supported programmatic path; the pack approach gives the same "no bill" outcome legitimately.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

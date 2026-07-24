@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "note": "Pre-generated interaction content. Authored once and served from the public-assets bucket via CDN, so the app spends zero AI tokens at runtime. Extend this pack (and bump the version) to add variety without a code deploy. All lines are warm reflection only - never a promise of luck, virtue, health, or outcomes.",
+  "locales": ["en", "zh-Hans", "fr", "es", "th", "ja"],
+
+  "deedReflections": {
+    "en": [
+      "That was quietly done. Let it settle.",
+      "One small good, added to the day.",
+      "Nothing loud happened — and that is enough.",
+      "You made the afternoon a little softer."
+    ],
+    "zh-Hans": [
+      "安安静静地，做完了。让它落定。",
+      "又为今天，添了一点小小的善意。",
+      "没有惊天动地——这样就好。",
+      "你让这个下午，柔软了一点。"
+    ],
+    "fr": [
+      "C'était fait tout en douceur. Laissez-le se poser.",
+      "Un petit bien, ajouté à la journée.",
+      "Rien de bruyant n'est arrivé — et c'est bien assez.",
+      "Vous avez rendu l'après-midi un peu plus doux."
+    ],
+    "es": [
+      "Hecho con calma. Deja que se asiente.",
+      "Un pequeño bien, sumado al día.",
+      "No pasó nada ruidoso, y con eso basta.",
+      "Hiciste la tarde un poco más suave."
+    ],
+    "th": [
+      "ทำเสร็จอย่างเงียบๆ ปล่อยให้มันตกตะกอน",
+      "ความดีเล็กๆ อีกหนึ่งอย่างของวันนี้",
+      "ไม่มีอะไรเอิกเกริก — และเท่านี้ก็พอแล้ว",
+      "คุณทำให้บ่ายนี้นุ่มนวลขึ้นอีกนิด"
+    ],
+    "ja": [
+      "静かに、終わりました。そのまま落ち着かせて。",
+      "小さな善がひとつ、今日に加わりました。",
+      "派手なことは起きていません——それで十分です。",
+      "午後が少しやわらかくなりました。"
+    ]
+  },
+
+  "lampWhispers": {
+    "en": [
+      "The lamp is lit. It will keep for you.",
+      "A small light, holding steady.",
+      "Someone, somewhere, is lighting one too.",
+      "Let it burn gently while you rest."
+    ],
+    "zh-Hans": [
+      "灯已点亮，它会替你守着。",
+      "一盏小小的光，稳稳地亮着。",
+      "在某处，也有人正点起一盏。",
+      "让它轻轻燃着，你先歇一歇。"
+    ],
+    "fr": [
+      "La lampe est allumée. Elle veillera pour vous.",
+      "Une petite lumière, qui tient bon.",
+      "Quelqu'un, quelque part, en allume une aussi.",
+      "Qu'elle brûle doucement pendant que vous vous reposez."
+    ],
+    "es": [
+      "La lámpara está encendida. Velará por ti.",
+      "Una luz pequeña, sosteniéndose firme.",
+      "Alguien, en algún lugar, también enciende una.",
+      "Que arda con suavidad mientras descansas."
+    ],
+    "th": [
+      "ตะเกียงถูกจุดแล้ว มันจะเฝ้าดูแลแทนคุณ",
+      "แสงเล็กๆ ที่ส่องนิ่งมั่นคง",
+      "ที่ไหนสักแห่ง มีคนกำลังจุดตะเกียงเช่นกัน",
+      "ปล่อยให้มันลุกอย่างอ่อนโยน ระหว่างที่คุณพัก"
+    ],
+    "ja": [
+      "灯がともりました。あなたの代わりに見守ります。",
+      "小さな光が、静かに保たれています。",
+      "どこかで、誰かも灯をともしています。",
+      "休んでいるあいだ、そっと燃えていますように。"
+    ]
+  }
+}

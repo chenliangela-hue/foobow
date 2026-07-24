@@ -11,6 +11,17 @@ Phase 3 ships the 祈福 **Blessings** experience (Pray for someone, Wish lamp) 
 
 Swapping mock → live is a single call-site change plus server configuration; the UI does not change.
 
+## Cost model: generate once, serve forever (default)
+
+The product is designed so **runtime AI token spend is zero**, which is the default posture — not a fallback:
+
+1. **Author content once, offline.** AI-written lines (blessings, deed reflections, lamp whispers, prompts) are generated during development and committed to [`content/blessing-pack.v1.json`](../content/blessing-pack.v1.json).
+2. **Publish to object storage.** `npm --prefix apps/api run content:upload` pushes the pack to the `public-assets` bucket, served over CDN at `…/object/public/public-assets/content/blessing-pack.v1.json`.
+3. **The app reads the pack, not a model.** It fetches the pack once per session and picks lines locally. Every user shares the same pre-generated content, so cost does not scale with traffic. If the CDN is unreachable the UI simply omits the extra line.
+4. **Growing the library costs nothing at runtime.** Add lines to the pack, re-run the upload, and every client picks them up — no code deploy, no per-request model calls.
+
+If live per-user generation is enabled later, keep the bill bounded by: caching responses by `(category, locale, recipient-less)` so common requests are served from the pack; rate-limiting per user; capping `max_tokens`; and tracking `cost_usd` per row in `ai_generations` (Phase 2 schema) so spend is visible before it is surprising.
+
 ## Providers and keys
 
 The provider is chosen server-side and is pluggable. Add whichever key(s) you want to use:

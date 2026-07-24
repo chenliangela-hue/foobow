@@ -19,14 +19,17 @@ The domain uses Namecheap default nameservers (`dns1/dns2.registrar-servers.com`
 
 Delete the existing parking A/CNAME records (`162.255.119.222`, `parkingpage.namecheap.com`). Vercel issues TLS certificates automatically once DNS propagates.
 
-## CI/CD
+## CI/CD (automatic)
 
-`deploy-web` in `.github/workflows/ci.yml` deploys `prototype/` to Vercel production on every `main` push after `verify`, `api-db-smoke`, and `visual-regression` pass. It stays skipped until:
+Deployment is fully automated through **Vercel's native Git integration** — no GitHub secrets required:
 
-1. Repository secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` are set.
-2. Repository variable `VERCEL_DEPLOY_ENABLED` is set to `true`.
+- The `foobow` Vercel project is linked to `chenliangela-hue/foobow`.
+- Production branch: `main`. Root directory: `prototype`.
+- **Every push to `main` deploys to production automatically**, and pull requests get preview deployments.
 
-Values live in the untracked root `.env.local`. Never commit them.
+GitHub Actions (`.github/workflows/ci.yml`) runs the quality gates in parallel — `verify` (unit/content/API/mobile-typecheck/security/browser), `api-db-smoke` (schema + seeds + DB write paths on a fresh Postgres), and `visual-regression`. Vercel deploys independently, so a red build does not block the deploy; check CI before relying on a release.
+
+To change the linked repository or branch, use the Vercel dashboard (Project → Settings → Git) or the API.
 
 ## Manual deploy
 
