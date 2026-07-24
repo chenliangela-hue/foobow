@@ -248,3 +248,391 @@ export const zhHans: TranslationShape = {
     exportBackup: "导出本地备份"
   }
 };
+
+export const fr: TranslationShape = {
+  header: { eyebrow: "Carte du bon karma virtuel", karmaLabel: "karma" },
+  nav: { today: "Aujourd'hui", map: "Carte", deeds: "Actions", community: "Communauté", profile: "Profil", tabSuffix: "onglet" },
+  categories: { all: "Tout", animals: "Animaux", elders: "Aînés", environment: "Nature", support: "Bénédictions" },
+  moods: { calm: "Calme", heavy: "Lourd", lonely: "Seul", grateful: "Reconnaissant" },
+  moodDeeds: {
+    calm: "Libérer un poisson au lac de l'Est",
+    heavy: "Éclairer un chemin de retour",
+    lonely: "Envoyer une bénédiction anonyme",
+    grateful: "Aider un aîné à traverser"
+  },
+  today: {
+    eyebrow: "Aujourd'hui",
+    title: "Faites une bonne action, en silence.",
+    copy: "Notez votre humeur, choisissez un petit geste symbolique, et allégez un peu la journée.",
+    moodTitle: "Comment arrivez-vous ?",
+    streak: "série de %{count} jours",
+    recommended: "Action recommandée",
+    recommendedCopy: "Un geste symbolique qui garde le réconfort distinct de toute promesse réelle.",
+    completeDeed: "Accomplir l'action",
+    journalTitle: "Journal du karma",
+    journalPlaceholder: "Aujourd'hui, je veux relâcher une inquiétude et faire une chose gentille."
+  },
+  map: {
+    eyebrow: "Carte du monde",
+    title: "Explorez les lieux qui ont besoin d'un peu de lumière.",
+    spotLabel: "Lieu de bonne action : %{name}"
+  },
+  deeds: {
+    eyebrow: "Catalogue d'actions",
+    title: "De petits rituels, des catégories claires.",
+    shown: "%{count} affichées",
+    ritualPreview: "Aperçu du rituel",
+    performRitual: "Accomplir le rituel"
+  },
+  calm: {
+    eyebrow: "Rituel de calme",
+    title: "Prenez d'abord un moment de présence.",
+    copy: "Utilisez une courte minuterie, une ambiance sonore facultative et une réflexion tranquille avant d'enregistrer une action symbolique.",
+    ready: "prêt",
+    optional: "facultatif",
+    soundscapes: { water: "Eau", rain: "Pluie", forest: "Forêt" },
+    guidedStepOne: "1. Respirez une fois et nommez votre intention.",
+    guidedStepTwo: "2. Tenez le geste doucement jusqu'à la fin du minuteur.",
+    guidedStepThree: "3. Notez ce que vous ressentez, sans pression.",
+    startFocus: "Démarrer 20 s de présence",
+    completeFocused: "Terminer en pleine présence"
+  },
+  safety: {
+    notice: "Ceci n'est qu'un réconfort symbolique. Cela ne garantit ni chance, ni vertu, ni santé, ni résultat réel."
+  },
+  community: {
+    eyebrow: "Communauté",
+    title: "Un mur de bonté sans pression.",
+    blessingPlaceholder: "Que votre route vous semble moins lourde aujourd'hui.",
+    sendBlessing: "Envoyer la bénédiction",
+    bless: "Bénir",
+    report: "Signaler"
+  },
+  account: {
+    eyebrow: "Compte",
+    signInTitle: "Bon retour, en douceur.",
+    signUpTitle: "Gardez votre karma avec vous.",
+    copy: "Un compte protège votre karma et votre série sur tous vos appareils. Sans pression — le mode invité fonctionne toujours.",
+    usernamePlaceholder: "Nom d'utilisateur",
+    passwordPlaceholder: "Mot de passe",
+    signIn: "Se connecter",
+    signUp: "Créer un compte",
+    switchToSignUp: "Nouveau ? Créez un compte tranquille",
+    switchToSignIn: "Déjà un compte ? Connectez-vous",
+    signedInAs: "Connecté en tant que %{name}",
+    signedInCopy: "Votre karma et votre série vous suivent. Votre journal reste sur cet appareil.",
+    signOut: "Se déconnecter",
+    gentleError: "Cela n'a pas fonctionné — sans hâte, réessayez.",
+    guestNote: "Vous pouvez continuer à utiliser Foobow sans compte."
+  },
+  profile: {
+    eyebrow: "Profil et préférences",
+    title: "Votre empreinte virtuelle.",
+    statistics: "Statistiques",
+    totalKarma: "Karma total",
+    dayStreak: "Jours d'affilée",
+    preferences: "Préférences",
+    quietMode: "Mode discret",
+    quietModeCopy: "Réduit les notifications et les effets sonores.",
+    privateJournal: "Journal privé",
+    privateJournalCopy: "Garde vos réflexions sur cet appareil.",
+    seniorMode: "Mode grande lisibilité",
+    seniorModeCopy: "Agrandit les textes et les zones tactiles pour un confort de lecture.",
+    language: "Langue",
+    languageCopy: "Choisissez la langue de l'application ou suivez le réglage de l'appareil.",
+    languageSystem: "Système",
+    dataControls: "Gestion des données",
+    exportBackup: "Exporter une sauvegarde locale"
+  }
+};
+
+export const es: TranslationShape = {
+  header: { eyebrow: "Mapa del buen karma virtual", karmaLabel: "karma" },
+  nav: { today: "Hoy", map: "Mapa", deeds: "Acciones", community: "Comunidad", profile: "Perfil", tabSuffix: "pestaña" },
+  categories: { all: "Todo", animals: "Animales", elders: "Mayores", environment: "Naturaleza", support: "Bendiciones" },
+  moods: { calm: "En calma", heavy: "Pesado", lonely: "Solo", grateful: "Agradecido" },
+  moodDeeds: {
+    calm: "Liberar un pez en el lago del Este",
+    heavy: "Iluminar un camino a casa",
+    lonely: "Enviar una bendición anónima",
+    grateful: "Ayudar a un mayor a cruzar"
+  },
+  today: {
+    eyebrow: "Hoy",
+    title: "Haz una buena acción, en silencio.",
+    copy: "Registra cómo estás, elige un pequeño gesto simbólico y deja el día un poco más ligero.",
+    moodTitle: "¿Cómo llegas hoy?",
+    streak: "racha de %{count} días",
+    recommended: "Acción recomendada",
+    recommendedCopy: "Un gesto simbólico que mantiene el consuelo separado de promesas reales.",
+    completeDeed: "Completar la acción",
+    journalTitle: "Diario de karma",
+    journalPlaceholder: "Hoy quiero soltar una preocupación y hacer algo amable."
+  },
+  map: {
+    eyebrow: "Mapa del mundo",
+    title: "Explora lugares que necesitan un poco de luz.",
+    spotLabel: "Lugar de buena acción: %{name}"
+  },
+  deeds: {
+    eyebrow: "Catálogo de acciones",
+    title: "Pequeños rituales, categorías claras.",
+    shown: "%{count} mostradas",
+    ritualPreview: "Vista del ritual",
+    performRitual: "Realizar el ritual"
+  },
+  calm: {
+    eyebrow: "Ritual de calma",
+    title: "Tómate primero un momento de presencia.",
+    copy: "Usa un breve temporizador, un paisaje sonoro opcional y una reflexión tranquila antes de registrar una acción simbólica.",
+    ready: "listo",
+    optional: "opcional",
+    soundscapes: { water: "Agua", rain: "Lluvia", forest: "Bosque" },
+    guidedStepOne: "1. Respira una vez y nombra tu intención.",
+    guidedStepTwo: "2. Sostén el gesto con suavidad hasta que termine el temporizador.",
+    guidedStepThree: "3. Anota cómo te sientes, sin presión.",
+    startFocus: "Iniciar 20 s de presencia",
+    completeFocused: "Completar con presencia"
+  },
+  safety: {
+    notice: "Esto es solo consuelo simbólico. No garantiza suerte, virtud, salud ni resultados reales."
+  },
+  community: {
+    eyebrow: "Comunidad",
+    title: "Un muro de bondad sin presión.",
+    blessingPlaceholder: "Que tu camino se sienta menos pesado hoy.",
+    sendBlessing: "Enviar bendición",
+    bless: "Bendecir",
+    report: "Reportar"
+  },
+  account: {
+    eyebrow: "Cuenta",
+    signInTitle: "Bienvenido de nuevo, con calma.",
+    signUpTitle: "Lleva tu karma contigo.",
+    copy: "Una cuenta guarda tu karma y tu racha en todos tus dispositivos. Sin presión: el modo invitado siempre funciona.",
+    usernamePlaceholder: "Nombre de usuario",
+    passwordPlaceholder: "Contraseña",
+    signIn: "Iniciar sesión",
+    signUp: "Crear cuenta",
+    switchToSignUp: "¿Primera vez? Crea una cuenta tranquila",
+    switchToSignIn: "¿Ya tienes cuenta? Inicia sesión",
+    signedInAs: "Sesión iniciada como %{name}",
+    signedInCopy: "Tu karma y tu racha te acompañan. Tu diario se queda en este dispositivo.",
+    signOut: "Cerrar sesión",
+    gentleError: "No funcionó — sin prisa, inténtalo otra vez.",
+    guestNote: "Puedes seguir usando Foobow sin una cuenta."
+  },
+  profile: {
+    eyebrow: "Perfil y preferencias",
+    title: "Tu huella virtual.",
+    statistics: "Estadísticas",
+    totalKarma: "Karma total",
+    dayStreak: "Días seguidos",
+    preferences: "Preferencias",
+    quietMode: "Modo discreto",
+    quietModeCopy: "Reduce notificaciones y efectos de sonido.",
+    privateJournal: "Diario privado",
+    privateJournalCopy: "Guarda tus reflexiones solo en este dispositivo.",
+    seniorMode: "Modo de alta legibilidad",
+    seniorModeCopy: "Amplía el texto y las zonas táctiles para leer con comodidad.",
+    language: "Idioma",
+    languageCopy: "Elige el idioma de la app o sigue el ajuste del dispositivo.",
+    languageSystem: "Sistema",
+    dataControls: "Gestión de datos",
+    exportBackup: "Exportar copia local"
+  }
+};
+
+export const th: TranslationShape = {
+  header: { eyebrow: "แผนที่กุศลเสมือน", karmaLabel: "กุศล" },
+  nav: { today: "วันนี้", map: "แผนที่", deeds: "ความดี", community: "ชุมชน", profile: "โปรไฟล์", tabSuffix: "แท็บ" },
+  categories: { all: "ทั้งหมด", animals: "สัตว์", elders: "ผู้สูงวัย", environment: "ธรรมชาติ", support: "คำอวยพร" },
+  moods: { calm: "สงบ", heavy: "หนักอึ้ง", lonely: "เหงา", grateful: "ซาบซึ้ง" },
+  moodDeeds: {
+    calm: "ปล่อยปลาที่ทะเลสาบตะวันออก",
+    heavy: "จุดไฟส่องทางกลับบ้าน",
+    lonely: "ส่งคำอวยพรแบบไม่ระบุชื่อ",
+    grateful: "ช่วยผู้สูงวัยข้ามถนน"
+  },
+  today: {
+    eyebrow: "วันนี้",
+    title: "ทำความดีเงียบๆ สักอย่าง",
+    copy: "บันทึกความรู้สึก เลือกการกระทำเชิงสัญลักษณ์เล็กๆ แล้วทำให้วันนี้เบาลงสักนิด",
+    moodTitle: "วันนี้คุณมาถึงด้วยความรู้สึกใด?",
+    streak: "ต่อเนื่อง %{count} วัน",
+    recommended: "การกระทำที่แนะนำ",
+    recommendedCopy: "การกระทำเชิงสัญลักษณ์ที่แยกความปลอบใจออกจากคำสัญญาในโลกจริง",
+    completeDeed: "ทำให้สำเร็จ",
+    journalTitle: "บันทึกกุศล",
+    journalPlaceholder: "วันนี้ฉันอยากปล่อยวางความกังวลหนึ่งอย่าง และทำสิ่งดีสักอย่าง"
+  },
+  map: {
+    eyebrow: "แผนที่โลก",
+    title: "สำรวจสถานที่ที่ต้องการแสงสว่างสักนิด",
+    spotLabel: "จุดทำความดี: %{name}"
+  },
+  deeds: {
+    eyebrow: "รายการความดี",
+    title: "พิธีเล็กๆ หมวดหมู่ชัดเจน",
+    shown: "แสดง %{count} รายการ",
+    ritualPreview: "ตัวอย่างพิธี",
+    performRitual: "ทำพิธี"
+  },
+  calm: {
+    eyebrow: "พิธีสงบใจ",
+    title: "ใช้เวลาสงบสักครู่ก่อน",
+    copy: "ใช้การจับเวลาสั้นๆ เสียงบรรยากาศ (ถ้าต้องการ) และการใคร่ครวญอย่างเงียบสงบ ก่อนบันทึกการกระทำเชิงสัญลักษณ์",
+    ready: "พร้อม",
+    optional: "ไม่บังคับ",
+    soundscapes: { water: "สายน้ำ", rain: "สายฝน", forest: "ป่าไม้" },
+    guidedStepOne: "1. หายใจหนึ่งครั้ง แล้วบอกความตั้งใจ",
+    guidedStepTwo: "2. ประคองการกระทำอย่างอ่อนโยนจนหมดเวลา",
+    guidedStepThree: "3. บันทึกความรู้สึกโดยไม่กดดัน",
+    startFocus: "เริ่มสมาธิ 20 วินาที",
+    completeFocused: "ทำให้สำเร็จอย่างมีสมาธิ"
+  },
+  safety: {
+    notice: "นี่เป็นเพียงความปลอบใจเชิงสัญลักษณ์ ไม่รับประกันโชค คุณธรรม สุขภาพ หรือผลลัพธ์ที่แท้จริง"
+  },
+  community: {
+    eyebrow: "ชุมชน",
+    title: "กำแพงแห่งความเมตตาที่ไม่กดดัน",
+    blessingPlaceholder: "ขอให้เส้นทางของคุณวันนี้เบาสบายขึ้น",
+    sendBlessing: "ส่งคำอวยพร",
+    bless: "อวยพร",
+    report: "รายงาน"
+  },
+  account: {
+    eyebrow: "บัญชี",
+    signInTitle: "ยินดีต้อนรับกลับมาอย่างสงบ",
+    signUpTitle: "เก็บกุศลของคุณไว้กับตัว",
+    copy: "บัญชีช่วยเก็บกุศลและความต่อเนื่องของคุณไว้ข้ามอุปกรณ์ ไม่มีแรงกดดัน — โหมดผู้เยี่ยมชมใช้ได้เสมอ",
+    usernamePlaceholder: "ชื่อผู้ใช้",
+    passwordPlaceholder: "รหัสผ่าน",
+    signIn: "เข้าสู่ระบบ",
+    signUp: "สร้างบัญชี",
+    switchToSignUp: "เพิ่งมาใหม่? สร้างบัญชีอย่างเงียบๆ",
+    switchToSignIn: "มีบัญชีแล้ว? เข้าสู่ระบบ",
+    signedInAs: "เข้าสู่ระบบในชื่อ %{name}",
+    signedInCopy: "กุศลและความต่อเนื่องจะติดตามคุณไป บันทึกส่วนตัวยังอยู่ในเครื่องนี้",
+    signOut: "ออกจากระบบ",
+    gentleError: "ครั้งนี้ยังไม่สำเร็จ — ไม่ต้องรีบ ลองอีกครั้ง",
+    guestNote: "คุณใช้ Foobow ต่อได้โดยไม่ต้องมีบัญชี"
+  },
+  profile: {
+    eyebrow: "โปรไฟล์และการตั้งค่า",
+    title: "ร่องรอยเสมือนของคุณ",
+    statistics: "สถิติ",
+    totalKarma: "กุศลสะสม",
+    dayStreak: "วันต่อเนื่อง",
+    preferences: "การตั้งค่า",
+    quietMode: "โหมดเงียบ",
+    quietModeCopy: "ลดการแจ้งเตือนและเสียงประกอบ",
+    privateJournal: "บันทึกส่วนตัว",
+    privateJournalCopy: "เก็บบันทึกไว้ในเครื่องของคุณเท่านั้น",
+    seniorMode: "โหมดอ่านง่ายสำหรับผู้สูงวัย",
+    seniorModeCopy: "ขยายขนาดตัวอักษรและพื้นที่สัมผัสให้อ่านสบายขึ้น",
+    language: "ภาษา",
+    languageCopy: "เลือกภาษาของแอป หรือใช้ตามการตั้งค่าอุปกรณ์",
+    languageSystem: "ตามระบบ",
+    dataControls: "การจัดการข้อมูล",
+    exportBackup: "ส่งออกข้อมูลสำรองในเครื่อง"
+  }
+};
+
+export const ja: TranslationShape = {
+  header: { eyebrow: "バーチャル善縁マップ", karmaLabel: "善縁" },
+  nav: { today: "今日", map: "地図", deeds: "行い", community: "コミュニティ", profile: "プロフィール", tabSuffix: "タブ" },
+  categories: { all: "すべて", animals: "動物", elders: "お年寄り", environment: "自然", support: "祝福" },
+  moods: { calm: "穏やか", heavy: "重い", lonely: "さびしい", grateful: "ありがたい" },
+  moodDeeds: {
+    calm: "東湖で魚を放つ",
+    heavy: "帰り道に灯りをともす",
+    lonely: "匿名の祝福を送る",
+    grateful: "お年寄りの横断を手伝う"
+  },
+  today: {
+    eyebrow: "今日",
+    title: "静かな善いことを、ひとつ。",
+    copy: "気持ちを記録し、小さな象徴的な行いを選んで、今日を少し軽くしましょう。",
+    moodTitle: "今日はどんな気持ちですか？",
+    streak: "連続 %{count} 日",
+    recommended: "おすすめの行い",
+    recommendedCopy: "現実の約束とは切り離された、象徴的な行いです。",
+    completeDeed: "行いを完了する",
+    journalTitle: "善縁の日記",
+    journalPlaceholder: "今日はひとつ心配を手放して、やさしいことをひとつしたい。"
+  },
+  map: {
+    eyebrow: "世界地図",
+    title: "すこしの光を必要とする場所を訪ねる。",
+    spotLabel: "善行の場所：%{name}"
+  },
+  deeds: {
+    eyebrow: "行いの一覧",
+    title: "小さな儀式、わかりやすい分類。",
+    shown: "%{count} 件を表示",
+    ritualPreview: "儀式のプレビュー",
+    performRitual: "儀式を行う"
+  },
+  calm: {
+    eyebrow: "静けさの儀式",
+    title: "まず、集中するひとときを。",
+    copy: "象徴的な行いを記録する前に、短いタイマー、任意の音の風景、静かな内省を。",
+    ready: "準備完了",
+    optional: "任意",
+    soundscapes: { water: "水", rain: "雨", forest: "森" },
+    guidedStepOne: "1. ひと呼吸して、心づもりを言葉に。",
+    guidedStepTwo: "2. タイマーが終わるまで、そっと保ちます。",
+    guidedStepThree: "3. 気持ちを、無理なく記録します。",
+    startFocus: "20秒の集中を始める",
+    completeFocused: "集中して完了する"
+  },
+  safety: {
+    notice: "これは象徴的な慰めにすぎません。幸運・徳・健康・現実の結果を保証しません。"
+  },
+  community: {
+    eyebrow: "コミュニティ",
+    title: "気負わないやさしさの壁。",
+    blessingPlaceholder: "今日、あなたの道が少し軽くなりますように。",
+    sendBlessing: "祝福を送る",
+    bless: "祝福する",
+    report: "報告"
+  },
+  account: {
+    eyebrow: "アカウント",
+    signInTitle: "おかえりなさい、静かに。",
+    signUpTitle: "善縁を、あなたとともに。",
+    copy: "アカウントがあれば、善縁と連続日数を端末をまたいで保てます。無理はいりません——ゲストのままでも使えます。",
+    usernamePlaceholder: "ユーザー名",
+    passwordPlaceholder: "パスワード",
+    signIn: "ログイン",
+    signUp: "アカウントを作成",
+    switchToSignUp: "はじめてですか？静かなアカウントを作る",
+    switchToSignIn: "アカウントをお持ちですか？ログイン",
+    signedInAs: "%{name} としてログイン中",
+    signedInCopy: "善縁と連続日数が引き継がれます。日記はこの端末に残ります。",
+    signOut: "ログアウト",
+    gentleError: "うまくいきませんでした——急がず、もう一度どうぞ。",
+    guestNote: "アカウントがなくても Foobow は使えます。"
+  },
+  profile: {
+    eyebrow: "プロフィールと設定",
+    title: "あなたのバーチャルな足あと。",
+    statistics: "統計",
+    totalKarma: "累計の善縁",
+    dayStreak: "連続日数",
+    preferences: "設定",
+    quietMode: "静かなモード",
+    quietModeCopy: "通知や効果音をひかえめにします。",
+    privateJournal: "非公開の日記",
+    privateJournalCopy: "振り返りはこの端末だけに保存します。",
+    seniorMode: "高可読モード",
+    seniorModeCopy: "文字とタップ領域を大きくして読みやすくします。",
+    language: "言語",
+    languageCopy: "アプリの言語を選ぶか、端末の設定に従います。",
+    languageSystem: "システム",
+    dataControls: "データ管理",
+    exportBackup: "端末のバックアップを書き出す"
+  }
+};

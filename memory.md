@@ -132,6 +132,12 @@ This file is the project-local memory. Keep it current whenever product directio
 - New PA test covers all six locales (html lang + title + localized nav + safety copy present + persistence). Browser suite now 45 pass / 1 skipped; root 33.
 - Catalog data (deed/spot names) intentionally stays canonical — the API's `localized_name` field (Phase 2 schema) is the proper mechanism for localizing catalog entries.
 
+## 2026-07-24 (Phase 5b: six-language mobile app)
+
+- Extended `apps/mobile/src/i18n/translations.ts` from en/zh-Hans to all six locales (added `fr`, `es`, `th`, `ja`, each typed `TranslationShape` so the compiler enforces full key coverage). Added the four locales' daily thoughts to `dailyThoughts.ts` (its `Record<LocaleTag, …>` forces completeness too — a nice guardrail).
+- `LocaleContext.tsx` now exports `supportedLocales` + `localeNames` and builds one `catalog` object; `deviceLocale()` maps the device language across all six with an `en` fallback. The Profile language selector is generated from `supportedLocales`, so adding a locale is now a one-file change.
+- Mobile typecheck passes; extended the mobile routing contract test to assert all six locale exports. Phase 5 (web + mobile) is complete.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

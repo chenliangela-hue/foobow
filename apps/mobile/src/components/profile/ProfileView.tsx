@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { clerkEnabled } from "../../auth/clerkConfig";
-import { LocalePreference, useI18n } from "../../i18n/LocaleContext";
+import { LocalePreference, localeNames, supportedLocales, useI18n } from "../../i18n/LocaleContext";
 import { AccountCard } from "./AccountCard";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
@@ -35,8 +35,7 @@ export function ProfileView({
 
   const languageOptions: { value: LocalePreference; label: string }[] = [
     { value: "system", label: t("profile.languageSystem") },
-    { value: "en", label: "English" },
-    { value: "zh-Hans", label: "中文" }
+    ...supportedLocales.map((code) => ({ value: code as LocalePreference, label: localeNames[code] }))
   ];
 
   return (

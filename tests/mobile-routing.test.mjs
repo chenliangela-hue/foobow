@@ -92,9 +92,18 @@ test("mobile localization covers en and zh-Hans with required safety copy", asyn
   const translations = await read("apps/mobile/src/i18n/translations.ts");
   const localeContext = await read("apps/mobile/src/i18n/LocaleContext.tsx");
 
-  // Both MVP locales exist and zh-Hans must satisfy the en key shape.
+  // All six locales exist and each must satisfy the en key shape.
   assert.match(translations, /export const en = \{/);
-  assert.match(translations, /export const zhHans: TranslationShape = \{/);
+  for (const locale of ["zhHans", "fr", "es", "th", "ja"]) {
+    assert.match(
+      translations,
+      new RegExp(`export const ${locale}: TranslationShape = \\{`),
+      `mobile translations missing locale ${locale}`
+    );
+  }
+  assert.match(localeContext, /supportedLocales/);
+  assert.match(localeContext, /"th"/);
+  assert.match(localeContext, /"ja"/);
 
   // Safety copy stays translated and avoids buying-luck claims in both locales.
   assert.match(translations, /It does not guarantee luck, virtue, health, or real-world impact\./);
