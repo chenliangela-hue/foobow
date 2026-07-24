@@ -111,6 +111,7 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [Dependency Advisory Watchlist](docs/dependency-advisory-watchlist.md)
 - [Deployment](docs/deployment.md)
 - [Payments Roadmap](docs/payments-roadmap.md)
+- [AI Blessings (provider-agnostic)](docs/ai-blessings.md)
 - [Memory](memory.md)
 
 ## Verification

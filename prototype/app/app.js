@@ -55,6 +55,26 @@ const translations = {
     profileMenuStats: "%{karma} karma · %{streak}-day streak",
     profileMenuOpen: "Open profile",
     profileMenuNote: "Sign in for a synced account in the Foobow mobile app.",
+    blessingsEyebrow: "Blessings · 祈福",
+    blessingsTitle: "Offer a blessing for someone you love.",
+    blessingsCopy: "Choose who it is for, add a few words, and receive a warm blessing to hold. Symbolic comfort only — never a promise of luck.",
+    blessingsRecipient: "For whom? (optional)",
+    blessingsMessage: "A wish or worry you want to release (optional)",
+    blessingsReceive: "Receive a blessing",
+    blessingsGenerating: "Composing a blessing…",
+    blessingsSave: "Keep this blessing",
+    blessingsSaved: "Kept ✓",
+    blessingReplySource: "A gentle blessing · symbolic comfort",
+    prayCatFamily: "Family",
+    prayCatHealth: "Health",
+    prayCatStudy: "Study",
+    prayCatTravel: "Safe travel",
+    prayCatRemembrance: "Remembrance",
+    prayCatGratitude: "Gratitude",
+    lampEyebrow: "Wish lamp · 心灯",
+    lampTitle: "Light a small lamp.",
+    lampPlaceholder: "A quiet wish...",
+    lampLight: "Light the lamp",
     dailyThoughts: [
       "A small kindness is still kindness.",
       "You can begin the day again at any hour.",
@@ -126,6 +146,26 @@ const translations = {
     profileMenuStats: "%{karma} \u5584\u7f18 \u00b7 \u8fde\u7eed %{streak} \u5929",
     profileMenuOpen: "\u6253\u5f00\u4e2a\u4eba\u9875",
     profileMenuNote: "\u5728 Foobow \u624b\u673a\u5e94\u7528\u767b\u5f55\uff0c\u5373\u53ef\u540c\u6b65\u8d26\u6237\u3002",
+    blessingsEyebrow: "\u7948\u798f \u00b7 Blessings",
+    blessingsTitle: "\u4e3a\u4f60\u6240\u7231\u7684\u4eba\uff0c\u9001\u4e0a\u4e00\u4efd\u795d\u798f\u3002",
+    blessingsCopy: "\u9009\u62e9\u795d\u798f\u7684\u5bf9\u8c61\uff0c\u5199\u4e0b\u51e0\u53e5\u8bdd\uff0c\u6536\u4e0b\u4e00\u4efd\u53ef\u4ee5\u505c\u7559\u7684\u6e29\u67d4\u795d\u798f\u3002\u4ec5\u4e3a\u8c61\u5f81\u6027\u5b89\u6170\u2014\u2014\u7edd\u4e0d\u627f\u8bfa\u597d\u8fd0\u3002",
+    blessingsRecipient: "\u795d\u798f\u7ed9\u8c01\uff1f\uff08\u53ef\u9009\uff09",
+    blessingsMessage: "\u60f3\u653e\u4e0b\u7684\u4e00\u4e2a\u5fc3\u613f\u6216\u62c5\u5fc3\uff08\u53ef\u9009\uff09",
+    blessingsReceive: "\u6536\u4e0b\u795d\u798f",
+    blessingsGenerating: "\u6b63\u5728\u5199\u4e0b\u795d\u798f\u2026\u2026",
+    blessingsSave: "\u7559\u4e0b\u8fd9\u4efd\u795d\u798f",
+    blessingsSaved: "\u5df2\u7559\u4e0b \u2713",
+    blessingReplySource: "\u4e00\u4efd\u6e29\u67d4\u7684\u795d\u798f \u00b7 \u8c61\u5f81\u6027\u5b89\u6170",
+    prayCatFamily: "\u5bb6\u4eba",
+    prayCatHealth: "\u5065\u5eb7",
+    prayCatStudy: "\u5b66\u4e1a",
+    prayCatTravel: "\u5e73\u5b89\u51fa\u884c",
+    prayCatRemembrance: "\u8ffd\u601d",
+    prayCatGratitude: "\u611f\u6069",
+    lampEyebrow: "\u5fc3\u706f \u00b7 Wish lamp",
+    lampTitle: "\u70b9\u4e00\u76cf\u5c0f\u706f\u3002",
+    lampPlaceholder: "\u4e00\u4e2a\u5b89\u9759\u7684\u5fc3\u613f\u2026\u2026",
+    lampLight: "\u70b9\u4eae\u5fc3\u706f",
     dailyThoughts: [
       "\u5fae\u5c0f\u7684\u5584\u610f\uff0c\u4e5f\u662f\u5584\u610f\u3002",
       "\u4e00\u5929\u4e2d\u7684\u4efb\u4f55\u65f6\u523b\uff0c\u90fd\u53ef\u4ee5\u91cd\u65b0\u5f00\u59cb\u3002",
@@ -166,7 +206,9 @@ function mergeState(base, saved) {
       ...base.settings,
       ...(saved.settings || {})
     },
-    blessings: Array.isArray(saved.blessings) ? saved.blessings : base.blessings
+    blessings: Array.isArray(saved.blessings) ? saved.blessings : base.blessings,
+    keptBlessings: Array.isArray(saved.keptBlessings) ? saved.keptBlessings : base.keptBlessings,
+    lamps: Array.isArray(saved.lamps) ? saved.lamps : base.lamps
   };
 }
 
@@ -557,6 +599,188 @@ function renderBlessings() {
   });
 }
 
+// --- Blessing engine (祈福) -------------------------------------------------
+// Provider-agnostic. In mock mode it composes a warm, symbolic blessing
+// locally (no key needed). To use a real model, set an API base + admin token
+// and route through the backend: POST {apiBase}/blessings/intentions with
+// { category, recipient, message, locale }; the server calls the configured
+// provider (Anthropic, OpenAI, or Gemini) and returns the same { text } shape.
+// No provider ever promises luck or outcomes — only warm reflection.
+const PRAY_CATEGORIES = ["family", "health", "study", "travel", "remembrance", "gratitude"];
+
+const BLESSING_LINES = {
+  en: {
+    family: [
+      "May your home hold a little more warmth tonight.",
+      "May the ones you love feel quietly held.",
+      "May kindness pass easily between you and yours."
+    ],
+    health: [
+      "May your body find some ease, and your mind a little rest.",
+      "May each breath feel a touch lighter.",
+      "May gentle days find their way to you."
+    ],
+    study: [
+      "May your focus settle like still water.",
+      "May what you learn stay close when you need it.",
+      "May effort and calm walk together for you."
+    ],
+    travel: [
+      "May your road be smooth and your return be safe.",
+      "May every mile feel a little kinder.",
+      "May you arrive rested and whole."
+    ],
+    remembrance: [
+      "May the one you miss feel near in the quiet.",
+      "May your memories keep their warmth.",
+      "May grief soften, slowly, into gratitude."
+    ],
+    gratitude: [
+      "May the good you have noticed grow roots.",
+      "May thankfulness lighten the whole day.",
+      "May you feel, for a moment, how much is already enough."
+    ],
+    close: ["Carry this lightly.", "Rest a moment here.", "You are not carrying it alone.", "Let it be gentle."]
+  },
+  zh: {
+    family: ["愿你的家，今晚多一分温暖。", "愿你所爱的人，被静静地守护。", "愿善意在你们之间轻轻流动。"],
+    health: ["愿你的身体得些安适，心得些休息。", "愿每一次呼吸，都轻一点。", "愿温和的日子，慢慢向你走来。"],
+    study: ["愿你的专注，如止水般安定。", "愿所学在需要时，仍在身边。", "愿努力与平静，与你同行。"],
+    travel: ["愿你一路平顺，归途平安。", "愿每一段路，都温柔一点。", "愿你安然抵达，身心俱全。"],
+    remembrance: ["愿你思念的人，在安静里离你很近。", "愿回忆一直温热。", "愿悲伤慢慢，化作感恩。"],
+    gratitude: ["愿你留意到的好，慢慢扎根。", "愿感恩，让一整天都轻一些。", "愿你此刻感到，拥有的已经足够。"],
+    close: ["轻轻地，把它带着。", "在这里，停一会儿。", "你不是一个人在担着。", "让它温柔地存在。"]
+  }
+};
+
+function pickFrom(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+var blessingEngine = {
+  provider: "mock",
+  generate: function (request) {
+    var lines = BLESSING_LINES[request.locale] || BLESSING_LINES.en;
+    var body = pickFrom(lines[request.category] || lines.family);
+    var close = pickFrom(lines.close);
+    var who = (request.recipient || "").trim();
+    var text;
+    if (request.locale === "zh") {
+      text = body + close;
+      if (who) text = "给" + who + "：" + text;
+    } else {
+      text = body + " " + close;
+      if (who) text = "For " + who + " — " + text;
+    }
+    // Simulate an async provider call; swap this for a fetch when a key exists.
+    return new Promise(function (resolve) {
+      window.setTimeout(function () { resolve({ text: text }); }, 850);
+    });
+  }
+};
+
+var lastBlessing = null;
+
+function renderPrayCategories() {
+  const row = document.getElementById("prayCats");
+  if (!row) return;
+  row.replaceChildren();
+  PRAY_CATEGORIES.forEach(function (cat) {
+    const key = "prayCat" + cat.charAt(0).toUpperCase() + cat.slice(1);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pray-cat" + (state.prayCategory === cat ? " active" : "");
+    btn.dataset.category = cat;
+    btn.setAttribute("aria-pressed", String(state.prayCategory === cat));
+    btn.textContent = dictionary()[key] || cat;
+    btn.addEventListener("click", function () {
+      state.prayCategory = cat;
+      saveState();
+      renderPrayCategories();
+    });
+    row.append(btn);
+  });
+}
+
+function renderLamps() {
+  const list = document.getElementById("lampList");
+  const count = document.getElementById("lampCount");
+  if (!list) return;
+  if (count) count.textContent = String(state.lamps.length);
+  list.replaceChildren();
+  state.lamps.slice(0, 6).forEach(function (lamp) {
+    const li = document.createElement("li");
+    li.className = "lamp-item";
+    const flame = document.createElement("span");
+    flame.className = "lamp-dot";
+    flame.setAttribute("aria-hidden", "true");
+    flame.textContent = "🪔";
+    const text = document.createElement("span");
+    text.textContent = lamp.wish || "·";
+    li.append(flame, text);
+    list.append(li);
+  });
+}
+
+function setupBlessings() {
+  const prayButton = document.getElementById("prayButton");
+  const reply = document.getElementById("blessingReply");
+  const replyText = document.getElementById("blessingReplyText");
+  const replySource = document.getElementById("blessingReplySource");
+  const saveButton = document.getElementById("saveBlessing");
+  const lightLamp = document.getElementById("lightLamp");
+  const lampStage = document.getElementById("lampStage");
+  const lampWish = document.getElementById("lampWish");
+  if (!prayButton) return;
+
+  prayButton.addEventListener("click", async function () {
+    const dict = dictionary();
+    reply.hidden = false;
+    reply.classList.add("loading");
+    replyText.textContent = dict.blessingsGenerating;
+    replySource.textContent = "";
+    saveButton.hidden = true;
+    prayButton.disabled = true;
+
+    const result = await blessingEngine.generate({
+      category: state.prayCategory,
+      recipient: document.getElementById("prayRecipient").value,
+      message: document.getElementById("prayMessage").value,
+      locale: state.language
+    });
+
+    lastBlessing = result.text;
+    reply.classList.remove("loading");
+    replyText.textContent = result.text;
+    replySource.textContent = dict.blessingReplySource;
+    saveButton.hidden = false;
+    saveButton.textContent = dict.blessingsSave;
+    saveButton.disabled = false;
+    prayButton.disabled = false;
+  });
+
+  saveButton.addEventListener("click", function () {
+    if (!lastBlessing) return;
+    state.keptBlessings.unshift({ id: "kept_" + Date.now(), body: lastBlessing });
+    updateKarma(1);
+    saveState();
+    saveButton.textContent = dictionary().blessingsSaved;
+    saveButton.disabled = true;
+  });
+
+  lightLamp.addEventListener("click", function () {
+    const wish = lampWish.value.trim();
+    state.lamps.unshift({ id: "lamp_" + Date.now(), wish: wish, litAt: Date.now() });
+    lampWish.value = "";
+    updateKarma(1);
+    saveState();
+    lampStage.classList.remove("lit");
+    void lampStage.offsetWidth;
+    lampStage.classList.add("lit");
+    renderLamps();
+  });
+}
+
 function applyTranslations() {
   const copy = dictionary();
   document.documentElement.lang = state.language === "en" ? "en" : "zh-Hans";
@@ -592,6 +816,8 @@ function renderAll() {
   renderDeeds();
   renderSpot(state.selectedSpot);
   renderBlessings();
+  renderPrayCategories();
+  renderLamps();
   renderSettings();
   renderFocusSession();
   document.getElementById("journalEntry").value = state.journal;
@@ -769,4 +995,5 @@ document.getElementById("closeDialog").addEventListener("click", () => {
   dialog.close();
 });
 
+setupBlessings();
 renderAll();

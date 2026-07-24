@@ -16,6 +16,7 @@
 
         <nav class="top-nav" id="topNav" aria-label="Sections">
           <a class="top-nav-item active" href="#screen-today" data-target="today">Today</a>
+          <a class="top-nav-item" href="#screen-blessings" data-target="blessings">Blessings</a>
           <a class="top-nav-item" href="#screen-map" data-target="map">Map</a>
           <a class="top-nav-item" href="#screen-deeds" data-target="deeds">Deeds</a>
           <a class="top-nav-item" href="#screen-community" data-target="community">Community</a>
@@ -89,6 +90,47 @@
             </div>
             <textarea id="journalEntry" rows="3" data-i18n-placeholder="journalPlaceholder" placeholder="Today I want to release one worry and do one kind thing."></textarea>
           </section>
+        </section>
+
+        <section class="screen" id="screen-blessings" aria-labelledby="blessings-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow" data-i18n="blessingsEyebrow">Blessings · 祈福</p>
+              <h2 id="blessings-title" data-i18n="blessingsTitle">Offer a blessing for someone you love.</h2>
+            </div>
+          </div>
+
+          <section class="pray-card" aria-live="polite">
+            <p class="pray-copy" data-i18n="blessingsCopy">Choose who it is for, add a few words, and receive a warm blessing to hold. Symbolic comfort only — never a promise of luck.</p>
+            <div class="pray-cats" id="prayCats" aria-label="Blessing categories"></div>
+            <input class="pray-input" id="prayRecipient" type="text" maxlength="40" data-i18n-placeholder="blessingsRecipient" placeholder="For whom? (optional)" />
+            <textarea class="pray-input" id="prayMessage" rows="2" maxlength="160" data-i18n-placeholder="blessingsMessage" placeholder="A wish or worry you want to release (optional)"></textarea>
+            <button class="primary-action" id="prayButton" type="button" data-i18n="blessingsReceive">Receive a blessing</button>
+            <div class="blessing-reply" id="blessingReply" hidden>
+              <div class="reply-orb" aria-hidden="true"></div>
+              <p class="reply-text" id="blessingReplyText"></p>
+              <p class="reply-source" id="blessingReplySource"></p>
+              <div class="reply-actions">
+                <button class="text-button" id="saveBlessing" type="button" data-i18n="blessingsSave">Keep this blessing</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="lamp-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="lampEyebrow">Wish lamp · 心灯</p>
+                <h3 data-i18n="lampTitle">Light a small lamp.</h3>
+              </div>
+              <span class="soft-pill" id="lampCount">0</span>
+            </div>
+            <div class="lamp-stage" id="lampStage" aria-hidden="true"><span class="lamp-flame"></span></div>
+            <input class="pray-input" id="lampWish" type="text" maxlength="80" data-i18n-placeholder="lampPlaceholder" placeholder="A quiet wish..." />
+            <button class="primary-action" id="lightLamp" type="button" data-i18n="lampLight">Light the lamp</button>
+            <ul class="lamp-list" id="lampList"></ul>
+          </section>
+
+          <p class="safety-note" data-i18n="calmSafety">This is symbolic comfort only. It does not guarantee luck, virtue, health, or real-world impact.</p>
         </section>
 
         <section class="screen" id="screen-map" aria-labelledby="map-title">
@@ -260,6 +302,7 @@
 
       <nav class="bottom-nav" aria-label="Primary">
         <button class="nav-item active" type="button" data-target="today">Today</button>
+        <button class="nav-item" type="button" data-target="blessings">Blessings</button>
         <button class="nav-item" type="button" data-target="map">Map</button>
         <button class="nav-item" type="button" data-target="deeds">Deeds</button>
         <button class="nav-item" type="button" data-target="community">Community</button>

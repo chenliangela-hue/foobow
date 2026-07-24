@@ -116,6 +116,13 @@ This file is the project-local memory. Keep it current whenever product directio
 - Wiring: reads live figures from `${apiUrl}/admin/overview` with a bearer token entered in Settings (persisted to localStorage); falls back to clearly-labelled demo data with a "Demo data" badge when no API is configured. The live admin API endpoints (Nest `/admin/*`) are Phase 4b, pending API hosting — the DB tables (admin_users, admin_audit_log, orders, catalog_items) already exist from Phase 2.
 - Tests: `tests/browser/foobow.admin.spec.mjs` (10: dashboard cards/tiles/demo-badge, logo→/, nav switching, order approve dequeues, zh/en toggle) + admin content assertions in unit-content (root suite now 32). `test:browser` runs pa+landing+admin specs.
 
+## 2026-07-23 (Phase 3: Blessings 祈福 with mock AI)
+
+- Per user direction: build Phase 3 UI/UX + features with MOCK data now, defer real AI keys (they'll add Gemini/OpenAI/Claude keys later), keep it provider-agnostic. Clarified in `docs/ai-blessings.md` that consumer OAuth (ChatGPT/Claude/Gemini apps) is NOT a supported programmatic path — production needs a provider API key; mock keeps the feature usable until then.
+- Added a **祈福 Blessings tab** (6th app tab: Today · Blessings · Map · Deeds · Community · Profile) to the web app. `screen-blessings` has: Pray-for-someone (6 category chips family/health/study/travel/remembrance/gratitude, optional recipient + message, "Receive a blessing") and a Wish lamp (心灯) with an animated glowing flame. New `blessingEngine` in `prototype/app/app.js` — provider-agnostic, `provider: "mock"`, composes warm locale-aware (en/zh) blessings from `BLESSING_LINES`; documented to route through `POST {apiBase}/blessings/intentions` (persists to Phase-2 `ai_generations`) when a key exists. Kept blessings + lamps persist in state; each awards +1 symbolic karma. Flipped the landing 祈福 gate badge soon→available.
+- Bottom nav is now 6 columns; nav labels stay English for consistency (bottom-nav Blessings label is English — tests scope to `.bottom-nav` to avoid the "Blessings" deed-category filter name collision). Keyboard-traversal test (14 tabs) still covers the added desktop top-nav link.
+- Tests: `tests/browser/foobow.blessings.spec.mjs` (pray→mock blessing→keep→karma; light lamp; persistence) + content assertions; `test:browser` runs 5 specs (pa+landing+admin+blessings). Regenerated today-screen visual baseline (6-tab nav). Root suite now 33; browser 42 pass +1 skipped.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

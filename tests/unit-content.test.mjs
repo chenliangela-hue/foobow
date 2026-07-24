@@ -301,8 +301,25 @@ test("prototype exposes the required app screens and controls", async () => {
     "mapLayerRow",
     "impactDialog",
     "Virtual 放生",
-    "扶老奶奶过马路"
+    "扶老奶奶过马路",
+    "screen-blessings",
+    "prayCats",
+    "lampStage"
   ]);
 
+  assert.deepEqual(missing, []);
+});
+
+test("blessings feature ships a provider-agnostic mock engine and safe copy", async () => {
+  const app = await readText("prototype/app/app.js");
+  const missing = hasAll(app, [
+    "blessingEngine",
+    "provider: \"mock\"",
+    "Anthropic, OpenAI, or Gemini",
+    "promises luck or outcomes",
+    "BLESSING_LINES",
+    "renderLamps",
+    "keptBlessings"
+  ]);
   assert.deepEqual(missing, []);
 });

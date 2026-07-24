@@ -232,7 +232,7 @@ window.FOOBOW_LANDING_I18N = {
       id: "blessings",
       zh: "祈福",
       icon: "🪷",
-      soon: true,
+      soon: false,
       name: { en: "Blessings", "zh-Hans": "祈福", fr: "Bénédictions", es: "Bendiciones", th: "การอวยพร", ja: "祈福" },
       desc: {
         en: "Pray for loved ones, light a wish lamp, receive a gentle daily blessing.",

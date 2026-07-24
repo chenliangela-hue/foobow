@@ -13,6 +13,9 @@ window.FOOBOW_DATA = {
     focusProgress: 0,
     focusReady: false,
     journal: "",
+    prayCategory: "family",
+    keptBlessings: [],
+    lamps: [],
     settings: {
       privateJournal: true,
       quietRanking: true,

@@ -1082,9 +1082,9 @@ textarea {
   position: static;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  padding: 8px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  padding: 8px 6px;
   margin: 18px auto 0;
   border: 1px solid var(--line);
   border-radius: 16px;
@@ -1200,6 +1200,173 @@ dialog::backdrop {
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* --- Blessings (祈福) --- */
+.pray-card,
+.lamp-card {
+  margin-top: 14px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 12px;
+}
+
+.pray-copy {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pray-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pray-cat {
+  min-height: 40px;
+  padding: 0 15px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.pray-cat.active {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #fffaf1;
+}
+
+.pray-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: inherit;
+  resize: vertical;
+}
+
+.blessing-reply {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  background: color-mix(in srgb, var(--gold) 8%, var(--surface));
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+  animation: reply-rise 500ms ease both;
+}
+
+.blessing-reply[hidden] {
+  display: none;
+}
+
+@keyframes reply-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reply-orb {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 250, 241, 0.95), transparent 60%),
+    radial-gradient(circle, color-mix(in srgb, var(--gold) 60%, transparent), transparent);
+  display: none;
+}
+
+.blessing-reply.loading .reply-orb {
+  display: block;
+  animation: breathe 3.5s ease-in-out infinite;
+}
+
+.reply-text {
+  margin: 0;
+  font-size: 1.12rem;
+  line-height: 1.55;
+  color: var(--ink);
+  font-family: Cambria, "Iowan Old Style", Georgia, serif;
+}
+
+.reply-source {
+  margin: 0;
+  color: var(--muted);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+}
+
+.lamp-stage {
+  height: 120px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 50% 120%, rgba(198, 155, 63, 0.28), rgba(20, 24, 24, 0.9) 70%);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.lamp-flame {
+  width: 26px;
+  height: 40px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: linear-gradient(180deg, #fff3c4, var(--gold) 60%, var(--coral));
+  box-shadow: 0 0 24px rgba(230, 185, 92, 0.7), 0 0 60px rgba(230, 185, 92, 0.4);
+  transform-origin: 50% 90%;
+  animation: flicker 2.6s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { transform: scale(1) rotate(-1deg); opacity: 0.92; }
+  50% { transform: scale(1.08) rotate(1.5deg); opacity: 1; }
+}
+
+.lamp-stage.lit .lamp-flame {
+  animation: flare 900ms ease, flicker 2.6s ease-in-out 900ms infinite;
+}
+
+@keyframes flare {
+  0% { transform: scale(0.4); opacity: 0.4; }
+  55% { transform: scale(1.35); opacity: 1; box-shadow: 0 0 44px rgba(230, 185, 92, 0.9), 0 0 100px rgba(230, 185, 92, 0.6); }
+  100% { transform: scale(1); opacity: 0.95; }
+}
+
+.lamp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.lamp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+
+.lamp-dot {
+  font-size: 1.1rem;
 }
 
 body.senior-mode {
