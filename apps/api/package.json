@@ -23,7 +23,8 @@
     "node": ">=20.19.4"
   },
   "overrides": {
-    "find-my-way": "^9.7.0"
+    "find-my-way": "^9.7.0",
+    "js-yaml": "^5.2.2"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.24",

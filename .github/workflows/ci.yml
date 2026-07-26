@@ -109,6 +109,16 @@ jobs:
       - name: Run visual regression checks
         run: npm run test:visual
 
+      # On a diff, keep the actual/diff PNGs so a CI-matched baseline can be
+      # pulled down and committed instead of guessing from a dev machine.
+      - name: Upload visual diff artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: test-results/**
+          retention-days: 7
+
   # Deployment is handled by Vercel's native Git integration: the `foobow`
   # project is linked to this repository (production branch `main`, root
   # directory `prototype`), so every push to main deploys automatically.
