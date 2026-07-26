@@ -173,39 +173,83 @@ function renderMoods() {
   });
 }
 
+function categoryLabel(categoryId) {
+  const category = data.categories.find((c) => c.id === categoryId);
+  if (!category) return categoryId;
+  return dictionary()[category.labelKey] || category.label;
+}
+
+function buildDeedItem(deed) {
+  const item = document.createElement("article");
+  item.className = `deed-item${state.selectedDeed === deed.id ? " selected" : ""}`;
+  item.tabIndex = 0;
+  item.dataset.deedId = deed.id;
+  item.setAttribute("role", "button");
+  item.setAttribute("aria-pressed", String(state.selectedDeed === deed.id));
+  const mark = document.createElement("span");
+  mark.className = `deed-mark ${deed.mark}`;
+  mark.setAttribute("aria-hidden", "true");
+  const text = document.createElement("div");
+  const title = document.createElement("h3");
+  title.textContent = deed.title;
+  const desc = document.createElement("p");
+  desc.textContent = deed.shortDescription;
+  text.append(title, desc);
+  item.append(mark, text);
+  item.addEventListener("click", () => selectDeed(deed.id));
+  item.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectDeed(deed.id);
+    }
+  });
+  return item;
+}
+
+// The catalog is grouped into project categories (ODD: Project Category
+// groups Deed Types). "All" shows every group; a filter shows just one.
 function renderDeeds() {
   const list = document.getElementById("deedList");
   list.replaceChildren();
-  const visibleDeeds = data.deeds.filter((deed) => state.activeCategory === "all" || deed.categoryKey === state.activeCategory);
 
+  const visibleDeeds = data.deeds.filter(
+    (deed) => state.activeCategory === "all" || deed.categoryKey === state.activeCategory
+  );
   if (!visibleDeeds.some((deed) => deed.id === state.selectedDeed)) {
     state.selectedDeed = visibleDeeds[0]?.id || data.deeds[0].id;
   }
 
-  visibleDeeds.forEach((deed) => {
-    const item = document.createElement("article");
-    item.className = `deed-item${state.selectedDeed === deed.id ? " selected" : ""}`;
-    item.tabIndex = 0;
-    item.dataset.deedId = deed.id;
-    item.setAttribute("role", "button");
-    item.setAttribute("aria-pressed", String(state.selectedDeed === deed.id));
-    item.innerHTML = `
-      <span class="deed-mark ${deed.mark}"></span>
-      <div>
-        <h3></h3>
-        <p></p>
-      </div>
-    `;
-    item.querySelector("h3").textContent = deed.title;
-    item.querySelector("p").textContent = deed.shortDescription;
-    item.addEventListener("click", () => selectDeed(deed.id));
-    item.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        selectDeed(deed.id);
-      }
-    });
-    list.append(item);
+  const groupIds =
+    state.activeCategory === "all"
+      ? data.categories.filter((c) => c.id !== "all").map((c) => c.id)
+      : [state.activeCategory];
+
+  groupIds.forEach((categoryId) => {
+    const deeds = data.deeds.filter((deed) => deed.categoryKey === categoryId);
+    if (!deeds.length) return;
+    const category = data.categories.find((c) => c.id === categoryId);
+
+    const group = document.createElement("section");
+    group.className = "deed-group";
+    group.dataset.category = categoryId;
+
+    const head = document.createElement("div");
+    head.className = "deed-group-head";
+    const icon = document.createElement("span");
+    icon.className = "deed-group-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.textContent = (category && category.icon) || "◉";
+    const title = document.createElement("h3");
+    title.className = "deed-group-title";
+    title.textContent = categoryLabel(categoryId);
+    const count = document.createElement("span");
+    count.className = "deed-group-count";
+    count.textContent = String(deeds.length);
+    head.append(icon, title, count);
+    group.append(head);
+
+    deeds.forEach((deed) => group.append(buildDeedItem(deed)));
+    list.append(group);
   });
 
   setText("deedTypeCount", `${visibleDeeds.length} shown`);
@@ -442,7 +486,7 @@ function renderCategoryFilters() {
       const button = document.createElement("button");
       button.className = `layer${state.activeCategory === category.id ? " active" : ""}`;
       button.type = "button";
-      button.textContent = category.label;
+      button.textContent = dictionary()[category.labelKey] || category.label;
       button.dataset.categoryId = category.id;
       button.setAttribute("aria-pressed", String(state.activeCategory === category.id));
       button.addEventListener("click", () => {

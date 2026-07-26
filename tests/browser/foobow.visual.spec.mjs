@@ -40,7 +40,7 @@ test("today screen visual baseline", async ({ page }) => {
 
 test("map exploration visual baseline", async ({ page }) => {
   await page.getByRole("button", { name: "Map" }).click();
-  await page.locator("#mapLayerRow").getByRole("button", { name: "Nature" }).click();
+  await page.locator("#mapLayerRow").getByRole("button", { name: "Environment" }).click();
   await expect(page.locator("#screen-map")).toHaveScreenshot("map-environment-screen.png", {
     animations: "disabled",
     maxDiffPixelRatio: 0.006

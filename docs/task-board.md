@@ -2,6 +2,7 @@
 
 ## Done
 
+- Expand the deed catalog to 19 deeds grouped into five project categories (animals/elders/environment/community/learning), test-first, with localized headers and warm category marks.
 - Build the community feed (ODD objects Community Post/Reply/Reaction/Tag) test-first: share a deed or ask for help, replies, one-press support, tag + kind filters, and report-to-withdraw moderation.
 - Initialize local repo.
 - Connect Git remote.
@@ -107,7 +108,6 @@
 
 ## Next
 
-- Expand the deed catalog with more good deeds grouped into project categories (research done: elderly care, animals, environment, community/food-security, learning).
 - Add per-feature workflow detail: step-through states, transition animations, quotes and imagery, and a clear response/result for every user action.
 - Localize the remaining hardcoded profile stat labels (deeds/badges/donated) and deed catalog names via API `localized_name`.
 

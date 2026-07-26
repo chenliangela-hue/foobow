@@ -159,6 +159,13 @@ This file is the project-local memory. Keep it current whenever product directio
 - **Flaky test caught and fixed properly:** the dark-community visual baseline began racing the feed's first render. Rather than re-baseline repeatedly, added an explicit wait on `#feedList`/`.feed-empty`; verified stable across three consecutive runs.
 - Note for future edits: bash heredocs (`<<'PYEOF'`) break on content containing French apostrophes/triple quotes — write such files with the Write tool instead.
 
+## 2026-07-24 (expanded deed catalog grouped into project categories — TDD + ODD)
+
+- Expanded the deed catalog from 4 to **19 deeds across 5 project categories** (animals, elders, environment, community, learning), grouped with icon + localized header + count on the Deeds screen. Deed ideas drawn from established kindness catalogs (BeKind, Great Kindness Challenge, Random Acts of Kindness) rather than invented. Categories deliberately match the community-feed tags so browse + post share one vocabulary.
+- TDD: wrote `tests/browser/foobow.deeds.spec.mjs` first (red), then implemented to green. New ODD object **Project Category** added to `docs/odd-spec.md`.
+- `data.categories` now carry `labelKey` (into the shared i18n tag strings) + `icon`; `renderCategoryFilters` and the new grouped `renderDeeds` localize labels. Remapped the canonical `anonymous-blessing` deed and `night-corridor` spot from `support`→`community`; added a `reading-room` learning map spot + pin. New deed-mark gradients (paw/bird/phone/flower/leaf/meal/hands/book) — gold/vermilion/saffron/lapis/lotus, no green. Shared-catalog contract stayed green (it only requires the 4 canonical deeds to exist; extras are allowed).
+- **Two regressions the tests caught:** (1) the new "Community" deed-category filter collides with the "Community" nav tab under `getByRole('button',{name})` — scoped the PA flow test's nav click to `.bottom-nav`. (2) Renaming the "Nature" category label to "Environment" changed the map filter chip; the map visual baseline needed updating, but `--update-snapshots` left it stale because the diff was under `maxDiffPixelRatio` — **had to delete the baseline PNGs first**, then regenerate (the documented footgun, hit again — worth internalizing: any small-area UI text change needs a delete-then-regenerate, not plain --update-snapshots).
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

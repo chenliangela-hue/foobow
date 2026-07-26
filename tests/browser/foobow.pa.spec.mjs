@@ -31,7 +31,8 @@ test("daily ritual, map, deed, community, and profile flows work", async ({ page
   await page.getByRole("button", { name: "Perform ritual" }).click();
   await expect(page.locator("#karmaValue")).toHaveText("77");
 
-  await page.getByRole("button", { name: "Community" }).click();
+  // Scope to the bottom nav: a "Community" deed-category filter shares the name.
+  await page.locator(".bottom-nav").getByRole("button", { name: "Community" }).click();
   await page.locator("#blessingInput").fill("May your next step feel lighter.");
   await page.getByRole("button", { name: "Send blessing" }).click();
   await expect(page.locator(".blessing p").first()).toHaveText("May your next step feel lighter.");
@@ -70,11 +71,11 @@ test("category filters narrow map spots and deed catalog", async ({ page }) => {
   await expect(page.getByLabel("Toronto crosswalk good deed spot")).toBeVisible();
 
   await page.getByRole("button", { name: "Deeds" }).click();
-  await expect(page.locator("#deedTypeCount")).toHaveText("1 shown");
+  await expect(page.locator("#deedTypeCount")).toHaveText("4 shown");
   await expect(page.getByRole("button", { name: /扶老奶奶过马路/ })).toBeVisible();
 
   await page.locator("#deedCategoryRow").getByRole("button", { name: "All" }).click();
-  await expect(page.locator("#deedTypeCount")).toHaveText("4 shown");
+  await expect(page.locator("#deedTypeCount")).toHaveText("19 shown");
 });
 
 test("keyboard users can reach controls and activate deed cards", async ({ page }) => {

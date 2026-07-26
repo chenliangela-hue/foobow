@@ -12,6 +12,7 @@ Build a map-first virtual good karma app where users complete small symbolic dee
 | Profile | Public/private presentation of a user | public, friends-only, anonymous, private | User |
 | Mood Check-In | Daily emotional input that guides recommendations | started, completed, skipped | User |
 | Deed Type | Reusable virtual good deed template | draft, active, retired | Product/Admin |
+| Project Category | Groups Deed Types into a browsable project theme (animals, elders, environment, community, learning) | active, retired | Product/Admin |
 | Map Spot | Location or campaign node on the world map | active, seasonal, completed, hidden | Product/Admin |
 | Deed Action | A user's completed symbolic action | started, completed, journaled, shared | User |
 | Karma Event | Non-financial progress event | earned, adjusted, revoked | System/Admin |
@@ -32,7 +33,7 @@ Build a map-first virtual good karma app where users complete small symbolic dee
 
 - User/Profile: onboarding, language, dark/light mode, privacy mode, quiet ranking mode, notification controls, data export/delete.
 - Mood Check-In: daily state capture, recommended deed, streak update, reflection prompt.
-- Deed Type/Map Spot: catalog, map pins, thematic layers, seasonal rituals, collective impact.
+- Deed Type/Project Category/Map Spot: a catalog of ~19 curated deeds grouped into five project categories (animals, elders, environment, community, learning), each category with an icon, a localized header, and a count. Deed ideas draw on established kindness catalogs (BeKind, the Great Kindness Challenge, Random Acts of Kindness). Categories align with the community feed tags so browsing and posting share one vocabulary. Map pins, thematic layers, seasonal rituals, collective impact.
 - Deed Action/Karma Event/Badge: ritual completion, symbolic progress, category ranking, badges, map stamps.
 - Journal Entry: private reflection, user-controlled export/delete.
 - Blessing/Group Mission: anonymous wall, kindness chains, group challenges, low-pressure reactions.
