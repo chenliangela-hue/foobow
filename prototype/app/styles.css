@@ -1259,26 +1259,18 @@ dialog::backdrop {
 }
 
 @media (min-width: 800px) {
+  /* One calm, centered column on desktop. Earlier a generic two-column grid
+     was applied to every screen; it scattered the richer screens (blessings,
+     deeds, community) into unbalanced, disconnected halves, so all screens
+     now share a single comfortable reading column. */
   .app-shell {
-    width: min(100%, 980px);
+    width: min(100%, 720px);
     min-height: auto;
     padding-bottom: 26px;
   }
 
   main {
     min-height: 0;
-  }
-
-  .screen.active {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 16px;
-    align-items: start;
-  }
-
-  #screen-map.active,
-  #screen-community.active {
-    grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.8fr);
   }
 
   .bottom-nav {
@@ -1288,7 +1280,7 @@ dialog::backdrop {
   }
 
   .map-stage {
-    min-height: 620px;
+    min-height: 460px;
   }
 }
 

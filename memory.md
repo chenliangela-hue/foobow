@@ -166,6 +166,12 @@ This file is the project-local memory. Keep it current whenever product directio
 - `data.categories` now carry `labelKey` (into the shared i18n tag strings) + `icon`; `renderCategoryFilters` and the new grouped `renderDeeds` localize labels. Remapped the canonical `anonymous-blessing` deed and `night-corridor` spot from `support`→`community`; added a `reading-room` learning map spot + pin. New deed-mark gradients (paw/bird/phone/flower/leaf/meal/hands/book) — gold/vermilion/saffron/lapis/lotus, no green. Shared-catalog contract stayed green (it only requires the 4 canonical deeds to exist; extras are allowed).
 - **Two regressions the tests caught:** (1) the new "Community" deed-category filter collides with the "Community" nav tab under `getByRole('button',{name})` — scoped the PA flow test's nav click to `.bottom-nav`. (2) Renaming the "Nature" category label to "Environment" changed the map filter chip; the map visual baseline needed updating, but `--update-snapshots` left it stale because the diff was under `maxDiffPixelRatio` — **had to delete the baseline PNGs first**, then regenerate (the documented footgun, hit again — worth internalizing: any small-area UI text change needs a delete-then-regenerate, not plain --update-snapshots).
 
+## 2026-07-24 (live QA: desktop layout fix)
+
+- **User-reported via screenshot + live QA:** on desktop, the Blessings/Community/Deeds screens had broken layouts (huge empty column, scattered/disconnected cards). Root cause: a generic `@media (min-width:800px) .screen.active { display:grid; grid-template-columns: minmax(0,1fr) 360px }` rule auto-placed each screen's children into two columns. It was designed for the old simple screens; the new content-rich screens (feed composer + filters + list, pray + lamp cards, grouped deed catalog) scattered across the columns illogically.
+- Fix: **one calm, centered single column on desktop** (`app-shell` width 720px, removed the two-column grid + the map/community override, map-stage min-height 620→460). Consistent, no empty gaps, matches the phone-column wellness aesthetic. Verified all six screens live-QA clean at 1280px; regenerated desktop visual baselines (delete-then-regenerate to dodge the tolerance footgun).
+- QA method: Playwright against the live https://www.foobow.com — screenshot every screen at 1280px + check `document.scrollWidth === innerWidth` (no h-overflow) and console/page errors (none).
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.
