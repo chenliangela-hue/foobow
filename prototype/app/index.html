@@ -256,7 +256,9 @@
             <h3 id="feed-title" data-i18n="feedTitle">Share a good deed, or ask for help.</h3>
             <div class="post-kind-row" id="postKindRow" aria-label="Post kind"></div>
             <div class="post-tag-row" id="postTagRow" aria-label="Post tags"></div>
-            <textarea class="pray-input" id="postBody" rows="3" maxlength="400" data-i18n-placeholder="postPlaceholder"></textarea>
+            <label class="post-deed-label" for="postDeedSelect" id="postDeedLabel" data-i18n="postDeedLabel">Which deed did you do?</label>
+            <select class="pray-input" id="postDeedSelect" aria-labelledby="postDeedLabel"></select>
+            <textarea class="pray-input" id="postBody" rows="3" maxlength="240" data-i18n-placeholder="postPlaceholder"></textarea>
             <button class="primary-action" id="postSubmit" type="button" data-i18n="postSubmit">Post</button>
           </section>
 

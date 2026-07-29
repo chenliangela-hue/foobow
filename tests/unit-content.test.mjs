@@ -331,6 +331,23 @@ test("pre-generated content pack covers every locale and stays token-free", asyn
   assert.match(app, /zero/i);
 });
 
+test("community is safe by design: no image upload, structured shares, filtered text", async () => {
+  const html = await readText("prototype/app/index.html");
+  const community = await readText("prototype/app/community.js");
+  const doc = await readText("docs/community-safety.md");
+
+  // The single biggest legal-risk vector — arbitrary file/image upload — must
+  // not exist anywhere in the app.
+  assert.equal(html.includes("type=\"file\""), false, "app must not offer file upload");
+
+  // Shares are app-generated Kindness Cards; free text is link-filtered.
+  const missing = hasAll(community, ["kindness-card", "deedId", "sanitizeText", "URL_PATTERN"]);
+  assert.deepEqual(missing, []);
+
+  const missingDoc = hasAll(doc, ["app-generated", "No image upload", "moderation_status", "pre-moderation"]);
+  assert.deepEqual(missingDoc, []);
+});
+
 test("blessings feature ships a provider-agnostic mock engine and safe copy", async () => {
   const app = await readText("prototype/app/app.js");
   const missing = hasAll(app, [

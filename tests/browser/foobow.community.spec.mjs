@@ -23,13 +23,16 @@ async function composePost(page, { kind, body, tag }) {
   await page.locator("#postSubmit").click();
 }
 
-test("sharing a good deed publishes it to the feed", async ({ page }) => {
-  await composePost(page, { kind: "share", body: "Walked a neighbour's dog today.", tag: "animals" });
+test("sharing a good deed publishes an app-generated card with an optional note", async ({ page }) => {
+  // Share mode builds a Kindness Card from the selected deed; the note is a
+  // short caption. The default selected deed is the first in the catalog.
+  await composePost(page, { kind: "share", body: "A quiet morning by the water." });
 
   const first = page.locator(".feed-post").first();
-  await expect(first).toContainText("Walked a neighbour's dog today.");
-  await expect(first.locator(".post-kind-badge")).toHaveText("Shared a deed");
-  await expect(first.locator(".post-tag-badge")).toHaveText("Animals");
+  await expect(first).toHaveClass(/kindness-card/);
+  await expect(first).toContainText("A quiet morning by the water.");
+  await expect(first.locator(".post-kind-badge")).toHaveText("Shared a kindness");
+  await expect(first.locator(".kindness-card-title")).not.toBeEmpty();
   // The composer resets so the next post starts clean.
   await expect(page.locator("#postBody")).toHaveValue("");
 });
@@ -99,8 +102,49 @@ test("posts and replies persist across reload", async ({ page }) => {
   await expect(page.locator(".post-reply-count")).toHaveText("1");
 });
 
-test("empty posts are rejected without breaking the feed", async ({ page }) => {
+test("empty questions are rejected without breaking the feed", async ({ page }) => {
+  // A question needs text (a share, by contrast, always has its deed card).
+  await page.locator("#postKindRow .post-kind[data-kind='ask']").click();
   await page.locator("#postBody").fill("   ");
   await page.locator("#postSubmit").click();
+  await expect(page.locator(".feed-post")).toHaveCount(0);
+});
+
+// Safety-by-design (see docs/community-safety.md): the primary shared object
+// is an app-generated Kindness Card, not a free upload.
+test("sharing a deed produces an app-generated kindness card, with no image upload", async ({ page }) => {
+  // Share mode is default; the deed picker replaces free text.
+  await expect(page.locator("#postDeedSelect")).toBeVisible();
+  // There is no way to upload an image anywhere in the composer.
+  await expect(page.locator("#screen-community input[type='file']")).toHaveCount(0);
+
+  await page.selectOption("#postDeedSelect", { label: "Plant a tree" });
+  await page.locator("#postBody").fill("Planted one by the river.");
+  await page.locator("#postSubmit").click();
+
+  const card = page.locator(".feed-post.kindness-card").first();
+  await expect(card).toBeVisible();
+  await expect(card.locator(".kindness-card-title")).toHaveText("Plant a tree");
+  await expect(card.locator(".kindness-card-mark")).toBeVisible();
+  await expect(card.locator(".post-tag-badge")).toHaveText("Environment");
+  await expect(card).toContainText("Planted one by the river.");
+});
+
+test("asking for help uses short text, not a kindness card", async ({ page }) => {
+  await page.locator("#postKindRow .post-kind[data-kind='ask']").click();
+  await expect(page.locator("#postDeedSelect")).toBeHidden();
+  await page.locator("#postBody").fill("Any tips for visiting a care home?");
+  await page.locator("#postSubmit").click();
+
+  const post = page.locator(".feed-post").first();
+  await expect(post).not.toHaveClass(/kindness-card/);
+  await expect(post).toContainText("Any tips for visiting a care home?");
+});
+
+test("posts and replies reject links to limit spam and scams", async ({ page }) => {
+  await page.locator("#postKindRow .post-kind[data-kind='ask']").click();
+  await page.locator("#postBody").fill("Free money at http://spam.example now");
+  await page.locator("#postSubmit").click();
+  // A link makes the post fail the pre-publish filter — nothing is created.
   await expect(page.locator(".feed-post")).toHaveCount(0);
 });

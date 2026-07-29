@@ -172,6 +172,12 @@ This file is the project-local memory. Keep it current whenever product directio
 - Fix: **one calm, centered single column on desktop** (`app-shell` width 720px, removed the two-column grid + the map/community override, map-stage min-height 620→460). Consistent, no empty gaps, matches the phone-column wellness aesthetic. Verified all six screens live-QA clean at 1280px; regenerated desktop visual baselines (delete-then-regenerate to dodge the tolerance footgun).
 - QA method: Playwright against the live https://www.foobow.com — screenshot every screen at 1280px + check `document.scrollWidth === innerWidth` (no h-overflow) and console/page errors (none).
 
+## 2026-07-24 (community safety-by-design: Kindness Cards)
+
+- User wants a RedNote-style visual share community but is worried about illegal uploads / content pollution with no time to moderate. Researched UGC-risk guidance (Concentrix/Mocono/2POINT/Utopia/Infosys) and wrote `docs/community-safety.md`: the solution is **app-generated content, not free uploads**. Primary shared object = a **Kindness Card** built from a catalog deed (its illustration + title + category) with an optional short filtered note. **No image upload path anywhere** (removes the biggest legal vector). Free text (note ≤140, replies ≤240) passes a pre-publish filter: reject links (`URL_PATTERN`), length-cap, and `moderation_status` from creation + report-to-withdraw.
+- Implemented TDD (added 3 red→green tests in `foobow.community.spec.mjs`): share mode swaps the free-text box for a `#postDeedSelect` deed picker → renders `.feed-post.kindness-card` (mark + title + category badge + note); ask mode stays short filtered text; links are rejected. Updated 2 original tests whose "share = free text" assumption changed. Added a content test asserting `type="file"` appears nowhere in the app. Community browser suite now 20 tests; total browser 79 (+1 skipped).
+- ODD: Community Post now has a Kindness-Card template (app-generated) documented in the ODD spec. `categoryLabel` is a global from app.js reused by community.js; a Kindness Card's category comes from its deed, not the chosen tag.
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.

@@ -38,9 +38,46 @@ function renderPostKinds() {
       state.postKind = kind;
       saveState();
       renderPostKinds();
+      renderComposerMode();
     });
     row.append(btn);
   });
+}
+
+// Pre-publish content filter. Free text (an optional note or a question) may
+// not contain links — the biggest spam/scam vector — and is length-capped.
+// See docs/community-safety.md. The client check is advisory; a real backend
+// must re-run it on submit.
+const URL_PATTERN = /(https?:\/\/|www\.|\b[\w-]+\.(com|net|org|io|cn|co|ru|xyz|link)\b)/i;
+
+function sanitizeText(text, maxLength) {
+  const trimmed = (text || "").trim().slice(0, maxLength);
+  if (URL_PATTERN.test(trimmed)) return null; // reject: contains a link
+  return trimmed;
+}
+
+// The primary shared object is a Kindness Card built from an app deed, not an
+// upload. Share mode swaps the free-text box for a deed picker + short note.
+function renderComposerMode() {
+  const select = document.getElementById("postDeedSelect");
+  const body = document.getElementById("postBody");
+  const label = document.getElementById("postDeedLabel");
+  if (!select || !body) return;
+  const dict = dictionary();
+  const sharing = state.postKind === "share";
+
+  if (label) label.hidden = !sharing;
+  select.hidden = !sharing;
+  select.replaceChildren();
+  data.deeds.forEach((deed) => {
+    const option = document.createElement("option");
+    option.value = deed.id;
+    option.textContent = deed.title;
+    select.append(option);
+  });
+
+  body.placeholder = sharing ? dict.postNotePlaceholder : dict.postPlaceholder;
+  body.rows = sharing ? 2 : 3;
 }
 
 function renderPostTags() {
@@ -94,20 +131,23 @@ function visiblePosts() {
 }
 
 function buildPostCard(post, dict) {
+  const deed = post.deedId ? data.deeds.find((d) => d.id === post.deedId) : null;
   const card = document.createElement("article");
-  card.className = "feed-post";
+  card.className = `feed-post${deed ? " kindness-card" : ""}`;
   card.dataset.postId = post.id;
 
   const head = document.createElement("div");
   head.className = "post-head";
   const kind = document.createElement("span");
   kind.className = `post-kind-badge ${post.kind}`;
-  kind.textContent = post.kind === "share" ? dict.postKindShare : dict.postKindAsk;
+  kind.textContent = deed ? dict.postKindCard : post.kind === "share" ? dict.postKindShare : dict.postKindAsk;
   head.append(kind);
-  if (post.tag) {
+  // A Kindness Card carries the deed's own category; free posts use the chosen tag.
+  const tagValue = deed ? deed.categoryKey : post.tag;
+  if (tagValue) {
     const tag = document.createElement("span");
     tag.className = "post-tag-badge";
-    tag.textContent = tagLabel(post.tag);
+    tag.textContent = deed ? categoryLabel(tagValue) : tagLabel(tagValue);
     head.append(tag);
   }
   const when = document.createElement("time");
@@ -116,9 +156,32 @@ function buildPostCard(post, dict) {
   when.textContent = new Date(post.createdAt).toLocaleDateString();
   head.append(when);
 
-  const body = document.createElement("p");
-  body.className = "post-body";
-  body.textContent = post.body;
+  // For a deed share the "content" is the app-generated card art + title;
+  // any user note is a short caption below it.
+  let body;
+  if (deed) {
+    const visual = document.createElement("div");
+    visual.className = "kindness-card-visual";
+    const mark = document.createElement("span");
+    mark.className = `kindness-card-mark deed-mark ${deed.mark}`;
+    mark.setAttribute("aria-hidden", "true");
+    const title = document.createElement("p");
+    title.className = "kindness-card-title";
+    title.textContent = deed.title;
+    visual.append(mark, title);
+    body = document.createElement("div");
+    body.append(visual);
+    if (post.body) {
+      const note = document.createElement("p");
+      note.className = "kindness-card-note";
+      note.textContent = post.body;
+      body.append(note);
+    }
+  } else {
+    body = document.createElement("p");
+    body.className = "post-body";
+    body.textContent = post.body;
+  }
 
   const actions = document.createElement("div");
   actions.className = "post-actions";
@@ -184,8 +247,8 @@ function buildPostCard(post, dict) {
   send.className = "reply-submit";
   send.textContent = dict.postReplySend;
   send.addEventListener("click", () => {
-    const text = input.value.trim();
-    if (!text) return;
+    const text = sanitizeText(input.value, 240);
+    if (!text) return; // empty or contains a link — reject
     post.replies = post.replies || [];
     post.replies.push({ id: `reply_${Date.now()}`, body: text, at: Date.now() });
     saveState();
@@ -208,6 +271,7 @@ function renderCommunityFeed() {
   const dict = dictionary();
   renderPostKinds();
   renderPostTags();
+  renderComposerMode();
   renderFeedFilters();
   list.replaceChildren();
 
@@ -225,19 +289,39 @@ function renderCommunityFeed() {
 function submitPost() {
   const field = document.getElementById("postBody");
   if (!field) return;
-  const body = field.value.trim();
-  if (!body) return;
-  state.posts.unshift({
+  const sharing = state.postKind === "share";
+
+  // Free text passes the pre-publish filter (no links, length-capped).
+  // A rejected note/question blocks the whole post — pre-moderation, not cleanup.
+  const rawText = field.value.trim();
+  let note = "";
+  if (rawText) {
+    const clean = sanitizeText(rawText, 140);
+    if (clean === null) return; // contains a link — reject
+    note = clean;
+  }
+
+  const post = {
     id: `post_${Date.now()}`,
     kind: state.postKind,
     tag: state.postTag,
-    body,
+    body: note,
     createdAt: Date.now(),
     supported: false,
     supportCount: 0,
     replies: [],
     status: "visible"
-  });
+  };
+
+  if (sharing) {
+    // The shared object is an app-generated Kindness Card built from a deed.
+    const select = document.getElementById("postDeedSelect");
+    post.deedId = select ? select.value : data.deeds[0].id;
+  } else if (!note) {
+    return; // a question needs text
+  }
+
+  state.posts.unshift(post);
   field.value = "";
   state.postTag = null;
   saveState();
