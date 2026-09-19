@@ -45,6 +45,64 @@ export function apiGet<T>(path: string): Promise<ApiResult<T>> {
   return request<T>(path);
 }
 
-export function apiPost<T>(path: string, body: unknown): Promise<ApiResult<T>> {
-  return request<T>(path, { method: "POST", body: JSON.stringify(body) });
+export function apiPost<T>(path: string, body: unknown, headers?: Record<string, string>): Promise<ApiResult<T>> {
+  return request<T>(path, { method: "POST", body: JSON.stringify(body), headers });
 }
+
+export interface DonationRequest {
+  campaign_id: string;
+  amount: string;
+  currency?: string;
+}
+
+export interface DonationResponse {
+  donation: {
+    id: string;
+    campaign_id: string;
+    amount: string;
+    currency: string;
+    payment_status: string;
+    karma_points_awarded: number;
+  };
+  checkout?: {
+    url: string;
+  };
+  transparency_note: string;
+}
+
+export function createDonation(
+  req: DonationRequest,
+  idempotencyKey?: string
+): Promise<ApiResult<DonationResponse>> {
+  const key = idempotencyKey || `idemp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+  return apiPost<DonationResponse>("/donations", req, {
+    "Idempotency-Key": key
+  });
+}
+
+
+export interface BlessingIntentionRequest {
+  category: string;
+  recipient?: string;
+  message?: string;
+  locale?: string;
+}
+
+export interface BlessingIntentionResponse {
+  intention_id: string;
+  category: string;
+  recipient: string;
+  text: string;
+  provider: "gemini" | "cdn" | "mock";
+  tokens?: { prompt: number; completion: number; total: number };
+  cost_usd: number;
+  cached: boolean;
+  timestamp: string;
+}
+
+export function generateBlessingIntention(
+  req: BlessingIntentionRequest
+): Promise<ApiResult<BlessingIntentionResponse>> {
+  return apiPost<BlessingIntentionResponse>("/blessings/intentions", req);
+}
+

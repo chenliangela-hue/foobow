@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { CategoryFilters } from "../common/CategoryFilters";
 import { CalmRitualCard } from "./CalmRitualCard";
+import { LotusPondScene } from "./LotusPondScene";
 import { CategoryId, Deed } from "../../types";
 
 type DeedCatalogViewProps = {
@@ -41,6 +43,13 @@ export function DeedCatalogView({
   const headingColor = { color: currentColors.ink };
   const bodyColor = { color: currentColors.muted };
 
+  const [performedDeedId, setPerformedDeedId] = useState<string | null>(null);
+
+  const handlePerformRitual = () => {
+    onPerformRitual();
+    setPerformedDeedId(selectedDeed.id);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.rowBetween}>
@@ -61,7 +70,10 @@ export function DeedCatalogView({
 
       <CategoryFilters
         activeCategory={activeCategory}
-        onSelect={onSelectCategory}
+        onSelect={(cat) => {
+          setPerformedDeedId(null);
+          onSelectCategory(cat);
+        }}
         seniorMode={seniorMode}
       />
 
@@ -72,7 +84,10 @@ export function DeedCatalogView({
             key={deed.id}
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected }}
-            onPress={() => onSelectDeed(deed.id)}
+            onPress={() => {
+              setPerformedDeedId(null);
+              onSelectDeed(deed.id);
+            }}
             style={[
               styles.deedCard,
               {
@@ -101,14 +116,28 @@ export function DeedCatalogView({
         <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
           {selectedDeed.description}
         </Text>
+
+        {/* Animated Lotus Pond with swimming koi */}
+        <LotusPondScene
+          isReleased={performedDeedId === selectedDeed.id}
+          seniorMode={seniorMode}
+        />
+
         <Pressable
           style={[styles.primaryButton, { backgroundColor: currentColors.jade }]}
-          onPress={onPerformRitual}
+          onPress={handlePerformRitual}
         >
           <Text style={[styles.primaryButtonText, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
             {t("deeds.performRitual")}
           </Text>
         </Pressable>
+        {performedDeedId === selectedDeed.id && (
+          <View style={[styles.dedicationBox, { backgroundColor: currentColors.goldGlow, borderColor: currentColors.gold }]}>
+            <Text style={[styles.dedicationText, { color: currentColors.coral }, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+              {t("deeds.dedication", { points: selectedDeed.points })}
+            </Text>
+          </View>
+        )}
       </View>
 
       <CalmRitualCard
@@ -186,5 +215,18 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: typography.sizes.body,
     fontWeight: "700"
+  },
+  dedicationBox: {
+    padding: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    marginTop: layout.spacing.xs,
+    alignItems: "center"
+  },
+  dedicationText: {
+    fontSize: typography.sizes.caption,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 18
   }
 });

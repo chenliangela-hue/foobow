@@ -242,4 +242,35 @@ describe("Foobow API runtime", () => {
     assert.equal(json.error.code, "not_found");
     assert.match(json.error.request_id, /^req_/);
   });
+
+  it("generates bounded AI blessing intentions with token accounting and caching", async () => {
+    const payload = {
+      category: "health",
+      recipient: "grandmother",
+      message: "wishing peaceful recovery",
+      locale: "en"
+    };
+
+    const first = await request("/api/v1/blessings/intentions", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+
+    assert.equal(first.response.status, 201);
+    assert.ok(first.json.intention.id);
+    assert.ok(first.json.intention.text.length > 0);
+    assert.equal(typeof first.json.intention.tokens.total, "number");
+    assert.equal(typeof first.json.intention.cost_usd, "number");
+
+    // Identical call should leverage cache to spend 0 tokens
+    const second = await request("/api/v1/blessings/intentions", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+
+    assert.equal(second.response.status, 201);
+    assert.equal(second.json.intention.cached, true);
+    assert.equal(second.json.intention.tokens.total, 0);
+    assert.equal(second.json.intention.cost_usd, 0);
+  });
 });

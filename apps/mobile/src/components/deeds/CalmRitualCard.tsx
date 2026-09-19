@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
@@ -23,6 +24,41 @@ export function CalmRitualCard({
 }: CalmRitualCardProps) {
   const currentColors = useThemeColors();
   const { t } = useI18n();
+
+  const waveAnim1 = useRef(new Animated.Value(0.4)).current;
+  const waveAnim2 = useRef(new Animated.Value(0.7)).current;
+  const waveAnim3 = useRef(new Animated.Value(1)).current;
+  const waveAnim4 = useRef(new Animated.Value(0.5)).current;
+
+  useEffect(() => {
+    const createBarAnim = (anim: Animated.Value, duration: number) => {
+      return Animated.loop(
+        Animated.sequence([
+          Animated.timing(anim, {
+            toValue: 1.4,
+            duration,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true
+          }),
+          Animated.timing(anim, {
+            toValue: 0.35,
+            duration,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true
+          })
+        ])
+      );
+    };
+
+    const loop = Animated.parallel([
+      createBarAnim(waveAnim1, 900),
+      createBarAnim(waveAnim2, 650),
+      createBarAnim(waveAnim3, 800),
+      createBarAnim(waveAnim4, 720)
+    ]);
+    loop.start();
+    return () => loop.stop();
+  }, []);
   const eyebrowColor = { color: currentColors.muted };
   const headingColor = { color: currentColors.ink };
   const bodyColor = { color: currentColors.muted };
@@ -50,7 +86,7 @@ export function CalmRitualCard({
       </Text>
 
       <View style={styles.soundscapeRow}>
-        {["Water", "Rain", "Forest"].map((item) => {
+        {["Water", "Rain", "Forest", "Bell"].map((item) => {
           const isSelected = soundscape === item;
           return (
             <Pressable
@@ -78,6 +114,19 @@ export function CalmRitualCard({
             </Pressable>
           );
         })}
+      </View>
+
+      {/* Visual equalizer wave */}
+      <View style={styles.equalizerRow}>
+        <Text style={[styles.equalizerLabel, { color: currentColors.muted }]}>
+          {soundscape ? t(`calm.soundscapes.${soundscape.toLowerCase()}`, { defaultValue: soundscape }) : ""}
+        </Text>
+        <View style={styles.waveBarGroup}>
+          <Animated.View style={[styles.waveBar, { backgroundColor: currentColors.gold, transform: [{ scaleY: waveAnim1 }] }]} />
+          <Animated.View style={[styles.waveBar, { backgroundColor: currentColors.jade, transform: [{ scaleY: waveAnim2 }] }]} />
+          <Animated.View style={[styles.waveBar, { backgroundColor: currentColors.coral, transform: [{ scaleY: waveAnim3 }] }]} />
+          <Animated.View style={[styles.waveBar, { backgroundColor: currentColors.gold, transform: [{ scaleY: waveAnim4 }] }]} />
+        </View>
       </View>
 
       <View style={[styles.focusTrack, { backgroundColor: currentColors.line }]}>
@@ -227,5 +276,27 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: typography.sizes.caption,
     fontWeight: "700"
+  },
+  equalizerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: layout.spacing.xs,
+    marginTop: -4
+  },
+  equalizerLabel: {
+    fontSize: typography.sizes.caption,
+    fontStyle: "italic"
+  },
+  waveBarGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    height: 16
+  },
+  waveBar: {
+    width: 3,
+    height: 14,
+    borderRadius: 1.5
   }
 });

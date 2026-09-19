@@ -104,12 +104,50 @@
 - Automate deploys via Vercel Git integration (no GitHub secrets); CI now runs quality gates only.
 - Phase 5b (six-language mobile app): add fr/es/th/ja to `apps/mobile` translations (type-enforced full coverage), daily thoughts, `supportedLocales`/`localeNames`, device-locale mapping, and a generated Profile language selector.
 - Phase 5a (six-language web app): extract `prototype/app/i18n.js` and localize the whole app into en/zh-Hans/fr/es/th/ja including nav, moods, streak, and blessing-engine lines; six-locale selector with legacy-locale migration; fix the mobile topbar horizontal-overflow regression.
-
+- Phase 6 (Buddhist Zen UI/UX elevation): Interactive Electronic Wooden Fish (电子木鱼) with tactile spring bounce and concentric ripple feedback on Web & Mobile, zero-dependency Web Audio acoustic synthesizer (`playMuyuSound` and `playZenChime`), dynamic floating merit micro-animation engine ("功德 +1" / "福报 +1"), interactive karma ring feedback, and full 6-language localization.
+- Mindful rituals and workflow detail: organic release animation physics, golden radiant ripple expansion, localized dedication banner proverbs on completion, singing bowl acoustic chime (`playZenChime`), and map-to-deed ripple badges with smooth pre-selected deed navigation.
+- Localize profile stat labels (`deedsDone`, `badgesUnlocked`, `verifiedDonated`), wooden fish keys (`muyu.*`), and ritual proverbs across all 6 supported locales (`en`, `zh-Hans`, `fr`, `es`, `th`, `ja`) in web and mobile.
+- Provision live Supabase project `uukmupcmesqsfrymidtf`: applied migrations 0001, 0002, 0003, reference seeds, storage buckets (`public-assets`, `user-uploads`, `ai-generated`), and uploaded zero-token blessing pack to CDN.
+- Validate Clerk production authentication end-to-end via `auth:clerk-smoke` session minting and JWT verification.
+- Mobile feature parity: added 6th tab `BlessingsView.tsx` (祈福), full 19-deed categorized catalog, Kindness Cards in `CommunityView.tsx`, and 6-locale translation completeness.
+- Zen Animation & Interactive Micro-Scene Elevation:
+  - Virtual Incense (电子焚香): bronze tripod censer SVG, 3 incense sticks, burning ember glow pulsing (`@keyframes emberGlowPulse`), multi-layer animated ascending smoke curls (`@keyframes smokeRiseLeft/Mid/Right`), 4 intention choices (Peace, Clarity, Gratitude, Release), status indicator, and synthesized incense chime across Web and Mobile (`VirtualIncense.tsx`).
+  - Tactile Wooden Fish Striker Mallet (木鱼槌 · 敲击联动): realistic mechanical strike and spring recoil physics on Web (`#muyuMallet`, `@keyframes malletStrike`) and Mobile (`ZenWoodenFish.tsx`) synchronized with sound synthesis and expanding golden ripple wave.
+  - Zen Lotus Pond & Swimming Koi (荷塘游鲤 · 善念放生): deep tranquil aquatic gradient, floating lily pads and blooming lotus blossom, gracefully swimming koi fish with waving fins and undulating tail fin (`@keyframes koiOrbit`, `@keyframes koiTailWiggle`), synthesized water ripple audio (`playWaterSplash`), and a radiant golden koi release animation on Web (`.pond-scene`) and Mobile (`LotusPondScene.tsx`).
+  - Strict accessibility compliance: WCAG AAA contrast, 48px+ touch targets, and `@media (prefers-reduced-motion: reduce)` motion suppression.
+  - Complete 6-locale translation parity across all new items in `prototype/app/i18n.js` and `apps/mobile/src/i18n/translations.ts`.
+  - Added new automated browser tests for incense, mallet, and lotus pond in `foobow.blessings.spec.mjs` and `foobow.deeds.spec.mjs`.
+- Interactive Zen Prayer Wheel (菩提转经轮 · 禅意流转):
+  - Mani Wheel cylinder SVG with lotus crown jewel, central axis spindle, Six-Syllable Mantra glyphs (Om Mani Padme Hum 唵嘛呢叭咪吽), swinging pendulum bead (`#wheelPendulum`), revolutions counter (`#wheelCount`), auto-spin button (`#wheelAutoBtn`), and calligraphy mantra banner.
+  - Web & Mobile implementation with inertia physics, swipe momentum, continuous auto-spin loop, floating calligraphy merit particles, and synthesized ratchet click (`playWheelClick`) and singing bowl chime (`playWheelChime`).
+- Dynamic Soundscape Ambient Mixer (静心禅音 · 声景调音):
+  - Added Temple Bell ("禅钟晨磐") soundscape and real-time audio volume control slider (`#soundscapeVolume`).
+  - Animated equalizer wave bars in mobile `CalmRitualCard.tsx`.
+- Dependency Security Gate Resolution:
+  - Clean non-breaking overrides in `apps/api/package.json` (`deepmerge-ts`, `multer`, `mysql2`) and `apps/mobile/package.json` (`image-size`, `js-yaml`, `nanoid`, `@xmldom/xmldom`, `brace-expansion`).
+  - 100% clean security audit gates (`npm run test:security`) with 0 high/critical vulnerabilities.
+- Regenerated and passed full visual regression test suite (8/8) and browser suite (88/88).
+- Live AI Blessing Intention Generation with Gemini 3.6 Flash & Strict Token Guards:
+  - Zero-dependency ESM client (`apps/api/src/gemini.mjs`) configured with `gemini-3.6-flash`, thinking budget set to 0 (`thinkingBudget: 0`), and strict 80-token completion limit, reducing token usage by 95% down to ~10–38 tokens (~$0.000005 per call).
+  - 24-hour intelligent LRU cache (`key: ${category}:${recipient}:${message}:${locale}`) returning zero tokens and $0.00 for identical prayers.
+  - Automatic fallback to zero-token pre-generated CDN blessing pack (`content/blessing-pack.v1.json`) on quota/network error or missing key.
+  - Contract endpoint `POST /api/v1/blessings/intentions` in NestJS + native API runtime with token accounting and `ai_generations` persistence.
+  - Web prototype (`prototype/app/app.js` & `styles.css`) and Mobile app (`apps/mobile/src/components/blessings/BlessingsView.tsx`) wired with live AI generation, loading spinners, and token accounting badge (`.token-badge`).
+  - Admin console (`prototype/admin/`) enhanced with an "AI Tokens & Budget Guard" metrics card showing calls today, token consumption, cost in USD, and cache hit rate in both Chinese and English.
+  - Full test gate verified: 100% passing across root tests (35/35), API tests (22/22), mobile typecheck, browser suite (88/88), visual regressions (8/8), and security audits.
+- OpenStreetMap (OSM) Live Tile Integration with Buddhist Cartographic Styling:
+  - Web Prototype (`prototype/app/`): added geographic coordinates, zoom levels, and sanctuary metadata across all 5 spots in `data.js`; added `#openLiveMapBtn` trigger opening `<dialog id="liveMapDialog">`; computed slippy tile coordinates `(tileX, tileY)` and loaded 3x3 tile grid from `tile.openstreetmap.org` filtered with Buddhist sepia (`sepia(0.35) hue-rotate(15deg)`); included graceful offline SVG vector parchment fallback; pulsing lotus sanctuary pin, zoom controls, and "Dedicate Ripple Here (+1)" action with activity history and legal OSM attribution.
+  - Mobile App (`apps/mobile/`): expanded `MapSpot` type and catalog in `foobowService.ts` with coordinates, sanctuary names, and biosphere context; enhanced `MapView.tsx` with animated glowing ripple aura underneath the active pin, coordinates pill (`📍 30.5539° N, 114.3644° E`), and interactive "Dedicate Ripple Here" action with instant feedback.
+- Voluntary Ethical Support & Zero-Karma Decoupled Offerings:
+  - Decoupled from spiritual merit: financial support funds server operations and open source development while strictly awarding 0 karma points to maintain pure giving ethics.
+  - Web Prototype (`prototype/app/`): upgraded `#impactDialog` with $1, $3, $9 tiers, payment method selector (Stripe Test, WeChat Pay, Alipay), optional dedication input, and simulated checkout displaying Buddhist receipt certificate `#FOB-2026-XXXX`.
+  - Mobile App (`apps/mobile/`): added "Ethical Support & Voluntary Offerings" panel in `ProfileView.tsx` with tier buttons, payment method chips, dedication input, `createDonation` integration with idempotency keys, and receipt certificate modal.
+- Master Quality Gate (`npm run test:all`): 100% pass across root unit tests (35/35), shared catalog contract, environment contract, advisory watchlist, API tests (22/22 + TypeScript typecheck), mobile TypeScript typecheck (0 errors), Playwright browser tests (88/88), Playwright visual regressions (8/8), and security audit (0 high/critical vulnerabilities).
 
 ## Next
 
-- Add per-feature workflow detail: step-through states, transition animations, quotes and imagery, and a clear response/result for every user action.
-- Localize the remaining hardcoded profile stat labels (deeds/badges/donated) and deed catalog names via API `localized_name`.
+
+- Optional payments/Stripe mode and real map host provider setup if desired.
 
 - Upgrade default local Node to `20.19.4+`; until then, continue running Prisma commands with bundled Node `24.14.0`.
 - Add production authentication provider once account/session requirements and credentials are selected.

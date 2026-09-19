@@ -1,12 +1,31 @@
-export type CategoryId = "all" | "animals" | "elders" | "environment" | "support";
-export type TabId = "today" | "map" | "deeds" | "community" | "profile";
+export type CategoryId = "all" | "animals" | "elders" | "environment" | "community" | "learning" | "support";
+export type TabId = "today" | "blessings" | "map" | "deeds" | "community" | "profile";
+
+export type BlessingCategory = "family" | "health" | "study" | "travel" | "remembrance" | "gratitude";
+
+export type BlessingIntention = {
+  id: string;
+  category: BlessingCategory;
+  recipient?: string;
+  message?: string;
+  replyText: string;
+  createdAt: string;
+};
+
+export type WishLamp = {
+  id: string;
+  wish: string;
+  createdAt: string;
+};
 
 export type Deed = {
   id: string;
   title: string;
   categoryId: Exclude<CategoryId, "all">;
   description: string;
+  shortDescription?: string;
   points: number;
+  mark?: string;
 };
 
 export type MapSpot = {
@@ -17,6 +36,12 @@ export type MapSpot = {
   description: string;
   x: `${number}%`;
   y: `${number}%`;
+  ripples?: number;
+  latitude?: number;
+  longitude?: number;
+  coordinates?: string;
+  sanctuary?: string;
+  environment?: string;
 };
 
 export type CategoryOption = {

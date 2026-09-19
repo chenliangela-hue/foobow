@@ -130,6 +130,236 @@
             <ul class="lamp-list" id="lampList"></ul>
           </section>
 
+          <section class="incense-card" aria-labelledby="incense-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="incenseEyebrow">Virtual Incense · 电子焚香</p>
+                <h3 id="incense-title" data-i18n="incenseTitle">Kindle incense for quiet reflection.</h3>
+              </div>
+              <span class="soft-pill" id="incenseCount">0</span>
+            </div>
+            <p class="incense-copy" data-i18n="incenseCopy">Choose an intention, kindle the fragrant stick, and let the gentle rising smoke quiet the mind.</p>
+            
+            <div class="incense-intentions" id="incenseIntentions" aria-label="Incense intentions">
+              <button class="choice-pill active" type="button" data-intent="peace" data-i18n="incensePeace">Peace · 平安</button>
+              <button class="choice-pill" type="button" data-intent="clarity" data-i18n="incenseClarity">Clarity · 清心</button>
+              <button class="choice-pill" type="button" data-intent="gratitude" data-i18n="incenseGratitude">Gratitude · 感恩</button>
+              <button class="choice-pill" type="button" data-intent="release" data-i18n="incenseRelease">Release · 释怀</button>
+            </div>
+
+            <div class="incense-stage" id="incenseStage" aria-label="Virtual incense burner">
+              <div class="incense-censer-wrap">
+                <!-- Rising animated smoke ribbons -->
+                <div class="incense-smoke-layer" id="incenseSmokeLayer" aria-hidden="true">
+                  <div class="smoke-ribbon smoke-left"></div>
+                  <div class="smoke-ribbon smoke-mid"></div>
+                  <div class="smoke-ribbon smoke-right"></div>
+                  <div class="incense-wisp wisp-1"></div>
+                  <div class="incense-wisp wisp-2"></div>
+                </div>
+
+                <!-- Incense sticks with ember glow -->
+                <div class="incense-sticks" id="incenseSticks">
+                  <div class="incense-stick stick-1"><span class="ember"></span><span class="stick-shaft"></span></div>
+                  <div class="incense-stick stick-2"><span class="ember"></span><span class="stick-shaft"></span></div>
+                  <div class="incense-stick stick-3"><span class="ember"></span><span class="stick-shaft"></span></div>
+                </div>
+
+                <!-- Censer vessel SVG -->
+                <svg class="incense-censer-svg" viewBox="0 0 140 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="censerBronze" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#8b6834"/>
+                      <stop offset="50%" stop-color="#5a4220"/>
+                      <stop offset="100%" stop-color="#342410"/>
+                    </linearGradient>
+                    <linearGradient id="censerGoldRim" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#d4af37"/>
+                      <stop offset="50%" stop-color="#f6d37a"/>
+                      <stop offset="100%" stop-color="#b8892a"/>
+                    </linearGradient>
+                    <linearGradient id="censerAsh" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#55514b"/>
+                      <stop offset="50%" stop-color="#7c766e"/>
+                      <stop offset="100%" stop-color="#4a4641"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M18 26 C10 26 8 38 18 42" stroke="url(#censerGoldRim)" stroke-width="3.5" stroke-linecap="round"/>
+                  <path d="M122 26 C130 26 132 38 122 42" stroke="url(#censerGoldRim)" stroke-width="3.5" stroke-linecap="round"/>
+                  <path d="M38 52 C36 62 32 66 28 67" stroke="url(#censerBronze)" stroke-width="4.5" stroke-linecap="round"/>
+                  <path d="M102 52 C104 62 108 66 112 67" stroke="url(#censerBronze)" stroke-width="4.5" stroke-linecap="round"/>
+                  <path d="M70 54 L70 68" stroke="url(#censerBronze)" stroke-width="4.5" stroke-linecap="round"/>
+                  <path d="M22 24 C22 48 38 56 70 56 C102 56 118 48 118 24 Z" fill="url(#censerBronze)" stroke="url(#censerGoldRim)" stroke-width="2"/>
+                  <ellipse cx="70" cy="24" rx="46" ry="10" fill="url(#censerAsh)" stroke="url(#censerGoldRim)" stroke-width="1.8"/>
+                  <ellipse cx="70" cy="38" rx="36" ry="6" fill="none" stroke="url(#censerGoldRim)" stroke-width="1.2" stroke-dasharray="3 3"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="incense-status-line" id="incenseStatusLine" hidden>
+              <span class="incense-status-dot"></span>
+              <span id="incenseStatusText" data-i18n="incenseBurning">Burning peacefully with mindful presence</span>
+            </div>
+
+            <button class="primary-action" id="kindleIncenseBtn" type="button" data-i18n="incenseLight">Kindle incense (+1 karma)</button>
+          </section>
+
+          <section class="muyu-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="muyuEyebrow">Zen Muyu · 电子木鱼</p>
+                <h3 data-i18n="muyuTitle">Tap for peace of mind.</h3>
+              </div>
+              <span class="soft-pill" id="muyuCount">0</span>
+            </div>
+            <p class="muyu-copy" data-i18n="muyuCopy">Tap the wooden fish to ease worry and cultivate quiet merit. Every tap is a moment of presence.</p>
+            <div class="muyu-stage" id="muyuStage" aria-label="Electronic wooden fish">
+              <button class="muyu-btn" id="muyuBtn" type="button" aria-label="Tap electronic wooden fish">
+                <div class="muyu-halo" aria-hidden="true"></div>
+                <svg class="muyu-icon" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="muyuGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#b8892a" stop-opacity="0.45"/>
+                      <stop offset="100%" stop-color="#b8892a" stop-opacity="0"/>
+                    </radialGradient>
+                    <linearGradient id="muyuWood" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#a63d2f"/>
+                      <stop offset="45%" stop-color="#7a261c"/>
+                      <stop offset="100%" stop-color="#4e1710"/>
+                    </linearGradient>
+                    <linearGradient id="muyuGoldRim" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#f6d37a"/>
+                      <stop offset="50%" stop-color="#b8892a"/>
+                      <stop offset="100%" stop-color="#7a5512"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="60" cy="50" r="46" fill="url(#muyuGlow)" class="muyu-ambient-glow"/>
+                  <path d="M60 14 C34 14 16 32 16 54 C16 74 32 86 58 86 C84 86 104 70 104 50 C104 30 86 14 60 14 Z" fill="url(#muyuWood)" stroke="url(#muyuGoldRim)" stroke-width="2.5"/>
+                  <path d="M26 54 C36 54 50 58 60 64 C70 70 80 72 88 68 C80 78 66 82 52 82 C34 82 24 72 26 54 Z" fill="#1b0805"/>
+                  <circle cx="82" cy="38" r="7.5" fill="#1b0805" stroke="url(#muyuGoldRim)" stroke-width="1.8"/>
+                  <circle cx="82" cy="38" r="3.2" fill="#e6b95c"/>
+                  <path d="M42 28 C48 36 48 44 42 50" stroke="url(#muyuGoldRim)" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+                  <path d="M52 24 C60 34 60 44 52 54" stroke="url(#muyuGoldRim)" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+                  <path d="M62 22 C72 32 72 44 64 56" stroke="url(#muyuGoldRim)" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
+                </svg>
+                <div class="muyu-ripple-track" id="muyuRipples" aria-hidden="true"></div>
+              </button>
+              <div class="muyu-mallet" id="muyuMallet" aria-hidden="true">
+                <svg viewBox="0 0 64 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="malletHandleWood" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#b8892a"/>
+                      <stop offset="50%" stop-color="#7a4b1e"/>
+                      <stop offset="100%" stop-color="#3d1d06"/>
+                    </linearGradient>
+                    <radialGradient id="malletKnobGlow" cx="40%" cy="35%" r="65%">
+                      <stop offset="0%" stop-color="#ffe8a3"/>
+                      <stop offset="40%" stop-color="#c48a28"/>
+                      <stop offset="100%" stop-color="#6e3805"/>
+                    </radialGradient>
+                  </defs>
+                  <path d="M52 68 L24 20" stroke="url(#malletHandleWood)" stroke-width="5" stroke-linecap="round"/>
+                  <path d="M50 65 L44 54" stroke="#e6b95c" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+                  <circle cx="18" cy="16" r="14" fill="url(#malletKnobGlow)" stroke="#f6d37a" stroke-width="1.8"/>
+                  <path d="M22 24 C20 20 18 16 14 13" stroke="#ffd97d" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+                </svg>
+              </div>
+            </div>
+            <div class="muyu-controls">
+              <button class="text-button" id="muyuAutoBtn" type="button" data-i18n="muyuAutoTap">Auto tap</button>
+              <span class="muyu-hint" data-i18n="muyuHint">Knock softly to gather presence</span>
+            </div>
+          </section>
+
+          <section class="wheel-card" id="wheelCard" aria-labelledby="wheel-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="wheelEyebrow">Zen Prayer Wheel · 菩提转经轮</p>
+                <h3 id="wheel-title" data-i18n="wheelTitle">Spin the wheel for quiet mindfulness.</h3>
+              </div>
+              <span class="soft-pill" id="wheelCount">0</span>
+            </div>
+            <p class="wheel-copy" data-i18n="wheelCopy">Turn the sacred wheel clockwise to disperse compassionate thoughts. With every full turn, peace and merit gently ripple outwards.</p>
+            <div class="wheel-stage" id="wheelStage" aria-label="Zen Tibetan prayer wheel">
+              <div class="wheel-halo" aria-hidden="true"></div>
+              <div class="wheel-container" id="wheelContainer">
+                <div class="wheel-drum" id="wheelDrum" role="button" tabindex="0" aria-label="Spin prayer wheel clockwise">
+                  <svg class="wheel-svg" viewBox="0 0 160 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="wheelGoldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#b8892a"/>
+                        <stop offset="30%" stop-color="#f6d37a"/>
+                        <stop offset="50%" stop-color="#ffd97d"/>
+                        <stop offset="70%" stop-color="#f6d37a"/>
+                        <stop offset="100%" stop-color="#7a5512"/>
+                      </linearGradient>
+                      <linearGradient id="wheelCylinderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#5a2218"/>
+                        <stop offset="25%" stop-color="#8c3627"/>
+                        <stop offset="50%" stop-color="#b8523f"/>
+                        <stop offset="75%" stop-color="#8c3627"/>
+                        <stop offset="100%" stop-color="#3d140e"/>
+                      </linearGradient>
+                      <linearGradient id="wheelHandleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#3d1d06"/>
+                        <stop offset="50%" stop-color="#7a4b1e"/>
+                        <stop offset="100%" stop-color="#2a1202"/>
+                      </linearGradient>
+                      <radialGradient id="wheelJewel" cx="40%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#fff"/>
+                        <stop offset="40%" stop-color="#ff9e00"/>
+                        <stop offset="100%" stop-color="#b83800"/>
+                      </radialGradient>
+                    </defs>
+                    <!-- Central Axis Spindle -->
+                    <rect x="76" y="8" width="8" height="194" rx="4" fill="url(#wheelGoldGrad)"/>
+                    <!-- Top Finial: Jewel & Lotus Crown -->
+                    <circle cx="80" cy="14" r="7" fill="url(#wheelJewel)" stroke="url(#wheelGoldGrad)" stroke-width="1.5"/>
+                    <path d="M68 28 C74 22 86 22 92 28 C88 32 72 32 68 28 Z" fill="url(#wheelGoldGrad)"/>
+                    <ellipse cx="80" cy="34" rx="38" ry="10" fill="url(#wheelGoldGrad)" stroke="#ffd97d" stroke-width="1.5"/>
+                    <!-- Main Cylinder Body -->
+                    <path d="M42 34 C42 34 42 126 42 126 C42 133 59 138 80 138 C101 138 118 133 118 126 L118 34 Z" fill="url(#wheelCylinderGrad)" stroke="url(#wheelGoldGrad)" stroke-width="2"/>
+                    <!-- Cylinder Decorative Bands -->
+                    <ellipse cx="80" cy="48" rx="38" ry="7" fill="none" stroke="url(#wheelGoldGrad)" stroke-width="2" stroke-dasharray="4 3"/>
+                    <ellipse cx="80" cy="116" rx="38" ry="7" fill="none" stroke="url(#wheelGoldGrad)" stroke-width="2" stroke-dasharray="4 3"/>
+                    <!-- Six-syllable mantra text -->
+                    <g id="wheelMantraGroup" class="wheel-mantra-group">
+                      <text x="80" y="88" text-anchor="middle" font-family="'Noto Serif SC', serif" font-size="20" font-weight="bold" fill="#f6d37a" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.6))" id="wheelMantraText">唵嘛呢叭咪吽</text>
+                    </g>
+                    <!-- Bottom Lotus Base -->
+                    <ellipse cx="80" cy="128" rx="40" ry="11" fill="url(#wheelGoldGrad)" stroke="#ffd97d" stroke-width="1.5"/>
+                    <path d="M66 138 C72 144 88 144 94 138 L90 148 L70 148 Z" fill="url(#wheelGoldGrad)"/>
+                    <!-- Rosewood Handle -->
+                    <path d="M73 150 L87 150 L85 204 L75 204 Z" fill="url(#wheelHandleGrad)" stroke="url(#wheelGoldGrad)" stroke-width="1.5"/>
+                    <circle cx="80" cy="204" r="6" fill="url(#wheelGoldGrad)"/>
+                  </svg>
+                  <!-- Swinging weighted pendulum cord & golden bead -->
+                  <div class="wheel-pendulum" id="wheelPendulum" aria-hidden="true">
+                    <div class="pendulum-cord"></div>
+                    <div class="pendulum-bead"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wheel-mantra-strip" aria-hidden="true">
+              <span class="mantra-char">唵</span>
+              <span class="mantra-dot">·</span>
+              <span class="mantra-char">嘛</span>
+              <span class="mantra-dot">·</span>
+              <span class="mantra-char">呢</span>
+              <span class="mantra-dot">·</span>
+              <span class="mantra-char">叭</span>
+              <span class="mantra-dot">·</span>
+              <span class="mantra-char">咪</span>
+              <span class="mantra-dot">·</span>
+              <span class="mantra-char">吽</span>
+            </div>
+            <div class="wheel-controls">
+              <button class="text-button" id="wheelAutoBtn" type="button" data-i18n="wheelAutoSpin">Auto spin</button>
+              <span class="wheel-hint" data-i18n="wheelHint">Drag or tap to spin clockwise</span>
+            </div>
+          </section>
+
           <p class="safety-note" data-i18n="calmSafety">This is symbolic comfort only. It does not guarantee luck, virtue, health, or real-world impact.</p>
         </section>
 
@@ -148,9 +378,16 @@
             </div>
           </div>
           <section class="spot-detail">
-            <p class="eyebrow" id="spotCategory">Animal kindness</p>
+            <div class="section-heading">
+              <p class="eyebrow" id="spotCategory">Animal kindness</p>
+              <span class="soft-pill" id="spotRipples">1,280 ripples</span>
+            </div>
             <h3 id="spotName">East Lake, Wuhan</h3>
             <p id="spotText">Release a digital fish into the lake and add one ripple to the shared kindness map.</p>
+            <div class="spot-actions-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+              <button class="text-button" id="spotActionBtn" type="button">Perform matching deed →</button>
+              <button class="text-button" id="openLiveMapBtn" type="button">🌐 Live OpenStreetMap Sanctuary</button>
+            </div>
             <div class="layer-row" id="mapLayerRow" aria-label="Map category filters"></div>
           </section>
         </section>
@@ -195,9 +432,73 @@
             </article>
           </div>
           <section class="ritual-panel">
-            <div class="ritual-scene" id="ritualScene">
-              <div class="ripple"></div>
-              <div class="fish-shape"></div>
+            <div class="ritual-scene pond-scene" id="ritualScene" aria-label="Zen lotus pond">
+              <!-- Water depth ripples -->
+              <div class="pond-water-shimmer" aria-hidden="true"></div>
+              <div class="pond-ripple-ring ring-1" aria-hidden="true"></div>
+              <div class="pond-ripple-ring ring-2" aria-hidden="true"></div>
+              
+              <!-- Floating Lily Pads & Lotus -->
+              <div class="pond-lilypad pad-1" aria-hidden="true"></div>
+              <div class="pond-lilypad pad-2" aria-hidden="true"></div>
+              <div class="pond-lotus" aria-hidden="true">
+                <svg viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M30 4 C24 16 12 28 8 36 C18 40 42 40 52 36 C48 28 36 16 30 4 Z" fill="url(#lotusPink)"/>
+                  <path d="M30 10 C26 20 18 30 16 36 C24 39 36 39 44 36 C42 30 34 20 30 10 Z" fill="#ffe6f0"/>
+                  <circle cx="30" cy="30" r="4" fill="#ffd166"/>
+                  <defs>
+                    <linearGradient id="lotusPink" x1="50%" y1="0%" x2="50%" y2="100%">
+                      <stop offset="0%" stop-color="#ff758f"/>
+                      <stop offset="60%" stop-color="#ffb3c1"/>
+                      <stop offset="100%" stop-color="#fff0f3"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              <!-- Swimming Koi Fish -->
+              <div class="swimming-koi-track koi-main" aria-hidden="true">
+                <div class="koi-body-wrap">
+                  <svg class="koi-svg" viewBox="0 0 70 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="koiPattern" x1="0%" y1="50%" x2="100%" y2="50%">
+                        <stop offset="0%" stop-color="#ffffff"/>
+                        <stop offset="35%" stop-color="#f77f00"/>
+                        <stop offset="70%" stop-color="#d62828"/>
+                        <stop offset="100%" stop-color="#fdf0d5"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M12 17 C20 9 44 8 56 17 C44 26 20 25 12 17 Z" fill="url(#koiPattern)"/>
+                    <circle cx="56" cy="17" r="4" fill="#f77f00"/>
+                    <path d="M58 15 Q64 12 66 9" stroke="#fdf0d5" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M58 19 Q64 22 66 25" stroke="#fdf0d5" stroke-width="1.2" stroke-linecap="round"/>
+                    <path class="koi-fin-top" d="M36 10 C34 4 42 2 46 8 Z" fill="rgba(255,255,255,0.7)"/>
+                    <path class="koi-fin-bot" d="M36 24 C34 30 42 32 46 26 Z" fill="rgba(255,255,255,0.7)"/>
+                    <path class="koi-tail" d="M12 17 C6 8 0 10 2 17 C0 24 6 26 12 17 Z" fill="rgba(247,127,0,0.85)"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Released Golden Koi Fish -->
+              <div class="swimming-koi-track koi-released" id="koiReleased" aria-hidden="true">
+                <div class="koi-body-wrap">
+                  <svg class="koi-svg golden-koi" viewBox="0 0 70 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="goldKoiPattern" x1="0%" y1="50%" x2="100%" y2="50%">
+                        <stop offset="0%" stop-color="#ffe8a3"/>
+                        <stop offset="50%" stop-color="#f6d37a"/>
+                        <stop offset="100%" stop-color="#c48a28"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M12 17 C20 9 44 8 56 17 C44 26 20 25 12 17 Z" fill="url(#goldKoiPattern)"/>
+                    <circle cx="56" cy="17" r="4" fill="#ffe8a3"/>
+                    <path class="koi-fin-top" d="M36 10 C34 4 42 2 46 8 Z" fill="rgba(255,232,163,0.8)"/>
+                    <path class="koi-fin-bot" d="M36 24 C34 30 42 32 46 26 Z" fill="rgba(255,232,163,0.8)"/>
+                    <path class="koi-tail" d="M12 17 C6 8 0 10 2 17 C0 24 6 26 12 17 Z" fill="rgba(246,211,122,0.9)"/>
+                  </svg>
+                </div>
+              </div>
+
               <div class="shoreline"></div>
             </div>
             <div>
@@ -205,6 +506,7 @@
               <h3 id="ritualTitle">Virtual 放生</h3>
               <p id="ritualDesc">Release a digital fish into a selected lake or river.</p>
               <button class="primary-action" id="performRitual" type="button" data-i18n="performRitual">Perform ritual</button>
+              <div class="ritual-dedication" id="ritualDedication" aria-live="polite" hidden></div>
             </div>
           </section>
 
@@ -221,6 +523,10 @@
             <div class="soundscape-row" id="soundscapeRow" aria-label="Optional soundscape choices"></div>
             <div class="sound-control">
               <button class="text-button" id="soundscapeToggle" type="button" aria-pressed="false">Play soundscape</button>
+              <div class="sound-volume-wrap">
+                <span class="volume-icon" aria-hidden="true">🔉</span>
+                <input type="range" class="sound-volume-slider" id="soundscapeVolume" min="0" max="100" value="70" aria-label="Soundscape volume" />
+              </div>
               <span class="sound-wave" id="soundWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
             </div>
             <div class="focus-meter" aria-label="Calm ritual focus progress">
@@ -346,17 +652,95 @@
       </nav>
     </div>
 
-    <dialog id="impactDialog">
-      <div class="dialog-body">
-        <p class="eyebrow" data-i18n="dialogEyebrow">Real impact option</p>
-        <h2 data-i18n="dialogTitle">Support a verified cause</h2>
-        <p data-i18n="dialogCopy">This donation supports real operating costs or partner campaigns. It does not buy luck, virtue, or guaranteed karma.</p>
-        <div class="donation-options">
-          <button type="button">$1</button>
-          <button type="button">$3</button>
-          <button type="button">$9</button>
+    <dialog id="impactDialog" class="zen-dialog">
+      <div class="dialog-body ethical-support-body">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow" data-i18n="dialogEyebrow">Real impact option</p>
+            <h2 data-i18n="dialogTitle">Support a verified cause</h2>
+          </div>
+          <button class="icon-close-btn" id="closeImpactTopBtn" type="button" aria-label="Close support dialog">✕</button>
         </div>
-        <button class="primary-action" id="closeDialog" type="button" data-i18n="closeDialog">Close</button>
+        <p data-i18n="dialogCopy">This donation supports real operating costs or partner campaigns. It does not buy luck, virtue, or guaranteed karma.</p>
+        
+        <div class="ethical-badge-callout">
+          <span class="ethical-seal">⚖️</span>
+          <div>
+            <strong>Pure Giving Decoupling · 无相布施</strong>
+            <p>0 karma points awarded. True spiritual merit cannot be bought with money.</p>
+          </div>
+        </div>
+
+        <div class="donation-options" id="donationTiers">
+          <button type="button" class="donation-tier" data-amount="1">$1</button>
+          <button type="button" class="donation-tier active" data-amount="3">$3</button>
+          <button type="button" class="donation-tier" data-amount="9">$9</button>
+        </div>
+
+        <div class="payment-methods-block">
+          <p class="field-label">Payment Method (Test Mode):</p>
+          <div class="payment-method-row">
+            <button type="button" class="pay-method-chip active" data-method="stripe">💳 Stripe (Card / Apple Pay)</button>
+            <button type="button" class="pay-method-chip" data-method="wechat">🟢 WeChat Pay (微信支付)</button>
+            <button type="button" class="pay-method-chip" data-method="alipay">🔵 Alipay (支付宝)</button>
+          </div>
+        </div>
+
+        <div class="dedication-block">
+          <label class="field-label" for="donationDedication">Optional Dedication (回向发愿):</label>
+          <input type="text" id="donationDedication" class="dialog-input" placeholder="e.g., Dedicated to family wellbeing and world peace">
+        </div>
+
+        <div id="donationReceiptArea" class="donation-receipt-card" style="display: none;">
+          <div class="receipt-seal">🪷</div>
+          <h4>Voluntary Support Certificate · 随喜收据</h4>
+          <p class="receipt-id" id="receiptCode">#FOB-2026-9281</p>
+          <p class="receipt-details" id="receiptDetails">Campaign: Foobow Operating Support · Amount: $3.00 USD</p>
+          <p class="receipt-dedication" id="receiptDedication">Dedicated to all sentient beings (回向众生)</p>
+          <p class="receipt-note">Decoupled from karma: 0 karma points awarded. Thank you for your selfless stewardship.</p>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="primary-action" id="submitDonationBtn" type="button">Support $3.00 USD (Test Checkout)</button>
+          <button class="primary-action text-button" id="closeDialog" type="button" data-i18n="closeDialog">Close</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="liveMapDialog" class="zen-dialog live-map-dialog">
+      <div class="dialog-body map-dialog-body">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow" id="liveMapEyebrow">OpenStreetMap · Buddhist Sanctuary View</p>
+            <h2 id="liveMapTitle">East Lake Sanctuary (30.5539° N, 114.3644° E)</h2>
+          </div>
+          <button class="icon-close-btn" id="closeLiveMapTopBtn" type="button" aria-label="Close live map">✕</button>
+        </div>
+        <div class="live-map-viewport" id="liveMapViewport" aria-label="Live OpenStreetMap sanctuary tiles">
+          <div class="live-map-tiles" id="liveMapTiles"></div>
+          <div class="live-map-center-marker" aria-hidden="true">
+            <span class="live-map-pulse-aura"></span>
+            <span class="live-map-lotus-pin">🪷</span>
+          </div>
+          <div class="live-map-controls">
+            <button class="map-ctrl-btn" id="liveMapZoomIn" type="button" aria-label="Zoom in">+</button>
+            <button class="map-ctrl-btn" id="liveMapZoomOut" type="button" aria-label="Zoom out">−</button>
+          </div>
+          <div class="live-map-osm-attribution">
+            © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Mindful Cartography
+          </div>
+        </div>
+        <div class="live-map-meta">
+          <div class="live-map-meta-row">
+            <span class="soft-pill" id="liveMapRipples">1,280 ripples dedicated</span>
+            <span class="coord-pill" id="liveMapCoords">📍 30.5539° N, 114.3644° E</span>
+          </div>
+          <p class="live-map-desc" id="liveMapDesc">Freshwater aquatic sanctuary & wetland biosphere.</p>
+        </div>
+        <div class="dialog-actions">
+          <button class="primary-action" id="dedicateLiveRippleBtn" type="button">Dedicate Ripple to this Sanctuary (+1)</button>
+          <button class="text-button" id="closeLiveMapBtn" type="button">Close</button>
+        </div>
       </div>
     </dialog>
 

@@ -44,15 +44,35 @@ async function main(): Promise<void> {
     return;
   }
 
-  const client = new Client({
-    host: `aws-1-${region}.pooler.supabase.com`,
-    port: 5432,
-    user: `postgres.${projectRef}`,
-    password,
-    database: "postgres",
-    ssl: { rejectUnauthorized: false }
-  });
-  await client.connect();
+  let client: Client | null = null;
+  const poolerHosts = [
+    `aws-0-${region}.pooler.supabase.com`,
+    `aws-1-${region}.pooler.supabase.com`
+  ];
+
+  for (const host of poolerHosts) {
+    const candidate = new Client({
+      host,
+      port: 5432,
+      user: `postgres.${projectRef}`,
+      password,
+      database: "postgres",
+      ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 5000
+    });
+    try {
+      await candidate.connect();
+      client = candidate;
+      console.log(`Connected to Supabase pooler at ${host}`);
+      break;
+    } catch (err: any) {
+      try { await candidate.end(); } catch {}
+    }
+  }
+
+  if (!client) {
+    throw new Error(`Could not connect to Supabase pooler for region ${region} and project ${projectRef}`);
+  }
 
   try {
     for (const step of steps) {

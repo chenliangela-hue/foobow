@@ -17,6 +17,9 @@ window.FOOBOW_DATA = {
     keptBlessings: [],
     lamps: [],
     activity: [],
+    muyuTaps: 0,
+    incenseLitCount: 0,
+    wheelTurns: 0,
     posts: [],
     postKind: "share",
     postTag: null,
@@ -55,7 +58,8 @@ window.FOOBOW_DATA = {
   soundscapes: [
     { id: "water", label: "Water", description: "Soft lake ripples for virtual release." },
     { id: "rain", label: "Rain", description: "Quiet rain for umbrella and support deeds." },
-    { id: "forest", label: "Forest", description: "Low wind for tree and cleanup deeds." }
+    { id: "forest", label: "Forest", description: "Low wind for tree and cleanup deeds." },
+    { id: "bell", label: "Bell", description: "Resonant temple bell and singing bowl." }
   ],
   moods: [
     { id: "calm", label: "Calm", deed: "Release fish at East Lake" },
@@ -68,31 +72,71 @@ window.FOOBOW_DATA = {
       name: "East Lake, Wuhan",
       category: "Animal kindness",
       categoryKey: "animals",
-      text: "Release a digital fish into the lake and add one ripple to the shared kindness map."
+      text: "Release a digital fish into the lake and add one ripple to the shared kindness map.",
+      deedId: "release-fish",
+      ripples: 1280,
+      lat: 30.5539,
+      lng: 114.3644,
+      zoom: 14,
+      coordinates: "30.5539° N, 114.3644° E",
+      sanctuary: "Lotus Lake Sanctuary (东湖莲池净域)",
+      environment: "Freshwater aquatic sanctuary & wetland biosphere"
     },
     "toronto-crosswalk": {
       name: "Toronto crosswalk",
       category: "Elder care",
       categoryKey: "elders",
-      text: "Guide an elder safely across a winter street and add care to the elder-support layer."
+      text: "Guide an elder safely across a winter street and add care to the elder-support layer.",
+      deedId: "elder-crosswalk",
+      ripples: 840,
+      lat: 43.6532,
+      lng: -79.3832,
+      zoom: 15,
+      coordinates: "43.6532° N, 79.3832° W",
+      sanctuary: "Compassion Crosswalk (多伦多慈爱驿站)",
+      environment: "Winter pedestrian safety corridor & elder care network"
     },
     "amazon-grove": {
       name: "Amazon restoration grove",
       category: "Environment",
       categoryKey: "environment",
-      text: "Water a young tree in a shared digital forest connected to environmental campaigns."
+      text: "Water a young tree in a shared digital forest connected to environmental campaigns.",
+      deedId: "coastline-cleanup",
+      ripples: 2190,
+      lat: -3.4653,
+      lng: -62.2159,
+      zoom: 12,
+      coordinates: "3.4653° S, 62.2159° W",
+      sanctuary: "Bodhi Forest Sanctuary (亚马逊菩提林苑)",
+      environment: "Tropical rainforest canopy & carbon stewardship zone"
     },
     "night-corridor": {
       name: "Night walk corridor",
       category: "Community",
       categoryKey: "community",
-      text: "Light a path for someone walking home with worry, grief, or loneliness."
+      text: "Light a path for someone walking home with worry, grief, or loneliness.",
+      deedId: "anonymous-blessing",
+      ripples: 1650,
+      lat: 35.0116,
+      lng: 135.7681,
+      zoom: 15,
+      coordinates: "35.0116° N, 135.7681° E",
+      sanctuary: "Metta Lantern Corridor (夜行心灯长廊)",
+      environment: "Pedestrian illumination trail & quiet companionship route"
     },
     "reading-room": {
       name: "Shared reading room",
       category: "Learning",
       categoryKey: "learning",
-      text: "Read aloud, share a skill, or pass on a loved book in a shared learning corner."
+      text: "Read aloud, share a skill, or pass on a loved book in a shared learning corner.",
+      deedId: "read-to-elder",
+      ripples: 520,
+      lat: 51.7548,
+      lng: -1.2544,
+      zoom: 15,
+      coordinates: "51.7548° N, 1.2544° W",
+      sanctuary: "Wisdom Reading Sanctuary (般若智慧伴读舍)",
+      environment: "Intergenerational literacy room & community archive"
     }
   },
   deeds: [

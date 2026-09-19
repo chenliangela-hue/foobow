@@ -4,6 +4,7 @@ import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { MoodOption } from "../../types";
+import { ZenWoodenFish } from "../common/ZenWoodenFish";
 
 type TodayViewProps = {
   selectedMood: MoodOption;
@@ -12,6 +13,7 @@ type TodayViewProps = {
   journal: string;
   onChangeJournal: (text: string) => void;
   onCompleteDaily: () => void;
+  onTapKarma?: (points: number) => void;
   seniorMode?: boolean;
   moods: MoodOption[];
 };
@@ -23,6 +25,7 @@ export function TodayView({
   journal,
   onChangeJournal,
   onCompleteDaily,
+  onTapKarma,
   seniorMode,
   moods
 }: TodayViewProps) {
@@ -117,6 +120,8 @@ export function TodayView({
           </Text>
         </Pressable>
       </View>
+
+      <ZenWoodenFish onTapKarma={onTapKarma} seniorMode={seniorMode} />
 
       <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>

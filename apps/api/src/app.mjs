@@ -8,6 +8,7 @@ import {
   mapSpots,
   nowIso
 } from "./fixtures.mjs";
+import { generateBlessingWithGemini } from "./gemini.mjs";
 
 const jsonHeaders = {
   "content-type": "application/json; charset=utf-8",
@@ -259,6 +260,45 @@ export function createApp(options = {}) {
       };
       state.blessings.unshift(blessing);
       sendJson(response, 201, { blessing });
+      return;
+    }
+
+    if (path === "/api/v1/blessings/intentions" && method === "POST") {
+      const body = await readJson(request);
+      if (!body) {
+        sendError(response, 400, "validation_error", "Request body must be valid JSON.");
+        return;
+      }
+
+      const category = typeof body.category === "string" ? body.category.toLowerCase().trim() : "family";
+      const recipient = typeof body.recipient === "string" ? body.recipient.trim() : "";
+      const message = typeof body.message === "string" ? body.message.trim() : "";
+      const locale = typeof body.locale === "string" ? body.locale.trim() : "en";
+
+      const geminiResult = await generateBlessingWithGemini({
+        category,
+        recipient,
+        message,
+        locale
+      });
+
+      const intention = {
+        id: `intention_${randomUUID()}`,
+        category,
+        recipient_label: recipient || null,
+        message: message || null,
+        locale,
+        text: geminiResult.text,
+        provider: geminiResult.provider,
+        model: geminiResult.model,
+        tokens: geminiResult.tokens,
+        cost_usd: geminiResult.cost_usd,
+        cached: geminiResult.cached,
+        note: geminiResult.note,
+        created_at: new Date().toISOString()
+      };
+
+      sendJson(response, 201, { intention });
       return;
     }
 

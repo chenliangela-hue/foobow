@@ -36,8 +36,15 @@ window.FOOBOW_ADMIN = {
         ordersTotal: "累计记录",
         ordersPaid: "已完成",
         ordersPending: "待处理",
-        ordersReview: "待审核"
+        ordersReview: "待审核",
+        aiGroup: "AI 算力与预算守卫 (Gemini 3.6 Flash)",
+        aiCallsToday: "今日调用",
+        aiTokensToday: "消耗 Token",
+        aiCostToday: "今日费用 (USD)",
+        aiCacheHitRate: "24h 缓存命中率",
+        aiBudgetNote: "已配置思考预算为 0，单次上限 80 Token；相同祈愿命中 LRU 缓存零 Token 消耗，防止意外账单。"
       },
+
       orders: {
         title: "订单审核",
         colId: "编号",
@@ -132,8 +139,15 @@ window.FOOBOW_ADMIN = {
         ordersTotal: "Total records",
         ordersPaid: "Completed",
         ordersPending: "Pending",
-        ordersReview: "Awaiting review"
+        ordersReview: "Awaiting review",
+        aiGroup: "AI Tokens & Budget Guard (Gemini 3.6 Flash)",
+        aiCallsToday: "Calls Today",
+        aiTokensToday: "Tokens Used",
+        aiCostToday: "Cost Today (USD)",
+        aiCacheHitRate: "24h Cache Hit Rate",
+        aiBudgetNote: "Thinking budget set to 0 with 80 token ceiling. Duplicate intentions hit 24h LRU cache at 0 tokens to prevent surprise bills."
       },
+
       orders: {
         title: "Order review",
         colId: "ID",
@@ -214,8 +228,13 @@ window.FOOBOW_ADMIN = {
       ordersTotal: 81,
       ordersPaid: 70,
       ordersPending: 10,
-      ordersReview: 2
+      ordersReview: 2,
+      aiCallsToday: 42,
+      aiTokensToday: 1596,
+      aiCostToday: "$0.000223",
+      aiCacheHitRate: "78%"
     },
+
     orders: [
       { id: "ord_10241", item: "lamp_offering", amount: 9.0, provider: "wechatpay", status: "pending", review: "pending" },
       { id: "ord_10240", item: "donation", amount: 30.0, provider: "stripe", status: "pending", review: "pending" },

@@ -7,13 +7,17 @@ const apiCategoryToLocal: Record<string, ItemCategory> = {
   animals: "animals",
   elders: "elders",
   environment: "environment",
-  support: "support"
+  community: "community",
+  learning: "learning",
+  support: "community"
 };
 
 const categoryLabels: Record<ItemCategory, string> = {
   animals: "Animal kindness",
   elders: "Elder care",
   environment: "Environment",
+  community: "Community support",
+  learning: "Learning & growth",
   support: "Emotional support"
 };
 

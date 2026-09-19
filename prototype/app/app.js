@@ -28,7 +28,8 @@ function mergeState(base, saved) {
     keptBlessings: Array.isArray(saved.keptBlessings) ? saved.keptBlessings : base.keptBlessings,
     lamps: Array.isArray(saved.lamps) ? saved.lamps : base.lamps,
     activity: Array.isArray(saved.activity) ? saved.activity : base.activity,
-    posts: Array.isArray(saved.posts) ? saved.posts : base.posts
+    posts: Array.isArray(saved.posts) ? saved.posts : base.posts,
+    muyuTaps: typeof saved.muyuTaps === "number" ? saved.muyuTaps : 0
   };
 }
 
@@ -51,7 +52,199 @@ function setText(id, value) {
   if (node) node.textContent = value;
 }
 
-function updateKarma(delta) {
+let zenAudioCtx = null;
+
+function getZenAudioContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!zenAudioCtx || zenAudioCtx.state === "closed") {
+    zenAudioCtx = new AudioCtx();
+  }
+  if (zenAudioCtx.state === "suspended") {
+    zenAudioCtx.resume().catch(() => {});
+  }
+  return zenAudioCtx;
+}
+
+function playMuyuSound() {
+  const ctx = getZenAudioContext();
+  if (!ctx) return;
+  const t = ctx.currentTime;
+
+  // 1. Resonant hollow wooden block
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = "sine";
+  osc1.frequency.setValueAtTime(820, t);
+  osc1.frequency.exponentialRampToValueAtTime(540, t + 0.08);
+
+  gain1.gain.setValueAtTime(0.65, t);
+  gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+
+  osc1.connect(gain1);
+  gain1.connect(ctx.destination);
+  osc1.start(t);
+  osc1.stop(t + 0.13);
+
+  // 2. Warm low-mid body resonance
+  const osc2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.type = "triangle";
+  osc2.frequency.setValueAtTime(360, t);
+  osc2.frequency.exponentialRampToValueAtTime(270, t + 0.06);
+
+  gain2.gain.setValueAtTime(0.35, t);
+  gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+
+  osc2.connect(gain2);
+  gain2.connect(ctx.destination);
+  osc2.start(t);
+  osc2.stop(t + 0.1);
+
+  // 3. Crisp mallet impact transient
+  const osc3 = ctx.createOscillator();
+  const gain3 = ctx.createGain();
+  osc3.type = "square";
+  osc3.frequency.setValueAtTime(1600, t);
+  osc3.frequency.exponentialRampToValueAtTime(450, t + 0.018);
+
+  gain3.gain.setValueAtTime(0.25, t);
+  gain3.gain.exponentialRampToValueAtTime(0.001, t + 0.018);
+
+  osc3.connect(gain3);
+  gain3.connect(ctx.destination);
+  osc3.start(t);
+  osc3.stop(t + 0.02);
+}
+
+function playZenChime() {
+  const ctx = getZenAudioContext();
+  if (!ctx) return;
+  const t = ctx.currentTime;
+
+  [523.25, 1046.5, 1567.98].forEach((freq, idx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, t);
+
+    const initialGain = 0.14 / (idx + 1);
+    gain.gain.setValueAtTime(initialGain, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.5);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 1.55);
+  });
+}
+
+function playIncenseChime() {
+  const ctx = getZenAudioContext();
+  if (!ctx) return;
+  const t = ctx.currentTime;
+  [659.25, 1318.5, 1975.53].forEach((freq, idx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, t);
+    const initialGain = 0.12 / (idx + 1);
+    gain.gain.setValueAtTime(initialGain, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 2.25);
+  });
+}
+
+function playWaterSplash() {
+  const ctx = getZenAudioContext();
+  if (!ctx) return;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(320, t);
+  osc.frequency.exponentialRampToValueAtTime(780, t + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(440, t + 0.22);
+  gain.gain.setValueAtTime(0.22, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.26);
+}
+
+function playWheelClick() {
+  const ctx = getZenAudioContext();
+  if (!ctx) return;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(940, t);
+  osc.frequency.exponentialRampToValueAtTime(360, t + 0.022);
+  gain.gain.setValueAtTime(0.08, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 0.022);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.025);
+}
+
+function playWheelChime() {
+  const ctx = getZenAudioContext();
+  if (!ctx) return;
+  const t = ctx.currentTime;
+  [880, 1320, 1760, 2640].forEach((freq, idx) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, t);
+    const initialGain = 0.12 / (idx + 1);
+    gain.gain.setValueAtTime(initialGain, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 1.85);
+  });
+}
+
+function getMeritText(delta = 1) {
+  const loc = normalizeLocale(state.language);
+  const sign = delta >= 0 ? "+" : "";
+  if (loc === "zh-Hans") {
+    const pool = ["功德 " + sign + delta, "福报 " + sign + delta, "善念 " + sign + delta, "烦恼 -1", "心生欢喜"];
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  if (loc === "ja") return "功徳 " + sign + delta;
+  if (loc === "th") return "บุญ " + sign + delta;
+  if (loc === "fr") return "Mérite " + sign + delta;
+  if (loc === "es") return "Mérito " + sign + delta;
+  return "Karma " + sign + delta;
+}
+
+function spawnFloatingMerit(targetEl, text) {
+  if (!targetEl || typeof targetEl.getBoundingClientRect !== "function") return;
+  const rect = targetEl.getBoundingClientRect();
+  const span = document.createElement("span");
+  span.className = "floating-merit";
+  span.textContent = text || getMeritText(1);
+
+  const x = rect.left + rect.width / 2 + (Math.random() * 24 - 12);
+  const y = rect.top + rect.height * 0.3 + (Math.random() * 10 - 5);
+  span.style.left = x + "px";
+  span.style.top = y + "px";
+
+  document.body.appendChild(span);
+  window.setTimeout(() => {
+    span.remove();
+  }, 1000);
+}
+
+function updateKarma(delta, sourceEl) {
   state.karma = Math.min(100, state.karma + delta);
   state.deeds += 1;
   saveState();
@@ -63,6 +256,10 @@ function updateKarma(delta) {
     void ring.offsetWidth;
     ring.classList.add("glow");
     window.setTimeout(() => ring.classList.remove("glow"), 1200);
+  }
+  const anchor = sourceEl || ring;
+  if (anchor) {
+    spawnFloatingMerit(anchor, getMeritText(delta));
   }
 }
 
@@ -112,7 +309,7 @@ function renderProfileActivity() {
   const list = document.getElementById("activityList");
   if (!list) return;
   const dict = dictionary();
-  const labels = { deed: dict.actDeed, blessing: dict.actBlessing, lamp: dict.actLamp, checkin: dict.actCheckin };
+  const labels = { deed: dict.actDeed, blessing: dict.actBlessing, lamp: dict.actLamp, checkin: dict.actCheckin, incense: dict.incenseLight || "Kindled incense" };
   list.replaceChildren();
   if (!state.activity.length) {
     const empty = document.createElement("li");
@@ -266,6 +463,11 @@ function renderSelectedDeed() {
   const deed = data.deeds.find((item) => item.id === state.selectedDeed) || data.deeds[0];
   setText("ritualTitle", deed.title);
   setText("ritualDesc", deed.description);
+  const dedication = document.getElementById("ritualDedication");
+  if (dedication) {
+    dedication.hidden = true;
+    dedication.classList.remove("active");
+  }
   renderFocusSession();
 }
 
@@ -277,7 +479,8 @@ function renderSoundscapes() {
     const button = document.createElement("button");
     button.className = `layer${state.soundscape === soundscape.id ? " active" : ""}`;
     button.type = "button";
-    button.textContent = soundscape.label;
+    const labelKey = "soundscape" + soundscape.id.charAt(0).toUpperCase() + soundscape.id.slice(1);
+    button.textContent = dictionary()[labelKey] || soundscape.label;
     button.title = soundscape.description;
     button.setAttribute("aria-pressed", String(state.soundscape === soundscape.id));
     button.addEventListener("click", () => {
@@ -298,7 +501,8 @@ function renderSoundscapes() {
 const soundscapeProfiles = {
   water: { noise: "brown", filterType: "lowpass", frequency: 460, q: 0.8, lfoRate: 0.07, lfoDepth: 160, level: 0.12 },
   rain: { noise: "white", filterType: "bandpass", frequency: 2400, q: 0.55, lfoRate: 0.35, lfoDepth: 480, level: 0.05 },
-  forest: { noise: "brown", filterType: "bandpass", frequency: 700, q: 0.45, lfoRate: 0.05, lfoDepth: 260, level: 0.1 }
+  forest: { noise: "brown", filterType: "bandpass", frequency: 700, q: 0.45, lfoRate: 0.05, lfoDepth: 260, level: 0.1 },
+  bell: { noise: "brown", filterType: "lowpass", frequency: 310, q: 1.6, lfoRate: 0.04, lfoDepth: 110, level: 0.14 }
 };
 
 let soundscapeAudio = null;
@@ -325,6 +529,17 @@ function activeSoundscapeProfile() {
   return soundscapeProfiles[state.soundscape] || soundscapeProfiles.water;
 }
 
+function updateSoundscapeVolume() {
+  if (!soundscapeAudio) return;
+  const slider = document.getElementById("soundscapeVolume");
+  if (!slider) return;
+  const profile = activeSoundscapeProfile();
+  const volMultiplier = Number(slider.value) / 100;
+  const effectiveLevel = profile.level * (volMultiplier / 0.7);
+  soundscapeAudio.master.gain.cancelScheduledValues(soundscapeAudio.ctx.currentTime);
+  soundscapeAudio.master.gain.linearRampToValueAtTime(effectiveLevel, soundscapeAudio.ctx.currentTime + 0.1);
+}
+
 function retuneSoundscapeAudio() {
   if (!soundscapeAudio) return;
   const profile = activeSoundscapeProfile();
@@ -348,8 +563,13 @@ function retuneSoundscapeAudio() {
   filter.Q.value = profile.q;
   lfo.frequency.value = profile.lfoRate;
   lfoGain.gain.value = profile.lfoDepth;
+
+  const volumeSlider = document.getElementById("soundscapeVolume");
+  const volMultiplier = volumeSlider ? Number(volumeSlider.value) / 100 : 0.7;
+  const effectiveLevel = profile.level * (volMultiplier / 0.7);
+
   master.gain.cancelScheduledValues(ctx.currentTime);
-  master.gain.linearRampToValueAtTime(profile.level, ctx.currentTime + 1.4);
+  master.gain.linearRampToValueAtTime(effectiveLevel, ctx.currentTime + 1.4);
   source.start();
   soundscapeAudio.source = source;
 }
@@ -437,15 +657,20 @@ function startFocusSession() {
 
 function completeFocusedRitual() {
   if (!state.focusReady) return;
-  updateKarma(7);
+  const btn = document.getElementById("completeFocusedRitual");
+  playZenChime();
+  if (btn) spawnFloatingMerit(btn, dictionary().meritGain || "功德 +7");
+  updateKarma(7, btn);
   state.focusProgress = 0;
   state.focusReady = false;
   state.journal = state.journal || "I took a calm moment before completing one symbolic deed.";
   saveState();
   renderAll();
   const scene = document.getElementById("ritualScene");
-  scene.classList.remove("completed");
-  window.requestAnimationFrame(() => scene.classList.add("completed"));
+  if (scene) {
+    scene.classList.remove("completed");
+    window.requestAnimationFrame(() => scene.classList.add("completed"));
+  }
 }
 
 function renderSpot(spotId) {
@@ -454,6 +679,10 @@ function renderSpot(spotId) {
   setText("spotName", spot.name);
   setText("spotCategory", spot.category);
   setText("spotText", spot.text);
+  const ripplesEl = document.getElementById("spotRipples");
+  if (ripplesEl) {
+    ripplesEl.textContent = `${(spot.ripples || 1000).toLocaleString()} ripples`;
+  }
   document.querySelectorAll(".map-pin").forEach((pin) => {
     pin.classList.toggle("active", pin.dataset.spotId === spotId);
     pin.setAttribute("aria-pressed", String(pin.dataset.spotId === spotId));
@@ -550,9 +779,44 @@ function pickFrom(list) {
 }
 
 var blessingEngine = {
-  provider: "mock",
-  generate: function (request) {
+  provider: "gemini",
+  generate: async function (request) {
     var locale = normalizeLocale(request.locale);
+    // 1. Try to fetch live blessing intention from backend API
+    try {
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function () { controller.abort(); }, 3500);
+      var apiOrigin = (typeof window !== "undefined" && window.location.origin) || "";
+      var res = await fetch(apiOrigin + "/api/v1/blessings/intentions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: request.category,
+          recipient: request.recipient,
+          message: request.message,
+          locale: locale
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        var json = await res.json();
+        if (json && json.intention && json.intention.text) {
+          return {
+            text: json.intention.text,
+            provider: json.intention.provider || "gemini",
+            model: json.intention.model || "gemini-3.6-flash",
+            tokens: json.intention.tokens || { input: 0, output: 0, total: 0 },
+            cost_usd: json.intention.cost_usd || 0,
+            cached: Boolean(json.intention.cached)
+          };
+        }
+      }
+    } catch (_) {
+      // Graceful zero-token fallback below
+    }
+
+    // 2. Offline fallback to local curated lines (0 tokens)
     var lines = BLESSING_LINES[locale] || BLESSING_LINES.en;
     var body = pickFrom(lines[request.category] || lines.family);
     var close = pickFrom(lines.close);
@@ -563,9 +827,17 @@ var blessingEngine = {
       var prefix = I18N.recipientPrefix[locale] || I18N.recipientPrefix.en;
       text = prefix(who, text);
     }
-    // Simulate an async provider call; swap this for a fetch when a key exists.
     return new Promise(function (resolve) {
-      window.setTimeout(function () { resolve({ text: text }); }, 850);
+      window.setTimeout(function () {
+        resolve({
+          text: text,
+          provider: "mock",
+          model: "fallback-content-pack",
+          tokens: { input: 0, output: 0, total: 0 },
+          cost_usd: 0,
+          cached: false
+        });
+      }, 400);
     });
   }
 };
@@ -690,7 +962,13 @@ function setupBlessings() {
     lastBlessing = result.text;
     reply.classList.remove("loading");
     replyText.textContent = result.text;
-    replySource.textContent = dict.blessingReplySource;
+    var tokenLabel = "";
+    if (result.provider === "gemini" && result.tokens && result.tokens.total > 0) {
+      tokenLabel = ` · <span class="token-badge">🌿 Gemini · ${result.tokens.total} tok ($${result.cost_usd.toFixed(6)})</span>`;
+    } else if (result.cached) {
+      tokenLabel = ` · <span class="token-badge">🌿 Gemini (cached · 0 tok)</span>`;
+    }
+    replySource.innerHTML = dict.blessingReplySource + tokenLabel;
     saveButton.hidden = false;
     saveButton.textContent = dict.blessingsSave;
     saveButton.disabled = false;
@@ -720,6 +998,286 @@ function setupBlessings() {
     logActivity("lamp");
     showActionWhisper("lampWhispers");
   });
+
+  setupMuyu();
+  setupIncense();
+  setupPrayerWheel();
+}
+
+let muyuAutoTimer = null;
+
+function setupMuyu() {
+  const btn = document.getElementById("muyuBtn");
+  const autoBtn = document.getElementById("muyuAutoBtn");
+  const countEl = document.getElementById("muyuCount");
+  if (!btn) return;
+
+  if (typeof state.muyuTaps !== "number") {
+    state.muyuTaps = 0;
+  }
+  if (countEl) countEl.textContent = String(state.muyuTaps);
+
+  function handleTap() {
+    playMuyuSound();
+    state.muyuTaps += 1;
+    if (state.muyuTaps % 10 === 0) {
+      updateKarma(1, btn);
+      playZenChime();
+    } else {
+      spawnFloatingMerit(btn, getMeritText(1));
+    }
+    saveState();
+
+    if (countEl) countEl.textContent = String(state.muyuTaps);
+
+    btn.classList.remove("tapped");
+    void btn.offsetWidth;
+    btn.classList.add("tapped");
+    window.setTimeout(() => btn.classList.remove("tapped"), 180);
+
+    const mallet = document.getElementById("muyuMallet");
+    if (mallet) {
+      mallet.classList.remove("striking");
+      void mallet.offsetWidth;
+      mallet.classList.add("striking");
+      window.setTimeout(() => mallet.classList.remove("striking"), 250);
+    }
+
+    const ripples = document.getElementById("muyuRipples");
+    if (ripples) {
+      const ring = document.createElement("span");
+      ring.className = "muyu-ripple";
+      ripples.appendChild(ring);
+      window.setTimeout(() => ring.remove(), 700);
+    }
+  }
+
+  btn.addEventListener("click", handleTap);
+
+  if (autoBtn) {
+    autoBtn.addEventListener("click", () => {
+      const dict = dictionary();
+      if (muyuAutoTimer) {
+        clearInterval(muyuAutoTimer);
+        muyuAutoTimer = null;
+        autoBtn.textContent = dict.muyuAutoTap || "Auto tap";
+        autoBtn.classList.remove("active");
+      } else {
+        autoBtn.textContent = dict.muyuStopAuto || "Pause auto";
+        autoBtn.classList.add("active");
+        handleTap();
+        muyuAutoTimer = setInterval(handleTap, 1400);
+      }
+    });
+  }
+
+  const karmaRing = document.querySelector(".karma-ring");
+  if (karmaRing && !karmaRing.dataset.hasTap) {
+    karmaRing.dataset.hasTap = "true";
+    karmaRing.setAttribute("title", "Tap for presence");
+    karmaRing.addEventListener("click", () => {
+      playMuyuSound();
+      updateKarma(1, karmaRing);
+    });
+  }
+}
+
+let incenseTimer = null;
+
+function setupIncense() {
+  const stage = document.getElementById("incenseStage");
+  const btn = document.getElementById("kindleIncenseBtn");
+  const countEl = document.getElementById("incenseCount");
+  const statusLine = document.getElementById("incenseStatusLine");
+  const intentionsRow = document.getElementById("incenseIntentions");
+  if (!btn || !stage) return;
+
+  if (typeof state.incenseLitCount !== "number") {
+    state.incenseLitCount = 0;
+  }
+  if (countEl) countEl.textContent = String(state.incenseLitCount);
+
+  if (intentionsRow) {
+    intentionsRow.addEventListener("click", (e) => {
+      const target = e.target.closest(".choice-pill");
+      if (!target) return;
+      intentionsRow.querySelectorAll(".choice-pill").forEach((p) => p.classList.remove("active"));
+      target.classList.add("active");
+    });
+  }
+
+  btn.addEventListener("click", () => {
+    playIncenseChime();
+    state.incenseLitCount += 1;
+    updateKarma(1, btn);
+    spawnFloatingMerit(btn, getMeritText(1));
+    logActivity("incense");
+    saveState();
+
+    if (countEl) countEl.textContent = String(state.incenseLitCount);
+
+    stage.classList.add("burning");
+    if (statusLine) statusLine.hidden = false;
+
+    if (incenseTimer) clearTimeout(incenseTimer);
+    incenseTimer = setTimeout(() => {
+      stage.classList.remove("burning");
+      if (statusLine) statusLine.hidden = true;
+      incenseTimer = null;
+    }, 40000);
+  });
+}
+
+let wheelAngle = 0;
+let wheelVelocity = 0;
+let isWheelAuto = false;
+let wheelAnimFrame = null;
+let lastTickAngle = 0;
+let lastKarmaAwardTime = 0;
+
+function setupPrayerWheel() {
+  const stage = document.getElementById("wheelStage");
+  const container = document.getElementById("wheelContainer");
+  const drum = document.getElementById("wheelDrum");
+  const pendulum = document.getElementById("wheelPendulum");
+  const countEl = document.getElementById("wheelCount");
+  const autoBtn = document.getElementById("wheelAutoBtn");
+  const mantraText = document.getElementById("wheelMantraText");
+  if (!stage || !drum) return;
+
+  if (typeof state.wheelTurns !== "number") {
+    state.wheelTurns = 0;
+  }
+  if (countEl) countEl.textContent = String(state.wheelTurns);
+
+  function spinImpulse(amount = 16) {
+    wheelVelocity = Math.min(45, wheelVelocity + amount);
+    if (!wheelAnimFrame) {
+      wheelAnimFrame = requestAnimationFrame(wheelLoop);
+    }
+  }
+
+  function wheelLoop() {
+    if (isWheelAuto) {
+      if (wheelVelocity < 5.5) wheelVelocity += 0.4;
+    } else {
+      wheelVelocity *= 0.962;
+    }
+
+    if (Math.abs(wheelVelocity) < 0.05 && !isWheelAuto) {
+      wheelVelocity = 0;
+      if (pendulum) pendulum.style.transform = "rotate(0deg)";
+      wheelAnimFrame = null;
+      return;
+    }
+
+    const prevAngle = wheelAngle;
+    wheelAngle += wheelVelocity;
+
+    // Check full 360-degree revolution
+    if (Math.floor(wheelAngle / 360) > Math.floor(prevAngle / 360)) {
+      state.wheelTurns += 1;
+      if (countEl) countEl.textContent = String(state.wheelTurns);
+      playWheelChime();
+      const now = Date.now();
+      if (now - lastKarmaAwardTime > 2500) {
+        lastKarmaAwardTime = now;
+        updateKarma(1, drum);
+      } else {
+        spawnFloatingMerit(drum, getMeritText(1));
+      }
+      saveState();
+    }
+
+    // Ticking sound every 60 degrees of rotation
+    if (Math.abs(wheelAngle - lastTickAngle) >= 60) {
+      lastTickAngle = wheelAngle;
+      playWheelClick();
+    }
+
+    // Visual updates
+    const rot = wheelAngle % 360;
+    drum.style.transform = `rotate(${rot * 0.22}deg)`;
+    if (mantraText) {
+      const offsetX = 80 + Math.sin((wheelAngle * Math.PI) / 180) * 12;
+      mantraText.setAttribute("x", String(offsetX));
+    }
+
+    if (pendulum) {
+      const swing = Math.min(60, Math.max(-10, wheelVelocity * 2.8));
+      pendulum.style.transform = `rotate(${swing}deg)`;
+    }
+
+    wheelAnimFrame = requestAnimationFrame(wheelLoop);
+  }
+
+  // Pointer drag interactions
+  let isDragging = false;
+  let startX = 0;
+  let lastX = 0;
+  let lastTime = 0;
+
+  function onPointerDown(e) {
+    isDragging = true;
+    startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    lastX = startX;
+    lastTime = Date.now();
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    const curX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const deltaX = curX - lastX;
+    const now = Date.now();
+    const dt = Math.max(1, now - lastTime);
+    lastX = curX;
+    lastTime = now;
+
+    if (deltaX > 0) {
+      spinImpulse(Math.min(12, (deltaX / dt) * 15));
+    }
+  }
+
+  function onPointerUp(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    const curX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX) || lastX;
+    const dist = curX - startX;
+    if (Math.abs(dist) < 6) {
+      spinImpulse(18);
+    }
+  }
+
+  if (container) {
+    container.addEventListener("mousedown", onPointerDown);
+    container.addEventListener("touchstart", onPointerDown, { passive: true });
+  }
+  window.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("touchmove", onPointerMove, { passive: true });
+  window.addEventListener("mouseup", onPointerUp);
+  window.addEventListener("touchend", onPointerUp, { passive: true });
+
+  drum.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      spinImpulse(20);
+    }
+  });
+
+  if (autoBtn) {
+    autoBtn.addEventListener("click", () => {
+      const dict = dictionary();
+      isWheelAuto = !isWheelAuto;
+      if (isWheelAuto) {
+        autoBtn.textContent = dict.wheelStopAuto || "Pause auto";
+        autoBtn.classList.add("active");
+        spinImpulse(8);
+      } else {
+        autoBtn.textContent = dict.wheelAutoSpin || "Auto spin";
+        autoBtn.classList.remove("active");
+      }
+    });
+  }
 }
 
 function applyTranslations() {
@@ -852,8 +1410,20 @@ document.querySelectorAll(".map-pin").forEach((pin) => {
   pin.addEventListener("click", () => renderSpot(pin.dataset.spotId));
 });
 
+const spotActionBtn = document.getElementById("spotActionBtn");
+if (spotActionBtn) {
+  spotActionBtn.addEventListener("click", () => {
+    const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+    if (spot && spot.deedId) {
+      selectDeed(spot.deedId);
+    }
+    navigateTo("deeds");
+  });
+}
+
 document.getElementById("completeDaily").addEventListener("click", () => {
-  updateKarma(4);
+  const btn = document.getElementById("completeDaily");
+  updateKarma(4, btn);
   logActivity("checkin");
   state.streak += 1;
   state.journal = state.journal || "I completed one quiet deed and chose a lighter next step.";
@@ -863,10 +1433,24 @@ document.getElementById("completeDaily").addEventListener("click", () => {
 
 document.getElementById("performRitual").addEventListener("click", () => {
   logActivity("deed");
-  updateKarma(5);
+  const btn = document.getElementById("performRitual");
+  playMuyuSound();
+  playWaterSplash();
+  window.setTimeout(playZenChime, 240);
+  if (btn) spawnFloatingMerit(btn, dictionary().meritGain || "功德 +5");
+  updateKarma(5, btn);
   const scene = document.getElementById("ritualScene");
-  scene.classList.remove("completed");
-  window.requestAnimationFrame(() => scene.classList.add("completed"));
+  if (scene) {
+    scene.classList.remove("completed");
+    window.requestAnimationFrame(() => scene.classList.add("completed"));
+  }
+  const dedication = document.getElementById("ritualDedication");
+  if (dedication) {
+    dedication.textContent = dictionary().ritualDedication || "A gentle deed in the stream ripples into an ocean of peace. (Merit +5)";
+    dedication.hidden = false;
+    dedication.classList.remove("active");
+    window.requestAnimationFrame(() => dedication.classList.add("active"));
+  }
 });
 
 document.getElementById("startFocusSession").addEventListener("click", startFocusSession);
@@ -890,7 +1474,8 @@ document.getElementById("blessingForm").addEventListener("submit", (event) => {
     reported: false
   });
   input.value = "";
-  updateKarma(2);
+  const submitBtn = event.target.querySelector("button");
+  updateKarma(2, submitBtn);
   saveState();
   renderBlessings();
 });
@@ -916,6 +1501,11 @@ document.getElementById("soundscapeToggle").addEventListener("click", () => {
   }
   renderSoundscapeToggle();
 });
+
+const volumeSlider = document.getElementById("soundscapeVolume");
+if (volumeSlider) {
+  volumeSlider.addEventListener("input", updateSoundscapeVolume);
+}
 
 document.getElementById("languageSelect").addEventListener("change", (event) => {
   state.language = normalizeLocale(event.target.value);
@@ -950,19 +1540,227 @@ document.getElementById("deleteDataButton").addEventListener("click", () => {
   renderAll();
 });
 
-const dialog = document.getElementById("impactDialog");
-document.getElementById("donateButton").addEventListener("click", () => {
-  if (typeof dialog.showModal === "function") {
-    dialog.showModal();
-  } else {
-    dialog.setAttribute("open", "");
-  }
-});
+// --- OpenStreetMap Live Sanctuary Cartography ---
+function setupLiveMap() {
+  const liveMapDialog = document.getElementById("liveMapDialog");
+  const openBtn = document.getElementById("openLiveMapBtn");
+  const closeBtn = document.getElementById("closeLiveMapBtn");
+  const closeTopBtn = document.getElementById("closeLiveMapTopBtn");
+  const zoomInBtn = document.getElementById("liveMapZoomIn");
+  const zoomOutBtn = document.getElementById("liveMapZoomOut");
+  const tilesContainer = document.getElementById("liveMapTiles");
+  const dedicateBtn = document.getElementById("dedicateLiveRippleBtn");
 
-document.getElementById("closeDialog").addEventListener("click", () => {
-  dialog.close();
-});
+  if (!liveMapDialog) return;
+
+  let currentZoom = 14;
+
+  function renderTiles(spot) {
+    if (!spot || !tilesContainer) return;
+    const lat = spot.lat || 30.5539;
+    const lng = spot.lng || 114.3644;
+    const z = currentZoom;
+
+    // Convert lat/lng to OpenStreetMap slippy tile numbers
+    const n = Math.pow(2, z);
+    const tileX = Math.floor(((lng + 180) / 360) * n);
+    const latRad = (lat * Math.PI) / 180;
+    const tileY = Math.floor(
+      ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
+    );
+
+    tilesContainer.innerHTML = "";
+    // Create 3x3 grid around the center tile
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const tx = tileX + dx;
+        const ty = tileY + dy;
+        const img = document.createElement("img");
+        img.className = "osm-tile";
+        img.alt = `Tile ${z}/${tx}/${ty}`;
+        img.loading = "lazy";
+        img.src = `https://tile.openstreetmap.org/${z}/${tx}/${ty}.png`;
+        img.onerror = () => {
+          // Graceful Buddhist parchment fallback when offline or file:// protocol blocks external images
+          img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23f7f3eb" stroke="%23e4dac9"/><circle cx="128" cy="128" r="90" fill="none" stroke="%23dfd4c0" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%23dfd4c0" stroke-width="1"/><path d="M 0,128 Q 64,110 128,128 T 256,128" fill="none" stroke="%23d8c8ae" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="20" fill="%23c69b3f" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%239e9484" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`;
+        };
+        tilesContainer.appendChild(img);
+      }
+    }
+  }
+
+  function updateLiveMapModal() {
+    const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+    currentZoom = spot.zoom || 14;
+
+    const title = document.getElementById("liveMapTitle");
+    const ripples = document.getElementById("liveMapRipples");
+    const coords = document.getElementById("liveMapCoords");
+    const desc = document.getElementById("liveMapDesc");
+
+    if (title) title.textContent = spot.sanctuary || spot.name;
+    if (ripples) ripples.textContent = `${(spot.ripples || 1280).toLocaleString()} ripples dedicated`;
+    if (coords) coords.textContent = `📍 ${spot.coordinates || "30.5539° N, 114.3644° E"}`;
+    if (desc) desc.textContent = spot.environment || spot.text;
+
+    renderTiles(spot);
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener("click", () => {
+      updateLiveMapModal();
+      if (typeof liveMapDialog.showModal === "function") {
+        liveMapDialog.showModal();
+      } else {
+        liveMapDialog.setAttribute("open", "");
+      }
+    });
+  }
+
+  function closeLiveMap() {
+    if (typeof liveMapDialog.close === "function") {
+      liveMapDialog.close();
+    } else {
+      liveMapDialog.removeAttribute("open");
+    }
+  }
+
+  if (closeBtn) closeBtn.addEventListener("click", closeLiveMap);
+  if (closeTopBtn) closeTopBtn.addEventListener("click", closeLiveMap);
+
+  if (zoomInBtn) {
+    zoomInBtn.addEventListener("click", () => {
+      if (currentZoom < 18) {
+        currentZoom++;
+        const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+        renderTiles(spot);
+      }
+    });
+  }
+
+  if (zoomOutBtn) {
+    zoomOutBtn.addEventListener("click", () => {
+      if (currentZoom > 4) {
+        currentZoom--;
+        const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+        renderTiles(spot);
+      }
+    });
+  }
+
+  if (dedicateBtn) {
+    dedicateBtn.addEventListener("click", () => {
+      const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+      spot.ripples = (spot.ripples || 1280) + 1;
+      state.karma += 1;
+      pushActivity(`Dedicated a ripple of kindness to ${spot.name}`);
+
+      const ripples = document.getElementById("liveMapRipples");
+      if (ripples) ripples.textContent = `${spot.ripples.toLocaleString()} ripples dedicated`;
+      const spotRipples = document.getElementById("spotRipples");
+      if (spotRipples) spotRipples.textContent = `${spot.ripples.toLocaleString()} ripples`;
+
+      saveState();
+      renderToday();
+      renderMap();
+      renderProfile();
+
+      showActionWhisper(`Dedicated a ripple of kindness to ${spot.name} (+1 karma)`);
+    });
+  }
+}
+
+// --- Voluntary Ethical Support & Checkout ---
+function setupImpactDialog() {
+  const impactDialog = document.getElementById("impactDialog");
+  const openBtn = document.getElementById("donateButton");
+  const closeBtn = document.getElementById("closeDialog");
+  const closeTopBtn = document.getElementById("closeImpactTopBtn");
+  const submitBtn = document.getElementById("submitDonationBtn");
+  const receiptArea = document.getElementById("donationReceiptArea");
+  const receiptCode = document.getElementById("receiptCode");
+  const receiptDetails = document.getElementById("receiptDetails");
+  const receiptDedication = document.getElementById("receiptDedication");
+  const dedicationInput = document.getElementById("donationDedication");
+  const tierBtns = document.querySelectorAll(".donation-tier");
+  const methodChips = document.querySelectorAll(".pay-method-chip");
+
+  if (!impactDialog) return;
+
+  let selectedAmount = 3;
+  let selectedMethod = "stripe";
+
+  if (openBtn) {
+    openBtn.addEventListener("click", () => {
+      if (receiptArea) receiptArea.style.display = "none";
+      if (submitBtn) {
+        submitBtn.textContent = `Support $${selectedAmount}.00 USD (Test Checkout)`;
+        submitBtn.disabled = false;
+      }
+      if (typeof impactDialog.showModal === "function") {
+        impactDialog.showModal();
+      } else {
+        impactDialog.setAttribute("open", "");
+      }
+    });
+  }
+
+  function closeImpact() {
+    if (typeof impactDialog.close === "function") {
+      impactDialog.close();
+    } else {
+      impactDialog.removeAttribute("open");
+    }
+  }
+
+  if (closeBtn) closeBtn.addEventListener("click", closeImpact);
+  if (closeTopBtn) closeTopBtn.addEventListener("click", closeImpact);
+
+  tierBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      tierBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedAmount = Number(btn.getAttribute("data-amount") || 3);
+      if (submitBtn && (!receiptArea || receiptArea.style.display === "none")) {
+        submitBtn.textContent = `Support $${selectedAmount}.00 USD (Test Checkout)`;
+      }
+    });
+  });
+
+  methodChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      methodChips.forEach((c) => c.classList.remove("active"));
+      chip.classList.add("active");
+      selectedMethod = chip.getAttribute("data-method") || "stripe";
+    });
+  });
+
+  if (submitBtn) {
+    submitBtn.addEventListener("click", () => {
+      const dedication = (dedicationInput && dedicationInput.value.trim()) || "Dedicated to all sentient beings (回向众生)";
+      const code = `#FOB-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      if (receiptCode) receiptCode.textContent = code;
+      if (receiptDetails) {
+        receiptDetails.textContent = `Campaign: Foobow Operating Support · Amount: $${selectedAmount}.00 USD · Method: ${selectedMethod.toUpperCase()}`;
+      }
+      if (receiptDedication) receiptDedication.textContent = dedication;
+      if (receiptArea) receiptArea.style.display = "block";
+
+      submitBtn.textContent = "Support Confirmed · 感谢随喜护持";
+      submitBtn.disabled = true;
+
+      pushActivity(`Offered voluntary support ($${selectedAmount}.00 USD, 0 karma awarded)`);
+      saveState();
+      renderProfile();
+
+      showActionWhisper("Voluntary support received. 0 karma awarded (Pure Giving Decoupled).");
+    });
+  }
+}
 
 setupBlessings();
+setupLiveMap();
+setupImpactDialog();
 loadContentPack();
 renderAll();

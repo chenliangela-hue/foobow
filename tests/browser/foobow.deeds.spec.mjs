@@ -58,3 +58,15 @@ test("group headers are localized", async ({ page }) => {
   await page.selectOption("#languageSelect", "zh-Hans");
   await expect(page.locator(".deed-group[data-category='animals'] .deed-group-title")).toHaveText("动物");
 });
+
+test("ritual preview: animated lotus pond and swimming koi swoops on perform", async ({ page }) => {
+  await expect(page.locator("#ritualScene")).toHaveClass(/pond-scene/);
+  await expect(page.locator(".pond-lotus")).toBeVisible();
+  await expect(page.locator(".koi-main")).toBeVisible();
+
+  await page.locator("#performRitual").click();
+  await expect(page.locator("#ritualScene")).toHaveClass(/completed/);
+  await expect(page.locator("#koiReleased")).toBeVisible();
+  await expect(page.locator("#ritualDedication")).toBeVisible();
+});
+

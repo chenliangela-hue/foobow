@@ -12,5 +12,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["src/nest/**/*.ts"]
+  "include": ["src/nest/**/*.ts", "src/**/*.d.ts", "src/**/*.d.mts"]
 }

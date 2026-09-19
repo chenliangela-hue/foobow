@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { DevAuthGuard } from "./dev-auth.guard.js";
 import {
   BlessingCreateDto,
+  BlessingIntentionCreateDto,
   CheckinCreateDto,
   DeedActionCreateDto,
   DonationCreateDto,
@@ -94,6 +95,11 @@ export class CommunityController {
   @UseGuards(DevAuthGuard)
   createBlessing(@Body() body: BlessingCreateDto) {
     return this.service.createBlessing(body);
+  }
+
+  @Post("blessings/intentions")
+  createBlessingIntention(@Body() body: BlessingIntentionCreateDto) {
+    return this.service.createBlessingIntention(body);
   }
 
   @Post("reports")

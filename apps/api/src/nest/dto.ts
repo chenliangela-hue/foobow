@@ -52,6 +52,30 @@ export class BlessingCreateDto {
   visibility!: (typeof blessingVisibilityValues)[number];
 }
 
+export class BlessingIntentionCreateDto {
+  @ApiPropertyOptional({ enum: ["family", "health", "study", "travel", "remembrance", "gratitude"] })
+  @IsOptional()
+  @IsString()
+  category?: string;
+
+  @ApiPropertyOptional({ maxLength: 60 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  recipient?: string;
+
+  @ApiPropertyOptional({ maxLength: 200 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  message?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  locale?: string;
+}
+
 export class ReportCreateDto {
   @ApiProperty({ enum: ["profile", "blessing", "campaign", "deed_action", "group_mission"] })
   @IsIn(["profile", "blessing", "campaign", "deed_action", "group_mission"])

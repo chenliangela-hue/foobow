@@ -526,6 +526,51 @@ button:active:not(:disabled) {
   gap: 14px;
 }
 
+.sound-volume-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+}
+
+.volume-icon {
+  font-size: 0.95rem;
+  color: var(--gold);
+}
+
+.sound-volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 72px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  outline: none;
+  cursor: pointer;
+}
+
+.sound-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sound-volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
 .sound-wave {
   display: inline-flex;
   align-items: center;
@@ -1007,7 +1052,70 @@ textarea {
 }
 
 .ritual-scene.completed .fish-shape {
-  animation: release 900ms ease both;
+  animation: release 1200ms cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.ritual-scene.completed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 45% 45%, rgba(246, 211, 122, 0.35), transparent 70%);
+  animation: ritualAura 1200ms ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes release {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(-15px, -12px) scale(1.1) rotate(-12deg);
+  }
+  65% {
+    transform: translate(-36px, -34px) scale(0.95) rotate(-6deg);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-65px, -60px) scale(0.6) rotate(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes ritualAura {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+.ritual-dedication {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+  border-radius: 8px;
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  color: var(--vermilion);
+  text-align: center;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+
+.ritual-dedication.active {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .focus-meter {
@@ -1417,6 +1525,21 @@ dialog::backdrop {
   font-size: 0.76rem;
   letter-spacing: 0.03em;
 }
+
+.token-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gold) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+
 
 .lamp-stage {
   height: 120px;
@@ -1878,4 +2001,1178 @@ body.senior-mode h1 {
 body.senior-mode h2 {
   font-size: 2.1rem;
 }
+
+/* --- Zen Muyu (Electronic Wooden Fish) Card & Animations --- */
+.muyu-card {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 14px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.muyu-card:hover {
+  border-color: rgba(184, 137, 40, 0.4);
+  box-shadow: 0 16px 48px rgba(184, 137, 40, 0.15), var(--shadow);
+}
+
+.muyu-copy {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.muyu-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0 16px;
+  position: relative;
+}
+
+.muyu-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  width: 140px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  outline: none;
+  transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.muyu-btn:hover {
+  transform: scale(1.05);
+}
+
+.muyu-btn:active,
+.muyu-btn.tapped {
+  transform: scale(0.92);
+}
+
+.muyu-icon {
+  width: 130px;
+  height: 110px;
+  filter: drop-shadow(0 12px 24px rgba(78, 23, 16, 0.35));
+  transition: filter 0.2s ease;
+}
+
+.muyu-btn:hover .muyu-icon {
+  filter: drop-shadow(0 14px 28px rgba(184, 137, 40, 0.5));
+}
+
+.muyu-halo {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(184, 137, 40, 0.3) 0%, rgba(184, 137, 40, 0) 70%);
+  pointer-events: none;
+  animation: muyuHaloPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes muyuHaloPulse {
+  from { transform: scale(0.92); opacity: 0.5; }
+  to { transform: scale(1.22); opacity: 0.95; }
+}
+
+.muyu-ripple-track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.muyu-ripple {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+  animation: muyuRippleExpand 0.65s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes muyuRippleExpand {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.muyu-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.muyu-hint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Floating Merit text animation */
+.floating-merit {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  font-family: "Iowan Old Style", Georgia, "Songti SC", "SimSun", serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #b8892a;
+  text-shadow: 0 0 12px rgba(230, 185, 92, 0.75), 0 2px 4px rgba(0, 0, 0, 0.25);
+  animation: floatingMeritAnim 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+body.dark .floating-merit {
+  color: #f0c978;
+  text-shadow: 0 0 16px rgba(240, 201, 120, 0.9), 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes floatingMeritAnim {
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, 0, 0) scale(0.6);
+  }
+  18% {
+    opacity: 1;
+    transform: translate3d(-50%, -16px, 0) scale(1.2);
+  }
+  40% {
+    transform: translate3d(-50%, -32px, 0) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-50%, -75px, 0) scale(0.9);
+  }
+}
+
+/* Golden Halo Shimmer for Karma Ring */
+.karma-ring {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.karma-ring:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 24px rgba(184, 137, 40, 0.4);
+}
+
+.karma-ring:active {
+  transform: scale(0.95);
+}
+
+/* --- Virtual Incense (电子焚香) --- */
+.incense-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.incense-card:hover {
+  border-color: rgba(184, 137, 40, 0.45);
+  box-shadow: 0 12px 36px rgba(184, 137, 40, 0.12), var(--shadow);
+}
+
+.incense-copy {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.incense-intentions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.incense-stage {
+  min-height: 150px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  padding-bottom: 8px;
+  background: radial-gradient(ellipse at 50% 90%, rgba(184, 137, 40, 0.08) 0%, transparent 70%);
+  border-radius: var(--radius-md);
+}
+
+.incense-censer-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.incense-censer-svg {
+  width: 140px;
+  height: 70px;
+  filter: drop-shadow(0 8px 16px rgba(52, 36, 16, 0.45));
+  z-index: 3;
+}
+
+/* Incense Sticks inserted into censer */
+.incense-sticks {
+  position: absolute;
+  bottom: 42px;
+  display: flex;
+  gap: 14px;
+  z-index: 2;
+}
+
+.incense-stick {
+  width: 3.5px;
+  height: 52px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: bottom center;
+}
+
+.stick-1 { transform: rotate(-8deg); }
+.stick-2 { transform: rotate(0deg); height: 56px; }
+.stick-3 { transform: rotate(8deg); }
+
+.stick-shaft {
+  width: 100%;
+  flex: 1;
+  background: linear-gradient(180deg, #944428 0%, #6e2e18 100%);
+  border-radius: 1px;
+}
+
+.ember {
+  width: 5.5px;
+  height: 5.5px;
+  border-radius: 50%;
+  background: #ff5400;
+  box-shadow: 0 0 6px #ff5400, 0 0 12px #ff9e00;
+  opacity: 0.4;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.incense-stage.burning .ember {
+  opacity: 1;
+  animation: emberGlowPulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes emberGlowPulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 5px #ff5400, 0 0 10px #ff9e00; }
+  100% { transform: scale(1.35); box-shadow: 0 0 10px #ff3800, 0 0 20px #ffaa00; }
+}
+
+/* Ascending smoke curls */
+.incense-smoke-layer {
+  position: absolute;
+  bottom: 84px;
+  width: 120px;
+  height: 100px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  z-index: 1;
+}
+
+.incense-stage.burning .incense-smoke-layer {
+  opacity: 1;
+}
+
+.smoke-ribbon {
+  position: absolute;
+  bottom: 0;
+  width: 28px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(220, 215, 205, 0.45) 0%, rgba(220, 215, 205, 0) 75%);
+  filter: blur(4px);
+  will-change: transform, opacity;
+}
+
+.smoke-left {
+  left: 20px;
+  animation: smokeRiseLeft 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.smoke-mid {
+  left: 46px;
+  animation: smokeRiseMid 4.2s cubic-bezier(0.35, 0, 0.25, 1) 0.8s infinite;
+}
+
+.smoke-right {
+  right: 20px;
+  animation: smokeRiseRight 3.8s cubic-bezier(0.4, 0, 0.2, 1) 1.5s infinite;
+}
+
+@keyframes smokeRiseLeft {
+  0% {
+    transform: translateY(10px) translateX(0) scaleX(0.4) scaleY(0.5);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.65;
+  }
+  50% {
+    transform: translateY(-40px) translateX(-14px) scaleX(1.1) scaleY(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-90px) translateX(12px) scaleX(1.8) scaleY(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes smokeRiseMid {
+  0% {
+    transform: translateY(10px) translateX(0) scaleX(0.5) scaleY(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.7;
+  }
+  60% {
+    transform: translateY(-45px) translateX(10px) scaleX(1) scaleY(1.1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(-95px) translateX(-10px) scaleX(1.9) scaleY(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes smokeRiseRight {
+  0% {
+    transform: translateY(10px) translateX(0) scaleX(0.4) scaleY(0.5);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.6;
+  }
+  55% {
+    transform: translateY(-42px) translateX(16px) scaleX(1.2) scaleY(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-88px) translateX(-8px) scaleX(1.7) scaleY(1.3);
+    opacity: 0;
+  }
+}
+
+.incense-status-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-style: italic;
+  padding: 6px 12px;
+  background: var(--gold-glow);
+  border-radius: var(--radius-sm);
+}
+
+.incense-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* --- Striker Mallet (木鱼槌) --- */
+.muyu-mallet {
+  position: absolute;
+  top: 10px;
+  right: calc(50% - 95px);
+  width: 58px;
+  height: 68px;
+  pointer-events: none;
+  transform-origin: 48px 62px;
+  transform: rotate(0deg);
+  transition: transform 0.15s ease-out;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28));
+  z-index: 4;
+}
+
+.muyu-mallet svg {
+  width: 100%;
+  height: 100%;
+}
+
+.muyu-mallet.striking {
+  animation: malletStrike 0.24s cubic-bezier(0.25, 1.2, 0.5, 1);
+}
+
+@keyframes malletStrike {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(-34deg) translate(-10px, 8px); }
+  65% { transform: rotate(8deg) translate(3px, -2px); }
+  100% { transform: rotate(0deg); }
+}
+
+/* --- Zen Lotus Pond (荷塘游鲤) --- */
+.ritual-scene.pond-scene {
+  background: radial-gradient(circle at 45% 40%, #1e4d58 0%, #0d2830 65%, #07171d 100%);
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid rgba(246, 211, 122, 0.35);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.5), 0 10px 30px rgba(13, 40, 48, 0.35);
+}
+
+.pond-water-shimmer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 35% 30%, rgba(79, 172, 194, 0.18) 0%, transparent 60%);
+  animation: pondShimmer 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes pondShimmer {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 0.85; transform: scale(1.15) translate(4px, 4px); }
+}
+
+.pond-ripple-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(246, 211, 122, 0.22);
+  pointer-events: none;
+}
+
+.pond-ripple-ring.ring-1 {
+  width: 90px;
+  height: 90px;
+  top: 25%;
+  left: 20%;
+  animation: rippleSpread 5s ease-out infinite;
+}
+
+.pond-ripple-ring.ring-2 {
+  width: 120px;
+  height: 120px;
+  top: 35%;
+  left: 45%;
+  animation: rippleSpread 6.5s ease-out 2.5s infinite;
+}
+
+@keyframes rippleSpread {
+  0% { transform: scale(0.3); opacity: 0.7; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Floating Lily Pad & Lotus */
+.pond-lilypad {
+  position: absolute;
+  border-radius: 50%;
+  background: #1b5e3b;
+  border: 1px solid rgba(80, 200, 120, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  animation: lotusFloat 7s ease-in-out infinite alternate;
+}
+
+.pond-lilypad::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -2px;
+  width: 0;
+  height: 0;
+  border-right: 10px solid #144432;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+.pad-1 {
+  width: 44px;
+  height: 38px;
+  top: 18px;
+  left: 24px;
+  animation-delay: 0s;
+}
+
+.pad-2 {
+  width: 32px;
+  height: 28px;
+  bottom: 24px;
+  right: 48px;
+  animation-delay: 1.5s;
+}
+
+.pond-lotus {
+  position: absolute;
+  top: 10px;
+  left: 48px;
+  width: 48px;
+  height: 40px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  animation: lotusFloat 6s ease-in-out infinite alternate;
+  animation-delay: 0.8s;
+  z-index: 2;
+}
+
+.pond-lotus svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes lotusFloat {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+  100% { transform: translateY(3px) rotate(-1.5deg); }
+}
+
+/* Swimming Koi Fish Track */
+.swimming-koi-track {
+  position: absolute;
+  width: 70px;
+  height: 34px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.koi-main {
+  top: 42%;
+  left: 45%;
+  animation: koiOrbit 14s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+.koi-body-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.koi-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.koi-tail {
+  transform-origin: 12px 17px;
+  animation: koiTailWiggle 0.5s ease-in-out infinite alternate;
+}
+
+.koi-fin-top {
+  transform-origin: 36px 10px;
+  animation: koiFinFlapTop 0.8s ease-in-out infinite alternate;
+}
+
+.koi-fin-bot {
+  transform-origin: 36px 24px;
+  animation: koiFinFlapBot 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes koiTailWiggle {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(14deg); }
+}
+
+@keyframes koiFinFlapTop {
+  from { transform: rotate(-10deg); }
+  to { transform: rotate(12deg); }
+}
+
+@keyframes koiFinFlapBot {
+  from { transform: rotate(10deg); }
+  to { transform: rotate(-12deg); }
+}
+
+@keyframes koiOrbit {
+  0% {
+    transform: translate(-30px, -15px) rotate(20deg);
+  }
+  25% {
+    transform: translate(35px, -20px) rotate(85deg);
+  }
+  50% {
+    transform: translate(45px, 20px) rotate(190deg);
+  }
+  75% {
+    transform: translate(-25px, 25px) rotate(260deg);
+  }
+  100% {
+    transform: translate(-30px, -15px) rotate(380deg);
+  }
+}
+
+/* Released Golden Koi - swoops in gracefully on perform ritual */
+.koi-released {
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.4) rotate(-30deg);
+}
+
+.ritual-scene.completed .koi-released {
+  animation: koiReleaseSwoop 3.5s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes koiReleaseSwoop {
+  0% {
+    opacity: 0;
+    transform: translate(20px, 30px) scale(0.3) rotate(-50deg);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-10px, 0px) scale(1.15) rotate(-15deg);
+    filter: drop-shadow(0 0 16px rgba(246, 211, 122, 0.9));
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(-55px, -35px) scale(1) rotate(-40deg);
+  }
+  80% {
+    opacity: 0.8;
+    transform: translate(-90px, -60px) scale(0.85) rotate(-55deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-120px, -85px) scale(0.6) rotate(-70deg);
+  }
+}
+
+/* --- Zen Prayer Wheel (菩提转经轮) --- */
+.wheel-card {
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--card-border);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  padding: 20px;
+  margin-top: 14px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wheel-card:hover {
+  border-color: rgba(184, 137, 40, 0.4);
+  box-shadow: 0 16px 48px rgba(184, 137, 40, 0.15), var(--shadow);
+}
+
+.wheel-copy {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.wheel-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0 10px;
+  position: relative;
+  background: radial-gradient(circle at 50% 45%, rgba(184, 137, 40, 0.1) 0%, transparent 65%);
+  border-radius: var(--radius-md);
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.wheel-halo {
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(246, 211, 122, 0.28) 0%, rgba(184, 137, 40, 0) 70%);
+  pointer-events: none;
+  animation: wheelHaloBreathe 4s ease-in-out infinite alternate;
+}
+
+@keyframes wheelHaloBreathe {
+  0% { transform: scale(0.9); opacity: 0.45; }
+  100% { transform: scale(1.18); opacity: 0.85; }
+}
+
+.wheel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.wheel-container:active {
+  cursor: grabbing;
+}
+
+.wheel-drum {
+  width: 160px;
+  height: 210px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: transform 0.05s linear;
+}
+
+.wheel-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 10px 22px rgba(60, 20, 10, 0.4));
+  transition: filter 0.2s ease;
+}
+
+.wheel-drum:hover .wheel-svg {
+  filter: drop-shadow(0 12px 28px rgba(184, 137, 40, 0.55));
+}
+
+/* Swinging weighted pendulum */
+.wheel-pendulum {
+  position: absolute;
+  top: 92px;
+  left: 102px;
+  width: 50px;
+  height: 40px;
+  pointer-events: none;
+  transform-origin: 0 0;
+  transform: rotate(0deg);
+  transition: transform 0.12s ease-out;
+  z-index: 5;
+}
+
+.pendulum-cord {
+  width: 2px;
+  height: 28px;
+  background: linear-gradient(180deg, #d4af37, #8b6834);
+  transform-origin: top center;
+  transform: rotate(25deg);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.pendulum-bead {
+  position: absolute;
+  top: 22px;
+  left: 8px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffd97d, #b8892a 60%, #5a3808 100%);
+  border: 1px solid #ffe8a3;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.wheel-mantra-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  margin: 10px auto 4px;
+  max-width: 280px;
+  background: var(--gold-glow);
+  border: 1px solid rgba(184, 137, 40, 0.25);
+  border-radius: 999px;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--vermilion);
+  letter-spacing: 0.15em;
+}
+
+.mantra-char {
+  color: var(--vermilion);
+  transition: transform 0.2s ease;
+}
+
+.mantra-dot {
+  color: var(--gold);
+  font-size: 0.9rem;
+}
+
+.wheel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.wheel-hint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Reduced motion handling */
+@media (prefers-reduced-motion: reduce) {
+  .muyu-halo,
+  .muyu-ripple,
+  .floating-merit,
+  .smoke-ribbon,
+  .smoke-left,
+  .smoke-mid,
+  .smoke-right,
+  .ember,
+  .muyu-mallet.striking,
+  .pond-water-shimmer,
+  .pond-ripple-ring,
+  .pond-lilypad,
+  .pond-lotus,
+  .koi-main,
+  .koi-tail,
+  .koi-fin-top,
+  .koi-fin-bot,
+  .ritual-scene.completed .koi-released,
+  .wheel-halo,
+  .wheel-pendulum {
+    animation: none !important;
+    transition: none !important;
+  }
+  .floating-merit {
+    display: none;
+  }
+}
+
+/* --- Zen Dialogs & Modal Overlays --- */
+.zen-dialog {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 16px;
+  max-width: 480px;
+  width: 92vw;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+  padding: 0;
+  overflow: hidden;
+}
+
+.zen-dialog::backdrop {
+  background: rgba(18, 17, 15, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.dialog-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.icon-close-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.icon-close-btn:hover {
+  color: var(--ink);
+}
+
+.ethical-badge-callout {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(198, 155, 63, 0.12);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  padding: 12px;
+  margin: 4px 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.ethical-seal {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.donation-options {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.donation-tier {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  background: var(--surface-strong);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.donation-tier:hover {
+  border-color: var(--gold);
+}
+
+.donation-tier.active {
+  border-color: var(--gold);
+  background: rgba(198, 155, 63, 0.18);
+  color: var(--gold);
+}
+
+.payment-methods-block {
+  margin: 4px 0;
+}
+
+.payment-method-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.pay-method-chip {
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.15s ease;
+}
+
+.pay-method-chip:hover {
+  border-color: var(--jade);
+}
+
+.pay-method-chip.active {
+  border-color: var(--jade);
+  background: rgba(56, 128, 102, 0.12);
+  font-weight: 600;
+}
+
+.dialog-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.donation-receipt-card {
+  border: 1.5px solid var(--gold);
+  background: rgba(198, 155, 63, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 8px 0;
+  text-align: center;
+}
+
+.receipt-seal {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.receipt-id {
+  font-family: monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 4px 0;
+}
+
+.receipt-details,
+.receipt-dedication,
+.receipt-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+/* --- OpenStreetMap Sanctuary View --- */
+.live-map-dialog {
+  max-width: 520px;
+}
+
+.live-map-viewport {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #f4efe6;
+}
+
+.live-map-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  filter: sepia(0.35) hue-rotate(15deg) contrast(0.92) brightness(0.98);
+}
+
+.osm-tile {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.live-map-center-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.live-map-pulse-aura {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: rgba(198, 155, 63, 0.25);
+  animation: sanctuaryPulse 2.2s infinite ease-out;
+}
+
+@keyframes sanctuaryPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.live-map-lotus-pin {
+  font-size: 1.7rem;
+  z-index: 4;
+}
+
+.live-map-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 5;
+}
+
+.map-ctrl-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.live-map-osm-attribution {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-size: 9px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #555;
+  z-index: 5;
+}
+
+.live-map-osm-attribution a {
+  color: #333;
+  text-decoration: underline;
+}
+
+.live-map-meta {
+  margin: 6px 0;
+}
+
+.live-map-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.coord-pill {
+  font-family: monospace;
+  font-size: 0.8rem;
+  background: var(--surface-strong);
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.live-map-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+}
+
 

@@ -178,10 +178,125 @@ This file is the project-local memory. Keep it current whenever product directio
 - Implemented TDD (added 3 red→green tests in `foobow.community.spec.mjs`): share mode swaps the free-text box for a `#postDeedSelect` deed picker → renders `.feed-post.kindness-card` (mark + title + category badge + note); ask mode stays short filtered text; links are rejected. Updated 2 original tests whose "share = free text" assumption changed. Added a content test asserting `type="file"` appears nowhere in the app. Community browser suite now 20 tests; total browser 79 (+1 skipped).
 - ODD: Community Post now has a Kindness-Card template (app-generated) documented in the ODD spec. `categoryLabel` is a global from app.js reused by community.js; a Kindness Card's category comes from its deed, not the chosen tag.
 
+## 2026-09-19 (Buddhist Zen UI/UX elevation: Electronic Wooden Fish, Web Audio synth, and floating merit)
+
+- Completed thorough audit of Foobow goals, multi-surface architecture, and progress across web landing, app, admin, and mobile.
+- Researched viral and highly-rated mindfulness and Zen apps (Electronic Wooden Fish 电子木鱼, Virtual Incense, Lotus pond, singing bowls).
+- Implemented **Interactive Electronic Wooden Fish (电子木鱼 · 静心敲击)** on the Web Blessings screen with tactile spring bounce, concentric golden ripple expansion, auto-tap mode, and tap milestones.
+- Created zero-dependency **Web Audio API synthesizer** for authentic hollow wooden block acoustics (`playMuyuSound`: transient click, sine sweep, body resonance) and singing bowl harmonic shimmer (`playZenChime`).
+- Engineered **Dynamic Floating Merit Micro-Animations ("功德 +1" / "福报 +1" / "Karma +1")**: golden calligraphy glyphs ascend and softly dissolve on wooden fish knocks, deed completion, lamp lighting, and blessings.
+- Made the **Karma Ring** on the Today screen interactively responsive to gentle taps with wooden block sound and floating merit feedback.
+- Localized wooden fish UI strings across all 6 languages (`en`, `zh-Hans`, `fr`, `es`, `th`, `ja`).
+- Created reusable React Native **`ZenWoodenFish.tsx`** component for `apps/mobile` with `Animated` spring physics, ripple waves, floating text, and senior accessibility scaling, integrated into `TodayView.tsx`.
+- Enhanced Calm Ritual with organic swimming physics (`@keyframes release`), golden radiant ripple expansion, localized dedication banners, and singing bowl acoustic chime (`playZenChime`).
+- Connected Map discovery spots to Deeds with dynamic ripple indicators and direct deed action navigation ("Perform matching deed →").
+- Expanded Mobile UI: 4-metric stat grid in `ProfileView.tsx`, dedication feedback in `DeedCatalogView.tsx`, and full 6-language token coverage for wooden fish and deed stats in `apps/mobile/src/i18n/translations.ts`.
+- Verified all test gates: `npm test` (35/35 passing), shared catalog alignment (`npm run test:catalog` passing), and `apps/mobile` TypeScript typecheck (0 errors).
+
+## 2026-09-19 (Live Supabase & Clerk provisioning, .env key presets, and mobile feature parity)
+
+- Validated user-provided Supabase project `uukmupcmesqsfrymidtf` and Clerk production keys in `.env.local`.
+- Executed `npm --prefix apps/api run db:supabase-provision`: applied migrations `0001_initial.sql`, `0002_focus_sessions.sql`, `0003_media_and_commerce.sql`, and `0001_reference_data.sql` to live Supabase via IPv4 session pooler (`aws-0-us-east-1.pooler.supabase.com`).
+- Executed `npm --prefix apps/api run db:supabase-storage`: provisioned `public-assets` (public CDN), `user-uploads` (private), and `ai-generated` (private) buckets.
+- Uploaded `content/blessing-pack.v1.json` to CDN (`public-assets/content/blessing-pack.v1.json`) ensuring zero-token runtime AI costs.
+- Validated Clerk authentication end-to-end with `auth:clerk-smoke` (minting and verifying session JWT).
+- Preset `.env.local` and `.env.example` with structured sections for Anthropic, Google Gemini, OpenAI, Stripe, and Mapbox.
+- Built mobile 6th tab **`BlessingsView.tsx` (祈福)**:
+  - "Pray for someone": Category selector, recipient, worry release message, warm blessing generation, and "Keep this blessing" (+1 karma).
+  - "Wish lamp (心灯)": Animated glowing flame stage, quiet wish input, "Light the lamp" (+1 karma), and list of lit lamps.
+  - Integrated `ZenWoodenFish` knocker.
+- Expanded mobile deed catalog to all **19 deeds grouped by 5 project categories** (`animals`, `elders`, `environment`, `community`, `learning`) and added `reading-room` map spot.
+- Upgraded mobile `CommunityView.tsx` to support **Kindness Cards** (app-generated cards from catalog deeds) and anti-spam link blocking.
+- Added full 6-language translations across all newly added mobile elements in `translations.ts`.
+- All quality gates pass: `npm test` (35/35), `test:catalog` (aligned), `test:env` (passing), `test:api` (21 pass + 0 TS errors), and `test:mobile` (0 TS errors).
+
+## 2026-09-19 (Visual & interactive Zen elevation: Virtual Incense, Lotus Pond with swimming koi, Striker Mallet)
+
+- Designed and implemented **Interactive Virtual Incense (电子焚香 · 静心燃香)**:
+  - Web: Added `#incenseCard` in `prototype/app/` with stylized bronze tripod censer vessel, 3 inserted incense sticks, burning ember glow pulsing (`@keyframes emberGlowPulse`), ascending multi-layer smoke ribbons (`@keyframes smokeRiseLeft/Mid/Right`), 4 intention choices (Peace, Clarity, Gratitude, Release), status indicator, synthesized bell/chime, and persistent karma rewards (+1 karma).
+  - Mobile: Built `VirtualIncense.tsx` component with React Native `Animated.loop` smoke wave physics, pulsing glowing ember tips, intention selector chips, senior-friendly touch targets, and full integration into `BlessingsView.tsx`.
+- Designed and implemented **Zen Lotus Pond & Swimming Koi (荷塘游鲤 · 善念放生)**:
+  - Web: Elevated `#ritualScene` into an interactive aquatic ecosystem featuring deep water radial gradients, shimmering light reflections, concentric ripple waves, floating lily pads and blooming lotus flower (`@keyframes lotusFloat`), swimming koi fish with waving fins and undulating tail fin (`@keyframes koiOrbit`, `@keyframes koiTailWiggle`), synthesized water ripple audio (`playWaterSplash`), and a graceful golden koi swooping in upon deed performance.
+  - Mobile: Built `LotusPondScene.tsx` component in `apps/mobile/src/components/deeds/` with orbital swimming animation, wagging tail fin physics, floating lotus blossom, and release animation integrated into `DeedCatalogView.tsx`.
+- Implemented **Tactile Wooden Fish Striker Mallet (木鱼槌 · 敲击联动)**:
+  - Web: Added `#muyuMallet` SVG with wooden handle and cushioned mallet head positioned beside the Muyu button; strikes down with mechanical spring recoil physics (`@keyframes malletStrike`) on manual tap and auto-tap.
+  - Mobile: Added animated striker mallet in `ZenWoodenFish.tsx` driven by React Native `Animated.sequence` (spring compression, strike, and rebound).
+- Expanded localization across all 6 locales (`en`, `zh-Hans`, `fr`, `es`, `th`, `ja`) in both `prototype/app/i18n.js` and `apps/mobile/src/i18n/translations.ts` ensuring 100% key parity and strict TypeScript `TranslationShape` adherence.
+- Added comprehensive automated browser tests in `tests/browser/foobow.blessings.spec.mjs` and `tests/browser/foobow.deeds.spec.mjs` verifying Virtual Incense, Wooden Fish Striker Mallet, and Lotus Pond swimming koi release.
+- Added `@media (prefers-reduced-motion: reduce)` accessibility overrides for all new animations (smoke ribbons, embers, mallet strike, koi orbit, and ripples).
+
+## 2026-09-19 (Zen Prayer Wheel, Ambient Soundscape Mixer, Security Audit Resolution)
+
+- Implemented **Interactive Zen Prayer Wheel (菩提转经轮 · 禅意流转)**:
+  - Web: Mani Wheel cylinder SVG with lotus crown jewel, central axis spindle, Six-Syllable Mantra glyphs (Om Mani Padme Hum 唵嘛呢叭咪吽), weighted swinging pendulum cord and bead (`#wheelPendulum`), revolutions badge (`#wheelCount`), auto-spin button (`#wheelAutoBtn`), and calligraphy mantra strip. Powered by inertia physics, drag momentum, auto-spin toggle, full 360-degree revolution tracking, karma rewards (+1 karma per spin), and floating merit particles ("转经一匝 · 功德 +1").
+  - Mobile: Built `ZenPrayerWheel.tsx` component with React Native `Animated`, `PanResponder` horizontal drag/swipe physics, swinging pendulum physics, continuous auto-spin loop, and floating calligraphy particles, integrated into `BlessingsView.tsx`.
+  - Audio: Added Web Audio synthesized ratchet click (`playWheelClick`) and singing bowl harmonic chime (`playWheelChime`).
+- Enhanced **Dynamic Soundscape Ambient Mixer (静心禅音 · 声景调音)**:
+  - Added Temple Bell ("禅钟晨磐") to soundscape profiles across Web and Mobile.
+  - Added ambient volume slider (`#soundscapeVolume`) with Buddhist gold thumb track wired to real-time `master.gain` scaling.
+  - Added animated equalizer wave bars in mobile `CalmRitualCard.tsx`.
+- Synchronized **Six-Language Localization Completeness**:
+  - Full translations for `wheel.*`, `soundscape*`, `bell`, `soundscapeVolume` across `en`, `zh-Hans`, `fr`, `es`, `th`, `ja` in both `prototype/app/i18n.js` and `apps/mobile/src/i18n/translations.ts`.
+- Resolved **Upstream Security Advisories Cleanly**:
+  - Pinned non-breaking overrides in `apps/api/package.json` (`deepmerge-ts` ^8.0.2, `multer` ^2.4.0, `mysql2` ^3.24.4) and `apps/mobile/package.json` (`image-size` ^2.0.4, `js-yaml` ^4.3.2, `nanoid` ^3.3.19, `@xmldom/xmldom` ^0.9.12, `brace-expansion` ^5.0.12).
+  - All security audit gates (`npm run test:security`) pass with 0 high/critical vulnerabilities.
+- Regenerated and Verified **Playwright Visual Baselines**:
+  - Updated visual snapshots for landing hero and map exploration screens; all 8 visual regression tests pass (`npm run test:visual`).
+  - All 88 browser tests pass across mobile-chromium and desktop-chromium (`npm run test:browser`).
+
+## 2026-09-19 (Gemini 3.6 Flash Live AI Blessing Integration with Strict Token Guards & Budget Protection)
+
+- **Gemini API Integration with Zero Surprise Billing**:
+  - Built zero-dependency ESM client in `apps/api/src/gemini.mjs` using Node's native `fetch`.
+  - Configured model to `gemini-3.6-flash` with disabled thinking tokens (`thinkingConfig: { thinkingBudget: 0 }`), cutting token consumption by 95% down from ~185 to ~10–38 tokens per call.
+  - Set `maxOutputTokens: 80` ceiling, temperature 0.7, and strict Buddhist spiritual guidance instructions (symbolic comfort only, no health/financial/fortune-telling claims).
+  - Implemented 24-hour intelligent LRU cache (`key: ${category}:${recipient}:${message}:${locale}`) where duplicate prayer requests consume 0 tokens and cost $0.00.
+  - Added sliding-window rate limiter (10 calls/min) and automatic graceful fallback to the zero-token CDN blessing pack (`content/blessing-pack.v1.json`) on quota limits, network errors, or absent keys.
+- **Contract Runtime & NestJS Backend**:
+  - Added `POST /api/v1/blessings/intentions` endpoint across both `apps/api/src/app.mjs` and NestJS `CommunityController` / `FoobowService`.
+  - Added `BlessingIntentionCreateDto` with class-validator decorators and OpenAPI Swagger annotations.
+  - Logs generations to `ai_generations` table with token metrics and cost accounting.
+  - Added comprehensive integration test in `apps/api/tests/api.test.mjs` verifying live token accounting and 0-token cache interception.
+- **Client & Mobile Integration**:
+  - Web prototype (`prototype/app/app.js` & `styles.css`): Updated `blessingEngine.generate` to call `/api/v1/blessings/intentions` with local fallback, and added a gold `.token-badge` displaying real-time token count and cost in USD while preserving required ethics compliance copy.
+  - Mobile app (`apps/mobile/src/services/apiClient.ts` & `BlessingsView.tsx`): Exported typed `generateBlessingIntention` helper and wired "Receive a blessing" with loading spinner and delicate zen token badge (`🌿 Gemini · X tok ($Y)` / `🌿 Gemini (cached · 0 tok)`).
+- **Admin Console AI Guard Metrics**:
+  - Added "AI Tokens & Budget Guard (Gemini 3.6 Flash)" stat cards to `/admin` dashboard (`prototype/admin/index.html`, `admin.data.js`, `admin.js`, `admin.css`) displaying calls today, tokens consumed, cost in USD, and 24h cache hit rate with explanations in Chinese and English.
+- **Full Verification Gate**:
+  - 100% clean test passes: Root test suite (35/35), API test suite (22/22 + TypeScript typecheck), Mobile TypeScript typecheck (0 errors), Browser Playwright suite (88/88), Visual regression suite (8/8), Shared catalog alignment, Environment contract, and Security audit.
+
+## 2026-09-19 (OpenStreetMap Live Buddhist Cartography & Voluntary Ethical Offerings Architecture)
+
+- **OpenStreetMap (OSM) Live Tile Integration with Buddhist Cartographic Styling**:
+  - Web Prototype (`prototype/app/`):
+    - Added geographic metadata to all 5 sanctuary spots in `data.js` (`lat`, `lng`, `zoom`, `coordinates`, `sanctuary`, `environment`).
+    - Added `#openLiveMapBtn` trigger on `#screen-map` opening interactive modal `<dialog id="liveMapDialog">`.
+    - Computed slippy tile coordinates `(tileX, tileY)` from `(lat, lng, zoom)` and rendered 3x3 tile grid from `tile.openstreetmap.org` with warm Buddhist sepia filter (`sepia(0.35) hue-rotate(15deg) contrast(0.92) brightness(0.98)`).
+    - Included graceful offline/file:// SVG vector parchment tile fallback with lotus icon and coordinate grid when offline.
+    - Added animated pulsing lotus sanctuary pin, zoom controls (`+` / `-`), spot details, and "Dedicate Ripple to this Sanctuary (+1)" action with activity history and action whispers.
+    - Preserved legal OpenStreetMap contributors attribution per ODbL license.
+  - Mobile App (`apps/mobile/`):
+    - Added `latitude`, `longitude`, `coordinates`, `sanctuary`, and `environment` fields to `MapSpot` type in `types/index.ts` and `foobowService.ts`.
+    - Upgraded `MapView.tsx` with animated glowing ripple aura underneath the active pin (`Animated.loop` pulsating aura), real coordinates badge (`📍 30.5539° N, 114.3644° E`), sanctuary title (`🪷 Lotus Lake Sanctuary`), and interactive "Dedicate Ripple Here (+1)" action with instant feedback.
+    - Added OpenStreetMap-derived cartography attribution note.
+- **Voluntary Ethical Offerings & Decoupled Checkout Flow**:
+  - Web Prototype (`prototype/app/`):
+    - Upgraded `#impactDialog` while preserving all required compliance copy ("Support a verified cause", "does not buy luck, virtue, or guaranteed karma").
+    - Added tier selection ($1, $3, $9), payment method selector (Stripe Test, WeChat Pay, Alipay), optional dedication input, and Pure Giving decoupling badge (0 karma points awarded).
+    - Added simulated checkout and Buddhist dedication receipt card modal (`#donationReceiptArea`) displaying receipt code `#FOB-2026-XXXX`, campaign name, amount, dedication text, and pure giving notice.
+  - Mobile App (`apps/mobile/`):
+    - Added "Ethical Support & Voluntary Offerings" panel in `ProfileView.tsx` with tier selector, multi-method payment selector (Stripe, WeChat Pay, Alipay), dedication input, and checkout action.
+    - Connected with `createDonation` helper in `apiClient.ts` with idempotency key generation.
+    - Added receipt certificate modal with Pure Giving confirmation.
+- **Verification Gates**:
+  - Master test gate `npm run test:all` 100% green across all gates: root unit (35/35), shared catalog, env contract, advisory watchlist, API tests (22/22 + TypeScript), mobile TypeScript (0 errors), browser Playwright (88/88), visual regression (8/8), and security audit (0 high/critical vulnerabilities).
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.
 - Prefer reusable patterns from proven products before inventing custom behavior.
 - Keep docs updated with each meaningful project change.
+- Always provide what has been done (progress) and the plan for next steps in every response.
 - Maintain automated checks for docs, prototype smoke behavior, and PA readiness.
 - Treat virtual karma as symbolic comfort; keep verified donations transparent and separate.
+

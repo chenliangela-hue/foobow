@@ -4,7 +4,7 @@ import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
 import { TabId } from "../../types";
 
-const tabIds: TabId[] = ["today", "map", "deeds", "community", "profile"];
+const tabIds: TabId[] = ["today", "blessings", "map", "deeds", "community", "profile"];
 
 type NavBarProps = {
   activeTab: TabId;
@@ -40,6 +40,7 @@ export function NavBar({ activeTab, onSelectTab, seniorMode }: NavBarProps) {
                 isActive && styles.navTextActive,
                 seniorMode && { fontSize: typography.sizes.body }
               ]}
+              numberOfLines={1}
             >
               {tab.label}
             </Text>
@@ -55,23 +56,24 @@ const styles = StyleSheet.create({
   navBar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     height: 64,
     borderTopWidth: 1,
     paddingHorizontal: layout.spacing.xs
   },
   navItem: {
-    minWidth: layout.minTouchTarget,
+    flex: 1,
     minHeight: layout.minTouchTarget,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: layout.spacing.sm,
+    paddingHorizontal: 2,
     paddingVertical: layout.spacing.xs,
     borderRadius: layout.borderRadius.md
   },
   navText: {
-    fontSize: typography.sizes.caption,
-    fontWeight: "500"
+    fontSize: 12,
+    fontWeight: "500",
+    textAlign: "center"
   },
   navTextActive: {
     fontWeight: "700"

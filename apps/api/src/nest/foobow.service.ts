@@ -2,11 +2,13 @@ import { ConflictException, Inject, Injectable, UnprocessableEntityException } f
 import { randomUUID } from "node:crypto";
 import {
   BlessingCreateDto,
+  BlessingIntentionCreateDto,
   CheckinCreateDto,
   DeedActionCreateDto,
   DonationCreateDto,
   ReportCreateDto
 } from "./dto.js";
+import { generateBlessingWithGemini } from "../gemini.mjs";
 import { PrismaService } from "./prisma.service.js";
 
 type Page<T> = {
@@ -238,6 +240,62 @@ export class FoobowService {
     };
     this.blessings.unshift(blessing);
     return { blessing };
+  }
+
+  async createBlessingIntention(body: BlessingIntentionCreateDto) {
+    const category = body.category?.toLowerCase().trim() || "family";
+    const recipient = body.recipient?.trim() || "";
+    const message = body.message?.trim() || "";
+    const locale = body.locale?.trim() || "en";
+
+    const geminiResult = await generateBlessingWithGemini({
+      category,
+      recipient,
+      message,
+      locale
+    });
+
+    const publicId = `intention_${randomUUID()}`;
+
+    if (this.useDatabase()) {
+      try {
+        const user = await this.demoUser();
+        await this.prisma.$executeRawUnsafe(
+          `INSERT INTO ai_generations (public_id, user_id, kind, locale, prompt_context, model, input_tokens, output_tokens, cost_usd, response_text, status, moderation_status, completed_at)
+           VALUES ($1, $2, 'blessing_reply', $3, $4::jsonb, $5, $6, $7, $8, $9, 'complete', 'visible', now())
+           ON CONFLICT (public_id) DO NOTHING`,
+          `gen_${randomUUID()}`,
+          user.id,
+          locale,
+          JSON.stringify({ category, recipient, message }),
+          geminiResult.model,
+          geminiResult.tokens.input,
+          geminiResult.tokens.output,
+          geminiResult.cost_usd,
+          geminiResult.text
+        );
+      } catch {
+        // Fallback gracefully without blocking the response
+      }
+    }
+
+    return {
+      intention: {
+        id: publicId,
+        category,
+        recipient_label: recipient || null,
+        message: message || null,
+        locale,
+        text: geminiResult.text,
+        provider: geminiResult.provider,
+        model: geminiResult.model,
+        tokens: geminiResult.tokens,
+        cost_usd: geminiResult.cost_usd,
+        cached: geminiResult.cached,
+        note: geminiResult.note,
+        created_at: new Date().toISOString()
+      }
+    };
   }
 
   async createCheckin(body: CheckinCreateDto) {

@@ -130,8 +130,31 @@
       orderRow.append(box);
     });
     wrap.append(orderRow);
+
+    if (c.aiGroup && (m.aiCallsToday !== undefined || m.aiTokensToday !== undefined)) {
+      wrap.append(el("p", "group-label", c.aiGroup));
+      var aiRow = el("div", "stat-row");
+      [
+        { label: c.aiCallsToday, value: m.aiCallsToday || 0, cls: "" },
+        { label: c.aiTokensToday, value: m.aiTokensToday || 0, cls: "positive" },
+        { label: c.aiCostToday, value: m.aiCostToday || "$0.000000", cls: "" },
+        { label: c.aiCacheHitRate, value: m.aiCacheHitRate || "0%", cls: "amber" }
+      ].forEach(function (tile) {
+        var box = el("div", "ai-stat-tile");
+        box.append(el("p", "label", tile.label));
+        box.append(el("p", "value " + tile.cls, String(tile.value)));
+        aiRow.append(box);
+      });
+      wrap.append(aiRow);
+      if (c.aiBudgetNote) {
+        wrap.append(el("p", "ai-budget-note", c.aiBudgetNote));
+      }
+    }
+
+
     return wrap;
   }
+
 
   function buildTable(headers, rows) {
     var wrap = el("div", "table-wrap");

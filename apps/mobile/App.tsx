@@ -23,6 +23,7 @@ import { useProfileController } from "./src/controllers/useProfileController";
 import { Header } from "./src/components/common/Header";
 import { NavBar } from "./src/components/common/NavBar";
 import { TodayView } from "./src/components/today/TodayView";
+import { BlessingsView } from "./src/components/blessings/BlessingsView";
 import { MapView } from "./src/components/map/MapView";
 import { DeedCatalogView } from "./src/components/deeds/DeedCatalogView";
 import { CommunityView } from "./src/components/community/CommunityView";
@@ -96,8 +97,16 @@ function FoobowShell({ initialTab = "today", routeMode = false }: FoobowAppProps
             journal={todayCtrl.journal}
             onChangeJournal={todayCtrl.setJournal}
             onCompleteDaily={todayCtrl.completeDaily}
+            onTapKarma={addKarma}
             seniorMode={profileCtrl.seniorMode}
             moods={todayCtrl.moods}
+          />
+        )}
+
+        {activeTab === "blessings" && (
+          <BlessingsView
+            onTapKarma={addKarma}
+            seniorMode={profileCtrl.seniorMode}
           />
         )}
 
@@ -108,6 +117,7 @@ function FoobowShell({ initialTab = "today", routeMode = false }: FoobowAppProps
             selectedSpot={mapCtrl.selectedSpot}
             onSelectSpot={mapCtrl.setSelectedSpotId}
             visibleSpots={mapCtrl.visibleSpots}
+            onGoToDeeds={() => handleSelectTab("deeds")}
             seniorMode={profileCtrl.seniorMode}
           />
         )}

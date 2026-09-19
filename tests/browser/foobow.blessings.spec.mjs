@@ -70,3 +70,60 @@ test("kept blessings and lamps persist across reload", async ({ page }) => {
   await expect(page.locator("#lampCount")).toHaveText("1");
   await expect(page.locator(".lamp-item").first()).toContainText("a quiet year");
 });
+
+test("virtual incense: kindle incense, triggers burning state and awards karma", async ({ page }) => {
+  await expect(page.locator("#incenseCount")).toHaveText("0");
+  await expect(page.locator("#incenseStage")).not.toHaveClass(/burning/);
+
+  // Pick an intention
+  await page.locator("#incenseIntentions .choice-pill", { hasText: "Clarity" }).click();
+  await expect(page.locator("#incenseIntentions .choice-pill", { hasText: "Clarity" })).toHaveClass(/active/);
+
+  const karmaBefore = Number(await page.locator("#karmaValue").textContent());
+  await page.locator("#kindleIncenseBtn").click();
+
+  // Increases lit count and adds burning class
+  await expect(page.locator("#incenseCount")).toHaveText("1");
+  await expect(page.locator("#incenseStage")).toHaveClass(/burning/);
+  await expect(page.locator("#incenseStatusLine")).toBeVisible();
+  await expect(page.locator("#karmaValue")).toHaveText(String(karmaBefore + 1));
+});
+
+test("zen wooden fish: tapping triggers mallet strike animation and counter", async ({ page }) => {
+  await expect(page.locator("#muyuCount")).toHaveText("0");
+  await expect(page.locator("#muyuMallet")).toBeVisible();
+
+  await page.locator("#muyuBtn").click();
+  await expect(page.locator("#muyuCount")).toHaveText("1");
+
+  const autoBtn = page.locator("#muyuAutoBtn");
+  await expect(autoBtn).toBeVisible();
+  await autoBtn.click();
+  await expect(autoBtn).toHaveClass(/active/);
+  await autoBtn.click();
+  await expect(autoBtn).not.toHaveClass(/active/);
+});
+
+test("zen prayer wheel: spins on tap/impulse, increments turns and supports auto-spin", async ({ page }) => {
+  await expect(page.locator("#wheelCard")).toBeVisible();
+  await expect(page.locator("#wheelCount")).toHaveText("0");
+  await expect(page.locator("#wheelDrum")).toBeVisible();
+  await expect(page.locator("#wheelPendulum")).toBeVisible();
+
+  // Tap drum to spin
+  await page.locator("#wheelDrum").click();
+
+  // Turn auto-spin on
+  const autoBtn = page.locator("#wheelAutoBtn");
+  await expect(autoBtn).toHaveText(/Auto spin/);
+  await autoBtn.click();
+  await expect(autoBtn).toHaveText(/Pause auto/);
+  await expect(autoBtn).toHaveClass(/active/);
+
+  // Pause auto-spin
+  await autoBtn.click();
+  await expect(autoBtn).toHaveText(/Auto spin/);
+  await expect(autoBtn).not.toHaveClass(/active/);
+});
+
+
