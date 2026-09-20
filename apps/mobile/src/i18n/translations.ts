@@ -197,6 +197,28 @@ export const en = {
     pauseAuto: "Pause auto",
     hint: "Drag or tap to spin clockwise",
     accessibilityLabel: "Spin electronic prayer wheel"
+  },
+  almanac: {
+    eyebrow: "Daily Zen Almanac · 今日黄历",
+    title: "Auspicious deeds for mindful living",
+    date: "Mindful Day",
+    suitable1: "Compassionate release · Release fish",
+    suitable2: "Kindle incense · Quiet meditation",
+    avoid1: "Impatience & conflict",
+    avoid2: "Attachment & excessive worry",
+    verse: "Every mindful deed brings boundless calm."
+  },
+  mapDeck: {
+    title: "Choose & perform deed at this sanctuary",
+    fish: "Virtual 放生",
+    fishDesc: "Release swimming koi",
+    lantern: "Light Lantern",
+    lanternDesc: "Send blessing lamp",
+    birds: "Feed Birds",
+    birdsDesc: "Scatter gentle grains",
+    tree: "Plant Seedling",
+    treeDesc: "Sprout green virtue",
+    perform: "🌊 Perform Deed Here (+5 Merit)"
   }
 };
 
@@ -396,6 +418,28 @@ export const zhHans: TranslationShape = {
     pauseAuto: "暂停恒转",
     hint: "滑动或轻触经轮顺时针转动",
     accessibilityLabel: "顺时针转动菩提转经轮"
+  },
+  almanac: {
+    eyebrow: "今日黄历 · 禅意日课",
+    title: "今日宜忌，顺应心性",
+    date: "善行吉日",
+    suitable1: "慈心放生 · 善念广植",
+    suitable2: "焚香静虑 · 安顿身心",
+    avoid1: "急躁争执 · 耗损心神",
+    avoid2: "妄念挂碍 · 徒增执念",
+    verse: "善念一动，天地皆宽；福虽未至，祸已远矣。"
+  },
+  mapDeck: {
+    title: "在当前圣地践行善举",
+    fish: "善念放生",
+    fishDesc: "放生锦鲤，自在游弋",
+    lantern: "祈福心灯",
+    lanternDesc: "点亮明灯，照亮归途",
+    birds: "慈心喂鸟",
+    birdsDesc: "撒播谷粒，关照生灵",
+    tree: "共植绿树",
+    treeDesc: "播种新芽，福泽大地",
+    perform: "🌊 在此践行善举（功德 +5）"
   }
 };
 
@@ -564,6 +608,28 @@ export const fr: TranslationShape = {
     pauseAuto: "Pause auto",
     hint: "Glissez ou appuyez pour tourner",
     accessibilityLabel: "Tourner le moulin à prières zen"
+  },
+  almanac: {
+    eyebrow: "Almanach Zen Quotidien · 今日黄历",
+    title: "Actes propices pour une vie attentive",
+    date: "Journée d'attention",
+    suitable1: "Libération compatissante · Poissons",
+    suitable2: "Allumer l'encens · Méditation",
+    avoid1: "Impatience & dispute",
+    avoid2: "Attachement & tracas",
+    verse: "Chaque geste bienveillant apporte une paix infinie."
+  },
+  mapDeck: {
+    title: "Choisir et accomplir une action dans ce sanctuaire",
+    fish: "Libération virtuelle",
+    fishDesc: "Relâcher des carpes koï",
+    lantern: "Lanterne de vœu",
+    lanternDesc: "Allumer une lampe douce",
+    birds: "Nourrir les oiseaux",
+    birdsDesc: "Semer des graines paisibles",
+    tree: "Planter un arbre",
+    treeDesc: "Faire germer la vertu",
+    perform: "🌊 Accomplir l'action ici (+5 mérite)"
   }
 };
 
@@ -732,6 +798,28 @@ export const es: TranslationShape = {
     pauseAuto: "Pausar giro",
     hint: "Desliza o toca para girar en sentido horario",
     accessibilityLabel: "Girar la rueda de oración zen"
+  },
+  almanac: {
+    eyebrow: "Almanaque Zen Diario · 今日黄历",
+    title: "Acciones auspiciosas para vivir con atención",
+    date: "Día consciente",
+    suitable1: "Liberación compasiva · Peces",
+    suitable2: "Encender incienso · Meditación serena",
+    avoid1: "Impaciencia y conflicto",
+    avoid2: "Apegos y preocupaciones",
+    verse: "Cada acción consciente expande una paz sin límites."
+  },
+  mapDeck: {
+    title: "Elige y realiza una acción en este santuario",
+    fish: "Liberación virtual",
+    fishDesc: "Soltar carpas koi en el agua",
+    lantern: "Farol de bendición",
+    lanternDesc: "Encender luz de paz",
+    birds: "Alimentar aves",
+    birdsDesc: "Esparcir semillas gentiles",
+    tree: "Plantar un brote",
+    treeDesc: "Germinar virtud verde",
+    perform: "🌊 Realizar acción aquí (+5 mérito)"
   }
 };
 
@@ -900,6 +988,28 @@ export const th: TranslationShape = {
     pauseAuto: "หยุดชั่วคราว",
     hint: "ลากหรือแตะเพื่อหมุนตามเข็มนาฬิกา",
     accessibilityLabel: "หมุนกงล้อมนต์เซน"
+  },
+  almanac: {
+    eyebrow: "ปฏิทินเซนประจำวัน · 今日黄历",
+    title: "การกระทำอันเป็นมงคลเพื่อการใช้ชีวิตอย่างมีสติ",
+    date: "วันแห่งสติ",
+    suitable1: "การปล่อยด้วยความเมตตา · ปล่อยปลา",
+    suitable2: "จุดธูปหอม · นั่งสมาธิอย่างสงบ",
+    avoid1: "ความใจร้อนและการขัดแย้ง",
+    avoid2: "ความยึดติดและความวิตกกังวล",
+    verse: "ทุกการกระทำอันมีสตินำมาซึ่งความสงบสุขไร้ขอบเขต"
+  },
+  mapDeck: {
+    title: "เลือกและทำความดี ณ ดินแดนศักดิ์สิทธิ์แห่งนี้",
+    fish: "ปล่อยปลาเชิงสัญลักษณ์",
+    fishDesc: "ปล่อยปลาคราฟว่ายน้ำ",
+    lantern: "จุดโคมอธิษฐาน",
+    lanternDesc: "ส่งโคมแห่งความอบอุ่น",
+    birds: "ให้อาหารนก",
+    birdsDesc: "โปรยเมล็ดข้าวด้วยความการุณย์",
+    tree: "ปลูกต้นกล้า",
+    treeDesc: "เพาะพันธุ์กุศลอันเขียวขจี",
+    perform: "🌊 ทำความดี ณ ที่นี่ (+5 บุญ)"
   }
 };
 
@@ -1068,5 +1178,27 @@ export const ja: TranslationShape = {
     pauseAuto: "一時停止",
     hint: "スワイプまたはタップして時計回りに回転",
     accessibilityLabel: "電子マニ車を時計回りに回す"
+  },
+  almanac: {
+    eyebrow: "日々の禅暦 · 今日黄历",
+    title: "心穏やかに生きるための吉事",
+    date: "正念の日",
+    suitable1: "慈悲の放生 · 鯉を放つ",
+    suitable2: "静心燃香 · 静かに瞑想",
+    avoid1: "焦りと争い",
+    avoid2: "執着と思い煩い",
+    verse: "ひとつの善念が、世界を果てしなく穏やかにする。"
+  },
+  mapDeck: {
+    title: "この聖地で行う善行を選ぶ",
+    fish: "仮想放生",
+    fishDesc: "清らかな水に鯉を放つ",
+    lantern: "祈願の灯明",
+    lanternDesc: "心温まる灯りを捧げる",
+    birds: "小鳥に餌やり",
+    birdsDesc: "やさしい穀粒を蒔く",
+    tree: "若木を植える",
+    treeDesc: "緑の徳を育む",
+    perform: "🌊 ここで善行を行う（功徳 +5）"
   }
 };

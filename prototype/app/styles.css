@@ -95,7 +95,7 @@ button {
   width: min(100%, 460px);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 18px 14px 20px;
+  padding: 18px 14px 96px;
   position: relative;
 }
 
@@ -1302,33 +1302,79 @@ textarea {
 }
 
 .bottom-nav {
-  position: static;
-  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 460px);
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 4px;
-  padding: 8px 6px;
-  margin: 18px auto 0;
+  gap: 3px;
+  padding: 6px 4px max(env(safe-area-inset-bottom, 8px), 8px);
+  margin: 0;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--surface) 84%, transparent);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  box-shadow: var(--shadow);
-  z-index: 20;
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
 }
 
 .nav-item {
   min-width: 0;
-  min-height: 46px;
+  min-height: 52px;
+  border: 0;
   border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 2px;
+  cursor: pointer;
+  transition: all 180ms ease;
   font-family: "Trebuchet MS", Verdana, sans-serif;
-  font-size: clamp(0.64rem, 2.5vw, 0.78rem);
+  font-size: clamp(0.64rem, 2.2vw, 0.72rem);
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-item::before {
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.nav-item[data-target="today"]::before { content: "☀️"; }
+.nav-item[data-target="blessings"]::before { content: "🪔"; }
+.nav-item[data-target="map"]::before { content: "🗺️"; }
+.nav-item[data-target="deeds"]::before { content: "🪷"; }
+.nav-item[data-target="community"]::before { content: "👥"; }
+.nav-item[data-target="profile"]::before { content: "👤"; }
+
+.nav-item:hover {
+  color: var(--ink);
+}
+
+.nav-item:active {
+  transform: scale(0.92);
 }
 
 .nav-item.active {
   background: var(--ink);
   color: var(--surface);
+  box-shadow: 0 2px 10px rgba(184, 137, 42, 0.28);
+}
+
+.nav-item.active::before {
+  transform: scale(1.15);
 }
 
 dialog {
@@ -1374,7 +1420,7 @@ dialog::backdrop {
   .app-shell {
     width: min(100%, 720px);
     min-height: auto;
-    padding-bottom: 26px;
+    padding-bottom: 96px;
   }
 
   main {
@@ -1382,13 +1428,15 @@ dialog::backdrop {
   }
 
   .bottom-nav {
-    position: sticky;
-    bottom: 16px;
-    max-width: 460px;
+    position: fixed;
+    bottom: 12px;
+    width: min(calc(100% - 32px), 720px);
+    border-radius: 18px;
+    border-bottom: 1px solid var(--line);
   }
 
   .map-stage {
-    min-height: 460px;
+    min-height: 440px;
   }
 }
 
@@ -3173,6 +3221,422 @@ body.dark .floating-merit {
   gap: 10px;
   align-items: center;
   margin-top: 6px;
+}
+
+/* ==========================================================================
+   Ambient Zen Floating Embers (putiyuan.pages.dev inspiration)
+   ========================================================================== */
+.zen-ambient-embers {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.zen-ember {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f6d37a, #b8892a 60%, transparent 100%);
+  box-shadow: 0 0 10px rgba(246, 211, 122, 0.7);
+  opacity: 0;
+  animation: emberGlowRise 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes emberGlowRise {
+  0% {
+    transform: translateY(105vh) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-10vh) scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Daily Zen Almanac (今日黄历 · 禅意日课)
+   ========================================================================== */
+.almanac-panel {
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.almanac-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0 8px;
+}
+
+.almanac-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+}
+
+.almanac-badge {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.suitable-badge {
+  background: linear-gradient(135deg, var(--gold), #8a6519);
+}
+
+.avoid-badge {
+  background: linear-gradient(135deg, var(--vermilion), #7a1f14);
+}
+
+.almanac-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.almanac-tag {
+  font-size: 0.78rem;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.almanac-verse {
+  font-size: 0.82rem;
+  color: var(--gold);
+  font-style: italic;
+  text-align: center;
+  margin: 8px 0 0;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Interactive In-Map Deed Execution & Sanctuary Animations
+   ========================================================================== */
+.spot-sanctuary-line {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin: 4px 0 2px;
+}
+
+.spot-coord-line {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin: 2px 0 6px;
+}
+
+/* Enhanced Map Pin with Pulse and Category Symbol */
+.map-pin {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+  z-index: 10;
+  padding: 0;
+}
+
+.map-pin:hover {
+  transform: scale(1.18);
+  box-shadow: 0 6px 24px rgba(184, 137, 42, 0.6);
+}
+
+.map-pin.active {
+  border-color: #fff;
+  background: var(--ink);
+  color: var(--gold);
+  box-shadow: 0 0 20px var(--gold), 0 0 40px rgba(184, 137, 42, 0.6);
+  transform: scale(1.22);
+  z-index: 20;
+}
+
+.pin-symbol {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.pin-pulse {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  opacity: 0;
+  pointer-events: none;
+  animation: pinPulseRing 2.4s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+@keyframes pinPulseRing {
+  0% { transform: scale(0.7); opacity: 0.85; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.pin-name-badge {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Map Animated Overlay */
+.map-anim-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 25;
+}
+
+/* Swimming Koi on Map */
+.map-koi-sprite {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.45));
+  animation: mapKoiSwimTrajectory 3.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes mapKoiSwimTrajectory {
+  0% { transform: translate(0, 0) scale(0.6) rotate(-25deg); opacity: 0; }
+  15% { opacity: 1; transform: translate(16px, -12px) scale(1) rotate(10deg); }
+  50% { transform: translate(65px, -38px) scale(1.15) rotate(-15deg); }
+  85% { opacity: 1; transform: translate(115px, -22px) scale(0.95) rotate(20deg); }
+  100% { transform: translate(150px, -10px) scale(0.4) rotate(15deg); opacity: 0; }
+}
+
+/* Map Water Concentric Ripples */
+.map-water-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+  animation: mapWaterRippleExpand 2.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes mapWaterRippleExpand {
+  0% { width: 10px; height: 10px; opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+  100% { width: 220px; height: 220px; opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
+}
+
+/* Rising Lotus Lantern on Map */
+.map-lantern-sprite {
+  position: absolute;
+  width: 48px;
+  height: 52px;
+  pointer-events: none;
+  filter: drop-shadow(0 0 16px rgba(255, 200, 80, 0.85));
+  animation: mapLanternRiseFloat 3.6s ease-out forwards;
+}
+
+@keyframes mapLanternRiseFloat {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+  15% { opacity: 1; transform: translate(-50%, -60px) scale(1); }
+  70% { opacity: 0.95; transform: translate(calc(-50% + 14px), -180px) scale(0.95); }
+  100% { transform: translate(calc(-50% + 24px), -280px) scale(0.5); opacity: 0; }
+}
+
+/* Flying Birds on Map */
+.map-bird-sprite {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  animation: mapBirdFlight 3.2s ease-out forwards;
+}
+
+@keyframes mapBirdFlight {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  20% { opacity: 1; transform: translate(25px, -45px) scale(1); }
+  80% { opacity: 0.85; transform: translate(130px, -150px) scale(0.85); }
+  100% { transform: translate(190px, -220px) scale(0.3); opacity: 0; }
+}
+
+/* Sprouting Tree / Grove on Map */
+.map-tree-sprite {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  animation: mapTreeSprout 3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes mapTreeSprout {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  25% { opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
+  75% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+/* Floating Merit Calligraphy Banner */
+.map-merit-toast {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--gold), var(--vermilion));
+  padding: 5px 14px;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  animation: mapMeritFloatRise 2.6s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+  z-index: 35;
+}
+
+@keyframes mapMeritFloatRise {
+  0% { transform: translate(-50%, 0) scale(0.8); opacity: 0; }
+  15% { transform: translate(-50%, -28px) scale(1.06); opacity: 1; }
+  75% { transform: translate(-50%, -56px) scale(1); opacity: 0.95; }
+  100% { transform: translate(-50%, -84px) scale(0.88); opacity: 0; }
+}
+
+/* Ripple Counter Bounce */
+.ripple-bounce {
+  animation: rippleCounterBounce 0.4s ease;
+}
+
+@keyframes rippleCounterBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); background: var(--goldGlow); color: var(--gold); }
+  100% { transform: scale(1); }
+}
+
+/* In-Map Deed Action Deck */
+.map-deck-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  margin-top: 14px;
+  box-shadow: var(--shadow);
+}
+
+.deck-action-title {
+  font-size: 0.88rem;
+  color: var(--gold);
+  margin: 12px 0 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.deed-deck-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+
+.deck-deed-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  transition: all 180ms ease;
+}
+
+.deck-deed-btn:hover {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 8%, var(--surface-strong));
+  transform: translateY(-1px);
+}
+
+.deck-deed-btn:active {
+  transform: scale(0.96);
+}
+
+.deck-deed-btn.active {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 15%, var(--surface-strong));
+  box-shadow: 0 0 12px rgba(184, 137, 42, 0.25);
+}
+
+.deck-btn-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.deck-btn-text strong {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.deck-btn-text small {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.map-perform-btn {
+  width: 100%;
+  min-height: 48px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--gold), #966b1e);
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(184, 137, 42, 0.35);
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.map-perform-btn:hover {
+  box-shadow: 0 6px 20px rgba(184, 137, 42, 0.5);
+  transform: translateY(-1px);
+}
+
+.map-perform-btn:active {
+  transform: scale(0.97);
 }
 
 

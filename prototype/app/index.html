@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <div class="zen-ambient-embers" aria-hidden="true">
+      <div class="zen-ember" style="left: 10%; width: 5px; height: 5px; animation-duration: 9s; animation-delay: 0s;"></div>
+      <div class="zen-ember" style="left: 25%; width: 4px; height: 4px; animation-duration: 7s; animation-delay: 2s;"></div>
+      <div class="zen-ember" style="left: 45%; width: 6px; height: 6px; animation-duration: 10s; animation-delay: 1s;"></div>
+      <div class="zen-ember" style="left: 60%; width: 3px; height: 3px; animation-duration: 8s; animation-delay: 3.5s;"></div>
+      <div class="zen-ember" style="left: 78%; width: 5px; height: 5px; animation-duration: 11s; animation-delay: 1.5s;"></div>
+      <div class="zen-ember" style="left: 90%; width: 4px; height: 4px; animation-duration: 8.5s; animation-delay: 4s;"></div>
+    </div>
     <div class="app-shell">
       <header class="topbar">
         <a class="app-brand" href="/" aria-label="Foobow home — back to landing page">
@@ -60,6 +68,33 @@
               <small data-i18n="karmaLabel">karma</small>
             </div>
           </div>
+
+          <section class="almanac-panel" aria-labelledby="almanac-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="almanacEyebrow">Daily Zen Almanac · 今日黄历</p>
+                <h3 id="almanac-title" data-i18n="almanacTitle">Auspicious deeds for mindful living</h3>
+              </div>
+              <span class="soft-pill" id="almanacDate">Mindful Day</span>
+            </div>
+            <div class="almanac-grid">
+              <div class="almanac-col">
+                <span class="almanac-badge suitable-badge">宜</span>
+                <div class="almanac-items">
+                  <span class="almanac-tag" id="almanacSuitable1">慈心放生 · Release fish</span>
+                  <span class="almanac-tag" id="almanacSuitable2">燃香静坐 · Kindle incense</span>
+                </div>
+              </div>
+              <div class="almanac-col">
+                <span class="almanac-badge avoid-badge">忌</span>
+                <div class="almanac-items">
+                  <span class="almanac-tag" id="almanacAvoid1">浮躁争执 · Impatience</span>
+                  <span class="almanac-tag" id="almanacAvoid2">妄念挂碍 · Attachment</span>
+                </div>
+              </div>
+            </div>
+            <p class="almanac-verse" id="almanacVerse">善念一动，天地皆宽。Every mindful deed brings boundless calm.</p>
+          </section>
 
           <section class="panel">
             <div class="section-heading">
@@ -369,12 +404,33 @@
               <p class="eyebrow" data-i18n="mapEyebrow">World map</p>
               <h2 id="map-title" data-i18n="mapTitle">Explore places that need a little light.</h2>
             </div>
-            <div class="world-map" aria-label="Stylized good deed world map">
-              <button class="map-pin lake active" type="button" data-spot-id="east-lake" aria-label="East Lake good deed spot" aria-pressed="true"></button>
-              <button class="map-pin street" type="button" data-spot-id="toronto-crosswalk" aria-label="Toronto crosswalk good deed spot" aria-pressed="false"></button>
-              <button class="map-pin forest" type="button" data-spot-id="amazon-grove" aria-label="Amazon restoration good deed spot" aria-pressed="false"></button>
-              <button class="map-pin lantern" type="button" data-spot-id="night-corridor" aria-label="Night walk good deed spot" aria-pressed="false"></button>
-              <button class="map-pin reading" type="button" data-spot-id="reading-room" aria-label="Shared reading room good deed spot" aria-pressed="false"></button>
+            <div class="world-map" id="worldMapSurface" aria-label="Stylized good deed world map">
+              <div class="map-anim-overlay" id="mapAnimOverlay" aria-hidden="true"></div>
+              <button class="map-pin lake active" type="button" data-spot-id="east-lake" aria-label="East Lake good deed spot" aria-pressed="true">
+                <span class="pin-pulse" aria-hidden="true"></span>
+                <span class="pin-symbol" aria-hidden="true">🐟</span>
+                <span class="pin-name-badge">East Lake</span>
+              </button>
+              <button class="map-pin street" type="button" data-spot-id="toronto-crosswalk" aria-label="Toronto crosswalk good deed spot" aria-pressed="false">
+                <span class="pin-pulse" aria-hidden="true"></span>
+                <span class="pin-symbol" aria-hidden="true">👵</span>
+                <span class="pin-name-badge">Toronto</span>
+              </button>
+              <button class="map-pin forest" type="button" data-spot-id="amazon-grove" aria-label="Amazon restoration good deed spot" aria-pressed="false">
+                <span class="pin-pulse" aria-hidden="true"></span>
+                <span class="pin-symbol" aria-hidden="true">🌱</span>
+                <span class="pin-name-badge">Amazon</span>
+              </button>
+              <button class="map-pin lantern" type="button" data-spot-id="night-corridor" aria-label="Night walk good deed spot" aria-pressed="false">
+                <span class="pin-pulse" aria-hidden="true"></span>
+                <span class="pin-symbol" aria-hidden="true">🏮</span>
+                <span class="pin-name-badge">Kyoto</span>
+              </button>
+              <button class="map-pin reading" type="button" data-spot-id="reading-room" aria-label="Shared reading room good deed spot" aria-pressed="false">
+                <span class="pin-pulse" aria-hidden="true"></span>
+                <span class="pin-symbol" aria-hidden="true">📖</span>
+                <span class="pin-name-badge">Oxford</span>
+              </button>
             </div>
           </div>
           <section class="spot-detail">
@@ -384,7 +440,45 @@
             </div>
             <h3 id="spotName">East Lake, Wuhan</h3>
             <p id="spotText">Release a digital fish into the lake and add one ripple to the shared kindness map.</p>
-            <div class="spot-actions-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+            
+            <section class="map-deck-panel" aria-labelledby="mapDeckTitle">
+              <p class="deck-action-title" id="mapDeckTitle" data-i18n="mapDeckTitle">Choose & perform deed at this sanctuary</p>
+              <div class="deed-deck-grid" id="deedDeckGrid">
+                <button type="button" class="deck-deed-btn active" data-deed="release-fish">
+                  <span class="deck-btn-icon">🐟</span>
+                  <div class="deck-btn-text">
+                    <strong data-i18n="deckDeedFish">Virtual 放生</strong>
+                    <small data-i18n="deckDeedFishDesc">Release swimming koi</small>
+                  </div>
+                </button>
+                <button type="button" class="deck-deed-btn" data-deed="light-lantern">
+                  <span class="deck-btn-icon">🏮</span>
+                  <div class="deck-btn-text">
+                    <strong data-i18n="deckDeedLantern">Light Lantern</strong>
+                    <small data-i18n="deckDeedLanternDesc">Send blessing lamp</small>
+                  </div>
+                </button>
+                <button type="button" class="deck-deed-btn" data-deed="feed-birds">
+                  <span class="deck-btn-icon">🕊️</span>
+                  <div class="deck-btn-text">
+                    <strong data-i18n="deckDeedBirds">Feed Birds</strong>
+                    <small data-i18n="deckDeedBirdsDesc">Scatter gentle grains</small>
+                  </div>
+                </button>
+                <button type="button" class="deck-deed-btn" data-deed="plant-tree">
+                  <span class="deck-btn-icon">🌿</span>
+                  <div class="deck-btn-text">
+                    <strong data-i18n="deckDeedTree">Plant Seedling</strong>
+                    <small data-i18n="deckDeedTreeDesc">Sprout green virtue</small>
+                  </div>
+                </button>
+              </div>
+              <button class="map-perform-btn" id="performMapDeedBtn" type="button" data-i18n="performMapDeed">
+                🌊 Perform Deed Here (+5 Merit)
+              </button>
+            </section>
+
+            <div class="spot-actions-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 8px;">
               <button class="text-button" id="spotActionBtn" type="button">Perform matching deed →</button>
               <button class="text-button" id="openLiveMapBtn" type="button">🌐 Live OpenStreetMap Sanctuary</button>
             </div>

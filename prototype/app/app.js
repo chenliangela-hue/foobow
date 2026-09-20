@@ -1321,12 +1321,32 @@ function renderSettings() {
   document.getElementById("settingDonationReceipts").checked = state.settings.donationReceipts;
 }
 
+function renderAlmanac() {
+  const dict = dictionary();
+  const dateEl = document.getElementById("almanacDate");
+  if (dateEl) {
+    const today = new Date();
+    const options = { month: "short", day: "numeric", weekday: "short" };
+    try {
+      dateEl.textContent = today.toLocaleDateString(state.language === "zh-Hans" ? "zh-CN" : state.language, options);
+    } catch {
+      dateEl.textContent = dict.almanacDate || "Mindful Day";
+    }
+  }
+  setText("almanacSuitable1", dict.almanacSuitable1 || "慈心放生 · Release fish");
+  setText("almanacSuitable2", dict.almanacSuitable2 || "燃香静坐 · Kindle incense");
+  setText("almanacAvoid1", dict.almanacAvoid1 || "浮躁争执 · Impatience");
+  setText("almanacAvoid2", dict.almanacAvoid2 || "妄念挂碍 · Attachment");
+  setText("almanacVerse", dict.almanacVerse || "善念一动，天地皆宽。Every mindful deed brings boundless calm.");
+}
+
 function renderAll() {
   document.body.classList.toggle("dark", state.theme === "dark");
   document.body.classList.toggle("senior-mode", Boolean(state.settings.seniorMode));
   document.getElementById("seniorToggle").setAttribute("aria-pressed", String(Boolean(state.settings.seniorMode)));
   applyTranslations();
   renderDailyThought();
+  renderAlmanac();
   renderSoundscapeToggle();
   renderStats();
   renderCategoryFilters();
@@ -1409,6 +1429,153 @@ document.querySelectorAll(".top-nav-item").forEach((link) => {
 document.querySelectorAll(".map-pin").forEach((pin) => {
   pin.addEventListener("click", () => renderSpot(pin.dataset.spotId));
 });
+
+let selectedMapDeedKey = "release-fish";
+
+function executeMapDeed(deedKey, customX, customY) {
+  const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+  const overlay = document.getElementById("mapAnimOverlay");
+  const worldMap = document.getElementById("worldMapSurface") || document.querySelector(".world-map");
+  const activePin = document.querySelector(`.map-pin[data-spot-id="${state.selectedSpot}"]`);
+
+  let posX = 160;
+  let posY = 120;
+  if (typeof customX === "number" && typeof customY === "number") {
+    posX = customX;
+    posY = customY;
+  } else if (activePin && worldMap) {
+    const mapRect = worldMap.getBoundingClientRect();
+    const pinRect = activePin.getBoundingClientRect();
+    posX = pinRect.left - mapRect.left + pinRect.width / 2;
+    posY = pinRect.top - mapRect.top + pinRect.height / 2;
+  }
+
+  // Audio feedback
+  if (deedKey === "release-fish") {
+    playWaterSplash();
+    window.setTimeout(playZenChime, 250);
+  } else {
+    playZenChime();
+  }
+
+  // Animation visual in overlay
+  if (overlay) {
+    if (deedKey === "release-fish") {
+      const koi = document.createElement("div");
+      koi.className = "map-koi-sprite";
+      koi.style.left = `${posX - 28}px`;
+      koi.style.top = `${posY - 28}px`;
+      koi.innerHTML = `
+        <svg viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <path d="M12 20 C18 10 38 12 48 20 C38 28 18 30 12 20 Z" fill="#e0533c"/>
+          <path d="M22 14 C28 17 32 17 38 15 C34 22 26 23 22 14 Z" fill="#ffffff" opacity="0.85"/>
+          <circle cx="44" cy="18" r="2" fill="#1b0805"/>
+          <circle cx="44.5" cy="17.5" r="0.6" fill="#fff"/>
+          <path d="M14 20 L2 12 L6 20 L2 28 Z" fill="#e6a15c"/>
+          <path d="M28 13 C32 8 36 8 38 12 Z" fill="#fca311" opacity="0.8"/>
+          <path d="M28 27 C32 32 36 32 38 28 Z" fill="#fca311" opacity="0.8"/>
+        </svg>
+      `;
+      overlay.appendChild(koi);
+      window.setTimeout(() => koi.remove(), 3500);
+
+      [0, 280, 560].forEach((delay) => {
+        window.setTimeout(() => {
+          const rip = document.createElement("div");
+          rip.className = "map-water-ripple";
+          rip.style.left = `${posX}px`;
+          rip.style.top = `${posY}px`;
+          overlay.appendChild(rip);
+          window.setTimeout(() => rip.remove(), 2300);
+        }, delay);
+      });
+    } else if (deedKey === "light-lantern") {
+      const lantern = document.createElement("div");
+      lantern.className = "map-lantern-sprite";
+      lantern.style.left = `${posX}px`;
+      lantern.style.top = `${posY}px`;
+      lantern.innerHTML = `<span style="font-size: 2.2rem; filter: drop-shadow(0 0 10px #ffd97d);">🏮</span>`;
+      overlay.appendChild(lantern);
+      window.setTimeout(() => lantern.remove(), 3700);
+    } else if (deedKey === "feed-birds") {
+      const bird = document.createElement("div");
+      bird.className = "map-bird-sprite";
+      bird.style.left = `${posX}px`;
+      bird.style.top = `${posY}px`;
+      bird.innerHTML = `<span style="font-size: 2rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));">🕊️</span>`;
+      overlay.appendChild(bird);
+      window.setTimeout(() => bird.remove(), 3300);
+    } else if (deedKey === "plant-tree") {
+      const tree = document.createElement("div");
+      tree.className = "map-tree-sprite";
+      tree.style.left = `${posX}px`;
+      tree.style.top = `${posY}px`;
+      tree.innerHTML = `<span style="font-size: 2.4rem; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));">🌱</span>`;
+      overlay.appendChild(tree);
+      window.setTimeout(() => tree.remove(), 3100);
+    }
+
+    const toast = document.createElement("div");
+    toast.className = "map-merit-toast";
+    toast.style.left = `${posX}px`;
+    toast.style.top = `${posY}px`;
+    const dict = dictionary();
+    const meritTitles = {
+      "release-fish": dict.deckDeedFish || "善念放生",
+      "light-lantern": dict.deckDeedLantern || "祈福心灯",
+      "feed-birds": dict.deckDeedBirds || "慈心喂鸟",
+      "plant-tree": dict.deckDeedTree || "共植绿树"
+    };
+    toast.textContent = `${meritTitles[deedKey] || "善行圆满"} · 功德 +5`;
+    overlay.appendChild(toast);
+    window.setTimeout(() => toast.remove(), 2700);
+  }
+
+  spot.ripples = (spot.ripples || 1000) + 1;
+  const ripplesEl = document.getElementById("spotRipples");
+  if (ripplesEl) {
+    ripplesEl.textContent = `${spot.ripples.toLocaleString()} ripples`;
+    ripplesEl.classList.remove("ripple-bounce");
+    void ripplesEl.offsetWidth;
+    ripplesEl.classList.add("ripple-bounce");
+    window.setTimeout(() => ripplesEl.classList.remove("ripple-bounce"), 450);
+  }
+
+  const performBtn = document.getElementById("performMapDeedBtn");
+  updateKarma(5, performBtn);
+  logActivity("deed");
+  showActionWhisper("deedReflections");
+  saveState();
+}
+
+function setupMapDeck() {
+  const deckBtns = document.querySelectorAll(".deck-deed-btn");
+  deckBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      deckBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedMapDeedKey = btn.dataset.deed || "release-fish";
+    });
+  });
+
+  const performBtn = document.getElementById("performMapDeedBtn");
+  if (performBtn) {
+    performBtn.addEventListener("click", () => {
+      executeMapDeed(selectedMapDeedKey);
+    });
+  }
+
+  const worldMap = document.getElementById("worldMapSurface");
+  if (worldMap) {
+    worldMap.addEventListener("click", (event) => {
+      if (event.target.closest(".map-pin")) return;
+      const rect = worldMap.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+      executeMapDeed(selectedMapDeedKey, clickX, clickY);
+    });
+  }
+}
 
 const spotActionBtn = document.getElementById("spotActionBtn");
 if (spotActionBtn) {
@@ -1761,6 +1928,7 @@ function setupImpactDialog() {
 
 setupBlessings();
 setupLiveMap();
+setupMapDeck();
 setupImpactDialog();
 loadContentPack();
 renderAll();

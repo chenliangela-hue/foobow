@@ -58,6 +58,58 @@ export function TodayView({
         </Text>
       </View>
 
+      {/* Daily Zen Almanac (今日黄历 · 禅意日课) */}
+      <View style={[styles.panel, styles.almanacPanel, { backgroundColor: currentColors.surface, borderColor: currentColors.gold }]}>
+        <View style={styles.rowBetween}>
+          <Text style={[styles.eyebrow, { color: currentColors.gold }, seniorMode && { fontSize: typography.sizes.caption }]}>
+            {t("almanac.eyebrow", { defaultValue: "Daily Zen Almanac · 今日黄历" })}
+          </Text>
+          <View style={[styles.pill, { backgroundColor: currentColors.goldGlow }]}>
+            <Text style={[styles.pillText, { color: currentColors.gold }]}>
+              {t("almanac.date", { defaultValue: "Mindful Day" })}
+            </Text>
+          </View>
+        </View>
+
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+          {t("almanac.title", { defaultValue: "Auspicious deeds for mindful living" })}
+        </Text>
+
+        <View style={styles.almanacGrid}>
+          <View style={[styles.almanacCol, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+            <View style={[styles.almanacBadge, { backgroundColor: currentColors.gold }]}>
+              <Text style={styles.almanacBadgeText}>宜</Text>
+            </View>
+            <View style={styles.almanacItems}>
+              <Text style={[styles.almanacTag, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+                {t("almanac.suitable1", { defaultValue: "慈心放生 · Release fish" })}
+              </Text>
+              <Text style={[styles.almanacTagSub, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+                {t("almanac.suitable2", { defaultValue: "燃香静坐 · Kindle incense" })}
+              </Text>
+            </View>
+          </View>
+
+          <View style={[styles.almanacCol, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+            <View style={[styles.almanacBadge, { backgroundColor: currentColors.coral }]}>
+              <Text style={styles.almanacBadgeText}>忌</Text>
+            </View>
+            <View style={styles.almanacItems}>
+              <Text style={[styles.almanacTag, headingColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+                {t("almanac.avoid1", { defaultValue: "浮躁争执 · Impatience" })}
+              </Text>
+              <Text style={[styles.almanacTagSub, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
+                {t("almanac.avoid2", { defaultValue: "妄念挂碍 · Attachment" })}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <Text style={[styles.almanacVerse, { color: currentColors.gold }, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
+          {t("almanac.verse", { defaultValue: "善念一动，天地皆宽。Every mindful deed brings boundless calm." })}
+        </Text>
+      </View>
+
       <View style={[styles.panel, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
         <View style={styles.rowBetween}>
           <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
@@ -242,5 +294,50 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     fontSize: typography.sizes.body,
     textAlignVertical: "top"
+  },
+  almanacPanel: {
+    borderWidth: 1.5,
+    borderLeftWidth: 4
+  },
+  almanacGrid: {
+    gap: layout.spacing.xs,
+    marginVertical: layout.spacing.xs
+  },
+  almanacCol: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    gap: layout.spacing.sm
+  },
+  almanacBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  almanacBadgeText: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 13
+  },
+  almanacItems: {
+    flex: 1,
+    gap: 2
+  },
+  almanacTag: {
+    fontSize: typography.sizes.body,
+    fontWeight: "600"
+  },
+  almanacTagSub: {
+    fontSize: typography.sizes.caption
+  },
+  almanacVerse: {
+    fontStyle: "italic",
+    textAlign: "center",
+    fontSize: typography.sizes.caption,
+    marginTop: layout.spacing.xs
   }
 });
