@@ -143,6 +143,10 @@
   - Web Prototype (`prototype/app/`): upgraded `#impactDialog` with $1, $3, $9 tiers, payment method selector (Stripe Test, WeChat Pay, Alipay), optional dedication input, and simulated checkout displaying Buddhist receipt certificate `#FOB-2026-XXXX`.
   - Mobile App (`apps/mobile/`): added "Ethical Support & Voluntary Offerings" panel in `ProfileView.tsx` with tier buttons, payment method chips, dedication input, `createDonation` integration with idempotency keys, and receipt certificate modal.
 - Master Quality Gate (`npm run test:all`): 100% pass across root unit tests (35/35), shared catalog contract, environment contract, advisory watchlist, API tests (22/22 + TypeScript typecheck), mobile TypeScript typecheck (0 errors), Playwright browser tests (88/88), Playwright visual regressions (8/8), and security audit (0 high/critical vulnerabilities).
+- Mobile App Store Packaging & EAS Configuration:
+  - Configured `apps/mobile/app.json` with bundle identifier `com.foobow.app`, package `com.foobow.app`, scheme `foobow`, splash screen, and warm Buddhist sand theme colors (`#FBF9F5`).
+  - Added `apps/mobile/eas.json` with development, preview (standalone APK), and production build profiles.
+  - Authored comprehensive `docs/store-listing.md` with App Store Connect and Google Play listing metadata, promotional text, keywords, compliance disclosures (pure giving decoupling / no paid luck guarantees), and privacy nutrition / data safety mapping.
 
 ## Next
 
@@ -165,4 +169,3 @@
 - Subscription and ad policy.
 - Admin moderation console.
 - Localization workflow.
-- Mobile app packaging.

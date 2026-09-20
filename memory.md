@@ -291,6 +291,14 @@ This file is the project-local memory. Keep it current whenever product directio
 - **Verification Gates**:
   - Master test gate `npm run test:all` 100% green across all gates: root unit (35/35), shared catalog, env contract, advisory watchlist, API tests (22/22 + TypeScript), mobile TypeScript (0 errors), browser Playwright (88/88), visual regression (8/8), and security audit (0 high/critical vulnerabilities).
 
+## 2026-09-19 (Mobile Native App Store Packaging & EAS Readiness)
+
+- **Mobile Configuration & App Store Packaging**:
+  - Configured `apps/mobile/app.json` with iOS bundle identifier `com.foobow.app`, Android package `com.foobow.app`, URL scheme `foobow`, splash screen configuration with `splash-icon.png`, and warm Buddhist sand palette `#FBF9F5`.
+  - Added `apps/mobile/eas.json` configuring development, preview (standalone APK for direct Android installation), and production build profiles for Expo Application Services (EAS).
+  - Authored comprehensive `docs/store-listing.md` with complete bilingual (EN / ZH-Hans) metadata, subtitles, promotional copy, 100-character keyword lists, content ratings, Apple Privacy nutrition label declarations, and Google Play Data Safety mapping.
+  - Re-verified all test gates: mobile TypeScript typecheck (0 errors), shared catalog contract, environment contract, advisory watchlist, and dependency security audit (0 high/critical vulnerabilities).
+
 ## Working Principles
 
 - Use ODD to keep development tied to product objects and user-visible value.
