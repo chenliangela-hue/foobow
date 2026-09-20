@@ -1,7 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath } from "node:url";
+import path from "node:path";
 
-const prototypeUrl = pathToFileURL(`${process.cwd()}/prototype/app/index.html`).toString();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const prototypeUrl = pathToFileURL(`${path.resolve(__dirname, "../../prototype/app/index.html")}`).toString();
 
 test.beforeEach(async ({ page }) => {
   await page.goto(prototypeUrl);
@@ -72,7 +76,7 @@ test("category filters narrow map spots and deed catalog", async ({ page }) => {
 
   await page.getByRole("button", { name: "Deeds" }).click();
   await expect(page.locator("#deedTypeCount")).toHaveText("4 shown");
-  await expect(page.getByRole("button", { name: /扶老奶奶过马路/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /(?:Help elder cross street|扶老奶奶过马路)/ })).toBeVisible();
 
   await page.locator("#deedCategoryRow").getByRole("button", { name: "All" }).click();
   await expect(page.locator("#deedTypeCount")).toHaveText("19 shown");

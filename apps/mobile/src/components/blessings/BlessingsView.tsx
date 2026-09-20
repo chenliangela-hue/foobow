@@ -6,7 +6,7 @@ import { useThemeColors } from "../../theme/ThemeContext";
 import { BlessingCategory, WishLamp } from "../../types";
 import { generateBlessingIntention } from "../../services/apiClient";
 import { VirtualIncense } from "./VirtualIncense";
-
+import { SanskritChantsCard } from "./SanskritChantsCard";
 import { ZenPrayerWheel } from "./ZenPrayerWheel";
 import { ZenWoodenFish } from "../common/ZenWoodenFish";
 
@@ -306,6 +306,9 @@ export function BlessingsView({ onTapKarma, seniorMode }: BlessingsViewProps) {
 
       {/* Zen Prayer Wheel (菩提转经轮) */}
       <ZenPrayerWheel onSpinRevolution={() => onTapKarma(1)} seniorMode={seniorMode} />
+
+      {/* Sanskrit Chants Player (梵音曲库 · 大悲咒) */}
+      <SanskritChantsCard onCompleteMeditation={onTapKarma} seniorMode={seniorMode} />
 
       {/* Safety Notice */}
       <Text style={[styles.safetyText, { color: currentColors.muted }]}>

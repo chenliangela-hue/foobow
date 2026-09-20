@@ -1,8 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath } from "node:url";
+import path from "node:path";
 
-const prototypeUrl = pathToFileURL(`${process.cwd()}/prototype/app/index.html`).toString();
-const landingUrl = pathToFileURL(`${process.cwd()}/prototype/index.html`).toString();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const prototypeUrl = pathToFileURL(path.resolve(__dirname, "../../prototype/app/index.html")).toString();
+const landingUrl = pathToFileURL(path.resolve(__dirname, "../../prototype/index.html")).toString();
 
 async function resetPrototype(page) {
   await page.emulateMedia({ reducedMotion: "reduce" });

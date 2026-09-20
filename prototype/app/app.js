@@ -388,9 +388,12 @@ function buildDeedItem(deed) {
   mark.setAttribute("aria-hidden", "true");
   const text = document.createElement("div");
   const title = document.createElement("h3");
-  title.textContent = deed.title;
+  const copy = dictionary();
+  const deedKey = "deed_title_" + deed.id.replace(/-/g, "_");
+  const descKey = "deed_short_" + deed.id.replace(/-/g, "_");
+  title.textContent = copy[deedKey] || deed.title;
   const desc = document.createElement("p");
-  desc.textContent = deed.shortDescription;
+  desc.textContent = copy[descKey] || deed.shortDescription;
   text.append(title, desc);
   item.append(mark, text);
   item.addEventListener("click", () => selectDeed(deed.id));
@@ -449,7 +452,9 @@ function renderDeeds() {
     list.append(group);
   });
 
-  setText("deedTypeCount", `${visibleDeeds.length} shown`);
+  const copy = dictionary();
+  const countTmpl = copy.deedTypeCountText || "%{count} shown";
+  setText("deedTypeCount", countTmpl.replace("%{count}", visibleDeeds.length));
   renderSelectedDeed();
 }
 
@@ -461,8 +466,11 @@ function selectDeed(deedId) {
 
 function renderSelectedDeed() {
   const deed = data.deeds.find((item) => item.id === state.selectedDeed) || data.deeds[0];
-  setText("ritualTitle", deed.title);
-  setText("ritualDesc", deed.description);
+  const copy = dictionary();
+  const deedKey = "deed_title_" + deed.id.replace(/-/g, "_");
+  const descKey = "deed_desc_" + deed.id.replace(/-/g, "_");
+  setText("ritualTitle", copy[deedKey] || deed.title);
+  setText("ritualDesc", copy[descKey] || deed.description);
   const dedication = document.getElementById("ritualDedication");
   if (dedication) {
     dedication.hidden = true;
@@ -676,12 +684,17 @@ function completeFocusedRitual() {
 function renderSpot(spotId) {
   const spot = data.spots[spotId] || data.spots["east-lake"];
   state.selectedSpot = spotId;
-  setText("spotName", spot.name);
-  setText("spotCategory", spot.category);
-  setText("spotText", spot.text);
+  const copy = dictionary();
+  const nameKey = "spot_name_" + spotId.replace(/-/g, "_");
+  const catKey = "spot_category_" + spotId.replace(/-/g, "_");
+  const descKey = "spot_desc_" + spotId.replace(/-/g, "_");
+  setText("spotName", copy[nameKey] || spot.name);
+  setText("spotCategory", copy[catKey] || spot.category);
+  setText("spotText", copy[descKey] || spot.text);
   const ripplesEl = document.getElementById("spotRipples");
   if (ripplesEl) {
-    ripplesEl.textContent = `${(spot.ripples || 1000).toLocaleString()} ripples`;
+    const ripplesWord = copy.statRipples || "ripples";
+    ripplesEl.textContent = `${(spot.ripples || 1000).toLocaleString()} ${ripplesWord}`;
   }
   document.querySelectorAll(".map-pin").forEach((pin) => {
     pin.classList.toggle("active", pin.dataset.spotId === spotId);
@@ -782,38 +795,40 @@ var blessingEngine = {
   provider: "gemini",
   generate: async function (request) {
     var locale = normalizeLocale(request.locale);
-    // 1. Try to fetch live blessing intention from backend API
-    try {
-      var controller = new AbortController();
-      var timeoutId = setTimeout(function () { controller.abort(); }, 3500);
-      var apiOrigin = (typeof window !== "undefined" && window.location.origin) || "";
-      var res = await fetch(apiOrigin + "/api/v1/blessings/intentions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          category: request.category,
-          recipient: request.recipient,
-          message: request.message,
-          locale: locale
-        }),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        var json = await res.json();
-        if (json && json.intention && json.intention.text) {
-          return {
-            text: json.intention.text,
-            provider: json.intention.provider || "gemini",
-            model: json.intention.model || "gemini-3.6-flash",
-            tokens: json.intention.tokens || { input: 0, output: 0, total: 0 },
-            cost_usd: json.intention.cost_usd || 0,
-            cached: Boolean(json.intention.cached)
-          };
+    // 1. Try to fetch live blessing intention from backend API (only if running over HTTP)
+    if (typeof window !== "undefined" && window.location.protocol.startsWith("http")) {
+      try {
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function () { controller.abort(); }, 3500);
+        var apiOrigin = window.location.origin || "";
+        var res = await fetch(apiOrigin + "/api/v1/blessings/intentions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            category: request.category,
+            recipient: request.recipient,
+            message: request.message,
+            locale: locale
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          var json = await res.json();
+          if (json && json.intention && json.intention.text) {
+            return {
+              text: json.intention.text,
+              provider: json.intention.provider || "gemini",
+              model: json.intention.model || "gemini-3.6-flash",
+              tokens: json.intention.tokens || { input: 0, output: 0, total: 0 },
+              cost_usd: json.intention.cost_usd || 0,
+              cached: Boolean(json.intention.cached)
+            };
+          }
         }
+      } catch (_) {
+        // Graceful zero-token fallback below
       }
-    } catch (_) {
-      // Graceful zero-token fallback below
     }
 
     // 2. Offline fallback to local curated lines (0 tokens)
@@ -827,17 +842,13 @@ var blessingEngine = {
       var prefix = I18N.recipientPrefix[locale] || I18N.recipientPrefix.en;
       text = prefix(who, text);
     }
-    return new Promise(function (resolve) {
-      window.setTimeout(function () {
-        resolve({
-          text: text,
-          provider: "mock",
-          model: "fallback-content-pack",
-          tokens: { input: 0, output: 0, total: 0 },
-          cost_usd: 0,
-          cached: false
-        });
-      }, 400);
+    return Promise.resolve({
+      text: text,
+      provider: "mock",
+      model: "fallback-content-pack",
+      tokens: { input: 0, output: 0, total: 0 },
+      cost_usd: 0,
+      cached: false
     });
   }
 };
@@ -1926,9 +1937,336 @@ function setupImpactDialog() {
   }
 }
 
+// --- Sanskrit Chants & Meditation Engine --------------------------------
+const sanskritTracks = window.FOOBOW_SANSKRIT_TRACKS || [];
+let currentChantIndex = 0;
+let chantPlaying = false;
+let chantElapsed = 0;
+let chantDuration = 0;
+let chantMeditationSeconds = 0;
+let chantTimerInterval = null;
+
+function getSanskritAudioEl() {
+  return document.getElementById("sanskritAudio");
+}
+
+function updateMiniPlayerUI() {
+  const track = sanskritTracks[currentChantIndex] || sanskritTracks[0];
+  if (!track) return;
+  const copy = dictionary();
+  const title = copy[track.titleKey] || track.titleDefault;
+  setText("miniTrackTitle", title);
+  setText("miniTrackStatus", chantPlaying ? (copy.chantsMiniPlaying || "Playing") : (copy.chantsMiniPaused || "Paused"));
+  const miniPlayer = document.getElementById("zenMiniPlayer");
+  if (miniPlayer) {
+    miniPlayer.classList.toggle("playing", chantPlaying);
+  }
+  const playBtn = document.getElementById("miniPlayPauseBtn");
+  if (playBtn) {
+    playBtn.textContent = chantPlaying ? "⏸" : "▶";
+    playBtn.setAttribute("aria-label", chantPlaying ? (copy.chantsPause || "Pause") : (copy.chantsPlay || "Play"));
+  }
+  const disc = document.getElementById("miniDiscIcon");
+  if (disc) disc.textContent = track.icon || "📿";
+  const progressFill = document.getElementById("miniProgressFill");
+  if (progressFill) {
+    const total = chantDuration || track.duration || 1;
+    const pct = total > 0 ? Math.min(100, (chantElapsed / total) * 100) : 0;
+    progressFill.style.width = `${pct}%`;
+  }
+}
+
+function updateChantsDialogUI() {
+  const track = sanskritTracks[currentChantIndex] || sanskritTracks[0];
+  if (!track) return;
+  const copy = dictionary();
+  const title = copy[track.titleKey] || track.titleDefault;
+  setText("chantsHeroTitle", title);
+  setText("chantsHeroSubtitle", track.subtitleDefault);
+  const diskIcon = document.getElementById("chantsDiskIcon");
+  if (diskIcon) diskIcon.textContent = track.icon || "📿";
+  const dialog = document.getElementById("chantsDialog");
+  if (dialog) dialog.classList.toggle("playing", chantPlaying);
+  const heroPlayBtn = document.getElementById("chantsHeroPlayBtn");
+  if (heroPlayBtn) {
+    heroPlayBtn.textContent = chantPlaying ? "⏸" : "▶";
+  }
+  const elapsedEl = document.getElementById("chantsTimeElapsed");
+  if (elapsedEl) elapsedEl.textContent = formatDuration(chantElapsed);
+  const totalEl = document.getElementById("chantsTimeTotal");
+  if (totalEl) totalEl.textContent = formatDuration(chantDuration || track.duration);
+
+  const fill = document.getElementById("chantsScrubberFill");
+  const thumb = document.getElementById("chantsScrubberThumb");
+  const total = chantDuration || track.duration || 1;
+  const pct = total > 0 ? Math.min(100, (chantElapsed / total) * 100) : 0;
+  if (fill) fill.style.width = `${pct}%`;
+  if (thumb) thumb.style.left = `${pct}%`;
+
+  const sessionText = document.getElementById("chantsSessionDurationText");
+  if (sessionText) {
+    const mins = Math.floor(chantMeditationSeconds / 60);
+    const secs = Math.floor(chantMeditationSeconds % 60);
+    sessionText.textContent = `${copy.chantsNav || "Meditation"}: ${mins}m ${secs}s`;
+  }
+
+  document.querySelectorAll(".chant-track-card").forEach((card) => {
+    const isActive = card.dataset.trackIndex === String(currentChantIndex);
+    card.classList.toggle("active", isActive);
+  });
+}
+
+function formatDuration(sec) {
+  if (!isFinite(sec) || sec < 0) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
+
+function playChantTrack(index) {
+  if (index >= 0 && index < sanskritTracks.length) {
+    currentChantIndex = index;
+  }
+  const track = sanskritTracks[currentChantIndex];
+  const audio = getSanskritAudioEl();
+  if (!audio || !track) return;
+  if (audio.src !== track.url) {
+    audio.src = track.url;
+    audio.load();
+  }
+  audio.play().then(() => {
+    chantPlaying = true;
+    startChantTimer();
+    updateMiniPlayerUI();
+    updateChantsDialogUI();
+  }).catch((err) => {
+    console.warn("Audio play prevented or error:", err);
+  });
+}
+
+function toggleChantPlayback() {
+  const audio = getSanskritAudioEl();
+  if (!audio) return;
+  const track = sanskritTracks[currentChantIndex];
+  if (!audio.src || audio.src === window.location.href) {
+    playChantTrack(currentChantIndex);
+    return;
+  }
+  if (audio.paused) {
+    audio.play().then(() => {
+      chantPlaying = true;
+      startChantTimer();
+      updateMiniPlayerUI();
+      updateChantsDialogUI();
+    }).catch(() => {});
+  } else {
+    audio.pause();
+    chantPlaying = false;
+    stopChantTimer();
+    updateMiniPlayerUI();
+    updateChantsDialogUI();
+  }
+}
+
+function startChantTimer() {
+  if (chantTimerInterval) clearInterval(chantTimerInterval);
+  chantTimerInterval = setInterval(() => {
+    if (chantPlaying) {
+      chantMeditationSeconds += 1;
+      const sessionText = document.getElementById("chantsSessionDurationText");
+      if (sessionText) {
+        const copy = dictionary();
+        const mins = Math.floor(chantMeditationSeconds / 60);
+        const secs = Math.floor(chantMeditationSeconds % 60);
+        sessionText.textContent = `${copy.chantsNav || "Meditation"}: ${mins}m ${secs}s`;
+      }
+    }
+  }, 1000);
+}
+
+function stopChantTimer() {
+  if (chantTimerInterval) {
+    clearInterval(chantTimerInterval);
+    chantTimerInterval = null;
+  }
+}
+
+function spawnRisingLotusFlowers(count = 7) {
+  const container = document.getElementById("zenLotusRiseContainer");
+  if (!container) return;
+  const lotusEmojis = ["🪷", "🌸", "✨", "🪷", "🌟"];
+  for (let i = 0; i < count; i++) {
+    const span = document.createElement("span");
+    span.className = "zen-rising-lotus";
+    span.textContent = lotusEmojis[i % lotusEmojis.length];
+    const leftPct = 10 + Math.random() * 80;
+    const delay = i * 0.2;
+    span.style.left = `${leftPct}%`;
+    span.style.bottom = "0px";
+    span.style.animationDelay = `${delay}s`;
+    container.appendChild(span);
+    setTimeout(() => {
+      span.remove();
+    }, 4200);
+  }
+}
+
+function setupSanskritPlayer() {
+  const audio = getSanskritAudioEl();
+  if (audio) {
+    audio.addEventListener("timeupdate", () => {
+      chantElapsed = audio.currentTime;
+      chantDuration = audio.duration || sanskritTracks[currentChantIndex]?.duration || 0;
+      updateMiniPlayerUI();
+      updateChantsDialogUI();
+    });
+    audio.addEventListener("loadedmetadata", () => {
+      chantDuration = audio.duration;
+      updateMiniPlayerUI();
+      updateChantsDialogUI();
+    });
+    audio.addEventListener("ended", () => {
+      const nextIndex = (currentChantIndex + 1) % sanskritTracks.length;
+      playChantTrack(nextIndex);
+    });
+  }
+
+  const miniPlayBtn = document.getElementById("miniPlayPauseBtn");
+  if (miniPlayBtn) {
+    miniPlayBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleChantPlayback();
+    });
+  }
+  const miniTrackBtn = document.getElementById("miniPlayerTrackBtn");
+  const miniOpenFullBtn = document.getElementById("miniOpenFullBtn");
+  const openHeaderBtn = document.getElementById("openChantsHeaderBtn");
+  const chantsDialog = document.getElementById("chantsDialog");
+
+  const openChantsModal = () => {
+    if (chantsDialog && typeof chantsDialog.showModal === "function") {
+      updateChantsDialogUI();
+      chantsDialog.showModal();
+    }
+  };
+
+  if (miniTrackBtn) miniTrackBtn.addEventListener("click", openChantsModal);
+  if (miniOpenFullBtn) miniOpenFullBtn.addEventListener("click", openChantsModal);
+  if (openHeaderBtn) openHeaderBtn.addEventListener("click", openChantsModal);
+
+  const closeBtn = document.getElementById("closeChantsBtn");
+  const closeBottomBtn = document.getElementById("closeChantsBottomBtn");
+  const closeChantsModal = () => {
+    if (chantsDialog) chantsDialog.close();
+  };
+  if (closeBtn) closeBtn.addEventListener("click", closeChantsModal);
+  if (closeBottomBtn) closeBottomBtn.addEventListener("click", closeChantsModal);
+
+  const heroPlayBtn = document.getElementById("chantsHeroPlayBtn");
+  if (heroPlayBtn) heroPlayBtn.addEventListener("click", toggleChantPlayback);
+
+  const prevBtn = document.getElementById("chantsPrevBtn");
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      const prevIndex = (currentChantIndex - 1 + sanskritTracks.length) % sanskritTracks.length;
+      playChantTrack(prevIndex);
+    });
+  }
+
+  const nextBtn = document.getElementById("chantsNextBtn");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const nextIndex = (currentChantIndex + 1) % sanskritTracks.length;
+      playChantTrack(nextIndex);
+    });
+  }
+
+  const scrubber = document.getElementById("chantsScrubber");
+  if (scrubber) {
+    scrubber.addEventListener("click", (e) => {
+      const rect = scrubber.getBoundingClientRect();
+      const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const total = chantDuration || sanskritTracks[currentChantIndex]?.duration || 0;
+      if (audio && total > 0) {
+        audio.currentTime = pos * total;
+        chantElapsed = audio.currentTime;
+        updateChantsDialogUI();
+        updateMiniPlayerUI();
+      }
+    });
+  }
+
+  const volSlider = document.getElementById("chantsVolumeSlider");
+  const volVal = document.getElementById("chantsVolumeValue");
+  if (volSlider) {
+    volSlider.addEventListener("input", (e) => {
+      const vol = Number(e.target.value) / 100;
+      if (audio) audio.volume = vol;
+      if (volVal) volVal.textContent = `${Math.round(vol * 100)}%`;
+    });
+  }
+
+  const completeBtn = document.getElementById("chantsCompleteSessionBtn");
+  const meritToast = document.getElementById("chantsMeritToast");
+  if (completeBtn) {
+    completeBtn.addEventListener("click", () => {
+      const copy = dictionary();
+      if (chantMeditationSeconds >= 30) {
+        state.karma = (state.karma || 0) + 10;
+        state.deeds = (state.deeds || 0) + 1;
+        saveState();
+        renderStats();
+        if (meritToast) {
+          meritToast.textContent = copy.chantsCompleteSuccess || "本次禅修圆满，功德 +10";
+          meritToast.hidden = false;
+          setTimeout(() => { meritToast.hidden = true; }, 4000);
+        }
+        spawnRisingLotusFlowers(9);
+        playZenChime();
+        pushActivity("Completed Sanskrit Chants meditation session (+10 karma)");
+        chantMeditationSeconds = 0;
+      } else {
+        if (meritToast) {
+          meritToast.textContent = copy.chantsCompleteShort || "禅坐时间不足 30 秒，下次更专注一些～";
+          meritToast.hidden = false;
+          setTimeout(() => { meritToast.hidden = true; }, 3500);
+        }
+      }
+    });
+  }
+
+  const playlistEl = document.getElementById("chantsPlaylist");
+  if (playlistEl) {
+    playlistEl.replaceChildren();
+    const copy = dictionary();
+    sanskritTracks.forEach((track, idx) => {
+      const card = document.createElement("button");
+      card.className = `chant-track-card${idx === currentChantIndex ? " active" : ""}`;
+      card.type = "button";
+      card.dataset.trackIndex = String(idx);
+      const title = copy[track.titleKey] || track.titleDefault;
+
+      card.innerHTML = `
+        <span class="chant-track-icon">${track.icon || "📿"}</span>
+        <div class="chant-track-texts">
+          <span class="chant-track-name">${title}</span>
+          <span class="chant-track-time">${formatDuration(track.duration)}</span>
+        </div>
+      `;
+      card.addEventListener("click", () => {
+        playChantTrack(idx);
+      });
+      playlistEl.appendChild(card);
+    });
+  }
+
+  updateMiniPlayerUI();
+}
+
 setupBlessings();
 setupLiveMap();
 setupMapDeck();
 setupImpactDialog();
+setupSanskritPlayer();
 loadContentPack();
 renderAll();

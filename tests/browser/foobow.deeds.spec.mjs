@@ -1,12 +1,16 @@
 import { expect, test } from "@playwright/test";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath } from "node:url";
+import path from "node:path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // TDD: written before the catalog was expanded and grouped. Describes the
 // ODD "Deed Type" catalog organised into project categories (a Project
 // Category groups reusable Deed Types the way kindness apps like BeKind and
 // the Great Kindness Challenge group their idea lists).
 
-const appUrl = pathToFileURL(`${process.cwd()}/prototype/app/index.html`).toString();
+const appUrl = pathToFileURL(`${path.resolve(__dirname, "../../prototype/app/index.html")}`).toString();
 
 const PROJECT_CATEGORIES = ["animals", "elders", "environment", "community", "learning"];
 const TOTAL_DEEDS = 19;

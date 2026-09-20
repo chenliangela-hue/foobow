@@ -1,11 +1,15 @@
 import { expect, test } from "@playwright/test";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath } from "node:url";
+import path from "node:path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // TDD: these specs were written before the community feed existed. They
 // describe the ODD objects — Community Post, Post Reply, Post Reaction,
 // Post Tag — through the behaviour a user can observe.
 
-const appUrl = pathToFileURL(`${process.cwd()}/prototype/app/index.html`).toString();
+const appUrl = pathToFileURL(`${path.resolve(__dirname, "../../prototype/app/index.html")}`).toString();
 
 test.beforeEach(async ({ page }) => {
   await page.goto(appUrl);

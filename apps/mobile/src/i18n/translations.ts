@@ -219,7 +219,22 @@ export const en = {
     tree: "Plant Seedling",
     treeDesc: "Sprout green virtue",
     perform: "🌊 Perform Deed Here (+5 Merit)"
-  }
+  },
+  chants: {
+    eyebrow: "Sanskrit Chants · 梵音",
+    title: "Sanskrit Chants & Meditation",
+    subtitle: "Sacred mantras for mindfulness and inner peace",
+    play: "Play Chant",
+    pause: "Pause Chant",
+    playing: "Playing",
+    paused: "Paused",
+    completeBtn: "Complete Meditation (+10 Merit)",
+    completeSuccess: "Meditation complete! Merit +10",
+    completeShort: "Session under 30s, cultivate more presence next time.",
+    trackDaBeiZhou: "Great Compassion Mantra (大悲咒)",
+    trackHeartSutra: "Heart Sutra (心经)",
+    trackBodhiTheme: "Bodhi Theme (菩提苑主题曲)"
+  },
 };
 
 export type TranslationShape = typeof en;
@@ -440,7 +455,22 @@ export const zhHans: TranslationShape = {
     tree: "共植绿树",
     treeDesc: "播种新芽，福泽大地",
     perform: "🌊 在此践行善举（功德 +5）"
-  }
+  },
+  chants: {
+    eyebrow: "梵音缭绕 · 静心禅坐",
+    title: "梵音曲库 · 大悲神咒",
+    subtitle: "一念心生 · 一念心灭 · 但有觉知 · 莫住莫离",
+    play: "播放梵音",
+    pause: "暂停梵音",
+    playing: "播放中",
+    paused: "已暂停",
+    completeBtn: "圆满本次禅修 (+10 功德)",
+    completeSuccess: "本次禅修圆满，功德 +10",
+    completeShort: "禅坐时间不足 30 秒，下次更专注一些～",
+    trackDaBeiZhou: "大悲咒（观音大悲 消业除障）",
+    trackHeartSutra: "般若波罗蜜多心经（般若智慧 照见空性）",
+    trackBodhiTheme: "菩提苑主题曲（金光普照 寺院庄严）"
+  },
 };
 
 export const fr: TranslationShape = {
@@ -630,7 +660,22 @@ export const fr: TranslationShape = {
     tree: "Planter un arbre",
     treeDesc: "Faire germer la vertu",
     perform: "🌊 Accomplir l'action ici (+5 mérite)"
-  }
+  },
+  chants: {
+    eyebrow: "Chants sacrés · 梵音",
+    title: "Chants sanskrits & méditation",
+    subtitle: "Mantras sacrés pour la paix intérieure et la pleine conscience",
+    play: "Écouter le chant",
+    pause: "Mettre en pause",
+    playing: "Lecture",
+    paused: "En pause",
+    completeBtn: "Terminer la méditation (+10 Mérite)",
+    completeSuccess: "Méditation accomplie ! Mérite +10",
+    completeShort: "Session courte (<30s), cultivez plus de présence la prochaine fois.",
+    trackDaBeiZhou: "Mantra de la Grande Compassion (Da Bei Zhou)",
+    trackHeartSutra: "Sūtra du Cœur (Heart Sutra)",
+    trackBodhiTheme: "Thème Bodhi Garden"
+  },
 };
 
 export const es: TranslationShape = {
@@ -820,7 +865,22 @@ export const es: TranslationShape = {
     tree: "Plantar un brote",
     treeDesc: "Germinar virtud verde",
     perform: "🌊 Realizar acción aquí (+5 mérito)"
-  }
+  },
+  chants: {
+    eyebrow: "Cánticos sagrados · 梵音",
+    title: "Cánticos sánscritos y meditación",
+    subtitle: "Mantras sagrados para la paz interior y la atención plena",
+    play: "Reproducir cántico",
+    pause: "Pausar cántico",
+    playing: "Reproduciendo",
+    paused: "En pausa",
+    completeBtn: "Completar meditación (+10 Mérito)",
+    completeSuccess: "¡Meditación completada! Mérito +10",
+    completeShort: "Sesión menor de 30s, cultiva más presencia la próxima vez.",
+    trackDaBeiZhou: "Mantra de la Gran Compasión (Da Bei Zhou)",
+    trackHeartSutra: "Sutra del Corazón (Heart Sutra)",
+    trackBodhiTheme: "Tema Jardín Bodhi"
+  },
 };
 
 export const th: TranslationShape = {
@@ -1010,7 +1070,22 @@ export const th: TranslationShape = {
     tree: "ปลูกต้นกล้า",
     treeDesc: "เพาะพันธุ์กุศลอันเขียวขจี",
     perform: "🌊 ทำความดี ณ ที่นี่ (+5 บุญ)"
-  }
+  },
+  chants: {
+    eyebrow: "บทสวดมนต์สันสกฤต · 梵音",
+    title: "บทสวดสันสกฤตและการเจริญสติ",
+    subtitle: "มนต์ศักดิ์สิทธิ์เพื่อความสงบสุขและความรู้แจ้ง",
+    play: "เปิดบทสวด",
+    pause: "พักบทสวด",
+    playing: "กำลังเล่น",
+    paused: "พักชั่วคราว",
+    completeBtn: "เสร็จสิ้นการภาวนา (+10 กุศล)",
+    completeSuccess: "การเจริญสติบริบูรณ์ กุศล +10",
+    completeShort: "เวลาน้อยกว่า 30 วินาที คราวหน้าขอให้มีสติยาวนานขึ้น",
+    trackDaBeiZhou: "มหากรุณาธารณีสูตร (บทสวดมหากรุณา)",
+    trackHeartSutra: "ปรัชญาปารมิตาหฤทัยสูตร (หัวใจพระสูตร)",
+    trackBodhiTheme: "บทเพลงแดนโพธิ์"
+  },
 };
 
 export const ja: TranslationShape = {
@@ -1200,5 +1275,20 @@ export const ja: TranslationShape = {
     tree: "若木を植える",
     treeDesc: "緑の徳を育む",
     perform: "🌊 ここで善行を行う（功徳 +5）"
-  }
+  },
+  chants: {
+    eyebrow: "梵音の響き · 梵音",
+    title: "サンスクリット梵音・静寂の瞑想",
+    subtitle: "心の平安と気づきをもたらす聖なる調べ",
+    play: "梵音を再生",
+    pause: "一時停止",
+    playing: "再生中",
+    paused: "停止中",
+    completeBtn: "瞑想を円満に終える (+10 功徳)",
+    completeSuccess: "今回の瞑想が円満に成就しました。功徳 +10",
+    completeShort: "座禅時間が30秒未満です。次回はより集中してみましょう。",
+    trackDaBeiZhou: "大悲心陀羅尼（大悲呪）",
+    trackHeartSutra: "般若波羅蜜多心経（心経）",
+    trackBodhiTheme: "菩提苑テーマ曲"
+  },
 };

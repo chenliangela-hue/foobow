@@ -15,6 +15,15 @@
       <div class="zen-ember" style="left: 78%; width: 5px; height: 5px; animation-duration: 11s; animation-delay: 1.5s;"></div>
       <div class="zen-ember" style="left: 90%; width: 4px; height: 4px; animation-duration: 8.5s; animation-delay: 4s;"></div>
     </div>
+    <div class="zen-mountain-backdrop" aria-hidden="true">
+      <svg viewBox="0 0 1440 480" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 380 Q 240 260 480 340 T 960 300 T 1440 370 L 1440 480 L 0 480 Z" fill="currentColor" fill-opacity="0.25"/>
+        <path d="M0 410 Q 180 340 360 390 Q 520 310 700 370 T 1100 340 Q 1280 290 1440 400 L 1440 480 L 0 480 Z" fill="currentColor" fill-opacity="0.4"/>
+        <path d="M685 365 L690 345 L687 345 L693 330 L691 330 L695 315 L695 305 L697 305 L697 315 L701 330 L699 330 L705 345 L702 345 L707 365 Z" fill="currentColor" fill-opacity="0.5"/>
+        <path d="M0 440 Q 280 400 560 435 Q 840 390 1120 430 T 1440 440 L 1440 480 L 0 480 Z" fill="currentColor" fill-opacity="0.6"/>
+      </svg>
+    </div>
+    <div id="zenLotusRiseContainer" class="zen-lotus-rise-container" aria-hidden="true"></div>
     <div class="app-shell">
       <header class="topbar">
         <a class="app-brand" href="/" aria-label="Foobow home — back to landing page">
@@ -33,6 +42,7 @@
 
         <div class="top-actions">
           <select class="lang-select" id="languageSelect" aria-label="Switch language"></select>
+          <button class="icon-button chants-top-btn" id="openChantsHeaderBtn" type="button" aria-label="Sanskrit Chants & Meditation" title="Sanskrit Chants & Meditation">📿</button>
           <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button>
           <button class="icon-button" id="seniorToggle" type="button" aria-label="Toggle senior readability mode" aria-pressed="false">Aa</button>
           <div class="profile-menu">
@@ -479,8 +489,8 @@
             </section>
 
             <div class="spot-actions-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 8px;">
-              <button class="text-button" id="spotActionBtn" type="button">Perform matching deed →</button>
-              <button class="text-button" id="openLiveMapBtn" type="button">🌐 Live OpenStreetMap Sanctuary</button>
+              <button class="text-button" id="spotActionBtn" type="button" data-i18n="matchDeedBtn">Perform matching deed →</button>
+              <button class="text-button" id="openLiveMapBtn" type="button" data-i18n="liveMapOpen">🌐 Live OpenStreetMap Sanctuary</button>
             </div>
             <div class="layer-row" id="mapLayerRow" aria-label="Map category filters"></div>
           </section>
@@ -687,9 +697,9 @@
             </div>
           </div>
           <div class="stat-grid">
-            <div><strong id="deedCount">42</strong><span>deeds</span></div>
-            <div><strong>9</strong><span>badges</span></div>
-            <div><strong>$18</strong><span>donated</span></div>
+            <div><strong id="deedCount">42</strong><span data-i18n="statDeeds">deeds</span></div>
+            <div><strong>9</strong><span data-i18n="statBadges">badges</span></div>
+            <div><strong>$18</strong><span data-i18n="statDonated">donated</span></div>
           </div>
           <section class="panel progress-panel">
             <div class="section-heading">
@@ -736,6 +746,28 @@
 
       <p class="action-whisper" id="actionWhisper" role="status" aria-live="polite"></p>
 
+      <aside class="zen-mini-player" id="zenMiniPlayer" aria-label="Sanskrit Chants Player">
+        <div class="mini-player-track" id="miniPlayerTrackBtn" role="button" tabindex="0" title="Open Sanskrit Chants">
+          <span class="mini-disc-icon" id="miniDiscIcon">📿</span>
+          <div class="mini-track-info">
+            <span class="mini-track-title" id="miniTrackTitle">大悲咒 · Great Compassion</span>
+            <div class="mini-track-meta">
+              <span class="mini-track-status" id="miniTrackStatus">Paused</span>
+              <div class="mini-eq-bars" id="miniEqBars" aria-hidden="true">
+                <span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mini-player-controls">
+          <button class="mini-ctrl-btn" id="miniPlayPauseBtn" type="button" aria-label="Play or pause chant">▶</button>
+          <button class="mini-ctrl-btn mini-open-btn" id="miniOpenFullBtn" type="button" aria-label="Open full player" data-i18n="chantsMiniOpen">梵音</button>
+        </div>
+        <div class="mini-progress-bar">
+          <div class="mini-progress-fill" id="miniProgressFill"></div>
+        </div>
+      </aside>
+
       <nav class="bottom-nav" aria-label="Primary">
         <button class="nav-item active" type="button" data-target="today">Today</button>
         <button class="nav-item" type="button" data-target="blessings">Blessings</button>
@@ -760,8 +792,8 @@
         <div class="ethical-badge-callout">
           <span class="ethical-seal">⚖️</span>
           <div>
-            <strong>Pure Giving Decoupling · 无相布施</strong>
-            <p>0 karma points awarded. True spiritual merit cannot be bought with money.</p>
+            <strong data-i18n="supportTitle">Pure Giving Decoupling · 无相布施</strong>
+            <p data-i18n="supportSubtitle">0 karma points awarded. True spiritual merit cannot be bought with money.</p>
           </div>
         </div>
 
@@ -772,7 +804,7 @@
         </div>
 
         <div class="payment-methods-block">
-          <p class="field-label">Payment Method (Test Mode):</p>
+          <p class="field-label" data-i18n="supportPaymentMethod">Payment Method (Test Mode):</p>
           <div class="payment-method-row">
             <button type="button" class="pay-method-chip active" data-method="stripe">💳 Stripe (Card / Apple Pay)</button>
             <button type="button" class="pay-method-chip" data-method="wechat">🟢 WeChat Pay (微信支付)</button>
@@ -781,21 +813,21 @@
         </div>
 
         <div class="dedication-block">
-          <label class="field-label" for="donationDedication">Optional Dedication (回向发愿):</label>
-          <input type="text" id="donationDedication" class="dialog-input" placeholder="e.g., Dedicated to family wellbeing and world peace">
+          <label class="field-label" for="donationDedication" data-i18n="supportDedication">Optional Dedication (回向发愿):</label>
+          <input type="text" id="donationDedication" class="dialog-input" data-i18n-placeholder="supportDedicationPlaceholder" placeholder="e.g., Dedicated to family wellbeing and world peace">
         </div>
 
         <div id="donationReceiptArea" class="donation-receipt-card" style="display: none;">
           <div class="receipt-seal">🪷</div>
-          <h4>Voluntary Support Certificate · 随喜收据</h4>
+          <h4 data-i18n="certificateTitle">Voluntary Support Certificate · 随喜收据</h4>
           <p class="receipt-id" id="receiptCode">#FOB-2026-9281</p>
           <p class="receipt-details" id="receiptDetails">Campaign: Foobow Operating Support · Amount: $3.00 USD</p>
-          <p class="receipt-dedication" id="receiptDedication">Dedicated to all sentient beings (回向众生)</p>
-          <p class="receipt-note">Decoupled from karma: 0 karma points awarded. Thank you for your selfless stewardship.</p>
+          <p class="receipt-dedication" id="receiptDedication" data-i18n="certificateDedication">Dedicated to all sentient beings (回向众生)</p>
+          <p class="receipt-note" data-i18n="certificateEthics">Decoupled from karma: 0 karma points awarded. Thank you for your selfless stewardship.</p>
         </div>
 
         <div class="dialog-actions">
-          <button class="primary-action" id="submitDonationBtn" type="button">Support $3.00 USD (Test Checkout)</button>
+          <button class="primary-action" id="submitDonationBtn" type="button" data-i18n="supportCheckout">Support $3.00 USD (Test Checkout)</button>
           <button class="primary-action text-button" id="closeDialog" type="button" data-i18n="closeDialog">Close</button>
         </div>
       </div>
@@ -832,14 +864,78 @@
           <p class="live-map-desc" id="liveMapDesc">Freshwater aquatic sanctuary & wetland biosphere.</p>
         </div>
         <div class="dialog-actions">
-          <button class="primary-action" id="dedicateLiveRippleBtn" type="button">Dedicate Ripple to this Sanctuary (+1)</button>
-          <button class="text-button" id="closeLiveMapBtn" type="button">Close</button>
+          <button class="primary-action" id="dedicateLiveRippleBtn" type="button" data-i18n="liveMapDedicate">Dedicate Ripple to this Sanctuary (+1)</button>
+          <button class="text-button" id="closeLiveMapBtn" type="button" data-i18n="liveMapClose">Close</button>
         </div>
       </div>
     </dialog>
 
+    <dialog id="chantsDialog" class="zen-dialog chants-dialog">
+      <div class="dialog-body chants-dialog-body">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow" data-i18n="chantsNav">Sanskrit Chants · 梵音</p>
+            <h2 data-i18n="chantsTitle">Sanskrit Chants & Meditation</h2>
+          </div>
+          <button class="icon-close-btn" id="closeChantsBtn" type="button" aria-label="Close chants player">✕</button>
+        </div>
+
+        <div class="chants-player-hero">
+          <div class="chants-disk-wrapper">
+            <div class="chants-halo-pulse" id="chantsHalo"></div>
+            <div class="chants-lotus-disk" id="chantsDisk">
+              <span class="chants-disk-icon" id="chantsDiskIcon">📿</span>
+            </div>
+          </div>
+          <h3 class="chants-hero-title" id="chantsHeroTitle">大悲咒</h3>
+          <p class="chants-hero-subtitle" id="chantsHeroSubtitle">观音大悲 · 消业除障 · 慈悲护佑</p>
+
+          <div class="chants-scrubber-area">
+            <span class="chants-time" id="chantsTimeElapsed">0:00</span>
+            <div class="chants-scrubber" id="chantsScrubber" role="slider" aria-label="Track progress">
+              <div class="chants-scrubber-fill" id="chantsScrubberFill"></div>
+              <div class="chants-scrubber-thumb" id="chantsScrubberThumb"></div>
+            </div>
+            <span class="chants-time" id="chantsTimeTotal">4:06</span>
+          </div>
+
+          <div class="chants-main-controls">
+            <button class="chants-round-btn" id="chantsPrevBtn" type="button" aria-label="Previous track">⏮</button>
+            <button class="chants-play-btn" id="chantsHeroPlayBtn" type="button" aria-label="Play or pause">▶</button>
+            <button class="chants-round-btn" id="chantsNextBtn" type="button" aria-label="Next track">⏭</button>
+          </div>
+
+          <div class="chants-volume-row">
+            <span aria-hidden="true">🔉</span>
+            <input type="range" id="chantsVolumeSlider" min="0" max="100" value="70" aria-label="Volume">
+            <span id="chantsVolumeValue">70%</span>
+          </div>
+        </div>
+
+        <div class="chants-meditation-session">
+          <div class="chants-session-info">
+            <p class="chants-session-text" id="chantsSessionDurationText">Current session: 0m 0s</p>
+            <button class="chants-complete-btn" id="chantsCompleteSessionBtn" type="button" data-i18n="chantsCompleteBtn">Complete Meditation</button>
+          </div>
+          <div class="chants-merit-toast" id="chantsMeritToast" hidden></div>
+        </div>
+
+        <div class="chants-playlist-section">
+          <h4 class="chants-playlist-title" data-i18n="chantsNav">Sacred Playlist · 梵音曲库</h4>
+          <div class="chants-playlist" id="chantsPlaylist"></div>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="text-button" id="closeChantsBottomBtn" type="button" data-i18n="closeDialog">Close</button>
+        </div>
+      </div>
+    </dialog>
+
+    <audio id="sanskritAudio" preload="auto"></audio>
+
     <script src="data.js"></script>
     <script src="i18n.js"></script>
+    <script src="sanskrit-tracks.js"></script>
     <script src="app.js"></script>
     <script src="community.js"></script>
   </body>
