@@ -10,7 +10,14 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div class="cinematic-backdrop" aria-hidden="true"></div>
+    <div class="cinematic-backdrop cinematic-backdrop-container" id="backdropContainer" aria-hidden="true">
+      <div class="cinematic-backdrop-layer active" data-tab="today" style="background-image: radial-gradient(ellipse at 50% 15%, rgba(239, 201, 120, 0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 40%, rgba(112, 214, 176, 0.10) 0%, transparent 50%), linear-gradient(180deg, rgba(5, 47, 49, 0.70) 0%, rgba(5, 47, 49, 0.92) 100%), url('../assets/foobow/backgrounds/tab-today.png');"></div>
+      <div class="cinematic-backdrop-layer" data-tab="blessings" style="background-image: radial-gradient(ellipse at 50% 15%, rgba(239, 201, 120, 0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 40%, rgba(112, 214, 176, 0.10) 0%, transparent 50%), linear-gradient(180deg, rgba(5, 47, 49, 0.70) 0%, rgba(5, 47, 49, 0.92) 100%), url('../assets/foobow/backgrounds/tab-blessings.png');"></div>
+      <div class="cinematic-backdrop-layer" data-tab="map" style="background-image: radial-gradient(ellipse at 50% 15%, rgba(239, 201, 120, 0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 40%, rgba(112, 214, 176, 0.10) 0%, transparent 50%), linear-gradient(180deg, rgba(5, 47, 49, 0.70) 0%, rgba(5, 47, 49, 0.92) 100%), url('../assets/foobow/backgrounds/tab-map.png');"></div>
+      <div class="cinematic-backdrop-layer" data-tab="deeds" style="background-image: radial-gradient(ellipse at 50% 15%, rgba(239, 201, 120, 0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 40%, rgba(112, 214, 176, 0.10) 0%, transparent 50%), linear-gradient(180deg, rgba(5, 47, 49, 0.70) 0%, rgba(5, 47, 49, 0.92) 100%), url('../assets/foobow/backgrounds/tab-deeds.png');"></div>
+      <div class="cinematic-backdrop-layer" data-tab="community" style="background-image: radial-gradient(ellipse at 50% 15%, rgba(239, 201, 120, 0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 40%, rgba(112, 214, 176, 0.10) 0%, transparent 50%), linear-gradient(180deg, rgba(5, 47, 49, 0.70) 0%, rgba(5, 47, 49, 0.92) 100%), url('../assets/foobow/backgrounds/tab-community.png');"></div>
+      <div class="cinematic-backdrop-layer" data-tab="profile" style="background-image: radial-gradient(ellipse at 50% 15%, rgba(239, 201, 120, 0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 40%, rgba(112, 214, 176, 0.10) 0%, transparent 50%), linear-gradient(180deg, rgba(5, 47, 49, 0.70) 0%, rgba(5, 47, 49, 0.92) 100%), url('../assets/foobow/backgrounds/tab-profile.png');"></div>
+    </div>
     <div class="zen-ambient-embers" aria-hidden="true">
       <div class="zen-ember" style="left: 10%; width: 5px; height: 5px; animation-duration: 9s; animation-delay: 0s;"></div>
       <div class="zen-ember" style="left: 25%; width: 4px; height: 4px; animation-duration: 7s; animation-delay: 2s;"></div>
@@ -432,10 +439,31 @@
         <section class="screen" id="screen-map" aria-labelledby="map-title">
           <div class="map-stage">
             <div class="map-copy">
-              <p class="eyebrow" data-i18n="mapEyebrow">World map</p>
-              <h2 id="map-title" data-i18n="mapTitle">Explore places that need a little light.</h2>
+              <div class="map-title-row">
+                <div>
+                  <p class="eyebrow" data-i18n="mapEyebrow">World map</p>
+                  <h2 id="map-title" data-i18n="mapTitle">Explore places that need a little light.</h2>
+                </div>
+                <div class="map-view-switcher" role="group" aria-label="Map view mode">
+                  <button class="map-view-btn active" id="mapModeGlobalBtn" type="button" data-mode="global">🌐 Living Global View</button>
+                  <button class="map-view-btn" id="mapModeOsmBtn" type="button" data-mode="osm">🗺️ OpenStreetMap Sanctuary</button>
+                </div>
+              </div>
             </div>
             <div class="world-map" id="worldMapSurface" aria-label="Stylized good deed world map">
+              <div class="map-global-globe-wrap" id="mapGlobalGlobeWrap" aria-hidden="true">
+                <img src="../assets/foobow/objects/earth-globe-3d.png" alt="" class="map-globe-img">
+                <div class="map-global-overlay-glow"></div>
+              </div>
+              <div class="map-embedded-osm-viewport" id="embeddedOsmViewport" aria-hidden="true" hidden>
+                <div class="embedded-osm-tiles" id="embeddedOsmTiles"></div>
+                <div class="embedded-osm-center-pin">🪷</div>
+                <div class="embedded-osm-controls">
+                  <button class="embedded-ctrl-btn" id="osmZoomInBtn" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+                  <button class="embedded-ctrl-btn" id="osmZoomOutBtn" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+                </div>
+                <div class="embedded-osm-attribution">© OpenStreetMap contributors · Mindful Cartography</div>
+              </div>
               <div class="map-anim-overlay" id="mapAnimOverlay" aria-hidden="true"></div>
               <button class="map-pin lake active" type="button" data-spot-id="east-lake" aria-label="East Lake good deed spot" aria-pressed="true">
                 <span class="pin-pulse" aria-hidden="true"></span>
@@ -523,7 +551,10 @@
               <p class="eyebrow" data-i18n="deedsEyebrow">Deed catalog</p>
               <h2 id="deeds-title" data-i18n="deedsTitle">Small rituals, clear categories.</h2>
             </div>
-            <span class="soft-pill" id="deedTypeCount">4 shown</span>
+            <div class="deeds-heading-controls">
+              <input class="deed-search-input" id="deedSearchInput" type="search" placeholder="Search deeds..." aria-label="Search deeds">
+              <span class="soft-pill" id="deedTypeCount">4 shown</span>
+            </div>
           </div>
           <div class="layer-row deed-filter-row" id="deedCategoryRow" aria-label="Deed category filters"></div>
           <div class="deed-list" id="deedList">
@@ -622,6 +653,22 @@
                     <path class="koi-tail" d="M12 17 C6 8 0 10 2 17 C0 24 6 26 12 17 Z" fill="rgba(246,211,122,0.9)"/>
                   </svg>
                 </div>
+              </div>
+
+              <!-- Multi-scene dynamic themes -->
+              <div class="deed-scene-layer scene-crosswalk-layer" id="sceneCrosswalkLayer" aria-hidden="true">
+                <div class="crosswalk-lantern lantern-left">🏮</div>
+                <div class="crosswalk-lantern lantern-right">🏮</div>
+                <div class="crosswalk-pedestrian-light">🚶‍♂️</div>
+              </div>
+              <div class="deed-scene-layer scene-blessing-layer" id="sceneBlessingLayer" aria-hidden="true">
+                <div class="blessing-floating-heart">💖</div>
+                <div class="blessing-floating-lantern">🪔</div>
+              </div>
+              <div class="deed-scene-layer scene-coastline-layer" id="sceneCoastlineLayer" aria-hidden="true">
+                <div class="coastline-sparkle sparkle-1">✨</div>
+                <div class="coastline-sparkle sparkle-2">🌱</div>
+                <div class="coastline-sparkle sparkle-3">🐚</div>
               </div>
 
               <div class="shoreline"></div>

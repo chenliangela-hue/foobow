@@ -106,23 +106,45 @@ body::before {
   inset: 0;
   z-index: -2;
   pointer-events: none;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+.cinematic-backdrop-layer {
+  position: absolute;
+  inset: -20px;
   background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: 0.38;
-  background-image:
-    radial-gradient(ellipse at 50% 10%, rgba(239, 201, 120, 0.14) 0%, transparent 60%),
-    radial-gradient(circle at 50% 90%, rgba(112, 214, 176, 0.16) 0%, transparent 70%),
-    url('../assets/foobow/backgrounds/hero-night-lake.png');
-  transition: opacity 600ms ease;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), transform 850ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
 }
 
-body.dark .cinematic-backdrop {
-  opacity: 0.45;
-  background-image:
-    radial-gradient(ellipse at 50% 10%, rgba(239, 201, 120, 0.16) 0%, transparent 60%),
-    radial-gradient(circle at 50% 90%, rgba(112, 214, 176, 0.20) 0%, transparent 70%),
-    url('../assets/foobow/backgrounds/hero-night-lake.png');
+.cinematic-backdrop-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 10%, rgba(239, 201, 120, 0.14) 0%, transparent 60%),
+    radial-gradient(circle at 50% 90%, rgba(112, 214, 176, 0.16) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cinematic-backdrop-layer.active {
+  opacity: 0.42;
+  transform: scale(1);
+}
+
+body.dark .cinematic-backdrop-layer.active {
+  opacity: 0.52;
+}
+
+body.dark .cinematic-backdrop-layer::before {
+  background:
+    radial-gradient(ellipse at 50% 10%, rgba(239, 201, 120, 0.18) 0%, transparent 60%),
+    radial-gradient(circle at 50% 90%, rgba(112, 214, 176, 0.22) 0%, transparent 70%);
 }
 
 .brand-lotus-mini {
@@ -503,12 +525,25 @@ h3 {
 
 .screen {
   display: none;
-  animation: rise 360ms ease both;
   padding-inline: 2px;
 }
 
 .screen.active {
   display: block;
+  animation: screenVividEnter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes screenVividEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 @keyframes rise {
@@ -4845,6 +4880,401 @@ body.dark .zen-mountain-backdrop {
   font-size: 0.84rem;
   color: var(--muted);
   line-height: 1.4;
+}
+
+/* ==========================================================================
+   Map Dual-Mode View Switcher (Sanctuary Mode vs Live OSM Mode)
+   ========================================================================== */
+.map-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.map-view-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(7, 46, 47, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.map-view-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.map-view-btn:hover {
+  color: #fffaf0;
+  background: rgba(239, 201, 120, 0.12);
+}
+
+.map-view-btn.active {
+  color: #072a2b;
+  background: linear-gradient(135deg, #ffe7ad 0%, #efc978 100%);
+  box-shadow: 0 2px 10px rgba(239, 201, 120, 0.35);
+  font-weight: 700;
+}
+
+/* Floating 3D Connected Earth Object */
+.map-global-globe-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-globe-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 35px rgba(112, 214, 176, 0.35)) drop-shadow(0 0 15px rgba(239, 201, 120, 0.2));
+  animation: globeFloat 8s ease-in-out infinite alternate;
+}
+
+.map-globe-glow {
+  position: absolute;
+  inset: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(112, 214, 176, 0.22) 0%, rgba(239, 201, 120, 0.08) 50%, transparent 70%);
+  pointer-events: none;
+  animation: globeGlowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes globeFloat {
+  0% { transform: translateY(-4px) rotate(0deg) scale(0.98); }
+  100% { transform: translateY(6px) rotate(3deg) scale(1.02); }
+}
+
+@keyframes globeGlowPulse {
+  0% { transform: scale(0.92); opacity: 0.55; }
+  100% { transform: scale(1.12); opacity: 0.9; }
+}
+
+/* Real-time Embedded OSM Viewport */
+.map-embedded-osm-viewport {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  overflow: hidden;
+  background: #052f31;
+}
+
+.map-embedded-osm-viewport[hidden] {
+  display: none !important;
+}
+
+.embedded-osm-tiles {
+  position: absolute;
+  inset: -60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  cursor: grab;
+  user-select: none;
+  filter: sepia(0.3) hue-rotate(15deg) contrast(1.04) brightness(0.96);
+  transition: transform 180ms ease-out;
+}
+
+.embedded-osm-tiles:active {
+  cursor: grabbing;
+}
+
+.embedded-osm-tile {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.embedded-osm-center-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.center-pin-halo {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 201, 120, 0.45) 0%, transparent 70%);
+  animation: pulse 2.2s infinite ease-out;
+}
+
+.center-pin-lotus {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
+  animation: floatLotus 3s ease-in-out infinite alternate;
+}
+
+@keyframes floatLotus {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-4px) scale(1.05); }
+}
+
+.embedded-osm-controls {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 12;
+}
+
+.embedded-ctrl-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(7, 46, 47, 0.88);
+  color: #fffaf0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: all 180ms ease;
+}
+
+.embedded-ctrl-btn:hover {
+  background: rgba(239, 201, 120, 0.28);
+  color: #ffe7ad;
+  border-color: var(--gold);
+  transform: scale(1.06);
+}
+
+.embedded-osm-attribution {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-size: 0.68rem;
+  color: rgba(255, 250, 240, 0.75);
+  background: rgba(5, 38, 40, 0.88);
+  padding: 2px 8px;
+  border-radius: 4px;
+  z-index: 12;
+}
+
+.embedded-osm-attribution a {
+  color: #ffe7ad;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Deed Search & Filter
+   ========================================================================= */
+.deed-search-input {
+  min-height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(8, 56, 58, 0.85);
+  color: #fffaf0;
+  padding: 6px 14px 6px 34px;
+  font-size: 0.82rem;
+  font-family: inherit;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23aaf0d6' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  transition: border-color 200ms ease, box-shadow 200ms ease, width 200ms ease;
+  width: min(100%, 200px);
+}
+
+.deed-search-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 14px rgba(239, 201, 120, 0.28);
+  outline: none;
+  width: min(100%, 240px);
+}
+
+/* ==========================================================================
+   Multi-Scene Dynamic Layers for Deed Ritual Studio
+   ========================================================================== */
+.deed-scene-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: none;
+  z-index: 4;
+}
+
+.deed-scene-layer.active {
+  display: block;
+}
+
+/* Crosswalk & Escort Scene */
+.scene-crosswalk-layer {
+  background: radial-gradient(circle at 50% 80%, rgba(239, 201, 120, 0.15) 0%, transparent 70%);
+}
+
+.crosswalk-stripes {
+  position: absolute;
+  bottom: 12px;
+  left: 20%;
+  right: 20%;
+  height: 14px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.45) 12px, transparent 12px, transparent 24px);
+  border-radius: 4px;
+}
+
+.elder-pedestrian {
+  position: absolute;
+  bottom: 24px;
+  left: 28%;
+  font-size: 1.6rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  animation: pedestrianStep 2.5s ease-in-out infinite alternate;
+}
+
+.escort-heart {
+  position: absolute;
+  bottom: 50px;
+  left: 36%;
+  font-size: 1.1rem;
+  animation: heartFloat 2s ease-in-out infinite alternate;
+}
+
+@keyframes pedestrianStep {
+  0% { transform: translateX(0) rotate(-2deg); }
+  100% { transform: translateX(28px) rotate(2deg); }
+}
+
+@keyframes heartFloat {
+  0% { transform: translateY(0) scale(0.9); opacity: 0.8; }
+  100% { transform: translateY(-8px) scale(1.15); opacity: 1; filter: drop-shadow(0 0 8px rgba(239, 201, 120, 0.8)); }
+}
+
+/* Floating Blessing Lantern Scene */
+.scene-blessing-layer {
+  background: radial-gradient(circle at 60% 40%, rgba(239, 201, 120, 0.2) 0%, transparent 65%);
+}
+
+.floating-lotus-lantern {
+  position: absolute;
+  top: 36px;
+  left: 55%;
+  font-size: 2rem;
+  filter: drop-shadow(0 0 16px rgba(239, 201, 120, 0.85));
+  animation: lanternSwayFloat 3.6s ease-in-out infinite alternate;
+}
+
+.blessing-streamer {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  font-size: 0.82rem;
+  color: var(--gold);
+  background: rgba(7, 46, 47, 0.8);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(239, 201, 120, 0.4);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  animation: streamerShimmer 3s ease-in-out infinite alternate;
+}
+
+@keyframes lanternSwayFloat {
+  0% { transform: translateY(0) rotate(-4deg); }
+  100% { transform: translateY(-12px) rotate(5deg); }
+}
+
+@keyframes streamerShimmer {
+  0% { opacity: 0.75; transform: translateX(-50%) scale(0.96); }
+  100% { opacity: 1; transform: translateX(-50%) scale(1.04); box-shadow: 0 0 10px rgba(239, 201, 120, 0.35); }
+}
+
+/* Coastline Nature Cleanup Scene */
+.scene-coastline-layer {
+  background: radial-gradient(circle at 40% 60%, rgba(112, 214, 176, 0.18) 0%, transparent 70%);
+}
+
+.coastline-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(180deg, transparent, rgba(112, 214, 176, 0.25));
+  border-top: 1px dashed rgba(112, 214, 176, 0.4);
+}
+
+.nature-sparkle {
+  position: absolute;
+  font-size: 1.25rem;
+  animation: sparkleBounce 2.4s ease-in-out infinite alternate;
+}
+
+.nature-sparkle.s1 {
+  top: 30px;
+  left: 22%;
+  animation-delay: 0s;
+}
+
+.nature-sparkle.s2 {
+  top: 48px;
+  left: 70%;
+  animation-delay: 0.8s;
+}
+
+@keyframes sparkleBounce {
+  0% { transform: translateY(0) scale(0.85); opacity: 0.6; }
+  100% { transform: translateY(-8px) scale(1.15); opacity: 1; filter: drop-shadow(0 0 10px rgba(112, 214, 176, 0.7)); }
+}
+
+/* Reduced Motion Fallbacks */
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-backdrop-layer,
+  .screen.active,
+  .map-globe-img,
+  .map-globe-glow,
+  .center-pin-halo,
+  .center-pin-lotus,
+  .elder-pedestrian,
+  .escort-heart,
+  .floating-lotus-lantern,
+  .blessing-streamer,
+  .nature-sparkle {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 

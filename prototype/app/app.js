@@ -407,14 +407,25 @@ function buildDeedItem(deed) {
 }
 
 // The catalog is grouped into project categories (ODD: Project Category
+let deedSearchQuery = "";
+
+// The catalog is grouped into project categories (ODD: Project Category
 // groups Deed Types). "All" shows every group; a filter shows just one.
 function renderDeeds() {
   const list = document.getElementById("deedList");
   list.replaceChildren();
 
-  const visibleDeeds = data.deeds.filter(
-    (deed) => state.activeCategory === "all" || deed.categoryKey === state.activeCategory
-  );
+  const query = (deedSearchQuery || "").trim().toLowerCase();
+  const visibleDeeds = data.deeds.filter((deed) => {
+    const matchesCategory = state.activeCategory === "all" || deed.categoryKey === state.activeCategory;
+    if (!matchesCategory) return false;
+    if (!query) return true;
+    const titleMatch = (deed.title || "").toLowerCase().includes(query);
+    const descMatch = (deed.description || "").toLowerCase().includes(query);
+    const shortMatch = (deed.shortDescription || "").toLowerCase().includes(query);
+    return titleMatch || descMatch || shortMatch;
+  });
+
   if (!visibleDeeds.some((deed) => deed.id === state.selectedDeed)) {
     state.selectedDeed = visibleDeeds[0]?.id || data.deeds[0].id;
   }
@@ -425,7 +436,7 @@ function renderDeeds() {
       : [state.activeCategory];
 
   groupIds.forEach((categoryId) => {
-    const deeds = data.deeds.filter((deed) => deed.categoryKey === categoryId);
+    const deeds = visibleDeeds.filter((deed) => deed.categoryKey === categoryId);
     if (!deeds.length) return;
     const category = data.categories.find((c) => c.id === categoryId);
 
@@ -476,6 +487,15 @@ function renderSelectedDeed() {
     dedication.hidden = true;
     dedication.classList.remove("active");
   }
+
+  // Dynamic Multi-scene studio layers
+  const crosswalk = document.getElementById("sceneCrosswalkLayer");
+  const blessing = document.getElementById("sceneBlessingLayer");
+  const coastline = document.getElementById("sceneCoastlineLayer");
+  if (crosswalk) crosswalk.classList.toggle("active", deed.id === "elder-crosswalk" || deed.categoryKey === "elders");
+  if (blessing) blessing.classList.toggle("active", deed.id === "anonymous-blessing" || deed.categoryKey === "support");
+  if (coastline) coastline.classList.toggle("active", deed.id === "coastline-cleanup" || deed.categoryKey === "environment");
+
   renderFocusSession();
 }
 
@@ -700,6 +720,11 @@ function renderSpot(spotId) {
     pin.classList.toggle("active", pin.dataset.spotId === spotId);
     pin.setAttribute("aria-pressed", String(pin.dataset.spotId === spotId));
   });
+
+  if (typeof currentMapMode !== "undefined" && currentMapMode === "osm") {
+    renderEmbeddedOsmTiles(spot);
+  }
+
   saveState();
 }
 
@@ -1387,6 +1412,16 @@ function navigateTo(target) {
   document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));
   const screen = document.getElementById(`screen-${target}`);
   if (screen) screen.classList.add("active");
+
+  // Switch to dedicated sanctuary backdrop for the active tab
+  document.querySelectorAll(".cinematic-backdrop-layer").forEach((layer) => {
+    layer.classList.toggle("active", layer.dataset.tab === target);
+  });
+
+  if (target === "map" && typeof currentMapMode !== "undefined" && currentMapMode === "osm") {
+    const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+    renderEmbeddedOsmTiles(spot);
+  }
 }
 
 // Both the bottom tab bar (buttons) and the top nav (links) drive the same
@@ -1846,6 +1881,98 @@ function setupLiveMap() {
       showActionWhisper(`Dedicated a ripple of kindness to ${spot.name} (+1 karma)`);
     });
   }
+}
+
+let currentMapMode = "global";
+let embeddedOsmZoom = 14;
+
+function renderEmbeddedOsmTiles(spot) {
+  const container = document.getElementById("embeddedOsmTiles");
+  if (!spot || !container) return;
+  const lat = spot.lat || 30.5539;
+  const lng = spot.lng || 114.3644;
+  const z = embeddedOsmZoom;
+
+  const n = Math.pow(2, z);
+  const tileX = Math.floor(((lng + 180) / 360) * n);
+  const latRad = (lat * Math.PI) / 180;
+  const tileY = Math.floor(
+    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
+  );
+
+  container.innerHTML = "";
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      const tx = tileX + dx;
+      const ty = tileY + dy;
+      const img = document.createElement("img");
+      img.className = "embedded-osm-tile";
+      img.alt = `Tile ${z}/${tx}/${ty}`;
+      img.loading = "lazy";
+      img.src = `https://tile.openstreetmap.org/${z}/${tx}/${ty}.png`;
+      img.onerror = () => {
+        img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23052f31" stroke="%230e5254"/><circle cx="128" cy="128" r="90" fill="none" stroke="%231a696c" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%231a696c" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="22" fill="%23efc978" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%2370d6b0" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`;
+      };
+      container.appendChild(img);
+    }
+  }
+}
+
+function setupEmbeddedMapMode() {
+  const globalBtn = document.getElementById("mapModeGlobalBtn");
+  const osmBtn = document.getElementById("mapModeOsmBtn");
+  const globeWrap = document.getElementById("mapGlobalGlobeWrap");
+  const osmViewport = document.getElementById("embeddedOsmViewport");
+  const zoomIn = document.getElementById("osmZoomInBtn");
+  const zoomOut = document.getElementById("osmZoomOutBtn");
+
+  function setMode(mode) {
+    currentMapMode = mode;
+    if (globalBtn) globalBtn.classList.toggle("active", mode === "global");
+    if (osmBtn) osmBtn.classList.toggle("active", mode === "osm");
+    if (globeWrap) globeWrap.hidden = (mode === "osm");
+    if (osmViewport) osmViewport.hidden = (mode !== "osm");
+
+    if (mode === "osm") {
+      const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+      embeddedOsmZoom = spot.zoom || 14;
+      renderEmbeddedOsmTiles(spot);
+    }
+  }
+
+  if (globalBtn) globalBtn.addEventListener("click", () => setMode("global"));
+  if (osmBtn) osmBtn.addEventListener("click", () => setMode("osm"));
+
+  if (zoomIn) {
+    zoomIn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (embeddedOsmZoom < 18) {
+        embeddedOsmZoom++;
+        const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+        renderEmbeddedOsmTiles(spot);
+      }
+    });
+  }
+
+  if (zoomOut) {
+    zoomOut.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (embeddedOsmZoom > 4) {
+        embeddedOsmZoom--;
+        const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+        renderEmbeddedOsmTiles(spot);
+      }
+    });
+  }
+}
+
+function setupDeedSearch() {
+  const searchInput = document.getElementById("deedSearchInput");
+  if (!searchInput) return;
+  searchInput.addEventListener("input", (e) => {
+    deedSearchQuery = e.target.value;
+    renderDeeds();
+  });
 }
 
 // --- Voluntary Ethical Support & Checkout ---
@@ -2325,7 +2452,9 @@ function setupWaterRipples() {
 
 setupBlessings();
 setupLiveMap();
+setupEmbeddedMapMode();
 setupMapDeck();
+setupDeedSearch();
 setupImpactDialog();
 setupSanskritPlayer();
 loadContentPack();
