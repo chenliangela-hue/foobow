@@ -1,6 +1,29 @@
-/* Buddhist colour symbolism: gold = enlightenment, vermilion/朱红 = sacred
-   and protective, saffron = monk robes / renunciation. No greens. */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap');
+
 :root {
+  /* Digital Sanctuary Design Tokens */
+  --bg-deep: #052f31;
+  --bg-dark: #07383a;
+  --bg-card: rgba(8, 58, 58, 0.60);
+  --bg-card-strong: rgba(7, 46, 47, 0.84);
+  --jade: #70d6b0;
+  --jade-light: #aaf0d6;
+  --gold: #efc978;
+  --gold-light: #ffe7ad;
+  --gold-bright: #fff0c7;
+  --cream: #f7f1e6;
+  --cream-soft: #ebe4d4;
+  --pink-lotus: #f4b8a8;
+  --pink-soft: #ffd8ca;
+  --text-primary: #fffaf0;
+  --text-secondary: rgba(255, 250, 240, 0.76);
+  --text-dark: #102c2a;
+  --border-glass: rgba(255, 255, 255, 0.16);
+  --border-gold: rgba(239, 201, 120, 0.44);
+  --radius-card: 24px;
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Light theme variables (WCAG compliant) */
   --bg: #f8f2e7;
   --surface: #fffaf1;
   --surface-strong: #ffffff;
@@ -12,25 +35,25 @@
   --lapis: #3a4a8a;
   --saffron: #c8701c;
   --coral: #a8382a;
-  --gold: #b8892a;
   --shadow: 0 24px 60px rgba(70, 45, 25, 0.18);
   color-scheme: light;
 }
 
 body.dark {
-  --bg: #17110e;
-  --surface: #241b16;
-  --surface-strong: #2d221b;
-  --ink: #f6ece0;
-  --muted: #b8a595;
-  --line: rgba(246, 236, 224, 0.14);
-  --vermilion: #e0705c;
-  --lotus: #d97a99;
-  --lapis: #7d8fc4;
-  --saffron: #e79a4d;
-  --coral: #e0705c;
-  --gold: #e6b95c;
-  --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+  /* Dark Digital Sanctuary Theme */
+  --bg: #052f31;
+  --surface: #07383a;
+  --surface-strong: #0a4648;
+  --ink: #fffaf0;
+  --muted: #aaf0d6;
+  --line: rgba(255, 255, 255, 0.16);
+  --vermilion: #efc978;
+  --lotus: #f4b8a8;
+  --lapis: #70d6b0;
+  --saffron: #ffe7ad;
+  --coral: #f4b8a8;
+  --gold: #efc978;
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
   color-scheme: dark;
 }
 
@@ -43,11 +66,11 @@ body {
   min-height: 100vh;
   background: linear-gradient(145deg, var(--bg), #f1e5d5);
   color: var(--ink);
-  font-family: Cambria, "Iowan Old Style", Georgia, serif;
+  font-family: Inter, "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body.dark {
-  background: linear-gradient(145deg, var(--bg), #100b09);
+  background: linear-gradient(180deg, var(--bg-deep), var(--bg-dark));
 }
 
 /* Slow ambient washes that drift like light through water. */
@@ -75,6 +98,91 @@ body::before {
 
 ::selection {
   background: rgba(198, 155, 63, 0.35);
+}
+
+.cinematic-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+body.dark .cinematic-backdrop {
+  opacity: 0.36;
+  background-image:
+    radial-gradient(ellipse at 50% 10%, rgba(239, 201, 120, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 50% 90%, rgba(112, 214, 176, 0.14) 0%, transparent 70%),
+    url('../assets/foobow/backgrounds/hero-night-lake.png');
+}
+
+.brand-lotus-mini {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-right: 2px;
+  filter: drop-shadow(0 2px 5px rgba(239, 201, 120, 0.5));
+}
+
+.global-kindness-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 14px 18px;
+  margin-top: 14px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+body.dark .global-kindness-card {
+  background: rgba(8, 56, 58, 0.72);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(239, 201, 120, 0.28);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.kindness-metric-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.kindness-metric-num {
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.kindness-metric-num.gold-glow {
+  color: var(--gold);
+  text-shadow: 0 0 16px rgba(239, 201, 120, 0.4);
+}
+
+.kindness-metric-label {
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.kindness-metric-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--line);
+  opacity: 0.7;
 }
 
 button,
@@ -401,6 +509,73 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 16px;
   box-shadow: var(--shadow);
+}
+
+body.dark .hero-panel,
+body.dark .panel,
+body.dark .deed-focus,
+body.dark .spot-detail,
+body.dark .ritual-panel,
+body.dark .calm-ritual-card,
+body.dark .blessing-form,
+body.dark .profile-head,
+body.dark .pray-card,
+body.dark .lamp-card,
+body.dark .incense-card,
+body.dark .muyu-card,
+body.dark .wheel-card,
+body.dark .almanac-panel,
+body.dark .map-deck-panel {
+  background: rgba(8, 56, 58, 0.68);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+}
+
+@media (hover: hover) {
+  body.dark .panel:hover,
+  body.dark .hero-panel:hover,
+  body.dark .pray-card:hover,
+  body.dark .lamp-card:hover,
+  body.dark .incense-card:hover,
+  body.dark .muyu-card:hover,
+  body.dark .wheel-card:hover,
+  body.dark .almanac-panel:hover,
+  body.dark .deed-focus:hover {
+    border-color: rgba(239, 201, 120, 0.38);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 24px rgba(239, 201, 120, 0.12);
+  }
+}
+
+body.dark .primary-action {
+  background: linear-gradient(135deg, #ffe7ad 0%, #efc978 50%, #d4af37 100%);
+  color: #072a2b;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(239, 201, 120, 0.28);
+  border-radius: 999px;
+}
+
+body.dark .primary-action:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 12px 30px rgba(239, 201, 120, 0.42);
+}
+
+body.dark .bottom-nav {
+  background: rgba(5, 47, 49, 0.88);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 0;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark .nav-item.active {
+  background: linear-gradient(135deg, rgba(239, 201, 120, 0.22), rgba(112, 214, 176, 0.16));
+  color: #ffe7ad;
+  border: 1px solid rgba(239, 201, 120, 0.45);
+  box-shadow: 0 0 16px rgba(239, 201, 120, 0.25);
 }
 
 .mood,
@@ -1413,14 +1588,15 @@ dialog::backdrop {
 }
 
 @media (min-width: 800px) {
-  /* One calm, centered column on desktop. Earlier a generic two-column grid
-     was applied to every screen; it scattered the richer screens (blessings,
-     deeds, community) into unbalanced, disconnected halves, so all screens
-     now share a single comfortable reading column. */
   .app-shell {
-    width: min(100%, 720px);
+    width: min(100%, 1160px);
     min-height: auto;
-    padding-bottom: 96px;
+    padding: 24px 32px 110px;
+  }
+
+  .topbar {
+    margin: -24px -32px 18px;
+    padding: 12px 32px;
   }
 
   main {
@@ -1429,14 +1605,87 @@ dialog::backdrop {
 
   .bottom-nav {
     position: fixed;
-    bottom: 12px;
-    width: min(calc(100% - 32px), 720px);
-    border-radius: 18px;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100% - 48px), 760px);
+    border-radius: 24px;
     border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
 
-  .map-stage {
-    min-height: 440px;
+  #screen-today.active {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  #screen-today .hero-panel,
+  #screen-today .global-kindness-card {
+    grid-column: 1 / -1;
+  }
+
+  #screen-blessings.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  #screen-blessings > .section-heading,
+  #screen-blessings > .safety-note {
+    grid-column: 1 / -1;
+  }
+
+  #screen-map.active {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  #screen-map .map-stage {
+    min-height: 480px;
+  }
+
+  #screen-deeds.active {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  #screen-deeds > .section-heading,
+  #screen-deeds > .deed-filter-row {
+    grid-column: 1 / -1;
+  }
+
+  #screen-deeds .calm-ritual-card {
+    grid-column: 1 / -1;
+  }
+
+  #screen-community.active {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  #screen-community > .section-heading {
+    grid-column: 1 / -1;
+  }
+
+  #screen-profile.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  #screen-profile .profile-head,
+  #screen-profile .stat-grid {
+    grid-column: 1 / -1;
   }
 }
 
@@ -1462,6 +1711,10 @@ dialog::backdrop {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
+  }
+
+  .water-click-ripple {
+    display: none !important;
   }
 }
 
@@ -4221,6 +4474,28 @@ body:not(.dark) .chants-complete-btn {
   font-size: 0.68rem;
   color: var(--muted);
   margin-top: 1px;
+}
+
+/* Tactile water click ripples */
+.water-click-ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 2px solid rgba(239, 201, 120, 0.6);
+  background: radial-gradient(circle, rgba(239, 201, 120, 0.25) 0%, transparent 70%);
+  animation: water-ripple-expand 850ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  z-index: 50;
+}
+
+@keyframes water-ripple-expand {
+  0% {
+    transform: scale(0.08);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
 }
 
 

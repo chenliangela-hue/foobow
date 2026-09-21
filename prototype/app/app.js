@@ -2263,6 +2263,66 @@ function setupSanskritPlayer() {
   updateMiniPlayerUI();
 }
 
+function setupTiltCards() {
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced || window.innerWidth < 800) return;
+
+  const cardSelectors = [
+    ".hero-panel",
+    ".panel",
+    ".deed-focus",
+    ".pray-card",
+    ".lamp-card",
+    ".incense-card",
+    ".muyu-card",
+    ".wheel-card",
+    ".almanac-panel",
+    ".global-kindness-card"
+  ];
+
+  document.querySelectorAll(cardSelectors.join(",")).forEach((card) => {
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -4;
+      const rotateY = ((x - centerX) / centerX) * 4;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "";
+    });
+  });
+}
+
+function setupWaterRipples() {
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (prefersReduced) return;
+
+  document.addEventListener("click", (e) => {
+    const target = e.target.closest(".primary-action, .lamp-stage, #muyuBtn");
+    if (!target) return;
+
+    const ripple = document.createElement("span");
+    ripple.className = "water-click-ripple";
+    const rect = target.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 1.6;
+    ripple.style.width = `${size}px`;
+    ripple.style.height = `${size}px`;
+    ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+    ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
+    target.appendChild(ripple);
+    setTimeout(() => {
+      ripple.remove();
+    }, 900);
+  });
+}
+
 setupBlessings();
 setupLiveMap();
 setupMapDeck();
@@ -2270,3 +2330,5 @@ setupImpactDialog();
 setupSanskritPlayer();
 loadContentPack();
 renderAll();
+setupTiltCards();
+setupWaterRipples();

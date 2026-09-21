@@ -19,19 +19,19 @@ export const colors = {
     shadow: "rgba(70, 45, 25, 0.14)"
   },
   dark: {
-    bg: "#17110e",
-    surface: "#241b16",
-    surfaceStrong: "#2d221b",
-    ink: "#f6ece0",
-    muted: "#b8a595",
-    line: "rgba(246, 236, 224, 0.14)",
-    jade: "#e0705c",
-    bamboo: "#e79a4d",
-    coral: "#e0705c",
-    gold: "#e6b95c",
-    goldGlow: "rgba(230, 185, 92, 0.25)",
-    cardBorder: "rgba(230, 185, 92, 0.20)",
-    shadow: "rgba(0, 0, 0, 0.4)"
+    bg: "#052f31",
+    surface: "#07383a",
+    surfaceStrong: "#0a4648",
+    ink: "#fffaf0",
+    muted: "#aaf0d6",
+    line: "rgba(255, 255, 255, 0.16)",
+    jade: "#70d6b0",
+    bamboo: "#efc978",
+    coral: "#f4b8a8",
+    gold: "#efc978",
+    goldGlow: "rgba(239, 201, 120, 0.35)",
+    cardBorder: "rgba(239, 201, 120, 0.28)",
+    shadow: "rgba(0, 0, 0, 0.45)"
   }
 };
 

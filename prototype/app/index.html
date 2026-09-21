@@ -4,9 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Foobow Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <div class="cinematic-backdrop" aria-hidden="true"></div>
     <div class="zen-ambient-embers" aria-hidden="true">
       <div class="zen-ember" style="left: 10%; width: 5px; height: 5px; animation-duration: 9s; animation-delay: 0s;"></div>
       <div class="zen-ember" style="left: 25%; width: 4px; height: 4px; animation-duration: 7s; animation-delay: 2s;"></div>
@@ -27,7 +31,7 @@
     <div class="app-shell">
       <header class="topbar">
         <a class="app-brand" href="/" aria-label="Foobow home — back to landing page">
-          <span class="brand-mark" aria-hidden="true">福</span>
+          <span class="brand-mark" aria-hidden="true"><img src="../assets/foobow/logo/lotus-logo.png" alt="" class="brand-lotus-mini" onerror="this.style.display='none'"><em>福</em></span>
           <span class="brand-word">Foobow<em>· 福报</em></span>
         </a>
 
@@ -76,6 +80,23 @@
             <div class="karma-ring" aria-label="Karma progress">
               <span id="karmaValue">68</span>
               <small data-i18n="karmaLabel">karma</small>
+            </div>
+          </div>
+
+          <div class="global-kindness-card" aria-label="Global kindness sanctuary">
+            <div class="kindness-metric-col">
+              <span class="kindness-metric-num">1.2M+</span>
+              <span class="kindness-metric-label">Kind Souls</span>
+            </div>
+            <div class="kindness-metric-divider" aria-hidden="true"></div>
+            <div class="kindness-metric-col center-highlight">
+              <span class="kindness-metric-num gold-glow">8.4M+</span>
+              <span class="kindness-metric-label">Blessings Shared</span>
+            </div>
+            <div class="kindness-metric-divider" aria-hidden="true"></div>
+            <div class="kindness-metric-col">
+              <span class="kindness-metric-num">120+</span>
+              <span class="kindness-metric-label">Countries</span>
             </div>
           </div>
 

@@ -8,14 +8,33 @@
     <meta property="og:title" content="Foobow · 福报" />
     <meta property="og:description" content="Gentle good, done gently — a calm daily ritual for your peace of mind." />
     <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="landing.css" />
   </head>
   <body>
+    <!-- Cinematic Layered Backdrop -->
+    <div class="cinematic-backdrop" aria-hidden="true">
+      <div class="bg-layer-photo"></div>
+      <div class="bg-layer-gradient"></div>
+      <div class="bg-layer-glow"></div>
+      <div class="bg-layer-particles">
+        <span class="dust d1"></span>
+        <span class="dust d2"></span>
+        <span class="dust d3"></span>
+        <span class="dust d4"></span>
+        <span class="petal p1"></span>
+        <span class="petal p2"></span>
+        <span class="petal p3"></span>
+      </div>
+    </div>
     <div class="aurora" aria-hidden="true"></div>
 
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Foobow 福报 home">
-        <span class="brand-mark" aria-hidden="true">福</span>
+        <img class="brand-mark-img" src="assets/foobow/logo/lotus-logo.png" alt="" aria-hidden="true" onerror="this.style.display='none'; document.getElementById('fallbackBrandMark').style.display='grid';" />
+        <span class="brand-mark" id="fallbackBrandMark" style="display:none;" aria-hidden="true">福</span>
         <span class="brand-word">Foobow<em>· 福报</em></span>
       </a>
       <nav class="site-nav" id="siteNav" aria-label="Sections"></nav>
@@ -24,27 +43,62 @@
           <label class="visually-hidden" for="langSelect" id="langSwitchLabel">Language</label>
           <select id="langSelect" aria-labelledby="langSwitchLabel"></select>
         </div>
-        <a class="btn btn-primary btn-sm" id="headerEnter" href="/app/" data-i18n="enter">Enter Foobow</a>
+        <a class="btn btn-primary btn-sm btn-gold" id="headerEnter" href="/app/" data-i18n="enter">Enter Foobow</a>
       </div>
     </header>
 
     <main id="top">
       <section class="hero">
-        <p class="kicker" data-i18n="heroKicker">A virtual good-karma companion</p>
-        <h1 class="hero-title" data-i18n="heroTitle">Gather a little light, every day.</h1>
-        <p class="couplet" id="coupletTagline">积善德，得福报；种善因，收福果</p>
-        <p class="hero-sub" data-i18n="heroSubtitle"></p>
+        <div class="hero-content">
+          <div class="hero-badge-wrap">
+            <span class="hero-badge"><span class="badge-sparkle">✦</span> Be kinder • Live brighter</span>
+          </div>
+          <p class="kicker" data-i18n="heroKicker">A virtual good-karma companion</p>
+          <h1 class="hero-title" data-i18n="heroTitle">Gather a little light, every day.</h1>
+          <p class="couplet" id="coupletTagline">积善德，得福报；种善因，收福果</p>
+          <p class="hero-sub" data-i18n="heroSubtitle"></p>
 
-        <div class="hero-orb" aria-hidden="true"><span class="orb"></span></div>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-gold" id="enterCta" href="/app/" data-i18n="enter">Start Your Journey →</a>
+            <a class="btn btn-ghost btn-glass" href="#how" data-i18n="learnMore"><span class="play-icon">▶</span> See how it works</a>
+          </div>
 
-        <blockquote class="phrase-rotator" aria-live="polite">
-          <p class="phrase-zh" id="phraseZh"></p>
-          <p class="phrase-gloss" id="phraseGloss"></p>
-        </blockquote>
+          <blockquote class="phrase-rotator" aria-live="polite">
+            <p class="phrase-zh" id="phraseZh"></p>
+            <p class="phrase-gloss" id="phraseGloss"></p>
+          </blockquote>
+        </div>
 
-        <div class="hero-actions">
-          <a class="btn btn-primary" id="enterCta" href="/app/" data-i18n="enter">Enter Foobow</a>
-          <a class="btn btn-ghost" href="#gates" data-i18n="learnMore">See how it works</a>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-glow-halo"></div>
+          <div class="hero-lotus-wrap">
+            <img class="hero-lotus-img" src="assets/foobow/objects/lotus-glow.png" alt="" />
+          </div>
+          <div class="hero-water-ripples">
+            <span class="ritual-ripple"></span>
+            <span class="ritual-ripple"></span>
+            <span class="ritual-ripple"></span>
+          </div>
+          <div class="hero-orb"><span class="orb"></span></div>
+        </div>
+      </section>
+
+      <section class="sanctuary-stats-banner" aria-label="Global sanctuary metrics">
+        <div class="hero-stats">
+          <div class="stat-item">
+            <strong class="stat-number">1.2M+</strong>
+            <span class="stat-label">Kind People</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <strong class="stat-number">8.4M+</strong>
+            <span class="stat-label">Blessings Shared</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <strong class="stat-number">120+</strong>
+            <span class="stat-label">Countries</span>
+          </div>
         </div>
       </section>
 
@@ -80,7 +134,7 @@
       </section>
 
       <section class="final-cta">
-        <a class="btn btn-primary btn-lg" href="/app/" data-i18n="enter">Enter Foobow</a>
+        <a class="btn btn-primary btn-lg btn-gold" href="/app/" data-i18n="enter">Enter Foobow</a>
       </section>
     </main>
 
