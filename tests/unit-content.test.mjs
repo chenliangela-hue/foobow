@@ -300,8 +300,8 @@ test("prototype exposes the required app screens and controls", async () => {
     "deedCategoryRow",
     "mapLayerRow",
     "impactDialog",
-    "Virtual 放生",
-    "扶老奶奶过马路",
+    "Compassionate Fish Release",
+    "Help elder cross street",
     "screen-blessings",
     "prayCats",
     "lampStage"

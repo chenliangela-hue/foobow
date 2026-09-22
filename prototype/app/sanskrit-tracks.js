@@ -4,6 +4,7 @@ window.FOOBOW_SANSKRIT_TRACKS = [
   {
     id: "great_compassion",
     titleKey: "chantsTrackGreatCompassion",
+    subtitleKey: "chantsTrackGreatCompassionSub",
     titleDefault: "大悲咒",
     subtitleDefault: "观音大悲 · 消业除障 · 慈悲护佑",
     duration: 246,
@@ -14,6 +15,7 @@ window.FOOBOW_SANSKRIT_TRACKS = [
   {
     id: "heart_sutra",
     titleKey: "chantsTrackHeartSutra",
+    subtitleKey: "chantsTrackHeartSutraSub",
     titleDefault: "心经",
     subtitleDefault: "般若智慧 · 照见空性 · 度一切苦厄",
     duration: 235,
@@ -24,6 +26,7 @@ window.FOOBOW_SANSKRIT_TRACKS = [
   {
     id: "bodhi_theme",
     titleKey: "chantsTrackBodhiTheme",
+    subtitleKey: "chantsTrackBodhiThemeSub",
     titleDefault: "菩提苑主题曲",
     subtitleDefault: "金光普照 · 寺院庄严 · 涤荡心灵",
     duration: 177,
@@ -34,6 +37,7 @@ window.FOOBOW_SANSKRIT_TRACKS = [
   {
     id: "palace_dawn",
     titleKey: "chantsTrackPalaceDawn",
+    subtitleKey: "chantsTrackPalaceDawnSub",
     titleDefault: "宝殿晨曦",
     subtitleDefault: "晨钟初响 · 佛光初临 · 万象澄明",
     duration: 168,
@@ -44,6 +48,7 @@ window.FOOBOW_SANSKRIT_TRACKS = [
   {
     id: "zen_sit",
     titleKey: "chantsTrackZenSit",
+    subtitleKey: "chantsTrackZenSitSub",
     titleDefault: "禅坐",
     subtitleDefault: "结跏趺坐 · 身心安住 · 觉知当下",
     duration: 156,
@@ -54,6 +59,7 @@ window.FOOBOW_SANSKRIT_TRACKS = [
   {
     id: "crystal_moon",
     titleKey: "chantsTrackCrystalMoon",
+    subtitleKey: "chantsTrackCrystalMoonSub",
     titleDefault: "琉璃月",
     subtitleDefault: "月光琉璃 · 照见五蕴 · 清凉自得",
     duration: 211,

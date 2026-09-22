@@ -142,7 +142,7 @@ window.FOOBOW_DATA = {
   deeds: [
     {
       id: "release-fish",
-      title: "Virtual \u653e\u751f",
+      title: "Compassionate Fish Release",
       categoryKey: "animals",
       description: "Release a digital fish into a selected lake or river.",
       shortDescription: "Release a digital fish without ecological harm.",
@@ -150,7 +150,7 @@ window.FOOBOW_DATA = {
     },
     {
       id: "elder-crosswalk",
-      title: "\u6276\u8001\u5976\u5976\u8fc7\u9a6c\u8def",
+      title: "Help elder cross street",
       categoryKey: "elders",
       description: "Guide an elder through a calm crosswalk scene.",
       shortDescription: "Guide an elder through a safe crosswalk.",

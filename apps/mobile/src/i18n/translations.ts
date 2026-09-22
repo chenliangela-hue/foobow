@@ -210,7 +210,7 @@ export const en = {
   },
   mapDeck: {
     title: "Choose & perform deed at this sanctuary",
-    fish: "Virtual 放生",
+    fish: "Compassionate Fish Release",
     fishDesc: "Release swimming koi",
     lantern: "Light Lantern",
     lanternDesc: "Send blessing lamp",

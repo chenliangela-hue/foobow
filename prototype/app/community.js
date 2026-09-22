@@ -72,7 +72,8 @@ function renderComposerMode() {
   data.deeds.forEach((deed) => {
     const option = document.createElement("option");
     option.value = deed.id;
-    option.textContent = deed.title;
+    const deedKey = "deed_title_" + deed.id.replace(/-/g, "_");
+    option.textContent = dict[deedKey] || deed.title;
     select.append(option);
   });
 
@@ -167,7 +168,8 @@ function buildPostCard(post, dict) {
     mark.setAttribute("aria-hidden", "true");
     const title = document.createElement("p");
     title.className = "kindness-card-title";
-    title.textContent = deed.title;
+    const deedKey = "deed_title_" + deed.id.replace(/-/g, "_");
+    title.textContent = dict[deedKey] || deed.title;
     visual.append(mark, title);
     body = document.createElement("div");
     body.append(visual);

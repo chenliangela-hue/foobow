@@ -1349,6 +1349,16 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
     node.placeholder = copy[node.dataset.i18nPlaceholder];
   });
+
+  if (typeof updateMiniPlayerUI === "function") {
+    updateMiniPlayerUI();
+  }
+  if (typeof renderChantsPlaylist === "function") {
+    renderChantsPlaylist();
+  }
+  if (typeof renderProfileAccount === "function") {
+    renderProfileAccount();
+  }
 }
 
 function renderSettings() {
@@ -1396,6 +1406,7 @@ function renderAll() {
   renderLamps();
   renderProgress();
   renderProfileActivity();
+  renderProfileAccount();
   // The community feed lives in community.js, which loads after this module.
   if (typeof renderCommunityFeed === "function") renderCommunityFeed();
   renderSettings();
@@ -2109,7 +2120,8 @@ function updateChantsDialogUI() {
   const copy = dictionary();
   const title = copy[track.titleKey] || track.titleDefault;
   setText("chantsHeroTitle", title);
-  setText("chantsHeroSubtitle", track.subtitleDefault);
+  const subtitle = (track.subtitleKey && copy[track.subtitleKey]) || track.subtitleDefault;
+  setText("chantsHeroSubtitle", subtitle);
   const diskIcon = document.getElementById("chantsDiskIcon");
   if (diskIcon) diskIcon.textContent = track.icon || "📿";
   const dialog = document.getElementById("chantsDialog");
@@ -2148,6 +2160,32 @@ function formatDuration(sec) {
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60);
   return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
+
+function renderChantsPlaylist() {
+  const playlistEl = document.getElementById("chantsPlaylist");
+  if (!playlistEl) return;
+  playlistEl.replaceChildren();
+  const copy = dictionary();
+  sanskritTracks.forEach((track, idx) => {
+    const card = document.createElement("button");
+    card.className = `chant-track-card${idx === currentChantIndex ? " active" : ""}`;
+    card.type = "button";
+    card.dataset.trackIndex = String(idx);
+    const title = copy[track.titleKey] || track.titleDefault;
+
+    card.innerHTML = `
+      <span class="chant-track-icon">${track.icon || "📿"}</span>
+      <div class="chant-track-texts">
+        <span class="chant-track-name">${title}</span>
+        <span class="chant-track-time">${formatDuration(track.duration)}</span>
+      </div>
+    `;
+    card.addEventListener("click", () => {
+      playChantTrack(idx);
+    });
+    playlistEl.appendChild(card);
+  });
 }
 
 function playChantTrack(index) {
@@ -2362,31 +2400,7 @@ function setupSanskritPlayer() {
     });
   }
 
-  const playlistEl = document.getElementById("chantsPlaylist");
-  if (playlistEl) {
-    playlistEl.replaceChildren();
-    const copy = dictionary();
-    sanskritTracks.forEach((track, idx) => {
-      const card = document.createElement("button");
-      card.className = `chant-track-card${idx === currentChantIndex ? " active" : ""}`;
-      card.type = "button";
-      card.dataset.trackIndex = String(idx);
-      const title = copy[track.titleKey] || track.titleDefault;
-
-      card.innerHTML = `
-        <span class="chant-track-icon">${track.icon || "📿"}</span>
-        <div class="chant-track-texts">
-          <span class="chant-track-name">${title}</span>
-          <span class="chant-track-time">${formatDuration(track.duration)}</span>
-        </div>
-      `;
-      card.addEventListener("click", () => {
-        playChantTrack(idx);
-      });
-      playlistEl.appendChild(card);
-    });
-  }
-
+  renderChantsPlaylist();
   updateMiniPlayerUI();
 }
 
@@ -2450,6 +2464,177 @@ function setupWaterRipples() {
   });
 }
 
+function renderProfileAccount(user) {
+  const auth = window.FoobowAuth;
+  const currentUser = user || (auth ? auth.getUser() : null);
+  if (!currentUser) return;
+
+  const dict = dictionary();
+  const isGuest = currentUser.isGuest;
+
+  const statusLabel = document.getElementById("accountStatusLabel");
+  const statusPill = document.getElementById("accountStatusPill");
+  const syncPill = document.getElementById("accountSyncPill");
+  const loggedInView = document.getElementById("accountLoggedInView");
+  const guestView = document.getElementById("accountGuestView");
+  const accountUserAvatar = document.getElementById("accountUserAvatar");
+  const accountUserName = document.getElementById("accountUserName");
+  const accountUserEmail = document.getElementById("accountUserEmail");
+  const profileAvatar = document.getElementById("profileAvatar");
+  const profileTitle = document.getElementById("profile-title");
+  const profileEmail = document.getElementById("profileUserEmail");
+  const topNavAvatar = document.getElementById("topNavAvatar");
+  const dropdownAvatar = document.getElementById("dropdownAvatar");
+  const dropdownUserName = document.getElementById("dropdownUserName");
+  const dropdownSignOutBtn = document.getElementById("dropdownSignOutBtn");
+  const dropdownAccountNote = document.getElementById("dropdownAccountNote");
+
+  if (!isGuest) {
+    if (statusLabel) {
+      const providerLabel = currentUser.provider ? currentUser.provider.charAt(0).toUpperCase() + currentUser.provider.slice(1) : "SSO";
+      statusLabel.textContent = `${providerLabel} Verified`;
+    }
+    if (statusPill) statusPill.classList.remove("guest");
+    if (syncPill) syncPill.hidden = false;
+    if (loggedInView) loggedInView.hidden = false;
+    if (guestView) guestView.hidden = true;
+
+    if (accountUserAvatar) accountUserAvatar.textContent = currentUser.avatar || "A";
+    if (accountUserName) accountUserName.textContent = currentUser.name || "Kind Soul";
+    if (accountUserEmail) accountUserEmail.textContent = currentUser.email || "";
+
+    if (profileAvatar) profileAvatar.textContent = currentUser.avatar || "A";
+    if (profileTitle) profileTitle.textContent = currentUser.name || "Quiet Helper";
+    if (profileEmail) profileEmail.textContent = currentUser.email || dict.profileCopy || "Cloud synced. Merit safely preserved.";
+
+    if (topNavAvatar) topNavAvatar.textContent = currentUser.avatar || "A";
+    if (dropdownAvatar) dropdownAvatar.textContent = currentUser.avatar || "A";
+    if (dropdownUserName) dropdownUserName.textContent = currentUser.name || "Your merit";
+    if (dropdownSignOutBtn) dropdownSignOutBtn.hidden = false;
+    if (dropdownAccountNote) {
+      dropdownAccountNote.textContent = dict.accountSyncSuccess || "Merit and rituals synced with cloud.";
+    }
+  } else {
+    if (statusLabel) statusLabel.textContent = dict.accountGuestBadge || "Local Guest Mode";
+    if (statusPill) statusPill.classList.add("guest");
+    if (syncPill) syncPill.hidden = true;
+    if (loggedInView) loggedInView.hidden = true;
+    if (guestView) guestView.hidden = false;
+
+    if (profileAvatar) profileAvatar.textContent = "F";
+    if (profileTitle) profileTitle.textContent = "Quiet Helper";
+    if (profileEmail) profileEmail.textContent = dict.profileCopy || "Private journal on. Ranking visibility set to quiet mode.";
+
+    if (topNavAvatar) topNavAvatar.textContent = "☺";
+    if (dropdownAvatar) dropdownAvatar.textContent = "☺";
+    if (dropdownUserName) dropdownUserName.textContent = dict.profileMenuTitle || "Your merit";
+    if (dropdownSignOutBtn) dropdownSignOutBtn.hidden = true;
+    if (dropdownAccountNote) {
+      dropdownAccountNote.textContent = dict.profileMenuNote || "Sign in for a synced account in the Foobow mobile app.";
+    }
+  }
+}
+
+function setupAccountAuth() {
+  const auth = window.FoobowAuth;
+  if (!auth) return;
+
+  auth.onAuthStateChanged((user) => {
+    renderProfileAccount(user);
+  });
+
+  const googleBtn = document.getElementById("ssoGoogleBtn");
+  if (googleBtn) {
+    googleBtn.addEventListener("click", async () => {
+      googleBtn.disabled = true;
+      try {
+        await auth.signInWithOAuth("google");
+        playZenChime();
+      } finally {
+        googleBtn.disabled = false;
+      }
+    });
+  }
+
+  const appleBtn = document.getElementById("ssoAppleBtn");
+  if (appleBtn) {
+    appleBtn.addEventListener("click", async () => {
+      appleBtn.disabled = true;
+      try {
+        await auth.signInWithOAuth("apple");
+        playZenChime();
+      } finally {
+        appleBtn.disabled = false;
+      }
+    });
+  }
+
+  const demoBtn = document.getElementById("ssoDemoBtn");
+  if (demoBtn) {
+    demoBtn.addEventListener("click", async () => {
+      demoBtn.disabled = true;
+      try {
+        await auth.signInDemo();
+        playZenChime();
+      } finally {
+        demoBtn.disabled = false;
+      }
+    });
+  }
+
+  const emailForm = document.getElementById("ssoEmailForm");
+  const emailInput = document.getElementById("ssoEmailInput");
+  if (emailForm && emailInput) {
+    emailForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if (!email) return;
+      await auth.signInWithEmail(email);
+      playZenChime();
+      emailInput.value = "";
+    });
+  }
+
+  const signOutBtn = document.getElementById("accountSignOutBtn");
+  if (signOutBtn) {
+    signOutBtn.addEventListener("click", async () => {
+      await auth.signOut();
+      playZenChime();
+    });
+  }
+
+  const dropdownSignOutBtn = document.getElementById("dropdownSignOutBtn");
+  if (dropdownSignOutBtn) {
+    dropdownSignOutBtn.addEventListener("click", async () => {
+      await auth.signOut();
+      playZenChime();
+      const dropdown = document.getElementById("profileDropdown");
+      if (dropdown) dropdown.hidden = true;
+    });
+  }
+
+  const syncNowBtn = document.getElementById("accountSyncNowBtn");
+  const syncMsg = document.getElementById("accountSyncMessage");
+  if (syncNowBtn) {
+    syncNowBtn.addEventListener("click", async () => {
+      syncNowBtn.disabled = true;
+      try {
+        await auth.syncCloud();
+        if (syncMsg) {
+          syncMsg.hidden = false;
+          syncMsg.textContent = dictionary().accountSyncSuccess || "Merit and rituals synced with cloud.";
+          setTimeout(() => {
+            if (syncMsg) syncMsg.hidden = true;
+          }, 4000);
+        }
+        playZenChime();
+      } finally {
+        syncNowBtn.disabled = false;
+      }
+    });
+  }
+}
+
 setupBlessings();
 setupLiveMap();
 setupEmbeddedMapMode();
@@ -2461,3 +2646,5 @@ loadContentPack();
 renderAll();
 setupTiltCards();
 setupWaterRipples();
+setupAccountAuth();
+
