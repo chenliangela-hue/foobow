@@ -4,19 +4,19 @@
 // vermilion; there are no greens in the palette.
 export const colors = {
   light: {
-    bg: "#f8f2e7",
-    surface: "#fffaf1",
-    surfaceStrong: "#ffffff",
-    ink: "#2b1f18",
-    muted: "#6d5a4a",
-    line: "rgba(43, 31, 24, 0.16)",
-    jade: "#9d2b20",
-    bamboo: "#c8701c",
-    coral: "#a8382a",
-    gold: "#b88928",
-    goldGlow: "rgba(184, 137, 40, 0.22)",
-    cardBorder: "rgba(184, 137, 40, 0.18)",
-    shadow: "rgba(70, 45, 25, 0.14)"
+    bg: "#FFF9F2",
+    surface: "#ffffff",
+    surfaceStrong: "#F7F1E9",
+    ink: "#1F2937",
+    muted: "#4B5563",
+    line: "rgba(31, 41, 55, 0.12)",
+    jade: "#2E7D6B",
+    bamboo: "#EFBC78",
+    coral: "#8d2518",
+    gold: "#EFBC78",
+    goldGlow: "rgba(239, 188, 120, 0.35)",
+    cardBorder: "#E5E7EB",
+    shadow: "rgba(0, 0, 0, 0.08)"
   },
   dark: {
     bg: "#052f31",

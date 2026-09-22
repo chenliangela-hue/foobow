@@ -154,6 +154,11 @@
   - Added 3D perspective card tilt with dynamic glare on desktop and tactile water ripples on action triggers, strictly guarded under `prefers-reduced-motion: reduce`.
   - Maintained 100% preservation of all business logic, DOM IDs, test selectors, local persistence, and Clerk authentication gates.
   - Verified 100% pass across root unit tests (35/35), browser PA & functional tests (88/88), visual regressions (8/8), and mobile TypeScript check (0 errors).
+- Light Mode Design System, Per-Tab Curated Backgrounds & Cloudflare R2 Asset Pipeline:
+  - Deployed 7 distinct, high-resolution light-mode backgrounds from `shared/sample-background-light/` mapping uniquely to Landing (`landing-light.png`), Today (`tab-today-light.png`), Deeds (`tab-deeds-light.png`), Rituals (`tab-blessings-light.png`), Map (`tab-map-light.png`), Community (`tab-community-light.png`), and Profile (`tab-profile-light.png`).
+  - Standardized Light Mode color palette tokens across Web (`prototype/app/styles.css`) and Mobile (`apps/mobile/src/theme/theme.ts`) matching authoritative spec sheet (`ChatGPT Image Sep 21, 2026, 11_01_17 PM.png`): earthy deep jade (`#2E7D6B`), sunlit gold (`#EFBC78`), warm linen canvas (`#FFF9F2`), charcoal slate ink (`#1F2937`), and slate gray (`#4B5563`).
+  - Created Cloudflare R2 synchronization script `scripts/sync-assets-r2.mjs` supporting S3-compatible credentials and zero-egress production CDN delivery with automatic local fallback.
+  - Refreshed and passed all Playwright visual regression snapshots (8/8) and full browser test suites (88/88).
 
 ## Next
 

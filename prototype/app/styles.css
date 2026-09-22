@@ -1,36 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap');
 
 :root {
-  /* Digital Sanctuary Design Tokens (Light Mode - Daylight Sky & White Clouds) */
-  --bg: #edf5f7;
+  /* Digital Sanctuary Design Tokens (Light Mode - Daylight Sanctuary & Pure Light) */
+  --bg-light: #FFF9F2;
+  --bg-soft: #F7F1E9;
+  --bg: #FFF9F2;
   --surface: #ffffff;
-  --surface-strong: #f0f7f8;
-  --ink: #102a2e;
-  --muted: #3b5853;
-  --line: rgba(16, 42, 46, 0.12);
+  --surface-strong: #F7F1E9;
+  --ink: #1F2937;
+  --muted: #4B5563;
+  --line: #E5E7EB;
+  --border: #E5E7EB;
   --vermilion: #8c2417;
   --coral: #8d2518;
-  --gold: #966b1e;
-  --gold-light: #b8892a;
-  --gold-bright: #d4af37;
-  --jade: #2b7a62;
+  --primary: #2E7D6B;
+  --gold: #EFBC78;
+  --gold-light: #f5d49c;
+  --gold-bright: #ffd885;
+  --soft-pink: #FAD1D1;
+  --sky-blue: #CFE9F7;
+  --cream: #FFF9F2;
+  --text-dark: #1F2937;
+  --text-light: #4B5563;
+  --jade: #2E7D6B;
   --jade-light: #e0f2ec;
   --lotus: #a83856;
   --lapis: #26547c;
   --saffron: #a35912;
-  --shadow: 0 20px 60px rgba(18, 50, 56, 0.10);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --radius: 20px;
   color-scheme: light;
 
-  --bg-deep: #e2f0f4;
-  --bg-dark: #d5e9ef;
-  --bg-card: rgba(255, 255, 255, 0.82);
+  --bg-deep: #F7F1E9;
+  --bg-dark: #eee7dd;
+  --bg-card: rgba(255, 255, 255, 0.88);
   --bg-card-strong: #ffffff;
-  --text-primary: #102a2e;
-  --text-secondary: rgba(16, 42, 46, 0.74);
-  --text-dark: #102a2e;
-  --border-glass: rgba(16, 42, 46, 0.10);
-  --border-gold: rgba(150, 107, 30, 0.35);
-  --radius-card: 24px;
+  --text-primary: #1F2937;
+  --text-secondary: #4B5563;
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-gold: rgba(239, 188, 120, 0.45);
+  --radius-card: 20px;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -72,7 +81,7 @@ body.dark {
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #d8edf5 0%, #edf5f7 45%, #faf8f4 100%);
+  background: linear-gradient(180deg, #FFF9F2 0%, #F7F1E9 45%, #FAF5ED 100%);
   color: var(--ink);
   font-family: Inter, "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif;
   transition: color 300ms ease, background 400ms ease;
@@ -90,9 +99,9 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 18% 12%, rgba(150, 107, 30, 0.08), transparent 30rem),
-    radial-gradient(circle at 84% 6%, rgba(58, 155, 220, 0.10), transparent 26rem),
-    radial-gradient(circle at 70% 88%, rgba(216, 237, 245, 0.15), transparent 30rem);
+    radial-gradient(circle at 18% 12%, rgba(239, 188, 120, 0.10), transparent 30rem),
+    radial-gradient(circle at 84% 6%, rgba(46, 125, 107, 0.08), transparent 26rem),
+    radial-gradient(circle at 70% 88%, rgba(250, 209, 209, 0.12), transparent 30rem);
   animation: ambient-drift 52s ease-in-out infinite alternate;
 }
 
@@ -123,7 +132,7 @@ body.dark::before {
   z-index: -2;
   pointer-events: none;
   overflow: hidden;
-  background: #d8edf5;
+  background: #FFF9F2;
   transition: background 500ms ease;
 }
 
@@ -181,8 +190,8 @@ body.dark .cinematic-backdrop-group.dark-group {
 
 .light-group .cinematic-backdrop-layer::before {
   background:
-    radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.35) 0%, transparent 60%),
-    radial-gradient(circle at 50% 90%, rgba(216, 237, 245, 0.20) 0%, transparent 70%);
+    radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.25) 0%, transparent 60%),
+    radial-gradient(circle at 50% 90%, rgba(255, 249, 242, 0.20) 0%, transparent 70%);
 }
 
 /* Dark mode layer active - deep teal & illuminated lotuses clearly visible */
