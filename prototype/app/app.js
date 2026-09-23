@@ -1896,6 +1896,9 @@ function setupLiveMap() {
       ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
     );
 
+    const tileUrlTemplate = window.FOOBOW_MAP_TILE_URL || "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+    const isLightMode = (state.theme === "light") || document.body.classList.contains("theme-light");
+
     tilesContainer.innerHTML = "";
     // Create 3x3 grid around the center tile
     for (let dy = -1; dy <= 1; dy++) {
@@ -1906,10 +1909,14 @@ function setupLiveMap() {
         img.className = "osm-tile";
         img.alt = `Tile ${z}/${tx}/${ty}`;
         img.loading = "lazy";
-        img.src = `https://tile.openstreetmap.org/${z}/${tx}/${ty}.png`;
+        img.crossOrigin = "anonymous";
+        img.referrerPolicy = "no-referrer-when-downgrade";
+        img.src = tileUrlTemplate.replace("{z}", z).replace("{x}", tx).replace("{y}", ty);
         img.onerror = () => {
-          // Graceful Buddhist parchment fallback when offline or file:// protocol blocks external images
-          img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23f7f3eb" stroke="%23e4dac9"/><circle cx="128" cy="128" r="90" fill="none" stroke="%23dfd4c0" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%23dfd4c0" stroke-width="1"/><path d="M 0,128 Q 64,110 128,128 T 256,128" fill="none" stroke="%23d8c8ae" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="20" fill="%23c69b3f" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%239e9484" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`;
+          // Graceful Buddhist sanctuary vector parchment fallback when offline or external network fails
+          img.src = isLightMode
+            ? `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23f7f3eb" stroke="%23e4dac9"/><circle cx="128" cy="128" r="90" fill="none" stroke="%23dfd4c0" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%23dfd4c0" stroke-width="1"/><path d="M 0,128 Q 64,110 128,128 T 256,128" fill="none" stroke="%23d8c8ae" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="20" fill="%23c69b3f" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%239e9484" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`
+            : `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23052f31" stroke="%230e5254"/><circle cx="128" cy="128" r="90" fill="none" stroke="%231a696c" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%231a696c" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="22" fill="%23efc978" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%2370d6b0" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`;
         };
         tilesContainer.appendChild(img);
       }
@@ -2014,6 +2021,9 @@ function renderEmbeddedOsmTiles(spot) {
     ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
   );
 
+  const tileUrlTemplate = window.FOOBOW_MAP_TILE_URL || "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const isLightMode = (state.theme === "light") || document.body.classList.contains("theme-light");
+
   container.innerHTML = "";
   for (let dy = -1; dy <= 1; dy++) {
     for (let dx = -1; dx <= 1; dx++) {
@@ -2023,9 +2033,13 @@ function renderEmbeddedOsmTiles(spot) {
       img.className = "embedded-osm-tile";
       img.alt = `Tile ${z}/${tx}/${ty}`;
       img.loading = "lazy";
-      img.src = `https://tile.openstreetmap.org/${z}/${tx}/${ty}.png`;
+      img.crossOrigin = "anonymous";
+      img.referrerPolicy = "no-referrer-when-downgrade";
+      img.src = tileUrlTemplate.replace("{z}", z).replace("{x}", tx).replace("{y}", ty);
       img.onerror = () => {
-        img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23052f31" stroke="%230e5254"/><circle cx="128" cy="128" r="90" fill="none" stroke="%231a696c" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%231a696c" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="22" fill="%23efc978" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%2370d6b0" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`;
+        img.src = isLightMode
+          ? `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23f7f3eb" stroke="%23e4dac9"/><circle cx="128" cy="128" r="90" fill="none" stroke="%23dfd4c0" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%23dfd4c0" stroke-width="1"/><path d="M 0,128 Q 64,110 128,128 T 256,128" fill="none" stroke="%23d8c8ae" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="20" fill="%23c69b3f" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%239e9484" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`
+          : `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><rect width="256" height="256" fill="%23052f31" stroke="%230e5254"/><circle cx="128" cy="128" r="90" fill="none" stroke="%231a696c" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="128" cy="128" r="50" fill="none" stroke="%231a696c" stroke-width="1"/><text x="128" y="136" font-family="serif" font-size="22" fill="%23efc978" text-anchor="middle">🪷</text><text x="128" y="240" font-family="sans-serif" font-size="9" fill="%2370d6b0" text-anchor="middle">OSM Sanctuary · ${z}/${tx}/${ty}</text></svg>`;
       };
       container.appendChild(img);
     }

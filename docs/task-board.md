@@ -237,6 +237,13 @@
   - Verified Clerk session minting & JWT verification (`npm --prefix apps/api run auth:clerk-smoke`) against live test instance.
   - Verified database integration suite (`npm --prefix apps/api run test:db-integration`) against local PostgreSQL service with isolated per-run cleanup.
   - Expanded API test suite to 26/26 passing tests with clean TypeScript typecheck.
+- Phase 5 Track 2 (Cloud Supabase Provisioning, Content Pack Deployment & Vector Map Optimization):
+  - Verified live Supabase database connectivity via IPv4 session pooler (`aws-0-us-east-1.pooler.supabase.com`) for project `uukmupcmesqsfrymidtf` with 100% applied schema, migrations (0001, 0002, 0003), and reference seeds.
+  - Verified Supabase Storage buckets (`public-assets`, `user-uploads`, `ai-generated`) via `db:supabase-storage`.
+  - Deployed zero-token interaction blessing pack (`content/blessing-pack.v1.json`) to Supabase CDN via `content:upload`, verified live via HTTP 200.
+  - Optimized OpenStreetMap vector tile rendering with configurable tile templates (`FOOBOW_MAP_TILE_URL`), security/referrer headers, and theme-adaptive vector parchment SVG fallbacks for light and dark modes.
+  - Added 40th root test verifying sanctuary coordinates, telemetry bounds, and tile configuration (40/40 root tests passing).
+  - Passed all 9 quality gates in `npm run test:all` (40 unit, catalog, env, advisories, 26 API, mobile typecheck, 93 browser, 8 visual baselines, 0 security vulnerabilities).
 
 ## Next
 

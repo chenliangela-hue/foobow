@@ -210,3 +210,43 @@ test("store listing specification and ethical disclosures are complete", async (
   assert.match(checklist, /npm run test:security/);
 });
 
+test("OpenStreetMap sanctuary telemetry, coordinate precision, and tile config are valid", async () => {
+  const dataJs = await read("prototype/app/data.js");
+  const appJs = await read("prototype/app/app.js");
+  const mobileService = await read("apps/mobile/src/services/foobowService.ts");
+
+  // Verify all 5 global sanctuaries are defined
+  const expectedSanctuaries = [
+    "east-lake",
+    "toronto-crosswalk",
+    "amazon-grove",
+    "night-corridor",
+    "reading-room"
+  ];
+
+  for (const id of expectedSanctuaries) {
+    assert.match(dataJs, new RegExp(`"${id}":`));
+    assert.match(mobileService, new RegExp(`id: "${id}"`));
+  }
+
+  // Verify coordinate bounds and telemetry presence
+  assert.match(dataJs, /lat:\s*30\.5539/);
+  assert.match(dataJs, /lng:\s*114\.3644/);
+  assert.match(dataJs, /lat:\s*43\.6532/);
+  assert.match(dataJs, /lng:\s*-79\.3832/);
+  assert.match(dataJs, /lat:\s*-3\.4653/);
+  assert.match(dataJs, /lng:\s*-62\.2159/);
+  assert.match(dataJs, /lat:\s*35\.0116/);
+  assert.match(dataJs, /lng:\s*135\.7681/);
+  assert.match(dataJs, /lat:\s*51\.7548/);
+  assert.match(dataJs, /lng:\s*-1\.2544/);
+
+  // Verify slippy tile math and dual-theme fallback SVG
+  assert.match(appJs, /tile\.openstreetmap\.org/);
+  assert.match(appJs, /FOOBOW_MAP_TILE_URL/);
+  assert.match(appJs, /referrerPolicy = "no-referrer-when-downgrade"/);
+  assert.match(appJs, /crossOrigin = "anonymous"/);
+  assert.match(appJs, /%23f7f3eb/); // light mode parchment
+  assert.match(appJs, /%23052f31/); // dark mode sanctuary
+});
+
