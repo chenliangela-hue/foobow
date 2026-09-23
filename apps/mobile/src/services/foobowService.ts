@@ -336,6 +336,27 @@ export class FoobowApiService {
     const result = await apiPost("/blessings", body);
     return result.ok;
   }
+
+  async syncState(data: { karma: number; streak: number; journal?: string; rituals_completed?: string[] }) {
+    const result = await apiPost<{ status: string; merged: Record<string, unknown> }>("/sync", data);
+    return result;
+  }
+
+  async startFocusSession(soundscape?: string, durationSeconds?: number) {
+    const result = await apiPost<{ focus_session: { id: string } }>("/focus-sessions", {
+      soundscape_slug: soundscape,
+      target_duration_seconds: durationSeconds ?? 20
+    });
+    return result;
+  }
+
+  async completeFocusSession(sessionId: string, elapsedSeconds: number, reflectionMood?: string) {
+    const result = await apiPost(`/focus-sessions/${sessionId}/complete`, {
+      elapsed_seconds: elapsedSeconds,
+      reflection_mood: reflectionMood
+    });
+    return result;
+  }
 }
 
 export const apiService = new FoobowApiService();

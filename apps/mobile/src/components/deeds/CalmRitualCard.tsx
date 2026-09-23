@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Pressable, StyleSheet, Text, Vibration, View } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
@@ -148,7 +148,12 @@ export function CalmRitualCard({
       <View style={styles.calmActions}>
         <Pressable
           style={[styles.secondaryButton, { borderColor: currentColors.jade }]}
-          onPress={onStartFocus}
+          onPress={() => {
+            try {
+              Vibration.vibrate(30);
+            } catch (_) {}
+            onStartFocus();
+          }}
         >
           <Text
             style={[
@@ -166,7 +171,12 @@ export function CalmRitualCard({
             styles.primaryButton,
             { backgroundColor: focusReady ? currentColors.jade : currentColors.muted }
           ]}
-          onPress={onCompleteFocused}
+          onPress={() => {
+            try {
+              Vibration.vibrate([0, 40, 80, 40]);
+            } catch (_) {}
+            onCompleteFocused();
+          }}
         >
           <Text style={[styles.primaryButtonText, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
             {t("calm.completeFocused")}

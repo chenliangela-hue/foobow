@@ -27,6 +27,25 @@ export function CommunityView({
   const [mode, setMode] = useState<"share" | "ask">("share");
   const [selectedDeed, setSelectedDeed] = useState<Deed>(deeds[0]);
   const [urlError, setUrlError] = useState(false);
+  const [blessedMap, setBlessedMap] = useState<Record<number, boolean>>({});
+  const [reactionCounts, setReactionCounts] = useState<Record<number, number>>({});
+  const [reportedMap, setReportedMap] = useState<Record<number, boolean>>({});
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleToggleBless = (index: number) => {
+    const isBlessed = !blessedMap[index];
+    setBlessedMap((prev) => ({ ...prev, [index]: isBlessed }));
+    setReactionCounts((prev) => {
+      const current = prev[index] ?? 0;
+      return { ...prev, [index]: isBlessed ? current + 1 : Math.max(0, current - 1) };
+    });
+  };
+
+  const handleReport = (index: number) => {
+    setReportedMap((prev) => ({ ...prev, [index]: true }));
+    setToastMessage(t("community.reportConfirm"));
+    setTimeout(() => setToastMessage(null), 3500);
+  };
 
   const handlePost = () => {
     // Safety check: reject URLs/links to prevent phishing/spam
@@ -185,27 +204,103 @@ export function CommunityView({
         </Text>
       </Pressable>
 
-      {/* Wall of Kindness Cards & Reflections */}
-      {blessings.map((blessing, index) => (
-        <View
-          key={`${blessing}-${index}`}
-          style={[styles.blessingCard, { backgroundColor: currentColors.surface, borderColor: currentColors.cardBorder }]}
-        >
-          <Text
-            style={[
-              styles.body,
-              { color: currentColors.ink },
-              seniorMode && { fontSize: typography.sizes.bodySenior }
-            ]}
-          >
-            {blessing}
+      {toastMessage && (
+        <View style={[styles.toastBanner, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.gold }]}>
+          <Text style={[styles.toastText, { color: currentColors.ink }]}>
+            {toastMessage}
           </Text>
-          <View style={styles.inlineActions}>
-            <Text style={[styles.linkText, { color: currentColors.jade }]}>{t("community.bless")}</Text>
-            <Text style={[styles.linkText, { color: currentColors.muted }]}>{t("community.report")}</Text>
-          </View>
         </View>
-      ))}
+      )}
+
+      {/* Wall of Kindness Cards & Reflections */}
+      {blessings.map((blessing, index) => {
+        if (reportedMap[index]) {
+          return (
+            <View
+              key={`${blessing}-${index}`}
+              style={[
+                styles.blessingCard,
+                { backgroundColor: currentColors.surface, borderColor: currentColors.cardBorder, opacity: 0.6 }
+              ]}
+            >
+              <Text
+                style={[
+                  styles.reportedText,
+                  { color: currentColors.muted },
+                  seniorMode && { fontSize: typography.sizes.body }
+                ]}
+              >
+                {t("community.reportConfirm")}
+              </Text>
+            </View>
+          );
+        }
+
+        const isBlessed = !!blessedMap[index];
+        const count = reactionCounts[index] ?? 0;
+
+        return (
+          <View
+            key={`${blessing}-${index}`}
+            style={[styles.blessingCard, { backgroundColor: currentColors.surface, borderColor: currentColors.cardBorder }]}
+          >
+            <Text
+              style={[
+                styles.body,
+                { color: currentColors.ink },
+                seniorMode && { fontSize: typography.sizes.bodySenior }
+              ]}
+            >
+              {blessing}
+            </Text>
+            <View style={styles.inlineActions}>
+              <Pressable
+                onPress={() => handleToggleBless(index)}
+                style={[
+                  styles.actionPill,
+                  {
+                    backgroundColor: isBlessed ? currentColors.goldGlow : currentColors.surfaceStrong,
+                    borderColor: isBlessed ? currentColors.gold : currentColors.line
+                  }
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={isBlessed ? t("community.blessed") : t("community.bless")}
+              >
+                <Text
+                  style={[
+                    styles.actionPillText,
+                    { color: isBlessed ? currentColors.jade : currentColors.muted },
+                    seniorMode && { fontSize: typography.sizes.body }
+                  ]}
+                >
+                  {isBlessed ? `🪷 ${t("community.blessed")}` : `🪷 ${t("community.bless")}`}
+                  {count > 0 ? ` (${count})` : ""}
+                </Text>
+              </Pressable>
+
+              <Pressable
+                onPress={() => handleReport(index)}
+                style={[
+                  styles.actionPill,
+                  { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={t("community.report")}
+              >
+                <Text
+                  style={[
+                    styles.actionPillText,
+                    { color: currentColors.muted },
+                    seniorMode && { fontSize: typography.sizes.body }
+                  ]}
+                >
+                  {t("community.report")}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -310,5 +405,35 @@ const styles = StyleSheet.create({
   linkText: {
     fontSize: typography.sizes.caption,
     fontWeight: "600"
+  },
+  actionPill: {
+    minHeight: 32,
+    paddingHorizontal: layout.spacing.sm,
+    paddingVertical: 4,
+    borderRadius: layout.borderRadius.full,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  actionPillText: {
+    fontSize: typography.sizes.caption,
+    fontWeight: "600"
+  },
+  toastBanner: {
+    padding: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    alignItems: "center",
+    marginVertical: layout.spacing.xs
+  },
+  toastText: {
+    fontSize: typography.sizes.caption,
+    fontWeight: "600",
+    textAlign: "center"
+  },
+  reportedText: {
+    fontSize: typography.sizes.caption,
+    fontStyle: "italic",
+    textAlign: "center"
   }
 });

@@ -9,9 +9,15 @@ export function useCalmRitualController(
 ) {
   const [soundscape, setSoundscape] = useState("Water");
   const [focusReady, setFocusReady] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   const startFocusSession = () => {
     setFocusReady(true);
+    void apiService.startFocusSession(soundscape.toLowerCase(), 20).then((res) => {
+      if (res.ok && res.data?.focus_session?.id) {
+        setSessionId(res.data.focus_session.id);
+      }
+    });
   };
 
   const completeFocusedRitual = () => {
@@ -23,6 +29,10 @@ export function useCalmRitualController(
       onJournalAdd("I took a calm moment before completing one symbolic deed.");
     }
     void apiService.submitDeedCompletion(selectedDeed.id);
+    if (sessionId) {
+      void apiService.completeFocusSession(sessionId, 20, "calm");
+      setSessionId(null);
+    }
     setFocusReady(false);
   };
 

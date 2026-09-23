@@ -117,6 +117,65 @@ export function ProfileView({
         </View>
       </View>
 
+      {/* Your Progress Panel */}
+      <View style={[styles.panel, panelTheme]}>
+        <View style={styles.rowBetween}>
+          <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+            {t("profile.progressTitle")}
+          </Text>
+          <View style={[styles.pill, { backgroundColor: currentColors.goldGlow }]}>
+            <Text style={[styles.pillText, { color: currentColors.gold }]}>Level 4 Mindful</Text>
+          </View>
+        </View>
+        <View style={styles.progressList}>
+          {[
+            { label: t("profile.ritualsDone"), pct: 80, val: "16 / 20", color: currentColors.gold },
+            { label: t("profile.peopleHelped"), pct: 80, val: "124 people", color: currentColors.jade },
+            { label: t("profile.journalEntries"), pct: 75, val: "15 / 20", color: currentColors.ink },
+            { label: t("profile.kindnessGoals"), pct: 60, val: "3 / 5 completed", color: currentColors.coral }
+          ].map((item, idx) => (
+            <View key={idx} style={styles.progressItem}>
+              <View style={styles.rowBetween}>
+                <Text style={[styles.progressItemLabel, headingColor]}>{item.label}</Text>
+                <Text style={[styles.progressItemVal, { color: item.color }]}>{item.val} ({item.pct}%)</Text>
+              </View>
+              <View style={[styles.progressBarTrack, { backgroundColor: currentColors.surfaceStrong }]}>
+                <View style={[styles.progressBarFill, { width: `${item.pct}%`, backgroundColor: item.color }]} />
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Global Impact Showcase Panel */}
+      <View style={[styles.panel, panelTheme]}>
+        <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
+          {t("profile.impactTitle")}
+        </Text>
+        <View style={styles.impactGrid}>
+          <View style={[styles.impactCard, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+            <Text style={styles.impactIcon}>🤝</Text>
+            <Text style={[styles.impactValue, { color: currentColors.jade }]}>124</Text>
+            <Text style={[styles.impactLabel, bodyColor]}>{t("profile.peopleHelped")}</Text>
+          </View>
+          <View style={[styles.impactCard, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+            <Text style={styles.impactIcon}>🪔</Text>
+            <Text style={[styles.impactValue, { color: currentColors.gold }]}>8.4M+</Text>
+            <Text style={[styles.impactLabel, bodyColor]}>{t("profile.blessingsShared")}</Text>
+          </View>
+          <View style={[styles.impactCard, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+            <Text style={styles.impactIcon}>🌍</Text>
+            <Text style={[styles.impactValue, { color: currentColors.ink }]}>5</Text>
+            <Text style={[styles.impactLabel, bodyColor]}>{t("profile.countriesReached")}</Text>
+          </View>
+          <View style={[styles.impactCard, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+            <Text style={styles.impactIcon}>🍃</Text>
+            <Text style={[styles.impactValue, { color: currentColors.coral }]}>12.3 kg</Text>
+            <Text style={[styles.impactLabel, bodyColor]}>{t("profile.co2Saved")}</Text>
+          </View>
+        </View>
+      </View>
+
       <View style={[styles.panel, panelTheme]}>
         <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
           {t("profile.preferences")}
@@ -426,6 +485,20 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontFamily: typography.fontFamilySerif
   },
+  rowBetween: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  pill: {
+    paddingHorizontal: layout.spacing.sm,
+    paddingVertical: 4,
+    borderRadius: layout.borderRadius.full
+  },
+  pillText: {
+    fontSize: 12,
+    fontWeight: "700"
+  },
   statsRow: {
     flexDirection: "row",
     gap: layout.spacing.md
@@ -652,5 +725,58 @@ const styles = StyleSheet.create({
   closeReceiptBtnText: {
     fontSize: typography.sizes.body,
     fontWeight: "700"
+  },
+  progressList: {
+    gap: layout.spacing.sm,
+    marginTop: layout.spacing.xs
+  },
+  progressItem: {
+    gap: 4
+  },
+  progressItemLabel: {
+    fontSize: 12,
+    fontWeight: "600"
+  },
+  progressItemVal: {
+    fontSize: 12,
+    fontWeight: "700"
+  },
+  progressBarTrack: {
+    height: 8,
+    borderRadius: 4,
+    overflow: "hidden"
+  },
+  progressBarFill: {
+    height: "100%",
+    borderRadius: 4
+  },
+  impactGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: layout.spacing.xs,
+    marginTop: layout.spacing.xs
+  },
+  impactCard: {
+    flex: 1,
+    minWidth: "46%",
+    padding: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 2
+  },
+  impactIcon: {
+    fontSize: 24,
+    marginBottom: 2
+  },
+  impactValue: {
+    fontSize: 18,
+    fontWeight: "700",
+    fontFamily: typography.fontFamilySerif
+  },
+  impactLabel: {
+    fontSize: 11,
+    textAlign: "center"
   }
 });

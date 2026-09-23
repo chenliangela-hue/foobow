@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, StyleSheet, Text, Vibration, View } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
 import { useThemeColors } from "../../theme/ThemeContext";
@@ -34,10 +34,28 @@ export function MapView({
   const [justDedicated, setJustDedicated] = useState(false);
   const [selectedDeed, setSelectedDeed] = useState<"fish" | "lantern" | "birds" | "tree">("fish");
   const [animatingDeed, setAnimatingDeed] = useState<string | null>(null);
+  const [streamIndex, setStreamIndex] = useState(0);
+
+  const STREAM_EVENTS = [
+    "🐟 Released 12 koi in West Lake Sanctuary · 2m ago (Hangzhou)",
+    "🪔 Kindled lantern of healing for grandparents · 4m ago (Kyoto)",
+    "🪵 108 mindful wooden fish strikes dedicated · 7m ago (Chiang Mai)",
+    "🌱 Planted ancient Bodhi sapling · 11m ago (Lumbini)",
+    "🕊️ Released rescued doves over mountain · 15m ago (Dharamsala)"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setStreamIndex((prev) => (prev + 1) % STREAM_EVENTS.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Gentle pulsing aura animation for the active sanctuary pin
   const pulseScale = useRef(new Animated.Value(1)).current;
   const pulseOpacity = useRef(new Animated.Value(0.65)).current;
+  const pulseScale2 = useRef(new Animated.Value(1)).current;
+  const pulseOpacity2 = useRef(new Animated.Value(0.45)).current;
 
   // In-map deed execution animation references
   const animCoord = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
@@ -73,14 +91,43 @@ export function MapView({
             duration: 0,
             useNativeDriver: true
           })
+        ]),
+        Animated.sequence([
+          Animated.delay(450),
+          Animated.timing(pulseScale2, {
+            toValue: 2.3,
+            duration: 1800,
+            useNativeDriver: true
+          }),
+          Animated.timing(pulseScale2, {
+            toValue: 1,
+            duration: 0,
+            useNativeDriver: true
+          })
+        ]),
+        Animated.sequence([
+          Animated.delay(450),
+          Animated.timing(pulseOpacity2, {
+            toValue: 0,
+            duration: 1800,
+            useNativeDriver: true
+          }),
+          Animated.timing(pulseOpacity2, {
+            toValue: 0.45,
+            duration: 0,
+            useNativeDriver: true
+          })
         ])
       ])
     );
     loop.start();
     return () => loop.stop();
-  }, [pulseScale, pulseOpacity]);
+  }, [pulseScale, pulseOpacity, pulseScale2, pulseOpacity2]);
 
   const executeDeedOnMap = (deedKey: "fish" | "lantern" | "birds" | "tree") => {
+    try {
+      Vibration.vibrate(35);
+    } catch (_) {}
     setAnimatingDeed(deedKey);
     setDedicatedMap((prev) => ({
       ...prev,
@@ -146,6 +193,42 @@ export function MapView({
 
   return (
     <View style={styles.container}>
+      {/* Sanctuary Quick Jump Bar */}
+      <View style={styles.quickJumpRow}>
+        {visibleSpots.map((spot) => {
+          const isSelected = selectedSpot.id === spot.id;
+          const icon = spot.categoryId === "animals" ? "🐟" : spot.categoryId === "elders" ? "👵" : spot.categoryId === "environment" ? "🌱" : spot.categoryId === "community" ? "🪔" : "📖";
+          return (
+            <Pressable
+              key={spot.id}
+              accessibilityRole="button"
+              accessibilityState={{ selected: isSelected }}
+              onPress={() => {
+                try { Vibration.vibrate(15); } catch (_) {}
+                onSelectSpot(spot.id);
+              }}
+              style={[
+                styles.quickChip,
+                {
+                  backgroundColor: isSelected ? currentColors.goldGlow : currentColors.surface,
+                  borderColor: isSelected ? currentColors.gold : currentColors.line
+                }
+              ]}
+            >
+              <Text
+                style={[
+                  styles.quickChipText,
+                  { color: isSelected ? currentColors.jade : currentColors.ink },
+                  seniorMode && { fontSize: typography.sizes.body }
+                ]}
+              >
+                {icon} {spot.name.split(",")[0]}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
       <View style={[styles.mapStage, { backgroundColor: currentColors.surface, borderColor: currentColors.line }]}>
         <Text style={[styles.eyebrow, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
           {t("map.eyebrow")}
@@ -161,23 +244,38 @@ export function MapView({
               style={[styles.pinAnchor, { left: spot.x, top: spot.y }]}
             >
               {isSelected && (
-                <Animated.View
-                  style={[
-                    styles.rippleAura,
-                    {
-                      borderColor: currentColors.gold,
-                      backgroundColor: currentColors.goldGlow,
-                      transform: [{ scale: pulseScale }],
-                      opacity: pulseOpacity
-                    }
-                  ]}
-                />
+                <>
+                  <Animated.View
+                    style={[
+                      styles.rippleAura,
+                      {
+                        borderColor: currentColors.gold,
+                        backgroundColor: currentColors.goldGlow,
+                        transform: [{ scale: pulseScale }],
+                        opacity: pulseOpacity
+                      }
+                    ]}
+                  />
+                  <Animated.View
+                    style={[
+                      styles.rippleAuraSecondary,
+                      {
+                        borderColor: currentColors.jade,
+                        transform: [{ scale: pulseScale2 }],
+                        opacity: pulseOpacity2
+                      }
+                    ]}
+                  />
+                </>
               )}
               <Pressable
                 accessibilityLabel={t("map.spotLabel", { name: spot.name })}
                 accessibilityRole="button"
                 accessibilityState={{ selected: isSelected }}
-                onPress={() => onSelectSpot(spot.id)}
+                onPress={() => {
+                  try { Vibration.vibrate(15); } catch (_) {}
+                  onSelectSpot(spot.id);
+                }}
                 style={[
                   styles.mapPin,
                   {
@@ -247,6 +345,19 @@ export function MapView({
         )}
       </View>
 
+      {/* Live Global Kindness Stream Bar */}
+      <View style={[styles.streamBar, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+        <View style={styles.streamBadge}>
+          <View style={[styles.streamDot, { backgroundColor: currentColors.coral }]} />
+          <Text style={[styles.streamBadgeText, { color: currentColors.coral }]}>
+            {t("map.liveStreamTitle")}
+          </Text>
+        </View>
+        <Text style={[styles.streamText, headingColor]} numberOfLines={1}>
+          {STREAM_EVENTS[streamIndex]}
+        </Text>
+      </View>
+
       <CategoryFilters
         activeCategory={activeCategory}
         onSelect={onSelectCategory}
@@ -275,23 +386,36 @@ export function MapView({
           {selectedSpot.name}
         </Text>
 
-        {selectedSpot.coordinates && (
-          <View style={styles.coordRow}>
-            <Text style={[styles.coordBadge, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-              📍 {selectedSpot.coordinates}
+        {/* Sanctuary Telemetry HUD */}
+        <View style={[styles.telemetryHud, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.gold }]}>
+          <View style={styles.telemetryHeader}>
+            <Text style={[styles.telemetryTitle, { color: currentColors.gold }]}>
+              🛰️ SANCTUARY TELEMETRY
             </Text>
+            <View style={styles.liveIndicator}>
+              <View style={[styles.liveDot, { backgroundColor: currentColors.jade }]} />
+              <Text style={[styles.liveText, { color: currentColors.jade }]}>LIVE</Text>
+            </View>
           </View>
-        )}
+          <View style={styles.telemetryGrid}>
+            <View style={styles.telemetryItem}>
+              <Text style={[styles.telemetryLabel, eyebrowColor]}>{t("map.telemetryCoordinates")}</Text>
+              <Text style={[styles.telemetryValue, headingColor]}>
+                📍 {selectedSpot.coordinates || "30.2435° N, 120.1448° E"}
+              </Text>
+            </View>
+            <View style={styles.telemetryItem}>
+              <Text style={[styles.telemetryLabel, eyebrowColor]}>{t("map.telemetryBiosphere")}</Text>
+              <Text style={[styles.telemetryValue, headingColor]}>
+                🌱 {selectedSpot.environment || "Ancient Cypress Sanctuary"}
+              </Text>
+            </View>
+          </View>
+        </View>
 
         <Text style={[styles.body, eyebrowColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
           {selectedSpot.description}
         </Text>
-
-        {selectedSpot.environment && (
-          <Text style={[styles.envNote, eyebrowColor, seniorMode && { fontSize: typography.sizes.caption }]}>
-            🌱 {selectedSpot.environment}
-          </Text>
-        )}
 
         {/* In-Map Deed Selection Deck */}
         <View style={styles.deckSection}>
@@ -459,6 +583,31 @@ const styles = StyleSheet.create({
     height: 38,
     borderRadius: 19,
     borderWidth: 1.5
+  },
+  rippleAuraSecondary: {
+    position: "absolute",
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    borderWidth: 1.2
+  },
+  quickJumpRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: layout.spacing.xs,
+    marginVertical: layout.spacing.xs
+  },
+  quickChip: {
+    paddingHorizontal: layout.spacing.sm,
+    paddingVertical: 6,
+    borderRadius: layout.borderRadius.full,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  quickChipText: {
+    fontSize: typography.sizes.caption,
+    fontWeight: "600"
   },
   mapPin: {
     width: 24,
@@ -641,5 +790,89 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: typography.sizes.body,
     fontWeight: "700"
+  },
+  streamBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    gap: layout.spacing.xs,
+    marginVertical: layout.spacing.xs
+  },
+  streamBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: layout.borderRadius.full,
+    backgroundColor: "rgba(224, 86, 36, 0.15)"
+  },
+  streamDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3
+  },
+  streamBadgeText: {
+    fontSize: 10,
+    fontWeight: "700",
+    textTransform: "uppercase",
+    letterSpacing: 0.5
+  },
+  streamText: {
+    fontSize: 12,
+    flex: 1,
+    fontWeight: "500"
+  },
+  telemetryHud: {
+    padding: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    gap: 6,
+    marginVertical: layout.spacing.xs
+  },
+  telemetryHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  telemetryTitle: {
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.5
+  },
+  liveIndicator: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4
+  },
+  liveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3
+  },
+  liveText: {
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.5
+  },
+  telemetryGrid: {
+    flexDirection: "row",
+    gap: layout.spacing.sm
+  },
+  telemetryItem: {
+    flex: 1
+  },
+  telemetryLabel: {
+    fontSize: 10,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 2
+  },
+  telemetryValue: {
+    fontSize: 12,
+    fontWeight: "600"
   }
 });

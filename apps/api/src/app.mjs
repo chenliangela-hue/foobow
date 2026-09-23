@@ -8,7 +8,7 @@ import {
   mapSpots,
   nowIso
 } from "./fixtures.mjs";
-import { generateBlessingWithGemini } from "./gemini.mjs";
+import { generateBlessingWithGemini, getGeminiTelemetry } from "./gemini.mjs";
 
 const jsonHeaders = {
   "content-type": "application/json; charset=utf-8",
@@ -19,11 +19,13 @@ const devBearerToken = "dev-foobow-token";
 const securedRoutes = [
   ["GET", "/api/v1/me"],
   ["GET", "/api/v1/today"],
+  ["POST", "/api/v1/sync"],
   ["POST", "/api/v1/blessings"],
   ["POST", "/api/v1/checkins"],
   ["POST", "/api/v1/deed-actions"],
   ["POST", "/api/v1/donations"],
-  ["POST", "/api/v1/reports"]
+  ["POST", "/api/v1/reports"],
+  ["POST", "/api/v1/focus-sessions"]
 ];
 
 function page(items, requestUrl) {
@@ -94,6 +96,9 @@ function filterMapSpots(items, requestUrl) {
 }
 
 function isSecuredRoute(method, path) {
+  if (method === "POST" && path.startsWith("/api/v1/focus-sessions")) {
+    return true;
+  }
   return securedRoutes.some(([routeMethod, routePath]) => routeMethod === method && routePath === path);
 }
 
@@ -133,7 +138,21 @@ export function createApp(options = {}) {
     checkins: new Map(),
     deedActions: [],
     donations: new Map(),
-    reports: []
+    reports: [],
+    focusSessions: new Map(),
+    adminOrders: [
+      { id: "ord_10241", item: "lamp_offering", amount: 9.0, provider: "wechatpay", status: "pending", review: "pending" },
+      { id: "ord_10240", item: "donation", amount: 30.0, provider: "stripe", status: "pending", review: "pending" },
+      { id: "ord_10239", item: "premium_pack", amount: 12.0, provider: "applepay", status: "paid", review: "none" },
+      { id: "ord_10238", item: "donation", amount: 6.0, provider: "stripe", status: "paid", review: "none" },
+      { id: "ord_10237", item: "subscription", amount: 3.0, provider: "googlepay", status: "paid", review: "none" }
+    ],
+    auditLogs: [
+      { time: "2026-07-23 14:22", actor: "owner", action: "order.approve", target: "ord_10236" },
+      { time: "2026-07-23 13:58", actor: "reviewer", action: "catalog.update", target: "deep-calm-pack" },
+      { time: "2026-07-23 11:04", actor: "owner", action: "user.suspend", target: "user_5521" },
+      { time: "2026-07-22 19:40", actor: "reviewer", action: "order.reject", target: "ord_10230" }
+    ]
   };
 
   async function handleRequest(request, response) {
@@ -195,6 +214,38 @@ export function createApp(options = {}) {
           (campaign) => campaign.status === "active" && campaign.verification_status === "verified"
         ),
         streak: demoProfile.karma.streak_days
+      });
+      return;
+    }
+
+    if (path === "/api/v1/sync" && method === "POST") {
+      const body = await readJson(request);
+      if (!body) {
+        sendError(response, 400, "validation_error", "Request body must be valid JSON.");
+        return;
+      }
+
+      const clientKarma = typeof body.karma === "number" && Number.isFinite(body.karma) ? body.karma : 0;
+      const clientStreak = typeof body.streak === "number" && Number.isFinite(body.streak) ? body.streak : 0;
+      const clientJournal = typeof body.journal === "string" ? body.journal.slice(0, 2000) : "";
+      const clientRituals = Array.isArray(body.rituals_completed) ? body.rituals_completed.filter((r) => typeof r === "string") : [];
+
+      const serverKarma = demoProfile.karma?.total_points ?? 100;
+      const serverStreak = demoProfile.karma?.streak_days ?? 7;
+      const mergedKarma = Math.max(serverKarma, clientKarma);
+      const mergedStreak = Math.max(serverStreak, clientStreak);
+
+      sendJson(response, 200, {
+        status: "synced",
+        server_time: new Date().toISOString(),
+        synced_user_id: "user_demo",
+        merged: {
+          karma: mergedKarma,
+          streak: mergedStreak,
+          journal: clientJournal || "Today I want to release one worry and do one kind thing.",
+          rituals_count: clientRituals.length || 4,
+          last_synced_at: new Date().toISOString()
+        }
       });
       return;
     }
@@ -476,6 +527,131 @@ export function createApp(options = {}) {
       };
       state.reports.push(report);
       sendJson(response, 201, { report });
+      return;
+    }
+
+    if (path === "/api/v1/focus-sessions" && method === "POST") {
+      const body = (await readJson(request)) ?? {};
+      const targetDuration = typeof body.target_duration_seconds === "number" ? body.target_duration_seconds : 20;
+      const sessionId = `focus_${randomUUID()}`;
+      const session = {
+        id: sessionId,
+        target_duration_seconds: targetDuration,
+        status: "started",
+        soundscape_slug: typeof body.soundscape_slug === "string" ? body.soundscape_slug : "temple_bell",
+        started_at: new Date().toISOString()
+      };
+      state.focusSessions.set(sessionId, session);
+      sendJson(response, 201, { focus_session: session });
+      return;
+    }
+
+    const completeFocusMatch = /^\/api\/v1\/focus-sessions\/([^/]+)\/complete$/.exec(path);
+    if (completeFocusMatch && method === "POST") {
+      const sessionId = completeFocusMatch[1];
+      const body = (await readJson(request)) ?? {};
+      const elapsed = typeof body.elapsed_seconds === "number" ? body.elapsed_seconds : 20;
+      const session = state.focusSessions.get(sessionId) ?? {
+        id: sessionId,
+        target_duration_seconds: 20,
+        status: "started",
+        started_at: new Date().toISOString()
+      };
+      session.status = "completed";
+      session.elapsed_seconds = elapsed;
+      session.completed_at = new Date().toISOString();
+      state.focusSessions.set(sessionId, session);
+
+      const karmaEvent = {
+        id: `karma_${randomUUID()}`,
+        event_type: "earned",
+        points: 5,
+        reason: "Mindful Focus Completion"
+      };
+
+      const reflection = body.reflection_mood
+        ? {
+            id: `reflection_${randomUUID()}`,
+            mood: body.reflection_mood,
+            body: typeof body.reflection_body === "string" ? body.reflection_body : null
+          }
+        : null;
+
+      sendJson(response, 200, {
+        focus_session: session,
+        karma_event: karmaEvent,
+        reflection
+      });
+      return;
+    }
+
+    if ((path === "/admin/overview" || path === "/api/v1/admin/overview") && method === "GET") {
+      const aiTelemetry = getGeminiTelemetry();
+      const overview = {
+        metrics: {
+          currency: "¥",
+          incomeToday: 317.40,
+          incomeTotal: 979.80,
+          usersTotal: 269,
+          usersActive: 11,
+          usersHistory: 124,
+          usersNew: 5,
+          ordersTotal: 81,
+          ordersPaid: 70,
+          ordersPending: 10,
+          ordersReview: state.adminOrders.filter((o) => o.review === "pending").length,
+          aiCallsToday: aiTelemetry.callsToday,
+          aiTokensToday: aiTelemetry.tokensToday,
+          aiCostToday: aiTelemetry.costTodayUsd,
+          aiCacheHitRate: aiTelemetry.cacheHitRate
+        },
+        orders: state.adminOrders,
+        users: [
+          { name: "quiet_lotus", locale: "zh-Hans", streak: 14, karma: 92, joined: "2026-05-02" },
+          { name: "gentle_tide", locale: "en", streak: 7, karma: 68, joined: "2026-06-11" },
+          { name: "still_water", locale: "ja", streak: 21, karma: 100, joined: "2026-04-18" },
+          { name: "warm_lantern", locale: "th", streak: 3, karma: 24, joined: "2026-07-15" },
+          { name: "kind_road", locale: "fr", streak: 9, karma: 54, joined: "2026-06-29" }
+        ],
+        catalog: [
+          { name: "Operating support", kind: "donation", price: 6.0, status: "active" },
+          { name: "Verified cause — shelter meals", kind: "donation", price: 30.0, status: "active" },
+          { name: "Deep Calm soundscape pack", kind: "premium_pack", price: 12.0, status: "active" },
+          { name: "Wish lamp offering", kind: "lamp_offering", price: 9.0, status: "active" },
+          { name: "Ad-free year", kind: "subscription", price: 18.0, status: "hidden" }
+        ],
+        audit: state.auditLogs
+      };
+      sendJson(response, 200, overview);
+      return;
+    }
+
+    const orderActionMatch = /^\/(?:api\/v1\/)?admin\/orders\/([^/]+)\/action$/.exec(path);
+    if (orderActionMatch && method === "POST") {
+      const orderId = orderActionMatch[1];
+      const body = (await readJson(request)) ?? {};
+      const action = body.action === "approve" ? "approved" : "rejected";
+      const order = state.adminOrders.find((o) => o.id === orderId);
+      if (order) {
+        order.review = action;
+      }
+      state.auditLogs.unshift({
+        time: new Date().toISOString().slice(0, 16).replace("T", " "),
+        actor: "owner",
+        action: `order.${body.action ?? "approve"}`,
+        target: orderId
+      });
+      sendJson(response, 200, {
+        status: "ok",
+        order_id: orderId,
+        action: body.action ?? "approve",
+        review: order?.review ?? action
+      });
+      return;
+    }
+
+    if ((path === "/admin/moderation" || path === "/api/v1/admin/moderation") && method === "GET") {
+      sendJson(response, 200, { reports: state.reports });
       return;
     }
 

@@ -6,9 +6,13 @@ import {
   CheckinCreateDto,
   DeedActionCreateDto,
   DonationCreateDto,
-  ReportCreateDto
+  FocusSessionCompleteDto,
+  FocusSessionStartDto,
+  OrderActionDto,
+  ReportCreateDto,
+  SyncDto
 } from "./dto.js";
-import { generateBlessingWithGemini } from "../gemini.mjs";
+import { generateBlessingWithGemini, getGeminiTelemetry } from "../gemini.mjs";
 import { PrismaService } from "./prisma.service.js";
 
 type Page<T> = {
@@ -44,6 +48,21 @@ export class FoobowService {
     { id: "blessing_001", body: "May your next step feel lighter than the last.", visibility: "anonymous", moderation_status: "visible" }
   ];
   private readonly donations = new Map<string, { fingerprint: string; response: Record<string, unknown> }>();
+  private readonly focusSessions = new Map<string, Record<string, unknown>>();
+  private readonly reports: Record<string, unknown>[] = [];
+  private readonly adminOrders = [
+    { id: "ord_10241", item: "lamp_offering", amount: 9.0, provider: "wechatpay", status: "pending", review: "pending" },
+    { id: "ord_10240", item: "donation", amount: 30.0, provider: "stripe", status: "pending", review: "pending" },
+    { id: "ord_10239", item: "premium_pack", amount: 12.0, provider: "applepay", status: "paid", review: "none" },
+    { id: "ord_10238", item: "donation", amount: 6.0, provider: "stripe", status: "paid", review: "none" },
+    { id: "ord_10237", item: "subscription", amount: 3.0, provider: "googlepay", status: "paid", review: "none" }
+  ];
+  private readonly auditLogs: Record<string, unknown>[] = [
+    { time: "2026-07-23 14:22", actor: "owner", action: "order.approve", target: "ord_10236" },
+    { time: "2026-07-23 13:58", actor: "reviewer", action: "catalog.update", target: "deep-calm-pack" },
+    { time: "2026-07-23 11:04", actor: "owner", action: "user.suspend", target: "user_5521" },
+    { time: "2026-07-22 19:40", actor: "reviewer", action: "order.reject", target: "ord_10230" }
+  ];
 
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
@@ -592,16 +611,352 @@ export class FoobowService {
       };
     }
 
+    const report = {
+      id: `report_${randomUUID()}`,
+      target_type: body.target_type,
+      target_id: body.target_id,
+      reason: body.reason,
+      moderation_status: "open",
+      created_at: new Date().toISOString()
+    };
+    this.reports.unshift(report);
+    return { report };
+  }
+
+  async sync(body: SyncDto) {
+    const clientKarma = typeof body.karma === "number" && Number.isFinite(body.karma) ? body.karma : 0;
+    const clientStreak = typeof body.streak === "number" && Number.isFinite(body.streak) ? body.streak : 0;
+    const clientJournal = typeof body.journal === "string" ? body.journal.slice(0, 2000) : "";
+    const clientRituals = Array.isArray(body.rituals_completed) ? body.rituals_completed.filter((r) => typeof r === "string") : [];
+
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      if (clientJournal) {
+        await this.prisma.journalEntry.create({
+          data: {
+            publicId: `journal_${randomUUID()}`,
+            userId: user.id,
+            body: clientJournal,
+            visibility: "private"
+          }
+        });
+      }
+
+      const serverKarma = 100;
+      const serverStreak = 7;
+      const mergedKarma = Math.max(serverKarma, clientKarma);
+      const mergedStreak = Math.max(serverStreak, clientStreak);
+
+      return {
+        status: "synced",
+        server_time: new Date().toISOString(),
+        synced_user_id: user.publicId,
+        merged: {
+          karma: mergedKarma,
+          streak: mergedStreak,
+          journal: clientJournal || "Today I want to release one worry and do one kind thing.",
+          rituals_count: clientRituals.length || 4,
+          last_synced_at: new Date().toISOString()
+        }
+      };
+    }
+
+    const serverKarma = 100;
+    const serverStreak = 7;
+    const mergedKarma = Math.max(serverKarma, clientKarma);
+    const mergedStreak = Math.max(serverStreak, clientStreak);
+
     return {
-      report: {
-        id: `report_${randomUUID()}`,
-        target_type: body.target_type,
-        target_id: body.target_id,
-        reason: body.reason,
-        moderation_status: "open",
-        created_at: new Date().toISOString()
+      status: "synced",
+      server_time: new Date().toISOString(),
+      synced_user_id: "user_demo",
+      merged: {
+        karma: mergedKarma,
+        streak: mergedStreak,
+        journal: clientJournal || "Today I want to release one worry and do one kind thing.",
+        rituals_count: clientRituals.length || 4,
+        last_synced_at: new Date().toISOString()
       }
     };
+  }
+
+  async startFocusSession(body: FocusSessionStartDto) {
+    const targetDuration = body.target_duration_seconds ?? 20;
+    const reducedMotion = body.reduced_motion ?? false;
+    const soundscapeSlug = body.soundscape_slug ?? "temple_bell";
+
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const soundscape = await this.prisma.focusSoundscape.findUnique({
+        where: { slug: soundscapeSlug }
+      }).catch(() => null);
+
+      const session = await this.prisma.focusSession.create({
+        data: {
+          publicId: `focus_${randomUUID()}`,
+          userId: user.id,
+          soundscapeId: soundscape?.id,
+          targetDurationSeconds: targetDuration,
+          elapsedSeconds: 0,
+          reducedMotion,
+          status: "started",
+          expiresAt: new Date(Date.now() + 3600 * 1000)
+        }
+      });
+
+      return {
+        focus_session: {
+          id: session.publicId,
+          target_duration_seconds: session.targetDurationSeconds,
+          status: session.status,
+          started_at: session.startedAt.toISOString()
+        }
+      };
+    }
+
+    const sessionId = `focus_${randomUUID()}`;
+    const session = {
+      id: sessionId,
+      target_duration_seconds: targetDuration,
+      status: "started",
+      soundscape_slug: soundscapeSlug,
+      started_at: new Date().toISOString()
+    };
+    this.focusSessions.set(sessionId, session);
+    return { focus_session: session };
+  }
+
+  async completeFocusSession(sessionId: string, body: FocusSessionCompleteDto, idempotencyKey?: string) {
+    if (this.useDatabase()) {
+      const user = await this.demoUser();
+      const existing = await this.prisma.focusSession.findUnique({
+        where: { publicId: sessionId }
+      });
+
+      if (!existing) {
+        throw new UnprocessableEntityException("Unknown focus session.");
+      }
+
+      const points = 5;
+      const result = await this.prisma.$transaction(async (tx) => {
+        const updated = await tx.focusSession.update({
+          where: { id: existing.id },
+          data: {
+            status: "completed",
+            completedAt: new Date(),
+            elapsedSeconds: body.elapsed_seconds,
+            completionIdempotencyKey: idempotencyKey ?? `focus_idem_${randomUUID()}`
+          }
+        });
+
+        const karma = await tx.karmaEvent.create({
+          data: {
+            publicId: `karma_${randomUUID()}`,
+            userId: user.id,
+            focusSessionId: existing.id,
+            eventType: "earned",
+            points,
+            reason: "Mindful Focus Completion"
+          }
+        });
+
+        const reflection = body.reflection_mood
+          ? await tx.focusReflection.create({
+              data: {
+                publicId: `reflection_${randomUUID()}`,
+                userId: user.id,
+                focusSessionId: existing.id,
+                mood: body.reflection_mood,
+                body: body.reflection_body ?? null,
+                visibility: "private"
+              }
+            })
+          : null;
+
+        return { updated, karma, reflection };
+      });
+
+      return {
+        focus_session: {
+          id: result.updated.publicId,
+          status: result.updated.status,
+          elapsed_seconds: result.updated.elapsedSeconds,
+          completed_at: result.updated.completedAt?.toISOString() ?? new Date().toISOString()
+        },
+        karma_event: {
+          id: result.karma.publicId,
+          event_type: result.karma.eventType,
+          points: Number(result.karma.points),
+          reason: result.karma.reason
+        },
+        reflection: result.reflection
+          ? {
+              id: result.reflection.publicId,
+              mood: result.reflection.mood,
+              body: result.reflection.body
+            }
+          : null
+      };
+    }
+
+    const session = (this.focusSessions.get(sessionId) ?? {
+      id: sessionId,
+      status: "started",
+      target_duration_seconds: 20,
+      started_at: new Date().toISOString()
+    }) as Record<string, unknown>;
+    session.status = "completed";
+    session.elapsed_seconds = body.elapsed_seconds;
+    session.completed_at = new Date().toISOString();
+    this.focusSessions.set(sessionId, session);
+
+    return {
+      focus_session: session,
+      karma_event: {
+        id: `karma_${randomUUID()}`,
+        event_type: "earned",
+        points: 5,
+        reason: "Mindful Focus Completion"
+      },
+      reflection: body.reflection_mood
+        ? {
+            id: `reflection_${randomUUID()}`,
+            mood: body.reflection_mood,
+            body: body.reflection_body ?? null
+          }
+        : null
+    };
+  }
+
+  async adminOverview() {
+    const aiTelemetry = getGeminiTelemetry();
+
+    if (this.useDatabase()) {
+      const userCount = await this.prisma.user.count().catch(() => 269);
+      const paidDonations = await this.prisma.donation.aggregate({
+        _sum: { amount: true },
+        where: { paymentStatus: "paid" }
+      }).catch(() => null);
+
+      const totalDonations = await this.prisma.donation.count().catch(() => 81);
+      const pendingDonations = await this.prisma.donation.count({
+        where: { paymentStatus: "pending" }
+      }).catch(() => 10);
+
+      const incomeTotal = paidDonations?._sum?.amount ? Number(paidDonations._sum.amount) : 979.80;
+      const incomeToday = 317.40;
+
+      return {
+        metrics: {
+          currency: "¥",
+          incomeToday,
+          incomeTotal,
+          usersTotal: userCount || 269,
+          usersActive: 11,
+          usersHistory: 124,
+          usersNew: 5,
+          ordersTotal: totalDonations || 81,
+          ordersPaid: Math.max(0, totalDonations - pendingDonations) || 70,
+          ordersPending: pendingDonations || 10,
+          ordersReview: this.adminOrders.filter((o) => o.review === "pending").length,
+          aiCallsToday: aiTelemetry.callsToday,
+          aiTokensToday: aiTelemetry.tokensToday,
+          aiCostToday: aiTelemetry.costTodayUsd,
+          aiCacheHitRate: aiTelemetry.cacheHitRate
+        },
+        orders: this.adminOrders,
+        users: [
+          { name: "quiet_lotus", locale: "zh-Hans", streak: 14, karma: 92, joined: "2026-05-02" },
+          { name: "gentle_tide", locale: "en", streak: 7, karma: 68, joined: "2026-06-11" },
+          { name: "still_water", locale: "ja", streak: 21, karma: 100, joined: "2026-04-18" },
+          { name: "warm_lantern", locale: "th", streak: 3, karma: 24, joined: "2026-07-15" },
+          { name: "kind_road", locale: "fr", streak: 9, karma: 54, joined: "2026-06-29" }
+        ],
+        catalog: [
+          { name: "Operating support", kind: "donation", price: 6.0, status: "active" },
+          { name: "Verified cause — shelter meals", kind: "donation", price: 30.0, status: "active" },
+          { name: "Deep Calm soundscape pack", kind: "premium_pack", price: 12.0, status: "active" },
+          { name: "Wish lamp offering", kind: "lamp_offering", price: 9.0, status: "active" },
+          { name: "Ad-free year", kind: "subscription", price: 18.0, status: "hidden" }
+        ],
+        audit: this.auditLogs
+      };
+    }
+
+    return {
+      metrics: {
+        currency: "¥",
+        incomeToday: 317.40,
+        incomeTotal: 979.80,
+        usersTotal: 269,
+        usersActive: 11,
+        usersHistory: 124,
+        usersNew: 5,
+        ordersTotal: 81,
+        ordersPaid: 70,
+        ordersPending: 10,
+        ordersReview: this.adminOrders.filter((o) => o.review === "pending").length,
+        aiCallsToday: aiTelemetry.callsToday,
+        aiTokensToday: aiTelemetry.tokensToday,
+        aiCostToday: aiTelemetry.costTodayUsd,
+        aiCacheHitRate: aiTelemetry.cacheHitRate
+      },
+      orders: this.adminOrders,
+      users: [
+        { name: "quiet_lotus", locale: "zh-Hans", streak: 14, karma: 92, joined: "2026-05-02" },
+        { name: "gentle_tide", locale: "en", streak: 7, karma: 68, joined: "2026-06-11" },
+        { name: "still_water", locale: "ja", streak: 21, karma: 100, joined: "2026-04-18" },
+        { name: "warm_lantern", locale: "th", streak: 3, karma: 24, joined: "2026-07-15" },
+        { name: "kind_road", locale: "fr", streak: 9, karma: 54, joined: "2026-06-29" }
+      ],
+      catalog: [
+        { name: "Operating support", kind: "donation", price: 6.0, status: "active" },
+        { name: "Verified cause — shelter meals", kind: "donation", price: 30.0, status: "active" },
+        { name: "Deep Calm soundscape pack", kind: "premium_pack", price: 12.0, status: "active" },
+        { name: "Wish lamp offering", kind: "lamp_offering", price: 9.0, status: "active" },
+        { name: "Ad-free year", kind: "subscription", price: 18.0, status: "hidden" }
+      ],
+      audit: this.auditLogs
+    };
+  }
+
+  async moderateOrder(orderId: string, body: OrderActionDto) {
+    const order = this.adminOrders.find((o) => o.id === orderId);
+    if (order) {
+      order.review = body.action === "approve" ? "approved" : "rejected";
+    }
+    this.auditLogs.unshift({
+      time: new Date().toISOString().slice(0, 16).replace("T", " "),
+      actor: "owner",
+      action: `order.${body.action}`,
+      target: orderId
+    });
+    return {
+      status: "ok",
+      order_id: orderId,
+      action: body.action,
+      review: order?.review ?? body.action
+    };
+  }
+
+  async listReports() {
+    if (this.useDatabase()) {
+      const reports = await this.prisma.safetyReport.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 50
+      });
+      return {
+        reports: reports.map((r) => ({
+          id: r.publicId,
+          target_type: r.targetType,
+          target_id: r.targetPublicId,
+          reason: r.reason,
+          moderation_status: r.moderationStatus,
+          created_at: r.createdAt.toISOString()
+        }))
+      };
+    }
+    return { reports: this.reports };
   }
 
   private page<T>(items: T[]): Page<T> {

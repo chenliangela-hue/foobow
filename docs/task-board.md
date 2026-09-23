@@ -159,6 +159,77 @@
   - Standardized Light Mode color palette tokens across Web (`prototype/app/styles.css`) and Mobile (`apps/mobile/src/theme/theme.ts`) matching authoritative spec sheet (`ChatGPT Image Sep 21, 2026, 11_01_17 PM.png`): earthy deep jade (`#2E7D6B`), sunlit gold (`#EFBC78`), warm linen canvas (`#FFF9F2`), charcoal slate ink (`#1F2937`), and slate gray (`#4B5563`).
   - Created Cloudflare R2 synchronization script `scripts/sync-assets-r2.mjs` supporting S3-compatible credentials and zero-egress production CDN delivery with automatic local fallback.
   - Refreshed and passed all Playwright visual regression snapshots (8/8) and full browser test suites (88/88).
+- Phase 2 (Immersive 3D/Kinetic Visual & Motion Elevation):
+  - Procedural Lotus Pond Water Ripple Engine (`#pondRippleCanvas`) with harmonic wave interference and swimming koi dynamics on Web and Mobile.
+  - Drifting 3D Sky Lanterns Canvas (`#lampSkyCanvas`, `#driftingLanternsLayer`) with warm floating embers and custom wish tags.
+  - Tibetan Prayer Wheel 3D Cylindrical Lighting (`#wheelDrum`) with dynamic specular reflections, mantra sparkle bursts, and acoustic ratchet/chime audio synthesis.
+  - Live Map Sanctuary Telemetry HUD card (`#sanctuaryHudCard`) displaying live coordinates, biosphere environmental context, and active guardian telemetry.
+  - Real-time Global Kindness Stream ticker (`#mapKindnessStreamBar`) with automated 4-second cycling of worldwide good deeds.
+  - Auroral Particle Canvas (`#globeParticlesCanvas`) with interactive shockwave pulses triggered on map deeds.
+- Phase 3 Track 1 (Mobile App Parity & Feature Elevation across `apps/mobile`):
+  - Copied 7 light & dark tab sanctuary wallpapers into `apps/mobile/assets/foobow/backgrounds/`.
+  - Added full translation keys across all 6 locales (`en`, `zhHans`, `fr`, `es`, `th`, `ja`) type-checked against `TranslationShape = typeof en`.
+  - Elevated `TodayView.tsx` with Karma Delta Pill (`+20 today`), Zen Quote, 7-Day Flame Streak Track, Quick Rituals Shortcut Bar, and Mini World Showcase Card.
+  - Elevated `MapView.tsx` with Live Global Kindness Stream Bar and Sanctuary Telemetry HUD card (coordinates + biosphere environment).
+  - Elevated `ProfileView.tsx` with radial Progress Tracking and Global Impact Showcase (124 Helped, 8.4M+ Blessings, 5 Countries, 12.3 kg CO₂).
+  - Connected navigation callbacks `onGoToMap` and `onGoToBlessings` in `App.tsx`.
+- Phase 3 Track 2 (Cloudflare R2 Asset Pipeline & Manifest):
+  - Upgraded `scripts/sync-assets-r2.mjs` with native SHA256 checksum generation, MIME type detection, and automatic asset manifest output.
+  - Generated `prototype/assets/foobow/asset-manifest.json` cataloging all 30 high-resolution assets (58.85 MB) with CDN URLs and hashes.
+  - Added dynamic CDN asset resolution in `prototype/app/app.js` with instant zero-downtime local fallback.
+  - Added automated unit test in `tests/smoke-prototype.test.mjs` verifying R2 manifest completeness and integrity.
+- Phase 3 Track 3 (Live Cloud Sync & Backend Integration):
+  - Implemented `/api/v1/sync` in `apps/api/src/app.mjs` with merge logic for karma, streaks, journal reflections, and ritual history.
+  - Added typed client service `syncCloudState` in `apps/mobile/src/services/apiClient.ts`.
+  - Added test coverage in `apps/api/tests/api.test.mjs` (23/23 API tests passing).
+- Phase 3 Track 4 (Interactive Vector Map Elevation):
+  - Added interactive mouse and touch pan dragging to the embedded OpenStreetMap viewport in `prototype/app/app.js` with live coordinate updates.
+  - Verified 100% test pass across root unit tests (36/36), Playwright tests (28/28), and visual regression baselines (8/8).
+- Phase 3 Track 5 (Deeds Catalog & Ritual Experience Elevation):
+  - Added category icons (`🐟`, `👵`, `🌱`, `🤝`, `📖`, `🪔`), karma points badges (`+${deed.points} karma`), and elevated header layout styling to `DeedCatalogView.tsx` on Mobile.
+  - Linked quick rituals directly from TodayView into full catalog performance flows.
+- Phase 3 Track 6 (Community Kindness Wall Elevation):
+  - Elevated Mobile `CommunityView.tsx` with interactive Pressable reaction buttons (`🪷 Bless / Blessed (${count})`), reaction count state, safe report action, and gentle confirmation toast feedback (`t("community.reportConfirm")`).
+  - Added synthesized Zen audio chime (`playZenChime()`) and floating merit particle bursts on post support in Web prototype `prototype/app/community.js`.
+  - Added full translation keys across all 6 locales (`en`, `zh-Hans`, `fr`, `es`, `th`, `ja`).
+- Phase 3 Track 7 (Blessings Reveal & Auspicious Seal):
+  - Elevated Web `prototype/app/app.js` with instant audio chime (`playZenChime()`) on blessing generation and auspicious seal stamp (`.blessing-seal-stamp`: `福印 · 心诚则灵` / `福印 · 誠心通天`).
+  - Implemented authentic traditional vermilion seal badge styling in `prototype/app/styles.css` with calligraphy typography, rotation, subtle box shadow, and stamp entrance animation.
+  - Added floating merit particles anchored directly on the save button (`updateKarma(1, saveButton)`) and audio chime feedback when keeping a blessing.
+- Phase 4 Track 1 (Vector Tile Map Elevation & Sanctuary Quick-Jump):
+  - Added Sanctuary Quick-Jump bar on Web (`#sanctuaryQuickJump`) and Mobile (`quickJumpRow`) allowing instant glide navigation between all 5 sanctuaries.
+  - Added rotating Buddhist Compass Rose (`#buddhistCompassRose`, ☸️) with Dharma wheel aesthetics and smooth 30s celestial rotation.
+  - Implemented dual-ring pulsating sanctuary ripple waves (`.sanctuary-ripple-wave`, `rippleAuraSecondary`) on both platforms.
+- Phase 4 Track 2 (Soundscape Audio Immersion & Mobile Haptics):
+  - Added periodic singing bowl harmonic pings to the Temple Bell soundscape every 7.5s in `prototype/app/app.js`.
+  - Integrated zero-dependency React Native `Vibration` haptic feedback across Mobile micro-interactions:
+    - Electronic wooden fish strike (`ZenWoodenFish.tsx`)
+    - Prayer wheel revolution and swipe initiation (`ZenPrayerWheel.tsx`)
+    - Virtual incense kindling (`VirtualIncense.tsx`)
+    - Calm ritual focus start and completion (`CalmRitualCard.tsx`)
+    - Map deed execution and sanctuary selection (`MapView.tsx`)
+  - Verified 100% test pass across root tests (36/36), API tests (23/23), Playwright browser tests (28/28), and visual regression baselines (8/8).
+- Phase 4 Track 3 (Live Database & Full-Stack Cloud Sync Integration):
+  - Added typed DTOs in `apps/api/src/nest/dto.ts`: `SyncDto`, `FocusSessionStartDto`, `FocusSessionCompleteDto`, `OrderActionDto`.
+  - Wired full persistence to Prisma PostgreSQL tables when `DATABASE_URL` is set:
+    - User synchronization (`POST /api/v1/sync`): merges client karma & streaks and persists private mindfulness reflections to `journal_entries`.
+    - Calm Ritual focus sessions (`POST /api/v1/focus-sessions` & `POST /api/v1/focus-sessions/:id/complete`): persists start/expiration timestamps, elapsed focus seconds, awards 5 karma points in `karma_events`, and saves optional reflections to `focus_reflections`.
+    - Maintained zero-downtime, deterministic in-memory fallback when database is not configured.
+  - Connected mobile app service `foobowService.ts` and `useCalmRitualController.ts` to live focus session APIs with automatic completion submission.
+- Phase 4 Track 4 (Admin Moderation Console & Live Telemetry `/admin`):
+  - Connected `/admin/overview` and `/api/v1/admin/overview` to live aggregated metrics and real-time AI token telemetry from Gemini 3.6 Flash (`callsToday`, `tokensToday`, `costTodayUsd`, `cacheHitRate`).
+  - Added order review actions (`POST /admin/orders/:id/action`) to approve/reject pending support orders with audit logging in both NestJS and native HTTP engines.
+  - Added safety report moderation endpoint (`GET /admin/moderation` and `/api/v1/admin/moderation`) returning open reports.
+  - Enhanced `prototype/admin/admin.js` to dispatch live API approval/rejection requests when connected (`state.live`).
+  - Added 2 new integration tests in `apps/api/tests/api.test.mjs` verifying focus session lifecycle and admin overview telemetry (25/25 API tests passing).
+- Phase 4 Track 5 (Mobile App Release Packaging, EAS Build Configuration & Offline Asset Parity):
+  - Synchronized complete offline asset bundle parity (30/30 assets, 58.85 MB) with matching SHA256 checksums and exact byte sizes between `prototype/assets/foobow/asset-manifest.json` and `apps/mobile/assets/foobow/`.
+  - Added typed `apps/mobile/src/services/assetCatalog.ts` resolving local offline assets and remote Cloudflare R2 CDN endpoints with offline-first fallback.
+  - Validated Expo packaging configuration (`apps/mobile/app.json`) with bundle identifier `com.foobow.app`, package `com.foobow.app`, deep-link scheme `foobow`, and asset references.
+  - Configured EAS build profiles (`apps/mobile/eas.json`) for `development`, `preview` standalone APK, and `production` AAB.
+  - Audited and updated `docs/mobile-release-checklist.md` and `docs/store-listing.md` enforcing decoupled zero-karma giving ethics, dual-language metadata (`en-US` and `zh-Hans`), and App Store / Google Play Data Safety compliance.
+  - Expanded `tests/mobile-routing.test.mjs` with 3 integration tests covering packaging, asset checksum parity, and ethical store listing requirements (39/39 root tests passing).
+  - Optimized Playwright worker concurrency in `playwright.config.mjs` for Windows stability, achieving 100% pass across all 9 quality gates in `npm run test:all` (39 unit, catalog, env, advisories, 25 API, mobile typecheck, 93 browser, 8 visual baselines, 0 security vulnerabilities).
 
 ## Next
 

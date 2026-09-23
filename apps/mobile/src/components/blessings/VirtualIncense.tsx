@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  Vibration,
   View
 } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
@@ -95,6 +96,9 @@ export function VirtualIncense({ onKindleIncense, seniorMode }: VirtualIncensePr
   }, [isBurning]);
 
   const handleKindle = () => {
+    try {
+      Vibration.vibrate([0, 30, 50, 30]);
+    } catch (_) {}
     setIsBurning(true);
     setLitCount((prev) => prev + 1);
     if (onKindleIncense) {

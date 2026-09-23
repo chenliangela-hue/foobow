@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  Vibration,
   View
 } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
@@ -48,6 +49,10 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
   };
 
   const handlePress = () => {
+    try {
+      Vibration.vibrate(25);
+    } catch (_) {}
+
     // 0. Mallet strike sequence
     Animated.sequence([
       Animated.timing(malletAnim, {

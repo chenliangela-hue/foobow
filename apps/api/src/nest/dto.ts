@@ -1,5 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsIn, IsNotEmpty, IsOptional, IsString, Matches, MaxLength } from "class-validator";
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength
+} from "class-validator";
 
 export const moods = ["calm", "heavy", "lonely", "grateful", "hopeful", "anxious"] as const;
 export const visibilityValues = ["public", "friends_only", "anonymous", "private"] as const;
@@ -106,4 +117,73 @@ export class DonationCreateDto {
   @ApiProperty({ enum: donationCurrencies })
   @IsIn(donationCurrencies)
   currency!: (typeof donationCurrencies)[number];
+}
+
+export class SyncDto {
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsNumber()
+  karma?: number;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsNumber()
+  streak?: number;
+
+  @ApiPropertyOptional({ maxLength: 2000 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  journal?: string;
+
+  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  rituals_completed?: string[];
+}
+
+export class FocusSessionStartDto {
+  @ApiPropertyOptional({ default: "temple_bell" })
+  @IsOptional()
+  @IsString()
+  soundscape_slug?: string;
+
+  @ApiPropertyOptional({ default: 20 })
+  @IsOptional()
+  @IsInt()
+  target_duration_seconds?: number;
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  reduced_motion?: boolean;
+}
+
+export class FocusSessionCompleteDto {
+  @ApiProperty({ default: 20 })
+  @IsInt()
+  elapsed_seconds!: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  reflection_mood?: string;
+
+  @ApiPropertyOptional({ maxLength: 500 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  reflection_body?: string;
+}
+
+export class OrderActionDto {
+  @ApiProperty({ enum: ["approve", "reject"] })
+  @IsIn(["approve", "reject"])
+  action!: "approve" | "reject";
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }

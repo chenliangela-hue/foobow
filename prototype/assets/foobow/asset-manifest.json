@@ -1,0 +1,220 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-09-22T19:45:30.115Z",
+  "bucket": "foobow-assets",
+  "publicUrl": "https://foobow-assets.r2.cloudflarestorage.com",
+  "assetCount": 30,
+  "totalBytes": 61707799,
+  "assets": [
+    {
+      "key": "backgrounds/hero-night-lake.png",
+      "size": 2069189,
+      "mimeType": "image/png",
+      "sha256": "0289ca5aa09c9aec0979bd91931d572094809ae4e95140af11f83cfa7b12ad0d",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/hero-night-lake.png"
+    },
+    {
+      "key": "backgrounds/landing-light.png",
+      "size": 1800753,
+      "mimeType": "image/png",
+      "sha256": "1f86b82ad95fb50c71351f8c6cb13c58c726c6473dd42497b7e1dd3db7d851b5",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/landing-light.png"
+    },
+    {
+      "key": "backgrounds/mobile-sanctuary.png",
+      "size": 2238765,
+      "mimeType": "image/png",
+      "sha256": "2b797f1a7031a1d192d97979b137bcfdc695b8ba0f2a914dd742691816cd0552",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/mobile-sanctuary.png"
+    },
+    {
+      "key": "backgrounds/mountain-moon.png",
+      "size": 2155908,
+      "mimeType": "image/png",
+      "sha256": "554bed18fd72aa6fcf22c7b3a202e35c78cb439e65826627862d2db9af85eda0",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/mountain-moon.png"
+    },
+    {
+      "key": "backgrounds/ritual-lake.png",
+      "size": 2048692,
+      "mimeType": "image/png",
+      "sha256": "45a362bf0ffdba03b97b2c7b24626cad09a504ee060ceef4a28e0ee66d4900c5",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/ritual-lake.png"
+    },
+    {
+      "key": "backgrounds/sanctuary-lake.png",
+      "size": 2349502,
+      "mimeType": "image/png",
+      "sha256": "e70f1d4bdfcbdbc6273e12d84f1c2a1c7cf203640bda3f36dc03527ba4069e21",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/sanctuary-lake.png"
+    },
+    {
+      "key": "backgrounds/tab-blessings-dark.png",
+      "size": 2069189,
+      "mimeType": "image/png",
+      "sha256": "0289ca5aa09c9aec0979bd91931d572094809ae4e95140af11f83cfa7b12ad0d",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-blessings-dark.png"
+    },
+    {
+      "key": "backgrounds/tab-blessings-light.png",
+      "size": 1784644,
+      "mimeType": "image/png",
+      "sha256": "198dcc514da30801731065839bc5a682989d31a02aee073d96866c5cedffa9b2",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-blessings-light.png"
+    },
+    {
+      "key": "backgrounds/tab-blessings.png",
+      "size": 2069189,
+      "mimeType": "image/png",
+      "sha256": "0289ca5aa09c9aec0979bd91931d572094809ae4e95140af11f83cfa7b12ad0d",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-blessings.png"
+    },
+    {
+      "key": "backgrounds/tab-community-dark.png",
+      "size": 1683248,
+      "mimeType": "image/png",
+      "sha256": "f1f7d1d9e184893d1599ec6bb143cd6e28118be5f9a0336d952397258901e975",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-community-dark.png"
+    },
+    {
+      "key": "backgrounds/tab-community-light.png",
+      "size": 2589023,
+      "mimeType": "image/png",
+      "sha256": "6399292ce21ee708fa4d2e19ffcdbe1d9669a684c7122ccd9e45b54ffe98f701",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-community-light.png"
+    },
+    {
+      "key": "backgrounds/tab-community.png",
+      "size": 1683248,
+      "mimeType": "image/png",
+      "sha256": "f1f7d1d9e184893d1599ec6bb143cd6e28118be5f9a0336d952397258901e975",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-community.png"
+    },
+    {
+      "key": "backgrounds/tab-deeds-dark.png",
+      "size": 2349502,
+      "mimeType": "image/png",
+      "sha256": "e70f1d4bdfcbdbc6273e12d84f1c2a1c7cf203640bda3f36dc03527ba4069e21",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-deeds-dark.png"
+    },
+    {
+      "key": "backgrounds/tab-deeds-light.png",
+      "size": 1825639,
+      "mimeType": "image/png",
+      "sha256": "ba063c7b42a34b5ee08a10d352b5c09bf7208e26493959385c610d1c5fb4b9b5",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-deeds-light.png"
+    },
+    {
+      "key": "backgrounds/tab-deeds.png",
+      "size": 2349502,
+      "mimeType": "image/png",
+      "sha256": "e70f1d4bdfcbdbc6273e12d84f1c2a1c7cf203640bda3f36dc03527ba4069e21",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-deeds.png"
+    },
+    {
+      "key": "backgrounds/tab-map-dark.png",
+      "size": 2514788,
+      "mimeType": "image/png",
+      "sha256": "2a7be53202d1f3508823b3172df4fcb4846284362fb283c0e7a8745e8ffd6023",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-map-dark.png"
+    },
+    {
+      "key": "backgrounds/tab-map-light.png",
+      "size": 2110814,
+      "mimeType": "image/png",
+      "sha256": "e00805ff2241fcfdcf2e80ced77a0238d0ffb4ee596989134b665946e71511b5",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-map-light.png"
+    },
+    {
+      "key": "backgrounds/tab-map.png",
+      "size": 2514788,
+      "mimeType": "image/png",
+      "sha256": "2a7be53202d1f3508823b3172df4fcb4846284362fb283c0e7a8745e8ffd6023",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-map.png"
+    },
+    {
+      "key": "backgrounds/tab-profile-dark.png",
+      "size": 2238765,
+      "mimeType": "image/png",
+      "sha256": "2b797f1a7031a1d192d97979b137bcfdc695b8ba0f2a914dd742691816cd0552",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-profile-dark.png"
+    },
+    {
+      "key": "backgrounds/tab-profile-light.png",
+      "size": 2316293,
+      "mimeType": "image/png",
+      "sha256": "05784a399c031e363250f3ce8a067dde93810564f7f2d67f12312291eea3171e",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-profile-light.png"
+    },
+    {
+      "key": "backgrounds/tab-profile.png",
+      "size": 2238765,
+      "mimeType": "image/png",
+      "sha256": "2b797f1a7031a1d192d97979b137bcfdc695b8ba0f2a914dd742691816cd0552",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-profile.png"
+    },
+    {
+      "key": "backgrounds/tab-today-dark.png",
+      "size": 2048692,
+      "mimeType": "image/png",
+      "sha256": "45a362bf0ffdba03b97b2c7b24626cad09a504ee060ceef4a28e0ee66d4900c5",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-today-dark.png"
+    },
+    {
+      "key": "backgrounds/tab-today-light.png",
+      "size": 2252121,
+      "mimeType": "image/png",
+      "sha256": "ad86594515a32bc82a961df7f154ad97a337caf3840d0caa10429b066efb1fd8",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-today-light.png"
+    },
+    {
+      "key": "backgrounds/tab-today.png",
+      "size": 2048692,
+      "mimeType": "image/png",
+      "sha256": "45a362bf0ffdba03b97b2c7b24626cad09a504ee060ceef4a28e0ee66d4900c5",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/tab-today.png"
+    },
+    {
+      "key": "backgrounds/world-map-bg.png",
+      "size": 2514788,
+      "mimeType": "image/png",
+      "sha256": "2a7be53202d1f3508823b3172df4fcb4846284362fb283c0e7a8745e8ffd6023",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/backgrounds/world-map-bg.png"
+    },
+    {
+      "key": "logo/foobow-logo.png",
+      "size": 816066,
+      "mimeType": "image/png",
+      "sha256": "169efbe19d1956f04549ebc822256bdd6dd2af3b2487cf01e61ad8bad7460268",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/logo/foobow-logo.png"
+    },
+    {
+      "key": "logo/lotus-logo.png",
+      "size": 967734,
+      "mimeType": "image/png",
+      "sha256": "306a258ee85a4a1f25c701070fbcb3cb7b260b40a2254b7c5520f73f83870320",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/logo/lotus-logo.png"
+    },
+    {
+      "key": "objects/earth-globe-3d.png",
+      "size": 2418999,
+      "mimeType": "image/png",
+      "sha256": "c3d71e77bcf4b603e36a7355e1f31a964ebf51d932960af1b39656d255df4547",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/objects/earth-globe-3d.png"
+    },
+    {
+      "key": "objects/earth-globe.png",
+      "size": 2418999,
+      "mimeType": "image/png",
+      "sha256": "c3d71e77bcf4b603e36a7355e1f31a964ebf51d932960af1b39656d255df4547",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/objects/earth-globe.png"
+    },
+    {
+      "key": "objects/lotus-glow.png",
+      "size": 1221502,
+      "mimeType": "image/png",
+      "sha256": "3f65eaf2e79c78782d6433d2793f4dd46da9c940dbb103d6a995f770cfb739c1",
+      "cdnUrl": "https://foobow-assets.r2.cloudflarestorage.com/objects/lotus-glow.png"
+    }
+  ]
+}

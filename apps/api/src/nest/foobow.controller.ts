@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Inject, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Inject, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { DevAuthGuard } from "./dev-auth.guard.js";
 import {
@@ -7,7 +7,11 @@ import {
   CheckinCreateDto,
   DeedActionCreateDto,
   DonationCreateDto,
-  ReportCreateDto
+  FocusSessionCompleteDto,
+  FocusSessionStartDto,
+  OrderActionDto,
+  ReportCreateDto,
+  SyncDto
 } from "./dto.js";
 import { FoobowService } from "./foobow.service.js";
 
@@ -65,6 +69,11 @@ export class AccountController {
   today() {
     return this.service.today();
   }
+
+  @Post("sync")
+  sync(@Body() body: SyncDto) {
+    return this.service.sync(body);
+  }
 }
 
 @ApiTags("ritual")
@@ -82,6 +91,20 @@ export class RitualController {
   @Post("deed-actions")
   createDeedAction(@Body() body: DeedActionCreateDto) {
     return this.service.createDeedAction(body);
+  }
+
+  @Post("focus-sessions")
+  startFocusSession(@Body() body: FocusSessionStartDto) {
+    return this.service.startFocusSession(body);
+  }
+
+  @Post("focus-sessions/:id/complete")
+  completeFocusSession(
+    @Param("id") id: string,
+    @Body() body: FocusSessionCompleteDto,
+    @Headers("idempotency-key") idempotencyKey?: string
+  ) {
+    return this.service.completeFocusSession(id, body, idempotencyKey);
   }
 }
 
@@ -120,5 +143,29 @@ export class DonationController {
   @Post("donations")
   createDonation(@Headers("idempotency-key") idempotencyKey: string | undefined, @Body() body: DonationCreateDto) {
     return this.service.createDonation(idempotencyKey, body);
+  }
+}
+
+@ApiTags("admin")
+@Controller()
+export class AdminController {
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
+
+  @Get("admin/overview")
+  @Get("api/v1/admin/overview")
+  adminOverview() {
+    return this.service.adminOverview();
+  }
+
+  @Post("admin/orders/:id/action")
+  @Post("api/v1/admin/orders/:id/action")
+  moderateOrder(@Param("id") id: string, @Body() body: OrderActionDto) {
+    return this.service.moderateOrder(id, body);
+  }
+
+  @Get("admin/moderation")
+  @Get("api/v1/admin/moderation")
+  listReports() {
+    return this.service.listReports();
   }
 }

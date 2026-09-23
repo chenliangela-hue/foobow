@@ -6,6 +6,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  Vibration,
   View
 } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
@@ -91,6 +92,9 @@ export function ZenPrayerWheel({ onSpinRevolution, seniorMode }: ZenPrayerWheelP
   };
 
   const triggerRevolution = () => {
+    try {
+      Vibration.vibrate(20);
+    } catch (_) {}
     setRevolutions((prev) => prev + 1);
     spawnParticle();
     if (onSpinRevolution) {
@@ -99,6 +103,9 @@ export function ZenPrayerWheel({ onSpinRevolution, seniorMode }: ZenPrayerWheelP
   };
 
   const spinImpulse = (deltaAngle = 360) => {
+    try {
+      Vibration.vibrate(10);
+    } catch (_) {}
     const targetAngle = currentAngle.current + deltaAngle;
     currentAngle.current = targetAngle;
 

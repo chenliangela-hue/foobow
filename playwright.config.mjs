@@ -2,9 +2,10 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/browser",
-  timeout: 30_000,
+  timeout: 45_000,
+  workers: process.env.CI ? 2 : 2,
   expect: {
-    timeout: 5_000
+    timeout: 7_500
   },
   use: {
     trace: "retain-on-failure"

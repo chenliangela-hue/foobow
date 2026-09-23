@@ -48,7 +48,12 @@ export const en = {
     recommendedCopy: "A symbolic action that keeps comfort separate from real-world claims.",
     completeDeed: "Complete deed",
     journalTitle: "Karma journal",
-    journalPlaceholder: "Today I want to release one worry and do one kind thing."
+    journalPlaceholder: "Today I want to release one worry and do one kind thing.",
+    karmaDelta: "+20 today",
+    zenQuote: "Kindness is always a good return",
+    quickRitualsTitle: "Quick Rituals",
+    miniWorldTitle: "Many Small Deeds · Mini World",
+    exploreSanctuary: "Explore Sanctuary →"
   },
   blessings: {
     eyebrow: "Blessings · 祈福",
@@ -79,7 +84,10 @@ export const en = {
   map: {
     eyebrow: "World map",
     title: "Explore places that need a little light.",
-    spotLabel: "%{name} good deed spot"
+    spotLabel: "%{name} good deed spot",
+    telemetryCoordinates: "Coordinates",
+    telemetryBiosphere: "Biosphere",
+    liveStreamTitle: "Live Stream"
   },
   deeds: {
     eyebrow: "Deed catalog",
@@ -121,7 +129,9 @@ export const en = {
     blessingPlaceholder: "May your road feel less heavy today.",
     sendBlessing: "Post to wall",
     bless: "Bless",
-    report: "Report"
+    blessed: "Blessed",
+    report: "Report",
+    reportConfirm: "Reported for review. Thank you for keeping our sanctuary safe."
   },
   account: {
     eyebrow: "Account",
@@ -160,7 +170,16 @@ export const en = {
     languageCopy: "Choose the app language or follow the device setting.",
     languageSystem: "System",
     dataControls: "Data Controls",
-    exportBackup: "Export local backup"
+    exportBackup: "Export local backup",
+    progressTitle: "Your Progress",
+    impactTitle: "Global Impact",
+    peopleHelped: "People Helped",
+    blessingsShared: "Blessings Shared",
+    countriesReached: "Countries",
+    co2Saved: "CO₂ Saved",
+    ritualsDone: "Rituals Done",
+    journalEntries: "Journal Entries",
+    kindnessGoals: "Kindness Goals"
   },
   muyu: {
     eyebrow: "Zen Muyu · Wooden Fish",
@@ -284,7 +303,12 @@ export const zhHans: TranslationShape = {
     recommendedCopy: "象征性的善举，与真实世界的承诺清楚分开。",
     completeDeed: "完成善举",
     journalTitle: "善缘日记",
-    journalPlaceholder: "今天我想放下一点担心，做一件温和的小事。"
+    journalPlaceholder: "今天我想放下一点担心，做一件温和的小事。",
+    karmaDelta: "+20 今日",
+    zenQuote: "善念福报，皆有回响",
+    quickRitualsTitle: "日常修行",
+    miniWorldTitle: "善行微光 · 环球净土",
+    exploreSanctuary: "探索净域 →"
   },
   blessings: {
     eyebrow: "善念祈福 · 积福报",
@@ -315,7 +339,10 @@ export const zhHans: TranslationShape = {
   map: {
     eyebrow: "世界地图",
     title: "探索需要一点光的地方。",
-    spotLabel: "%{name}善举地点"
+    spotLabel: "%{name}善举地点",
+    telemetryCoordinates: "净域坐标",
+    telemetryBiosphere: "生态生境",
+    liveStreamTitle: "实时善念流"
   },
   deeds: {
     eyebrow: "善举目录",
@@ -357,7 +384,9 @@ export const zhHans: TranslationShape = {
     blessingPlaceholder: "愿你今天的路不那么沉重。",
     sendBlessing: "发布至善缘墙",
     bless: "送祝福",
-    report: "举报"
+    blessed: "已祝福",
+    report: "举报",
+    reportConfirm: "已提交审核。感谢守护善意净土。"
   },
   account: {
     eyebrow: "账户",
@@ -396,7 +425,16 @@ export const zhHans: TranslationShape = {
     languageCopy: "选择应用语言，或跟随设备设置。",
     languageSystem: "系统",
     dataControls: "数据管理",
-    exportBackup: "导出本地备份"
+    exportBackup: "导出本地备份",
+    progressTitle: "修行足迹",
+    impactTitle: "善业回向",
+    peopleHelped: "受助心灵",
+    blessingsShared: "传递福报",
+    countriesReached: "遍及国家",
+    co2Saved: "减碳贡献",
+    ritualsDone: "修行圆满",
+    journalEntries: "善缘日记",
+    kindnessGoals: "善愿达成"
   },
   muyu: {
     eyebrow: "静心木鱼 · 积功德",
@@ -494,7 +532,12 @@ export const fr: TranslationShape = {
     recommendedCopy: "Un geste symbolique qui garde le réconfort distinct de toute promesse réelle.",
     completeDeed: "Accomplir l'action",
     journalTitle: "Journal du karma",
-    journalPlaceholder: "Aujourd'hui, je veux relâcher une inquiétude et faire une chose gentille."
+    journalPlaceholder: "Aujourd'hui, je veux relâcher une inquiétude et faire une chose gentille.",
+    karmaDelta: "+20 aujourd'hui",
+    zenQuote: "La bienveillance est toujours une bénédiction",
+    quickRitualsTitle: "Rituels rapides",
+    miniWorldTitle: "Petites actions · Monde bienveillant",
+    exploreSanctuary: "Explorer le sanctuaire →"
   },
   blessings: {
     eyebrow: "Bénédictions · 祈福",
@@ -525,7 +568,10 @@ export const fr: TranslationShape = {
   map: {
     eyebrow: "Carte du monde",
     title: "Explorez les lieux qui ont besoin d'un peu de lumière.",
-    spotLabel: "Lieu de bonne action : %{name}"
+    spotLabel: "Lieu de bonne action : %{name}",
+    telemetryCoordinates: "Coordonnées",
+    telemetryBiosphere: "Biosphère",
+    liveStreamTitle: "Flux en direct"
   },
   deeds: {
     eyebrow: "Catalogue d'actions",
@@ -562,7 +608,9 @@ export const fr: TranslationShape = {
     blessingPlaceholder: "Que votre route vous semble moins lourde aujourd'hui.",
     sendBlessing: "Publier",
     bless: "Bénir",
-    report: "Signaler"
+    blessed: "Béni",
+    report: "Signaler",
+    reportConfirm: "Signalé pour examen. Merci de préserver la quiétude du sanctuaire."
   },
   account: {
     eyebrow: "Compte",
@@ -601,7 +649,16 @@ export const fr: TranslationShape = {
     languageCopy: "Choisissez la langue de l'application ou suivez le réglage de l'appareil.",
     languageSystem: "Système",
     dataControls: "Gestion des données",
-    exportBackup: "Exporter une sauvegarde locale"
+    exportBackup: "Exporter une sauvegarde locale",
+    progressTitle: "Vos progrès",
+    impactTitle: "Impact mondial",
+    peopleHelped: "Personnes aidées",
+    blessingsShared: "Bénédictions partagées",
+    countriesReached: "Pays touchés",
+    co2Saved: "CO₂ préservé",
+    ritualsDone: "Rituels accomplis",
+    journalEntries: "Notes de gratitude",
+    kindnessGoals: "Objectifs de paix"
   },
   muyu: {
     eyebrow: "Poisson de bois Zen · Muyu",
@@ -699,7 +756,12 @@ export const es: TranslationShape = {
     recommendedCopy: "Un gesto simbólico que mantiene el consuelo separado de promesas reales.",
     completeDeed: "Completar la acción",
     journalTitle: "Diario de karma",
-    journalPlaceholder: "Hoy quiero soltar una preocupación y hacer algo amable."
+    journalPlaceholder: "Hoy quiero soltar una preocupación y hacer algo amable.",
+    karmaDelta: "+20 hoy",
+    zenQuote: "La bondad siempre vuelve",
+    quickRitualsTitle: "Rituales rápidos",
+    miniWorldTitle: "Pequeñas acciones · Mundo bondadoso",
+    exploreSanctuary: "Explorar santuario →"
   },
   blessings: {
     eyebrow: "Bendiciones · 祈福",
@@ -730,7 +792,10 @@ export const es: TranslationShape = {
   map: {
     eyebrow: "Mapa del mundo",
     title: "Explora lugares que necesitan un poco de luz.",
-    spotLabel: "Lugar de buena acción: %{name}"
+    spotLabel: "Lugar de buena acción: %{name}",
+    telemetryCoordinates: "Coordenadas",
+    telemetryBiosphere: "Biosfera",
+    liveStreamTitle: "Flujo en vivo"
   },
   deeds: {
     eyebrow: "Catálogo de acciones",
@@ -767,7 +832,9 @@ export const es: TranslationShape = {
     blessingPlaceholder: "Que tu camino se sienta más ligero hoy.",
     sendBlessing: "Publicar",
     bless: "Bendecir",
-    report: "Reportar"
+    blessed: "Bendecido",
+    report: "Reportar",
+    reportConfirm: "Reportado para revisión. Gracias por proteger nuestro santuario."
   },
   account: {
     eyebrow: "Cuenta",
@@ -806,7 +873,16 @@ export const es: TranslationShape = {
     languageCopy: "Elige el idioma de la app o sigue el ajuste del dispositivo.",
     languageSystem: "Sistema",
     dataControls: "Gestión de datos",
-    exportBackup: "Exportar copia local"
+    exportBackup: "Exportar copia local",
+    progressTitle: "Tu progreso",
+    impactTitle: "Impacto global",
+    peopleHelped: "Personas ayudadas",
+    blessingsShared: "Bendiciones compartidas",
+    countriesReached: "Países",
+    co2Saved: "CO₂ ahorrado",
+    ritualsDone: "Rituales completados",
+    journalEntries: "Entradas del diario",
+    kindnessGoals: "Metas de bondad"
   },
   muyu: {
     eyebrow: "Muyu Zen · Pez de madera",
@@ -904,7 +980,12 @@ export const th: TranslationShape = {
     recommendedCopy: "การกระทำเชิงสัญลักษณ์ที่แยกความปลอบใจออกจากคำสัญญาในโลกจริง",
     completeDeed: "ทำให้สำเร็จ",
     journalTitle: "บันทึกกุศล",
-    journalPlaceholder: "วันนี้ฉันอยากปล่อยวางความกังวลหนึ่งอย่าง และทำสิ่งดีสักอย่าง"
+    journalPlaceholder: "วันนี้ฉันอยากปล่อยวางความกังวลหนึ่งอย่าง และทำสิ่งดีสักอย่าง",
+    karmaDelta: "+20 วันนี้",
+    zenQuote: "ความเมตตามีผลตอบแทนเสมอ",
+    quickRitualsTitle: "พิธีกรรมด่วน",
+    miniWorldTitle: "เมตตาธรรมค้ำจุนโลก",
+    exploreSanctuary: "สำรวจแดนบุญ →"
   },
   blessings: {
     eyebrow: "การอวยพร · 祈福",
@@ -935,7 +1016,10 @@ export const th: TranslationShape = {
   map: {
     eyebrow: "แผนที่โลก",
     title: "สำรวจสถานที่ที่ต้องการแสงสว่างสักนิด",
-    spotLabel: "จุดทำความดี: %{name}"
+    spotLabel: "จุดทำความดี: %{name}",
+    telemetryCoordinates: "พิกัด",
+    telemetryBiosphere: "ระบบนิเวศ",
+    liveStreamTitle: "กระแสเมตตาสด"
   },
   deeds: {
     eyebrow: "รายการความดี",
@@ -972,7 +1056,9 @@ export const th: TranslationShape = {
     blessingPlaceholder: "ขอให้ก้าวต่อไปของคุณเบาสบายขึ้นในวันนี้",
     sendBlessing: "โพสต์ลงกำแพง",
     bless: "อวยพร",
-    report: "รายงาน"
+    blessed: "อวยพรแล้ว",
+    report: "รายงาน",
+    reportConfirm: "ส่งรายงานเพื่อตรวจสอบแล้ว ขอบคุณที่ช่วยดูแลความสงบของชุมชน"
   },
   account: {
     eyebrow: "บัญชี",
@@ -1011,7 +1097,16 @@ export const th: TranslationShape = {
     languageCopy: "เลือกภาษาของแอป หรือใช้ตามการตั้งค่าอุปกรณ์",
     languageSystem: "ตามระบบ",
     dataControls: "การจัดการข้อมูล",
-    exportBackup: "ส่งออกข้อมูลสำรองในเครื่อง"
+    exportBackup: "ส่งออกข้อมูลสำรองในเครื่อง",
+    progressTitle: "ความก้าวหน้าของคุณ",
+    impactTitle: "ผลกระทบต่อโลก",
+    peopleHelped: "ผู้ได้รับการเกื้อกูล",
+    blessingsShared: "คำอวยพรที่ส่งต่อ",
+    countriesReached: "ประเทศ",
+    co2Saved: "ลดก๊าซ CO₂",
+    ritualsDone: "พิธีกรรมที่สำเร็จ",
+    journalEntries: "บันทึกเมตตา",
+    kindnessGoals: "เป้าหมายความดี"
   },
   muyu: {
     eyebrow: "ปลาม้าไม้เซน · สะสมบุญ",
@@ -1109,7 +1204,12 @@ export const ja: TranslationShape = {
     recommendedCopy: "現実の約束とは切り離された、象徴的な行いです。",
     completeDeed: "行いを完了する",
     journalTitle: "善縁の日記",
-    journalPlaceholder: "今日はひとつ心配を手放して、やさしいことをひとつしたい。"
+    journalPlaceholder: "今日はひとつ心配を手放して、やさしいことをひとつしたい。",
+    karmaDelta: "+20 今日",
+    zenQuote: "善意は常に良き実りをもたらす",
+    quickRitualsTitle: "クイック修練",
+    miniWorldTitle: "小さな善行 · 平和の世界",
+    exploreSanctuary: "聖域を探索 →"
   },
   blessings: {
     eyebrow: "祈願・福徳 · 祈福",
@@ -1140,7 +1240,10 @@ export const ja: TranslationShape = {
   map: {
     eyebrow: "世界地図",
     title: "すこしの光を必要とする場所を訪ねる。",
-    spotLabel: "善行の場所：%{name}"
+    spotLabel: "善行の場所：%{name}",
+    telemetryCoordinates: "座標",
+    telemetryBiosphere: "生境環境",
+    liveStreamTitle: "ライブ善行ストリーム"
   },
   deeds: {
     eyebrow: "行いの一覧",
@@ -1177,7 +1280,9 @@ export const ja: TranslationShape = {
     blessingPlaceholder: "今日、あなたの道が少し軽くなりますように。",
     sendBlessing: "善意の壁に届ける",
     bless: "祝福する",
-    report: "報告"
+    blessed: "祝福済み",
+    report: "報告",
+    reportConfirm: "確認のため報告しました。安心できる場を守っていただき感謝いたします。"
   },
   account: {
     eyebrow: "アカウント",
@@ -1216,7 +1321,16 @@ export const ja: TranslationShape = {
     languageCopy: "アプリの言語を選ぶか、端末の設定に従います。",
     languageSystem: "システム",
     dataControls: "データ管理",
-    exportBackup: "端末のバックアップを書き出す"
+    exportBackup: "端末のバックアップを書き出す",
+    progressTitle: "修練の進捗",
+    impactTitle: "世界への貢献",
+    peopleHelped: "救われた心",
+    blessingsShared: "届いた祈り",
+    countriesReached: "届いた国々",
+    co2Saved: "CO₂削減量",
+    ritualsDone: "修練の完了",
+    journalEntries: "善行の日記",
+    kindnessGoals: "徳目の目標"
   },
   muyu: {
     eyebrow: "禅の木魚 · 功徳を積む",

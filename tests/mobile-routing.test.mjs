@@ -114,3 +114,99 @@ test("mobile localization covers en and zh-Hans with required safety copy", asyn
   assert.match(localeContext, /usePersistentState/);
   assert.match(localeContext, /"zh-Hans"/);
 });
+
+test("mobile release packaging configuration and EAS profiles are valid", async () => {
+  const appJson = JSON.parse(await read("apps/mobile/app.json"));
+  const easJson = JSON.parse(await read("apps/mobile/eas.json"));
+
+  // Standalone app identification & Expo standards
+  assert.equal(appJson.expo.name, "Foobow");
+  assert.equal(appJson.expo.slug, "foobow");
+  assert.equal(appJson.expo.version, "1.0.0");
+  assert.equal(appJson.expo.scheme, "foobow");
+  assert.equal(appJson.expo.orientation, "portrait");
+  assert.equal(appJson.expo.ios?.bundleIdentifier, "com.foobow.app");
+  assert.equal(appJson.expo.ios?.supportsTablet, true);
+  assert.equal(appJson.expo.android?.package, "com.foobow.app");
+
+  // Icon, splash, and adaptive icon assets exist and are non-empty
+  const iconPaths = [
+    appJson.expo.icon,
+    appJson.expo.splash?.image,
+    appJson.expo.android?.adaptiveIcon?.foregroundImage,
+    appJson.expo.android?.adaptiveIcon?.backgroundImage,
+    appJson.expo.android?.adaptiveIcon?.monochromeImage,
+    appJson.expo.web?.favicon
+  ].filter(Boolean);
+
+  for (const relPath of iconPaths) {
+    const cleanPath = relPath.replace(/^\.\//, "");
+    const buf = await readFile(new URL(`../apps/mobile/${cleanPath}`, import.meta.url));
+    assert.ok(buf.length > 0, `Icon asset empty: ${relPath}`);
+  }
+
+  // EAS build profiles
+  assert.match(easJson.cli?.version, />= 14/);
+  assert.equal(easJson.build?.development?.developmentClient, true);
+  assert.equal(easJson.build?.development?.distribution, "internal");
+  assert.equal(easJson.build?.preview?.distribution, "internal");
+  assert.equal(easJson.build?.preview?.android?.buildType, "apk");
+  assert.equal(easJson.build?.production?.autoIncrement, true);
+  assert.ok(easJson.submit?.production, "EAS production submit profile must exist");
+});
+
+test("mobile offline asset bundle mirrors Cloudflare R2 manifest with checksums", async () => {
+  const { createHash } = await import("node:crypto");
+  const manifest = JSON.parse(await read("prototype/assets/foobow/asset-manifest.json"));
+  const assetCatalogSource = await read("apps/mobile/src/services/assetCatalog.ts");
+
+  assert.equal(manifest.version, "1.0.0");
+  assert.equal(manifest.assetCount, 30);
+  assert.equal(manifest.assets.length, 30);
+
+  // Validate that all 30 assets exist in apps/mobile with matching size and sha256
+  for (const asset of manifest.assets) {
+    const fileBuf = await readFile(
+      new URL(`../apps/mobile/assets/foobow/${asset.key}`, import.meta.url)
+    );
+    assert.equal(fileBuf.length, asset.size, `Size mismatch for mobile asset ${asset.key}`);
+    const hash = createHash("sha256").update(fileBuf).digest("hex");
+    assert.equal(hash, asset.sha256, `SHA256 mismatch for mobile asset ${asset.key}`);
+    assert.ok(
+      assetCatalogSource.includes(`"${asset.key}"`),
+      `assetCatalog.ts must include key ${asset.key}`
+    );
+  }
+
+  assert.match(assetCatalogSource, /R2_PUBLIC_BASE_URL/);
+  assert.match(assetCatalogSource, /export function getAssetUri/);
+});
+
+test("store listing specification and ethical disclosures are complete", async () => {
+  const storeListing = await read("docs/store-listing.md");
+  const checklist = await read("docs/mobile-release-checklist.md");
+
+  // Metadata completeness
+  assert.match(storeListing, /Foobow · 福报/);
+  assert.match(storeListing, /Daily Kindness & Mindful Zen/);
+  assert.match(storeListing, /Cultivate peace of mind through daily kind deeds/);
+  assert.match(storeListing, /Promotional Text/);
+  assert.match(storeListing, /Full Description/);
+  assert.match(storeListing, /宣传文本/);
+  assert.match(storeListing, /完整描述/);
+  assert.match(storeListing, /App Store Keywords/);
+  assert.match(storeListing, /App Privacy & Data Safety Declarations/);
+
+  // Pure giving ethics and non-monetized virtue declarations
+  assert.match(storeListing, /0 karma points/);
+  assert.match(storeListing, /0 积分\/0 福报增加/);
+  assert.match(storeListing, /杜绝“花钱买运气\/福气\/功德”/);
+  assert.match(storeListing, /money cannot purchase luck, virtue, health, or guaranteed karma/);
+
+  // Checklist tracks packaging identifiers and build gates
+  assert.match(checklist, /com\.foobow\.app/);
+  assert.match(checklist, /preview.*apk/i);
+  assert.match(checklist, /npm run test:mobile/);
+  assert.match(checklist, /npm run test:security/);
+});
+

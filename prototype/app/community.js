@@ -201,6 +201,12 @@ function buildPostCard(post, dict) {
   support.addEventListener("click", () => {
     post.supported = !post.supported;
     post.supportCount = Math.max(0, (post.supportCount || 0) + (post.supported ? 1 : -1));
+    if (post.supported) {
+      if (typeof playZenChime === "function") playZenChime();
+      if (typeof spawnFloatingMerit === "function") {
+        spawnFloatingMerit(support, typeof getMeritText === "function" ? getMeritText(1) : "功德 +1");
+      }
+    }
     saveState();
     renderCommunityFeed();
   });

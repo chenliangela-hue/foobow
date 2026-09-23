@@ -100,6 +100,8 @@ function FoobowShell({ initialTab = "today", routeMode = false }: FoobowAppProps
             onTapKarma={addKarma}
             seniorMode={profileCtrl.seniorMode}
             moods={todayCtrl.moods}
+            onGoToMap={() => handleSelectTab("map")}
+            onGoToBlessings={(ritual) => handleSelectTab("blessings")}
           />
         )}
 

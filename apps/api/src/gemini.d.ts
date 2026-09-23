@@ -21,4 +21,12 @@ export interface GeminiBlessingResult {
   note?: string;
 }
 
+export interface GeminiTelemetry {
+  callsToday: number;
+  tokensToday: number;
+  costTodayUsd: string;
+  cacheHitRate: string;
+}
+
 export function generateBlessingWithGemini(params?: GeminiBlessingParams): Promise<GeminiBlessingResult>;
+export function getGeminiTelemetry(): GeminiTelemetry;

@@ -203,12 +203,40 @@
       var reject = el("button", "mini-btn reject", c.reject);
       approve.addEventListener("click", function () {
         order.review = "approved";
+        if (state.live) {
+          var apiUrl = readStore(API_URL_KEY, "").trim();
+          var token = readStore(API_TOKEN_KEY, "").trim();
+          if (apiUrl) {
+            fetch(apiUrl.replace(/\/$/, "") + "/admin/orders/" + order.id + "/action", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: "Bearer " + token } : {})
+              },
+              body: JSON.stringify({ action: "approve" })
+            }).catch(function () {});
+          }
+        }
         approve.disabled = true; reject.disabled = true;
         approve.textContent = c.approved;
         render();
       });
       reject.addEventListener("click", function () {
         order.review = "rejected";
+        if (state.live) {
+          var apiUrl = readStore(API_URL_KEY, "").trim();
+          var token = readStore(API_TOKEN_KEY, "").trim();
+          if (apiUrl) {
+            fetch(apiUrl.replace(/\/$/, "") + "/admin/orders/" + order.id + "/action", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: "Bearer " + token } : {})
+              },
+              body: JSON.stringify({ action: "reject" })
+            }).catch(function () {});
+          }
+        }
         approve.disabled = true; reject.disabled = true;
         reject.textContent = c.rejected;
         render();

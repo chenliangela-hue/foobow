@@ -273,4 +273,81 @@ describe("Foobow API runtime", () => {
     assert.equal(second.json.intention.tokens.total, 0);
     assert.equal(second.json.intention.cost_usd, 0);
   });
+
+  it("synchronizes user karma, streak, and rituals via /api/v1/sync", async () => {
+    const payload = {
+      karma: 88,
+      streak: 12,
+      journal: "Cultivating peace through mindful release.",
+      rituals_completed: ["fish", "lantern", "muyu"]
+    };
+
+    const res = await request("/api/v1/sync", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+
+    assert.equal(res.response.status, 200);
+    assert.equal(res.json.status, "synced");
+    assert.equal(res.json.synced_user_id, "user_demo");
+    assert.ok(res.json.merged.karma >= 88);
+    assert.ok(res.json.merged.streak >= 12);
+    assert.equal(res.json.merged.journal, payload.journal);
+    assert.equal(res.json.merged.rituals_count, 3);
+  });
+
+  it("tracks calm focus session start and completion with karma reward", async () => {
+    const started = await request("/api/v1/focus-sessions", {
+      method: "POST",
+      body: JSON.stringify({
+        soundscape_slug: "temple_bell",
+        target_duration_seconds: 20
+      })
+    });
+
+    assert.equal(started.response.status, 201);
+    assert.match(started.json.focus_session.id, /^focus_/);
+    assert.equal(started.json.focus_session.status, "started");
+
+    const completed = await request(`/api/v1/focus-sessions/${started.json.focus_session.id}/complete`, {
+      method: "POST",
+      body: JSON.stringify({
+        elapsed_seconds: 20,
+        reflection_mood: "calm",
+        reflection_body: "Feeling grounded."
+      })
+    });
+
+    assert.equal(completed.response.status, 200);
+    assert.equal(completed.json.focus_session.status, "completed");
+    assert.equal(completed.json.karma_event.points, 5);
+    assert.equal(completed.json.reflection.mood, "calm");
+  });
+
+  it("serves live admin overview telemetry and handles order actions", async () => {
+    const overview = await request("/admin/overview", { auth: false });
+    assert.equal(overview.response.status, 200);
+    assert.ok(overview.json.metrics);
+    assert.ok(overview.json.metrics.incomeToday !== undefined);
+    assert.ok(overview.json.metrics.aiTokensToday !== undefined);
+    assert.ok(Array.isArray(overview.json.orders));
+
+    const pendingOrder = overview.json.orders.find((o) => o.review === "pending");
+    assert.ok(pendingOrder);
+
+    const approveRes = await request(`/admin/orders/${pendingOrder.id}/action`, {
+      method: "POST",
+      auth: false,
+      body: JSON.stringify({ action: "approve" })
+    });
+
+    assert.equal(approveRes.response.status, 200);
+    assert.equal(approveRes.json.status, "ok");
+    assert.equal(approveRes.json.review, "approved");
+
+    const reportsRes = await request("/admin/moderation", { auth: false });
+    assert.equal(reportsRes.response.status, 200);
+    assert.ok(Array.isArray(reportsRes.json.reports));
+  });
 });
+

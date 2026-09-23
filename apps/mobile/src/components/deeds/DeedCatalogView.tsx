@@ -79,6 +79,13 @@ export function DeedCatalogView({
 
       {visibleDeeds.map((deed) => {
         const isSelected = selectedDeed.id === deed.id;
+        const icon = deed.mark || (
+          deed.categoryId === "animals" ? "🐟" :
+          deed.categoryId === "elders" ? "👵" :
+          deed.categoryId === "environment" ? "🌱" :
+          deed.categoryId === "community" ? "🤝" :
+          deed.categoryId === "learning" ? "📖" : "🪔"
+        );
         return (
           <Pressable
             key={deed.id}
@@ -93,12 +100,23 @@ export function DeedCatalogView({
               {
                 backgroundColor: isSelected ? currentColors.surface : currentColors.surfaceStrong,
                 borderColor: isSelected ? currentColors.jade : currentColors.line
-              }
+              },
+              isSelected && { borderWidth: 2 }
             ]}
           >
-            <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior }]}>
-              {deed.title}
-            </Text>
+            <View style={styles.deedCardHeader}>
+              <View style={styles.deedIconRow}>
+                <Text style={styles.deedCategoryIcon}>{icon}</Text>
+                <Text style={[styles.sectionTitle, headingColor, seniorMode && { fontSize: typography.sizes.titleSenior, flex: 1 }]}>
+                  {deed.title}
+                </Text>
+              </View>
+              <View style={[styles.pointsBadge, { backgroundColor: currentColors.goldGlow, borderColor: currentColors.gold }]}>
+                <Text style={[styles.pointsBadgeText, { color: currentColors.gold }]}>
+                  +{deed.points} karma
+                </Text>
+              </View>
+            </View>
             <Text style={[styles.body, bodyColor, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
               {deed.description}
             </Text>
@@ -195,6 +213,31 @@ const styles = StyleSheet.create({
     borderRadius: layout.borderRadius.lg,
     borderWidth: 1,
     gap: layout.spacing.xs
+  },
+  deedCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: layout.spacing.xs
+  },
+  deedIconRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: layout.spacing.xs,
+    flex: 1
+  },
+  deedCategoryIcon: {
+    fontSize: 20
+  },
+  pointsBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: layout.borderRadius.full,
+    borderWidth: 1
+  },
+  pointsBadgeText: {
+    fontSize: 11,
+    fontWeight: "700"
   },
   focusCard: {
     padding: layout.spacing.md,

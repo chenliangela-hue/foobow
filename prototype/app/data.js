@@ -65,7 +65,9 @@ window.FOOBOW_DATA = {
     { id: "calm", label: "Calm", deed: "Release fish at East Lake" },
     { id: "heavy", label: "Heavy", deed: "Light a path home" },
     { id: "lonely", label: "Lonely", deed: "Send an anonymous blessing" },
-    { id: "grateful", label: "Grateful", deed: "Help elder cross safely" }
+    { id: "grateful", label: "Grateful", deed: "Help elder cross safely" },
+    { id: "focused", label: "Focused", deed: "Clean a coastline" },
+    { id: "excited", label: "Excited", deed: "Add to a food drive" }
   ],
   spots: {
     "east-lake": {

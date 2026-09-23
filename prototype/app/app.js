@@ -600,6 +600,18 @@ function retuneSoundscapeAudio() {
   master.gain.linearRampToValueAtTime(effectiveLevel, ctx.currentTime + 1.4);
   source.start();
   soundscapeAudio.source = source;
+
+  if (state.soundscape === "bell") {
+    if (!soundscapeAudio.bellInterval) {
+      soundscapeAudio.bellInterval = window.setInterval(() => {
+        if (!soundscapePlaying || state.soundscape !== "bell") return;
+        if (typeof playZenChime === "function") playZenChime();
+      }, 7500);
+    }
+  } else if (soundscapeAudio.bellInterval) {
+    window.clearInterval(soundscapeAudio.bellInterval);
+    soundscapeAudio.bellInterval = null;
+  }
 }
 
 function startSoundscapeAudio() {
@@ -632,6 +644,10 @@ function startSoundscapeAudio() {
 function stopSoundscapeAudio() {
   if (!soundscapeAudio) return;
   const { ctx, master } = soundscapeAudio;
+  if (soundscapeAudio.bellInterval) {
+    window.clearInterval(soundscapeAudio.bellInterval);
+    soundscapeAudio.bellInterval = null;
+  }
   try {
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
@@ -721,8 +737,22 @@ function renderSpot(spotId) {
     pin.setAttribute("aria-pressed", String(pin.dataset.spotId === spotId));
   });
 
+  document.querySelectorAll(".sanctuary-quick-chip").forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.spotId === spotId);
+  });
+
   if (typeof currentMapMode !== "undefined" && currentMapMode === "osm") {
     renderEmbeddedOsmTiles(spot);
+  }
+
+  // Update Sanctuary Telemetry HUD
+  const hudCoords = document.getElementById("hudCoords");
+  if (hudCoords) {
+    hudCoords.textContent = spot.coordinates || "30.5539° N, 114.3644° E";
+  }
+  const hudBiosphere = document.getElementById("hudBiosphere");
+  if (hudBiosphere) {
+    hudBiosphere.textContent = spot.environment || "Freshwater wetland sanctuary";
   }
 
   saveState();
@@ -988,6 +1018,9 @@ function setupBlessings() {
     saveButton.hidden = true;
     prayButton.disabled = true;
 
+    const existingSeal = reply.querySelector(".blessing-seal-stamp");
+    if (existingSeal) existingSeal.remove();
+
     const result = await blessingEngine.generate({
       category: state.prayCategory,
       recipient: document.getElementById("prayRecipient").value,
@@ -1005,6 +1038,23 @@ function setupBlessings() {
       tokenLabel = ` · <span class="token-badge">🌿 Gemini (cached · 0 tok)</span>`;
     }
     replySource.innerHTML = dict.blessingReplySource + tokenLabel;
+
+    // Auspicious Seal Stamp
+    const seal = document.createElement("div");
+    seal.className = "blessing-seal-stamp";
+    const loc = normalizeLocale(state.language);
+    seal.textContent = loc === "zh-Hans" ? "福印 · 心诚则灵" : loc === "ja" ? "福印 · 誠心通天" : "福印 · 心诚则灵";
+    const actionsRow = reply.querySelector(".reply-actions");
+    if (actionsRow) {
+      reply.insertBefore(seal, actionsRow);
+    } else {
+      reply.append(seal);
+    }
+
+    if (typeof playZenChime === "function") {
+      playZenChime();
+    }
+
     saveButton.hidden = false;
     saveButton.textContent = dict.blessingsSave;
     saveButton.disabled = false;
@@ -1014,9 +1064,12 @@ function setupBlessings() {
   saveButton.addEventListener("click", function () {
     if (!lastBlessing) return;
     state.keptBlessings.unshift({ id: "kept_" + Date.now(), body: lastBlessing });
-    updateKarma(1);
+    updateKarma(1, saveButton);
     saveState();
     logActivity("blessing");
+    if (typeof playZenChime === "function") {
+      playZenChime();
+    }
     saveButton.textContent = dictionary().blessingsSaved;
     saveButton.disabled = true;
   });
@@ -1033,6 +1086,9 @@ function setupBlessings() {
     renderLamps();
     logActivity("lamp");
     showActionWhisper("lampWhispers");
+    if (window.spawnDriftingSkyLantern) {
+      window.spawnDriftingSkyLantern(wish);
+    }
   });
 
   setupMuyu();
@@ -1171,6 +1227,27 @@ let wheelAnimFrame = null;
 let lastTickAngle = 0;
 let lastKarmaAwardTime = 0;
 
+function spawnMantraSparkles(container) {
+  if (!container) return;
+  const count = 8;
+  const mantras = ["✦", "✧", "✨", "☸", "✦", "✧", "✨", "ॐ"];
+  for (let i = 0; i < count; i++) {
+    const spark = document.createElement("span");
+    spark.className = "mantra-sparkle";
+    spark.textContent = mantras[i % mantras.length];
+    const angle = (i / count) * 2 * Math.PI;
+    const dist = 52 + Math.random() * 26;
+    const tx = Math.cos(angle) * dist;
+    const ty = Math.sin(angle) * dist;
+    spark.style.setProperty("--tx", `${tx}px`);
+    spark.style.setProperty("--ty", `${ty}px`);
+    spark.style.left = "50%";
+    spark.style.top = "50%";
+    container.appendChild(spark);
+    setTimeout(() => spark.remove(), 1100);
+  }
+}
+
 function setupPrayerWheel() {
   const stage = document.getElementById("wheelStage");
   const container = document.getElementById("wheelContainer");
@@ -1215,6 +1292,7 @@ function setupPrayerWheel() {
       state.wheelTurns += 1;
       if (countEl) countEl.textContent = String(state.wheelTurns);
       playWheelChime();
+      spawnMantraSparkles(drum);
       const now = Date.now();
       if (now - lastKarmaAwardTime > 2500) {
         lastKarmaAwardTime = now;
@@ -1234,6 +1312,8 @@ function setupPrayerWheel() {
     // Visual updates
     const rot = wheelAngle % 360;
     drum.style.transform = `rotate(${rot * 0.22}deg)`;
+    const specularOffset = Math.sin((wheelAngle * Math.PI) / 180) * 35 + 50;
+    drum.style.setProperty("--drum-light-x", `${specularOffset}%`);
     if (mantraText) {
       const offsetX = 80 + Math.sin((wheelAngle * Math.PI) / 180) * 12;
       mantraText.setAttribute("x", String(offsetX));
@@ -1602,6 +1682,26 @@ function executeMapDeed(deedKey, customX, customY) {
   updateKarma(5, performBtn);
   logActivity("deed");
   showActionWhisper("deedReflections");
+
+  // Globe auroral pulse
+  if (window.triggerGlobePulse) {
+    window.triggerGlobePulse(posX, posY);
+  }
+
+  // Prepend to live kindness stream
+  if (typeof liveKindnessFeed !== "undefined") {
+    const dict = dictionary();
+    const actionName = (dict["deckDeed" + deedKey.charAt(0).toUpperCase() + deedKey.slice(1).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] || deedKey).toLowerCase();
+    liveKindnessFeed.unshift({
+      loc: spot.name,
+      action: actionName,
+      time: "just now"
+    });
+    if (typeof updateLiveStreamDisplay === "function") {
+      updateLiveStreamDisplay();
+    }
+  }
+
   saveState();
 }
 
@@ -1674,6 +1774,9 @@ document.getElementById("performRitual").addEventListener("click", () => {
     dedication.hidden = false;
     dedication.classList.remove("active");
     window.requestAnimationFrame(() => dedication.classList.add("active"));
+  }
+  if (window.triggerPondRitualBurst) {
+    window.triggerPondRitualBurst();
   }
 });
 
@@ -1954,6 +2057,19 @@ function setupEmbeddedMapMode() {
   if (globalBtn) globalBtn.addEventListener("click", () => setMode("global"));
   if (osmBtn) osmBtn.addEventListener("click", () => setMode("osm"));
 
+  const quickChips = document.querySelectorAll(".sanctuary-quick-chip");
+  quickChips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const spotId = chip.dataset.spotId;
+      if (!spotId || !data.spots[spotId]) return;
+      renderSpot(spotId);
+      if (typeof playZenChime === "function") playZenChime();
+      if (typeof spawnFloatingMerit === "function") {
+        spawnFloatingMerit(chip, `📍 ${data.spots[spotId].name.split(",")[0]}`);
+      }
+    });
+  });
+
   if (zoomIn) {
     zoomIn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1974,6 +2090,75 @@ function setupEmbeddedMapMode() {
         renderEmbeddedOsmTiles(spot);
       }
     });
+  }
+
+  // Interactive mouse & touch panning for OpenStreetMap sanctuary tiles
+  let isOsmDragging = false;
+  let osmStartX = 0;
+  let osmStartY = 0;
+
+  if (osmViewport) {
+    osmViewport.style.cursor = "grab";
+
+    osmViewport.addEventListener("mousedown", (e) => {
+      if (e.target.closest(".embedded-osm-controls")) return;
+      isOsmDragging = true;
+      osmStartX = e.clientX;
+      osmStartY = e.clientY;
+      osmViewport.style.cursor = "grabbing";
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!isOsmDragging) return;
+      const dx = e.clientX - osmStartX;
+      const dy = e.clientY - osmStartY;
+      if (Math.hypot(dx, dy) > 22) {
+        osmStartX = e.clientX;
+        osmStartY = e.clientY;
+        const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+        const factor = 360 / Math.pow(2, embeddedOsmZoom + 8);
+        spot.lng = (spot.lng || 114.3644) - dx * factor;
+        spot.lat = Math.max(-85, Math.min(85, (spot.lat || 30.5539) + dy * factor));
+        renderEmbeddedOsmTiles(spot);
+        const coordsEl = document.getElementById("spotCoords");
+        if (coordsEl) {
+          coordsEl.textContent = `📍 ${spot.lat.toFixed(4)}° N, ${spot.lng.toFixed(4)}° E`;
+        }
+      }
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (isOsmDragging) {
+        isOsmDragging = false;
+        osmViewport.style.cursor = "grab";
+      }
+    });
+
+    osmViewport.addEventListener("touchstart", (e) => {
+      if (e.target.closest(".embedded-osm-controls") || !e.touches[0]) return;
+      isOsmDragging = true;
+      osmStartX = e.touches[0].clientX;
+      osmStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (e) => {
+      if (!isOsmDragging || !e.touches[0]) return;
+      const dx = e.touches[0].clientX - osmStartX;
+      const dy = e.touches[0].clientY - osmStartY;
+      if (Math.hypot(dx, dy) > 22) {
+        osmStartX = e.touches[0].clientX;
+        osmStartY = e.touches[0].clientY;
+        const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
+        const factor = 360 / Math.pow(2, embeddedOsmZoom + 8);
+        spot.lng = (spot.lng || 114.3644) - dx * factor;
+        spot.lat = Math.max(-85, Math.min(85, (spot.lat || 30.5539) + dy * factor));
+        renderEmbeddedOsmTiles(spot);
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchend", () => {
+      isOsmDragging = false;
+    }, { passive: true });
   }
 }
 
@@ -2418,10 +2603,21 @@ function setupTiltCards() {
     ".muyu-card",
     ".wheel-card",
     ".almanac-panel",
-    ".global-kindness-card"
+    ".global-kindness-card",
+    ".quick-ritual-card",
+    ".mini-world-card",
+    ".tonight-ritual-card",
+    ".impact-stat-card",
+    ".progress-ring-card"
   ];
 
   document.querySelectorAll(cardSelectors.join(",")).forEach((card) => {
+    if (!card.querySelector(".tilt-glare")) {
+      const glare = document.createElement("div");
+      glare.className = "tilt-glare";
+      card.appendChild(glare);
+    }
+
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -2431,13 +2627,65 @@ function setupTiltCards() {
       const rotateX = ((y - centerY) / centerY) * -4;
       const rotateY = ((x - centerX) / centerX) * 4;
 
-      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-3px)`;
+      card.style.setProperty("--glare-x", `${(x / rect.width) * 100}%`);
+      card.style.setProperty("--glare-y", `${(y / rect.height) * 100}%`);
+      card.style.setProperty("--glare-opacity", "0.22");
     });
 
     card.addEventListener("mouseleave", () => {
       card.style.transform = "";
+      card.style.setProperty("--glare-opacity", "0");
     });
   });
+}
+
+function setupRedesignInteractions() {
+  const viewAllBtn = document.getElementById("viewAllRitualsBtn");
+  if (viewAllBtn) {
+    viewAllBtn.addEventListener("click", () => {
+      navigateTo("blessings");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  document.querySelectorAll(".quick-ritual-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const ritual = card.dataset.quickRitual;
+      navigateTo("blessings");
+      let targetEl = null;
+      if (ritual === "lamp") targetEl = document.querySelector(".lamp-card");
+      else if (ritual === "incense") targetEl = document.querySelector(".incense-card");
+      else if (ritual === "muyu") targetEl = document.querySelector(".muyu-card");
+      else if (ritual === "wheel") targetEl = document.querySelector(".wheel-card");
+      if (targetEl) {
+        setTimeout(() => {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 120);
+      }
+    });
+  });
+
+  const exploreMapCta = document.getElementById("exploreMapCta");
+  if (exploreMapCta) {
+    exploreMapCta.addEventListener("click", () => {
+      navigateTo("map");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  const startTonightBtn = document.getElementById("startTonightRitualBtn");
+  if (startTonightBtn) {
+    startTonightBtn.addEventListener("click", () => {
+      playZenChime();
+      const prayCard = document.querySelector(".pray-card");
+      if (prayCard) {
+        prayCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        const input = document.getElementById("prayMessage");
+        if (input) input.focus();
+      }
+    });
+  }
 }
 
 function setupWaterRipples() {
@@ -2635,6 +2883,381 @@ function setupAccountAuth() {
   }
 }
 
+/* ==========================================================================
+   PHASE 2: SANCTUARY WEBGL/CANVAS, 3D KINETIC MOTION & LIVE MAP STREAM
+   ========================================================================== */
+
+// --- 1. LOTUS POND WATER RIPPLE ENGINE ------------------------------------
+let pondRipples = [];
+let pondAnimFrame = null;
+let lastPondUserInteraction = Date.now();
+
+function setupPondCanvas() {
+  const canvas = document.getElementById("pondRippleCanvas");
+  const scene = document.getElementById("ritualScene");
+  if (!canvas || !scene) return;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  function resize() {
+    const rect = scene.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+
+  function addPondRipple(x, y, maxR = 90, color = null) {
+    lastPondUserInteraction = Date.now();
+    const isDark = document.body.classList.contains("dark");
+    pondRipples.push({
+      x,
+      y,
+      r: 6,
+      maxR,
+      speed: 1.8,
+      alpha: 0.8,
+      color: color || (isDark ? "239, 201, 120" : "46, 125, 107")
+    });
+    if (!pondAnimFrame) {
+      pondAnimFrame = requestAnimationFrame(renderPondRipples);
+    }
+  }
+
+  window.triggerPondRitualBurst = function() {
+    resize();
+    const cx = width / 2;
+    const cy = height / 2;
+    [0, 180, 360].forEach((delay, idx) => {
+      setTimeout(() => {
+        addPondRipple(cx, cy, 140 + idx * 30, "255, 200, 80");
+      }, delay);
+    });
+  };
+
+  function renderPondRipples() {
+    ctx.clearRect(0, 0, width, height);
+
+    for (let i = pondRipples.length - 1; i >= 0; i--) {
+      const rip = pondRipples[i];
+      rip.r += rip.speed;
+      const progress = rip.r / rip.maxR;
+      const curAlpha = rip.alpha * (1 - progress);
+
+      if (progress >= 1 || curAlpha <= 0.01) {
+        pondRipples.splice(i, 1);
+        continue;
+      }
+
+      // Outer wave ring
+      ctx.beginPath();
+      ctx.arc(rip.x, rip.y, rip.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(${rip.color}, ${curAlpha.toFixed(3)})`;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      // Inner faint harmonic ring
+      if (rip.r > 15) {
+        ctx.beginPath();
+        ctx.arc(rip.x, rip.y, rip.r * 0.68, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${rip.color}, ${(curAlpha * 0.45).toFixed(3)})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    }
+
+    if (pondRipples.length > 0) {
+      pondAnimFrame = requestAnimationFrame(renderPondRipples);
+    } else {
+      pondAnimFrame = null;
+    }
+  }
+
+  // Pointer interactions on pond scene
+  scene.addEventListener("click", (e) => {
+    const rect = scene.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    addPondRipple(x, y, 100);
+    playWaterSplash();
+
+    // Koi reaction: briefly accelerate koi swimming
+    const koi = scene.querySelector(".swimming-koi-track");
+    if (koi) {
+      koi.style.animationDuration = "6s";
+      setTimeout(() => {
+        koi.style.animationDuration = "14s";
+      }, 2500);
+    }
+  });
+
+  let lastMoveTime = 0;
+  scene.addEventListener("mousemove", (e) => {
+    const now = Date.now();
+    if (now - lastMoveTime < 140) return;
+    lastMoveTime = now;
+    const rect = scene.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    addPondRipple(x, y, 36);
+  });
+
+  // Ambient gentle ripples every 4.5s
+  setInterval(() => {
+    const deedsScreen = document.getElementById("screen-deeds");
+    if (deedsScreen && deedsScreen.classList.contains("active") && Date.now() - lastPondUserInteraction > 3500) {
+      const rx = width * (0.2 + Math.random() * 0.6);
+      const ry = height * (0.25 + Math.random() * 0.5);
+      addPondRipple(rx, ry, 65);
+    }
+  }, 4500);
+}
+
+// --- 2. SKY LANTERNS & CELESTIAL CANVAS -------------------------------------
+function setupSkyLanterns() {
+  const canvas = document.getElementById("lampSkyCanvas");
+  const stage = document.getElementById("lampStage");
+  const layer = document.getElementById("driftingLanternsLayer");
+  if (!canvas || !stage) return;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    const rect = stage.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+
+  // Twinkling celestial stars
+  const stars = Array.from({ length: 24 }, () => ({
+    x: Math.random(),
+    y: Math.random() * 0.75,
+    size: 0.8 + Math.random() * 1.6,
+    speed: 0.02 + Math.random() * 0.04,
+    phase: Math.random() * Math.PI * 2,
+    baseAlpha: 0.2 + Math.random() * 0.5
+  }));
+
+  let emberParticles = [];
+
+  function drawSky() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Stars
+    stars.forEach((s) => {
+      s.phase += s.speed;
+      const alpha = s.baseAlpha + Math.sin(s.phase) * 0.25;
+      ctx.fillStyle = `rgba(255, 235, 180, ${Math.max(0, alpha).toFixed(2)})`;
+      ctx.beginPath();
+      ctx.arc(s.x * width, s.y * height, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Embers
+    for (let i = emberParticles.length - 1; i >= 0; i--) {
+      const p = emberParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.012;
+      if (p.alpha <= 0 || p.y < 0) {
+        emberParticles.splice(i, 1);
+        continue;
+      }
+      ctx.fillStyle = `rgba(255, 175, 50, ${p.alpha.toFixed(2)})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(drawSky);
+  }
+
+  drawSky();
+
+  window.spawnDriftingSkyLantern = function(wishText) {
+    if (!layer) return;
+    const lantern = document.createElement("div");
+    lantern.className = "drifting-sky-lantern";
+    const leftPct = 15 + Math.random() * 70;
+    lantern.style.left = `${leftPct}%`;
+
+    if (wishText && wishText.length > 0) {
+      const tag = document.createElement("span");
+      tag.className = "lantern-wish-pill";
+      tag.textContent = wishText.length > 18 ? wishText.slice(0, 18) + "…" : wishText;
+      lantern.appendChild(tag);
+    }
+
+    layer.appendChild(lantern);
+
+    // Spawn warm embers on canvas
+    const spawnX = (leftPct / 100) * width;
+    const spawnY = height * 0.85;
+    for (let i = 0; i < 12; i++) {
+      emberParticles.push({
+        x: spawnX + (Math.random() - 0.5) * 20,
+        y: spawnY + (Math.random() - 0.5) * 15,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: -0.6 - Math.random() * 1.2,
+        r: 1 + Math.random() * 2,
+        alpha: 0.9
+      });
+    }
+
+    setTimeout(() => {
+      lantern.remove();
+    }, 12000);
+  };
+}
+
+// --- 3. LIVE MAP KINDNESS STREAM & GLOBE AURORAL PARTICLES ----------------
+let liveKindnessFeed = [
+  { loc: "East Lake, Wuhan", action: "released 28 digital koi", time: "1m ago" },
+  { loc: "Arashiyama, Kyoto", action: "planted 15 bamboo shoots", time: "3m ago" },
+  { loc: "Ganga Ghat, Varanasi", action: "floated 42 prayer diyas", time: "5m ago" },
+  { loc: "Mahabodhi, Bodh Gaya", action: "completed 108 mindful breaths", time: "7m ago" },
+  { loc: "Bodleian, Oxford", action: "dedicated 12 study blessings", time: "9m ago" },
+  { loc: "Nara Deer Park", action: "shared quiet peace with wildlife", time: "12m ago" }
+];
+let liveFeedIndex = 0;
+
+function updateLiveStreamDisplay() {
+  const streamText = document.getElementById("mapStreamText");
+  if (!streamText) return;
+  const item = liveKindnessFeed[liveFeedIndex % liveKindnessFeed.length];
+  streamText.textContent = `${item.loc}: ${item.action} · ${item.time}`;
+  streamText.style.animation = "none";
+  void streamText.offsetWidth;
+  streamText.style.animation = "tickerFade 6s ease-in-out infinite";
+}
+
+function setupMapKindnessStream() {
+  updateLiveStreamDisplay();
+  setInterval(() => {
+    liveFeedIndex = (liveFeedIndex + 1) % liveKindnessFeed.length;
+    updateLiveStreamDisplay();
+  }, 5500);
+}
+
+// Globe Auroral Particle Canvas
+let globePulses = [];
+
+function setupGlobeParticlesCanvas() {
+  const canvas = document.getElementById("globeParticlesCanvas");
+  const surface = document.getElementById("worldMapSurface");
+  if (!canvas || !surface) return;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    const rect = surface.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+
+  resize();
+  window.addEventListener("resize", resize);
+
+  // Subtle kindness celestial dust particles
+  const particles = Array.from({ length: 18 }, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    vx: (Math.random() - 0.5) * 0.0003,
+    vy: (Math.random() - 0.5) * 0.0003,
+    r: 1.2 + Math.random() * 1.8,
+    alpha: 0.15 + Math.random() * 0.35,
+    pulseSpeed: 0.03 + Math.random() * 0.03,
+    phase: Math.random() * Math.PI * 2
+  }));
+
+  window.triggerGlobePulse = function(x, y) {
+    resize();
+    globePulses.push({
+      x,
+      y,
+      r: 5,
+      maxR: 120,
+      alpha: 0.8
+    });
+  };
+
+  function renderGlobe() {
+    ctx.clearRect(0, 0, width, height);
+    const isDark = document.body.classList.contains("dark");
+    const color = isDark ? "239, 201, 120" : "46, 125, 107";
+
+    // Dust particles
+    particles.forEach((p) => {
+      p.x = (p.x + p.vx + 1) % 1;
+      p.y = (p.y + p.vy + 1) % 1;
+      p.phase += p.pulseSpeed;
+      const a = p.alpha + Math.sin(p.phase) * 0.15;
+      ctx.fillStyle = `rgba(${color}, ${Math.max(0, a).toFixed(2)})`;
+      ctx.beginPath();
+      ctx.arc(p.x * width, p.y * height, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Auroral ripples from deeds
+    for (let i = globePulses.length - 1; i >= 0; i--) {
+      const pulse = globePulses[i];
+      pulse.r += 1.6;
+      const progress = pulse.r / pulse.maxR;
+      const a = pulse.alpha * (1 - progress);
+
+      if (progress >= 1 || a <= 0.01) {
+        globePulses.splice(i, 1);
+        continue;
+      }
+
+      ctx.beginPath();
+      ctx.arc(pulse.x, pulse.y, pulse.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(239, 201, 120, ${a.toFixed(2)})`;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    requestAnimationFrame(renderGlobe);
+  }
+
+  renderGlobe();
+}
+
 setupBlessings();
 setupLiveMap();
 setupEmbeddedMapMode();
@@ -2647,4 +3270,22 @@ renderAll();
 setupTiltCards();
 setupWaterRipples();
 setupAccountAuth();
+setupRedesignInteractions();
+setupPondCanvas();
+setupSkyLanterns();
+setupMapKindnessStream();
+setupGlobeParticlesCanvas();
+setupCdnAssetPipeline();
 
+function setupCdnAssetPipeline() {
+  const cdn = window.FOOBOW_CDN_URL || localStorage.getItem("foobow_cdn_url") || "";
+  if (!cdn) return;
+  document.querySelectorAll(".cinematic-backdrop-layer").forEach((layer) => {
+    const bg = layer.style.backgroundImage;
+    const match = bg.match(/url\(['"]?([^'"]+)['"]?\)/);
+    if (match && match[1] && match[1].startsWith("../assets/foobow/")) {
+      const assetKey = match[1].replace("../assets/foobow/", "");
+      layer.style.backgroundImage = `url('${cdn.replace(/\/$/, "")}/${assetKey}')`;
+    }
+  });
+}

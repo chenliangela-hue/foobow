@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import {
   AccountController,
+  AdminController,
   CommunityController,
   DiscoveryController,
   DonationController,
@@ -17,7 +18,8 @@ import { PrismaService } from "./prisma.service.js";
     AccountController,
     RitualController,
     CommunityController,
-    DonationController
+    DonationController,
+    AdminController
   ],
   providers: [FoobowService, PrismaService]
 })

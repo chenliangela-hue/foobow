@@ -45,3 +45,19 @@ test("site serves the landing at root and the app under /app over HTTP", async (
     assert.match(html, /app\.js/);
   });
 });
+
+test("Cloudflare R2 asset manifest is complete and checksum-verified", async () => {
+  const manifestText = await readText("prototype/assets/foobow/asset-manifest.json");
+  const manifest = JSON.parse(manifestText);
+  assert.equal(manifest.version, "1.0.0");
+  assert.equal(manifest.bucket, "foobow-assets");
+  assert.ok(manifest.assetCount >= 30, "Should track at least 30 assets");
+  assert.equal(manifest.assets.length, manifest.assetCount);
+  for (const asset of manifest.assets) {
+    assert.ok(asset.key, "Asset must have key");
+    assert.ok(asset.size > 0, "Asset must have non-zero size");
+    assert.ok(asset.sha256 && asset.sha256.length === 64, "Asset must have valid sha256");
+    assert.ok(asset.cdnUrl.startsWith("https://"), "Asset must have CDN URL");
+  }
+});
+

@@ -106,3 +106,30 @@ export function generateBlessingIntention(
   return apiPost<BlessingIntentionResponse>("/blessings/intentions", req);
 }
 
+export interface CloudSyncRequest {
+  karma?: number;
+  streak?: number;
+  journal?: string;
+  rituals_completed?: string[];
+}
+
+export interface CloudSyncResponse {
+  status: string;
+  server_time: string;
+  synced_user_id: string;
+  merged: {
+    karma: number;
+    streak: number;
+    journal: string;
+    rituals_count: number;
+    last_synced_at: string;
+  };
+}
+
+export function syncCloudState(
+  req: CloudSyncRequest
+): Promise<ApiResult<CloudSyncResponse>> {
+  return apiPost<CloudSyncResponse>("/sync", req);
+}
+
+

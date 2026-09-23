@@ -92,9 +92,13 @@
         <section class="screen active" id="screen-today" aria-labelledby="today-title">
           <div class="hero-panel">
             <div>
-              <p class="eyebrow" data-i18n="todayEyebrow">Today</p>
+              <div class="hero-eyebrow-row">
+                <p class="eyebrow" data-i18n="todayEyebrow">Today</p>
+                <span class="karma-delta-pill" data-i18n="karmaTodayDelta">+20 today</span>
+              </div>
               <h2 id="today-title" data-i18n="todayTitle">Do one quiet good deed.</h2>
               <p class="hero-copy" data-i18n="todayCopy">Check in, choose a small symbolic action, and leave the day a little lighter.</p>
+              <p class="hero-zen-quote" data-i18n="karmaReturnQuote">Kindness is always a good return.</p>
               <p class="daily-thought" id="dailyThought"></p>
             </div>
             <div class="karma-ring" aria-label="Karma progress">
@@ -147,16 +151,30 @@
             <p class="almanac-verse" id="almanacVerse">善念一动，天地皆宽。Every mindful deed brings boundless calm.</p>
           </section>
 
-          <section class="panel">
+          <section class="panel streak-panel">
             <div class="section-heading">
-              <h3 data-i18n="moodTitle">How are you arriving?</h3>
+              <div>
+                <h3 data-i18n="moodTitle">How are you arriving?</h3>
+                <p class="panel-subtext" data-i18n="streakSubtext">Keep it going! Small steps lead to great changes.</p>
+              </div>
               <span class="soft-pill" id="streakLabel">7 day streak</span>
+            </div>
+            <div class="streak-flame-track" id="streakFlameTrack" aria-label="7 day streak progress">
+              <div class="flame-day active"><span class="flame-icon">🔥</span><span class="flame-day-label">M</span></div>
+              <div class="flame-day active"><span class="flame-icon">🔥</span><span class="flame-day-label">T</span></div>
+              <div class="flame-day active"><span class="flame-icon">🔥</span><span class="flame-day-label">W</span></div>
+              <div class="flame-day active"><span class="flame-icon">🔥</span><span class="flame-day-label">T</span></div>
+              <div class="flame-day active"><span class="flame-icon">🔥</span><span class="flame-day-label">F</span></div>
+              <div class="flame-day active"><span class="flame-icon">🔥</span><span class="flame-day-label">S</span></div>
+              <div class="flame-day today-flame"><span class="flame-icon">✨</span><span class="flame-day-label">S</span></div>
             </div>
             <div class="mood-grid" id="moodGrid">
               <button class="mood selected" type="button" data-mood="calm" data-deed="Release fish at East Lake">Calm</button>
               <button class="mood" type="button" data-mood="heavy" data-deed="Light a path home">Heavy</button>
               <button class="mood" type="button" data-mood="lonely" data-deed="Send an anonymous blessing">Lonely</button>
               <button class="mood" type="button" data-mood="grateful" data-deed="Help elder cross safely">Grateful</button>
+              <button class="mood" type="button" data-mood="focused" data-deed="Clean a coastline">Focused</button>
+              <button class="mood" type="button" data-mood="excited" data-deed="Add to a food drive">Excited</button>
             </div>
           </section>
 
@@ -167,6 +185,55 @@
               <p data-i18n="recommendedCopy">A symbolic release that avoids real-world ecological harm.</p>
             </div>
             <button class="primary-action" id="completeDaily" type="button" data-i18n="completeDeed">Complete deed</button>
+          </section>
+
+          <section class="quick-rituals-panel" id="quickRitualsPanel" aria-labelledby="quick-rituals-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="quickRitualsTitle">Quick Rituals</p>
+                <h3 id="quick-rituals-title" data-i18n="quickRitualsSubtitle">Find peace in a busy day</h3>
+              </div>
+              <button class="text-button quick-rituals-link" id="viewAllRitualsBtn" type="button" data-i18n="viewAllRituals">View all rituals →</button>
+            </div>
+            <div class="quick-rituals-grid">
+              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="lamp">
+                <span class="quick-ritual-icon">🪔</span>
+                <span class="quick-ritual-name" data-i18n="quickRitualLamp">Light a Lamp</span>
+                <span class="quick-ritual-duration" data-i18n="duration3Min">3 min</span>
+              </button>
+              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="incense">
+                <span class="quick-ritual-icon">🕯️</span>
+                <span class="quick-ritual-name" data-i18n="quickRitualIncense">Burn Incense</span>
+                <span class="quick-ritual-duration" data-i18n="duration5Min">5 min</span>
+              </button>
+              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="muyu">
+                <span class="quick-ritual-icon">🪵</span>
+                <span class="quick-ritual-name" data-i18n="quickRitualMuyu">Wooden Fish</span>
+                <span class="quick-ritual-duration" data-i18n="duration5Min">5 min</span>
+              </button>
+              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="wheel">
+                <span class="quick-ritual-icon">☸️</span>
+                <span class="quick-ritual-name" data-i18n="quickRitualWheel">Prayer Wheel</span>
+                <span class="quick-ritual-duration" data-i18n="duration7Min">7 min</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="mini-world-card tilt-card" id="miniWorldCard" aria-labelledby="mini-world-title">
+            <div class="mini-world-content">
+              <div class="mini-world-badge" data-i18n="manySmallDeedsSubtitle">Global Kindness Map</div>
+              <h3 id="mini-world-title" data-i18n="manySmallDeedsTitle">Many Small Deeds · A Brighter World</h3>
+              <div class="mini-world-stats">
+                <span class="mini-world-stat-item"><strong data-i18n="goodDeedsTodayCount">128,921 deeds today</strong></span>
+                <span class="mini-world-dot">·</span>
+                <span class="mini-world-stat-item" data-i18n="peopleSpreadingKindness">2.4M people spreading kindness</span>
+              </div>
+              <button class="primary-action mini-world-cta" id="exploreMapCta" type="button" data-i18n="exploreTheMapBtn">Explore Sanctuary →</button>
+            </div>
+            <div class="mini-world-globe-art" aria-hidden="true">
+              <div class="spinning-globe-ring"></div>
+              <span class="mini-world-emoji">🌏</span>
+            </div>
           </section>
 
           <section class="panel">
@@ -185,6 +252,21 @@
               <h2 id="blessings-title" data-i18n="blessingsTitle">Offer a blessing for someone you love.</h2>
             </div>
           </div>
+
+          <section class="tonight-ritual-card tilt-card" id="tonightRitualCard" aria-labelledby="tonight-ritual-title">
+            <div class="tonight-ritual-header">
+              <span class="tonight-ritual-badge"><span aria-hidden="true">🌙</span> <span data-i18n="tonightRitualBadge">Tonight's Gentle Ritual</span></span>
+              <div class="tonight-ritual-chips">
+                <span class="ritual-meta-chip" data-i18n="duration10Min">10 min</span>
+                <span class="ritual-meta-chip guided" data-i18n="guidedAudioBadge">Guided Audio</span>
+              </div>
+            </div>
+            <h3 class="tonight-ritual-title" id="tonight-ritual-title" data-i18n="tonightRitualTitle">Sleep Peacefully, Spread More Kindness</h3>
+            <p class="tonight-ritual-copy" data-i18n="tonightRitualCopy">A soothing evening sequence to let go of daily worries, cultivate gratitude, and settle the mind into deep rest.</p>
+            <div class="tonight-ritual-actions">
+              <button class="primary-action tonight-start-btn" id="startTonightRitualBtn" type="button" data-i18n="startTonightRitual">Start tonight's ritual →</button>
+            </div>
+          </section>
 
           <section class="pray-card" aria-live="polite">
             <p class="pray-copy" data-i18n="blessingsCopy">Choose who it is for, add a few words, and receive a warm blessing to hold. Symbolic comfort only — never a promise of luck.</p>
@@ -210,7 +292,11 @@
               </div>
               <span class="soft-pill" id="lampCount">0</span>
             </div>
-            <div class="lamp-stage" id="lampStage" aria-hidden="true"><span class="lamp-flame"></span></div>
+            <div class="lamp-stage" id="lampStage" aria-hidden="true">
+              <canvas id="lampSkyCanvas" class="lamp-sky-canvas"></canvas>
+              <span class="lamp-flame"></span>
+              <div class="drifting-lanterns-layer" id="driftingLanternsLayer"></div>
+            </div>
             <input class="pray-input" id="lampWish" type="text" maxlength="80" data-i18n-placeholder="lampPlaceholder" placeholder="A quiet wish..." />
             <button class="primary-action" id="lightLamp" type="button" data-i18n="lampLight">Light the lamp</button>
             <ul class="lamp-list" id="lampList"></ul>
@@ -470,7 +556,16 @@
               </div>
               <div class="map-embedded-osm-viewport" id="embeddedOsmViewport" aria-hidden="true" hidden>
                 <div class="embedded-osm-tiles" id="embeddedOsmTiles"></div>
+                <div class="sanctuary-ripple-wave" id="sanctuaryRippleWave" aria-hidden="true"></div>
                 <div class="embedded-osm-center-pin">🪷</div>
+                <div class="buddhist-compass-rose" id="buddhistCompassRose" title="Dharma Compass · ☸️" aria-hidden="true">☸️</div>
+                <div class="sanctuary-quick-jump" id="sanctuaryQuickJump" role="group" aria-label="Sanctuary quick jump">
+                  <button class="sanctuary-quick-chip active" type="button" data-spot-id="east-lake">🐟 East Lake</button>
+                  <button class="sanctuary-quick-chip" type="button" data-spot-id="toronto-crosswalk">👵 Toronto</button>
+                  <button class="sanctuary-quick-chip" type="button" data-spot-id="amazon-grove">🌱 Amazon</button>
+                  <button class="sanctuary-quick-chip" type="button" data-spot-id="night-corridor">🏮 Kyoto</button>
+                  <button class="sanctuary-quick-chip" type="button" data-spot-id="reading-room">📖 Oxford</button>
+                </div>
                 <div class="embedded-osm-controls">
                   <button class="embedded-ctrl-btn" id="osmZoomInBtn" type="button" aria-label="Zoom in" title="Zoom in">+</button>
                   <button class="embedded-ctrl-btn" id="osmZoomOutBtn" type="button" aria-label="Zoom out" title="Zoom out">−</button>
@@ -503,6 +598,7 @@
                 <span class="pin-symbol" aria-hidden="true">📖</span>
                 <span class="pin-name-badge">Oxford</span>
               </button>
+              <canvas class="globe-particles-canvas" id="globeParticlesCanvas" aria-hidden="true"></canvas>
             </div>
           </div>
           <section class="spot-detail">
@@ -513,6 +609,24 @@
             <h3 id="spotName">East Lake, Wuhan</h3>
             <p id="spotText">Release a digital fish into the lake and add one ripple to the shared kindness map.</p>
             
+            <div class="sanctuary-hud-card" id="sanctuaryHudCard">
+              <div class="hud-item">
+                <span class="hud-label" data-i18n="sanctuaryCoordinates">Coordinates</span>
+                <strong class="hud-val" id="hudCoords">30.5539° N, 114.3644° E</strong>
+              </div>
+              <div class="hud-divider" aria-hidden="true"></div>
+              <div class="hud-item">
+                <span class="hud-label" data-i18n="sanctuaryEnvironment">Biosphere</span>
+                <strong class="hud-val" id="hudBiosphere">Freshwater wetland sanctuary</strong>
+              </div>
+            </div>
+
+            <div class="map-kindness-stream-bar" id="mapKindnessStreamBar" aria-label="Live global kindness stream">
+              <span class="stream-dot" aria-hidden="true"></span>
+              <strong class="stream-title" data-i18n="mapKindnessTickerTitle">Live Stream</strong>:
+              <span class="stream-text" id="mapStreamText">Wuhan: Lotus Lake released 28 digital koi · 1m ago</span>
+            </div>
+
             <section class="map-deck-panel" aria-labelledby="mapDeckTitle">
               <p class="deck-action-title" id="mapDeckTitle" data-i18n="mapDeckTitle">Choose & perform deed at this sanctuary</p>
               <div class="deed-deck-grid" id="deedDeckGrid">
@@ -602,6 +716,8 @@
           </div>
           <section class="ritual-panel">
             <div class="ritual-scene pond-scene" id="ritualScene" aria-label="Zen lotus pond">
+              <canvas id="pondRippleCanvas" class="pond-ripple-canvas" aria-hidden="true"></canvas>
+              <span class="pond-interactive-hint" data-i18n="clickToRipple">Tap water to send ripples</span>
               <!-- Water depth ripples -->
               <div class="pond-water-shimmer" aria-hidden="true"></div>
               <div class="pond-ripple-ring ring-1" aria-hidden="true"></div>
@@ -855,6 +971,96 @@
             <div><strong>9</strong><span data-i18n="statBadges">badges</span></div>
             <div><strong>$18</strong><span data-i18n="statDonated">donated</span></div>
           </div>
+
+          <section class="panel profile-progress-grid-panel" aria-labelledby="profile-circles-title">
+            <div class="section-heading">
+              <h3 id="profile-circles-title" data-i18n="progressTitle">Your progress</h3>
+            </div>
+            <div class="progress-rings-grid">
+              <div class="progress-ring-card tilt-card">
+                <div class="ring-svg-wrap">
+                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
+                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
+                    <circle class="ring-fill ring-teal" cx="22" cy="22" r="18" style="stroke-dashoffset: 23;"/>
+                  </svg>
+                  <span class="ring-pct">80%</span>
+                </div>
+                <div class="ring-text">
+                  <strong class="ring-label" data-i18n="progressRitualsDone">Rituals Done</strong>
+                  <span class="ring-sub">12 / 15</span>
+                </div>
+              </div>
+              <div class="progress-ring-card tilt-card">
+                <div class="ring-svg-wrap">
+                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
+                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
+                    <circle class="ring-fill ring-gold" cx="22" cy="22" r="18" style="stroke-dashoffset: 23;"/>
+                  </svg>
+                  <span class="ring-pct">80%</span>
+                </div>
+                <div class="ring-text">
+                  <strong class="ring-label" data-i18n="progressPeopleHelped">People Helped</strong>
+                  <span class="ring-sub">8 / 10</span>
+                </div>
+              </div>
+              <div class="progress-ring-card tilt-card">
+                <div class="ring-svg-wrap">
+                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
+                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
+                    <circle class="ring-fill ring-coral" cx="22" cy="22" r="18" style="stroke-dashoffset: 28;"/>
+                  </svg>
+                  <span class="ring-pct">75%</span>
+                </div>
+                <div class="ring-text">
+                  <strong class="ring-label" data-i18n="progressJournalEntries">Journal Entries</strong>
+                  <span class="ring-sub">6 / 8</span>
+                </div>
+              </div>
+              <div class="progress-ring-card tilt-card">
+                <div class="ring-svg-wrap">
+                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
+                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
+                    <circle class="ring-fill ring-purple" cx="22" cy="22" r="18" style="stroke-dashoffset: 45;"/>
+                  </svg>
+                  <span class="ring-pct">60%</span>
+                </div>
+                <div class="ring-text">
+                  <strong class="ring-label" data-i18n="progressImpactGoals">Kindness Goals</strong>
+                  <span class="ring-sub">3 / 5</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel impact-metrics-panel" aria-labelledby="impact-metrics-title">
+            <div class="section-heading">
+              <h3 id="impact-metrics-title" data-i18n="manySmallDeedsTitle">Many Small Deeds · A Brighter World</h3>
+              <span class="soft-pill">Global Impact</span>
+            </div>
+            <div class="impact-metrics-grid">
+              <div class="impact-stat-card tilt-card">
+                <span class="impact-icon">🤲</span>
+                <strong class="impact-val" id="impactValHelped">124</strong>
+                <span class="impact-lbl" data-i18n="impactPeopleHelped">People Helped</span>
+              </div>
+              <div class="impact-stat-card tilt-card">
+                <span class="impact-icon">✨</span>
+                <strong class="impact-val" id="impactValBlessings">8.4M+</strong>
+                <span class="impact-lbl" data-i18n="impactBlessingsShared">Blessings Shared</span>
+              </div>
+              <div class="impact-stat-card tilt-card">
+                <span class="impact-icon">🌐</span>
+                <strong class="impact-val" id="impactValCountries">5</strong>
+                <span class="impact-lbl" data-i18n="impactCountries">Countries</span>
+              </div>
+              <div class="impact-stat-card tilt-card">
+                <span class="impact-icon">🌱</span>
+                <strong class="impact-val" id="impactValCo2">12.3 kg</strong>
+                <span class="impact-lbl" data-i18n="impactCo2Saved">CO₂ Saved</span>
+              </div>
+            </div>
+          </section>
+
           <section class="panel progress-panel">
             <div class="section-heading">
               <h3 data-i18n="progressTitle">Your progress</h3>
