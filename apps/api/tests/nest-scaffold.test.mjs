@@ -19,6 +19,7 @@ test("NestJS scaffold defines production backend modules and guarded routes", as
     "RitualController",
     "CommunityController",
     "DonationController",
+    "WebhookController",
     "FoobowService",
     "PrismaService"
   ]) {

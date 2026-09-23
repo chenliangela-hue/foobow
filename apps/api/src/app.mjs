@@ -530,6 +530,58 @@ export function createApp(options = {}) {
       return;
     }
 
+    if (path === "/api/v1/webhooks/stripe" && method === "POST") {
+      const body = await readJson(request);
+      if (!body || typeof body !== "object" || !body.type) {
+        sendError(response, 400, "validation_error", "Webhook payload must be a valid Stripe event JSON object.");
+        return;
+      }
+
+      const eventType = body.type;
+      let matched = false;
+
+      if (eventType === "payment_intent.succeeded" || eventType === "checkout.session.completed") {
+        const obj = body.data?.object || {};
+        const idempotencyKey = obj.metadata?.idempotency_key;
+        const donationId = obj.metadata?.donation_id || obj.client_reference_id;
+        const orderId = obj.metadata?.order_id;
+
+        if (idempotencyKey && state.donations.has(idempotencyKey)) {
+          const entry = state.donations.get(idempotencyKey);
+          if (entry?.response?.donation) {
+            entry.response.donation.payment_status = "succeeded";
+            matched = true;
+          }
+        }
+
+        if (donationId) {
+          for (const entry of state.donations.values()) {
+            if (entry?.response?.donation?.id === donationId) {
+              entry.response.donation.payment_status = "succeeded";
+              matched = true;
+              break;
+            }
+          }
+        }
+
+        if (orderId) {
+          const order = state.orders.find((o) => o.id === orderId);
+          if (order) {
+            order.status = "paid";
+            matched = true;
+          }
+        }
+      }
+
+      sendJson(response, 200, {
+        received: true,
+        event_type: eventType,
+        status: matched ? "processed" : "acknowledged",
+        transparency_note: "Donation support is separate from symbolic karma and does not buy luck, virtue, or guaranteed outcomes."
+      });
+      return;
+    }
+
     if (path === "/api/v1/focus-sessions" && method === "POST") {
       const body = (await readJson(request)) ?? {};
       const targetDuration = typeof body.target_duration_seconds === "number" ? body.target_duration_seconds : 20;

@@ -235,6 +235,58 @@ describe("Foobow API runtime", () => {
     assert.match(first.json.transparency_note, /does not buy luck/i);
   });
 
+  it("processes Stripe donation webhooks, updates payment status, and preserves zero karma", async () => {
+    const donationRes = await request("/api/v1/donations", {
+      method: "POST",
+      headers: { "Idempotency-Key": "donation-webhook-test-1" },
+      body: JSON.stringify({
+        campaign_id: "campaign_operating_support",
+        amount: "5.00",
+        currency: "USD"
+      })
+    });
+    assert.equal(donationRes.response.status, 201);
+    const donationId = donationRes.json.donation.id;
+
+    const webhookRes = await request("/api/v1/webhooks/stripe", {
+      auth: false,
+      method: "POST",
+      body: JSON.stringify({
+        id: "evt_test_12345",
+        type: "payment_intent.succeeded",
+        data: {
+          object: {
+            id: "pi_test_12345",
+            amount: 500,
+            currency: "usd",
+            metadata: {
+              idempotency_key: "donation-webhook-test-1",
+              donation_id: donationId
+            }
+          }
+        }
+      })
+    });
+
+    assert.equal(webhookRes.response.status, 200);
+    assert.equal(webhookRes.json.received, true);
+    assert.equal(webhookRes.json.status, "processed");
+    assert.match(webhookRes.json.transparency_note, /does not buy luck/i);
+
+    const verified = await request("/api/v1/donations", {
+      method: "POST",
+      headers: { "Idempotency-Key": "donation-webhook-test-1" },
+      body: JSON.stringify({
+        campaign_id: "campaign_operating_support",
+        amount: "5.00",
+        currency: "USD"
+      })
+    });
+    assert.equal(verified.response.status, 200);
+    assert.equal(verified.json.donation.payment_status, "succeeded");
+    assert.equal(verified.json.donation.karma_points_awarded, 0);
+  });
+
   it("returns request IDs in standard error payloads", async () => {
     const { response, json } = await request("/api/v1/unknown");
 

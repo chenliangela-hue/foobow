@@ -146,6 +146,17 @@ export class DonationController {
   }
 }
 
+@ApiTags("webhooks")
+@Controller("api/v1/webhooks")
+export class WebhookController {
+  constructor(@Inject(FoobowService) private readonly service: FoobowService) {}
+
+  @Post("stripe")
+  stripeWebhook(@Headers("stripe-signature") signature: string | undefined, @Body() body: any) {
+    return this.service.handleStripeWebhook(signature, body);
+  }
+}
+
 @ApiTags("admin")
 @Controller()
 export class AdminController {

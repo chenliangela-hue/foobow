@@ -6,7 +6,8 @@ import {
   DiscoveryController,
   DonationController,
   HealthController,
-  RitualController
+  RitualController,
+  WebhookController
 } from "./foobow.controller.js";
 import { FoobowService } from "./foobow.service.js";
 import { PrismaService } from "./prisma.service.js";
@@ -19,7 +20,8 @@ import { PrismaService } from "./prisma.service.js";
     RitualController,
     CommunityController,
     DonationController,
-    AdminController
+    AdminController,
+    WebhookController
   ],
   providers: [FoobowService, PrismaService]
 })

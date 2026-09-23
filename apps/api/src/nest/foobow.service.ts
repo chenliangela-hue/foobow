@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable, UnprocessableEntityException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Inject, Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 import {
   BlessingCreateDto,
@@ -583,6 +583,73 @@ export class FoobowService {
     };
     this.donations.set(idempotencyKey, { fingerprint, response });
     return response;
+  }
+
+  async handleStripeWebhook(signature: string | undefined, body: any) {
+    if (!body || typeof body !== "object" || !body.type) {
+      throw new BadRequestException("Webhook payload must be a valid Stripe event JSON object.");
+    }
+
+    const eventType = body.type;
+    let matched = false;
+
+    if (eventType === "payment_intent.succeeded" || eventType === "checkout.session.completed") {
+      const obj = body.data?.object || {};
+      const idempotencyKey = obj.metadata?.idempotency_key;
+      const donationId = obj.metadata?.donation_id || obj.client_reference_id;
+      const orderId = obj.metadata?.order_id;
+
+      if (this.useDatabase()) {
+        if (idempotencyKey) {
+          await this.prisma.donation.updateMany({
+            where: { idempotencyKey },
+            data: { paymentStatus: "succeeded" }
+          });
+          matched = true;
+        } else if (donationId) {
+          await this.prisma.donation.updateMany({
+            where: { publicId: donationId },
+            data: { paymentStatus: "succeeded" }
+          });
+          matched = true;
+        }
+      } else {
+        if (idempotencyKey && this.donations.has(idempotencyKey)) {
+          const entry = this.donations.get(idempotencyKey);
+          if (entry?.response && typeof entry.response === "object") {
+            const don = (entry.response as any).donation;
+            if (don) don.payment_status = "succeeded";
+            matched = true;
+          }
+        }
+
+        if (donationId) {
+          for (const entry of this.donations.values()) {
+            const don = (entry.response as any)?.donation;
+            if (don?.id === donationId) {
+              don.payment_status = "succeeded";
+              matched = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (orderId) {
+        const order = this.adminOrders.find((o) => o.id === orderId);
+        if (order) {
+          order.status = "paid";
+          matched = true;
+        }
+      }
+    }
+
+    return {
+      received: true,
+      event_type: eventType,
+      status: matched ? "processed" : "acknowledged",
+      transparency_note: "Donation support is separate from symbolic karma and does not buy luck, virtue, or guaranteed outcomes."
+    };
   }
 
   async createReport(body: ReportCreateDto) {

@@ -230,6 +230,13 @@
   - Audited and updated `docs/mobile-release-checklist.md` and `docs/store-listing.md` enforcing decoupled zero-karma giving ethics, dual-language metadata (`en-US` and `zh-Hans`), and App Store / Google Play Data Safety compliance.
   - Expanded `tests/mobile-routing.test.mjs` with 3 integration tests covering packaging, asset checksum parity, and ethical store listing requirements (39/39 root tests passing).
   - Optimized Playwright worker concurrency in `playwright.config.mjs` for Windows stability, achieving 100% pass across all 9 quality gates in `npm run test:all` (39 unit, catalog, env, advisories, 25 API, mobile typecheck, 93 browser, 8 visual baselines, 0 security vulnerabilities).
+- Phase 5 Track 1 (Stripe Webhook Processing & Live Database Integration Suite Resolution):
+  - Aligned NestJS dependencies (`@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express` to `^11.2.5`), eliminating runtime version skew and unblocking `@nestjs/core` HTTP execution.
+  - Implemented `POST /api/v1/webhooks/stripe` across both native HTTP runtime and NestJS `WebhookController`.
+  - Added donation status lifecycle update (`payment_status: "succeeded"`) for `payment_intent.succeeded` and `checkout.session.completed` events with strict zero-karma decoupling.
+  - Verified Clerk session minting & JWT verification (`npm --prefix apps/api run auth:clerk-smoke`) against live test instance.
+  - Verified database integration suite (`npm --prefix apps/api run test:db-integration`) against local PostgreSQL service with isolated per-run cleanup.
+  - Expanded API test suite to 26/26 passing tests with clean TypeScript typecheck.
 
 ## Next
 
