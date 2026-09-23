@@ -39,7 +39,8 @@ From `prototype/` (the directory is linked via `prototype/.vercel/`, which is gi
 npx vercel@latest deploy --prod --yes --token "$VERCEL_TOKEN" --scope team_AqCSnEbzhqzfRQ6rdvKOEgCd
 ```
 
-## API and database (not yet deployed)
+## API and database
 
-- The API targets container hosting (`API_HOSTING_PROVIDER=container` in `.env.local`); no environment exists yet.
-- The Supabase project recorded in `.env.local` (`ifujcchqlotxenuitrey`) no longer resolves and must be recreated before database-backed deploys.
+- The backend targets container or serverless hosting (`apps/api`), runnable via `npm --prefix apps/api run start:nest` or `npm --prefix apps/api run start:native`.
+- Supabase production project `uukmupcmesqsfrymidtf` has been provisioned with applied migrations (`0001_initial.sql`, `0002_focus_sessions.sql`, `0003_media_and_commerce.sql`), reference seeds, and storage buckets (`public-assets`, `user-uploads`, `ai-generated`).
+- When running in cloud-connected mode, configure `DATABASE_URL` with the Supabase pooler connection string. When running locally without cloud secrets, the API gracefully falls back to deterministic in-memory fixtures or local Docker Postgres (`localhost:55432`).
