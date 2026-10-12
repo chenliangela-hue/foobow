@@ -8,7 +8,7 @@ Last updated: 2026-10-12 17:08 America/Toronto
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
 | Codex 5.5 | ~306 min | Unknown | 50 | ~261k in / ~68k out | 99% | Integrated focus-session draft, provider setup plan, Node standardization marker, and verification |
 | Claude 4.8 | ~11 min | Unknown | 9 | ~7k in / ~3k out | 14% | Reviewed non-secret focus-session API/database draft scope |
-| Gemini 3.5 | ~24 min | Unknown | 18 | ~35k in / ~18k out | 32% | Elevated mindfulness gamification: 4-7-8 breathing orb, 108 purification wooden fish + timbres, tonight sleep ritual, today 3d portal |
+| Gemini 3.5 | ~38 min | Unknown | 22 | ~52k in / ~26k out | 42% | Transformed rituals into tactile micro-games: unified ritual engine, presence combo, physical prayer wheel, hold-to-light lamp, kindness garden |
 
 ## Assignment Rules
 

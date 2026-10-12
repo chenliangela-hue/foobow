@@ -166,4 +166,29 @@ test("Today screen direct 3D sanctuary portal launches scenario directly", async
   await expect(modal).not.toBeVisible();
 });
 
+test("10-second seedling nurturing micro-game sprouts plant into personal Kindness Garden shelf", async ({ page }) => {
+  await page.locator(".bottom-nav .nav-item[data-target='deeds']").click();
+  await expect(page.locator("#seedlingCard")).toBeVisible();
+  await expect(page.locator("#kindnessGardenShelf")).toBeVisible();
+
+  // Step 1: Plant seed
+  await page.locator("#draggableSeed").click();
+  await expect(page.locator("#seedlingPrompt")).toContainText("Step 2");
+
+  // Step 2: Water
+  await page.locator("#waterCanBtn").click();
+  await expect(page.locator("#seedlingPrompt")).toContainText("Step 3");
+
+  // Step 3: Guide sunlight
+  const karmaBefore = Number(await page.locator("#karmaValue").textContent());
+  await page.locator("#sunBeamBtn").click();
+  await expect(page.locator("#seedlingSprout")).toBeVisible();
+  await expect(page.locator("#karmaValue")).toHaveText(String(karmaBefore + 5));
+
+  // Verify personal Kindness Garden shelf received the plant
+  await expect(page.locator("#gardenPlantsGrid .garden-plant-item")).toHaveCount(1);
+  await expect(page.locator("#gardenCount")).toHaveText("1 Plants");
+});
+
+
 

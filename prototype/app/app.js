@@ -69,6 +69,10 @@ function getZenAudioContext() {
 }
 
 function playMuyuSound(timbre) {
+  if (window.FOOBOW_RITUAL_ENGINE && window.FOOBOW_RITUAL_ENGINE.audio && window.FOOBOW_RITUAL_ENGINE.audio.playTok) {
+    window.FOOBOW_RITUAL_ENGINE.audio.playTok({ timbre: timbre || state.muyuTimbre });
+    return;
+  }
   const ctx = getZenAudioContext();
   if (!ctx) return;
   const t = ctx.currentTime;
@@ -757,11 +761,16 @@ const BREATH_TECHNIQUES = {
 let breathElapsedSeconds = 0;
 
 function updateBreathDisplay(phaseType, label, count) {
+  const container = document.getElementById("breathOrbContainer");
   const orb = document.getElementById("breathOrb");
   const phaseEl = document.getElementById("breathPhaseText");
   const countEl = document.getElementById("breathCountdown");
   const aura = document.getElementById("breathAuraRing");
 
+  if (container) {
+    container.classList.remove("inhale", "hold", "exhale");
+    if (phaseType) container.classList.add(phaseType);
+  }
   if (orb) {
     orb.classList.remove("inhale", "hold", "exhale");
     if (phaseType) orb.classList.add(phaseType);
@@ -823,7 +832,10 @@ function startFocusSession() {
     }
 
     if (activePhase) {
-      const phaseLabel = dict[activePhase.labelKey] || activePhase.defaultLabel;
+      let phaseLabel = dict[activePhase.labelKey] || activePhase.defaultLabel;
+      if (activePhase.type === "inhale" && dict.breatheInWords) phaseLabel = dict.breatheInWords;
+      else if (activePhase.type === "hold" && dict.breatheRestWords) phaseLabel = dict.breatheRestWords;
+      else if (activePhase.type === "exhale" && dict.breatheLetGoWords) phaseLabel = dict.breatheLetGoWords;
       updateBreathDisplay(activePhase.type, phaseLabel, `${phaseSecondsLeft}s`);
     }
 
@@ -1241,23 +1253,135 @@ function setupBlessings() {
     saveButton.disabled = true;
   });
 
-  lightLamp.addEventListener("click", function () {
-    const inputWish = lampWish.value.trim();
+  const lampFlame = document.getElementById("lampFlame");
+  const lampHoldProgress = document.getElementById("lampHoldProgress");
+  const lampJoinedToast = document.getElementById("lampJoinedToast");
+
+  if (lampWish) {
+    lampWish.addEventListener("input", () => {
+      const len = lampWish.value.trim().length;
+      if (lampFlame) {
+        if (len > 0) {
+          lampFlame.classList.add("typing-bright");
+        } else {
+          lampFlame.classList.remove("typing-bright");
+        }
+      }
+    });
+  }
+
+  let lampLitRecently = false;
+  function triggerLampLighting() {
+    if (lampLitRecently) return;
+    lampLitRecently = true;
+    setTimeout(() => { lampLitRecently = false; }, 1200);
+
+    const inputWish = lampWish ? lampWish.value.trim() : "";
     const wish = getAuspiciousLampWish(inputWish);
     state.lamps.unshift({ id: "lamp_" + Date.now(), wish: wish, litAt: Date.now() });
-    lampWish.value = "";
-    updateKarma(1);
+    if (lampWish) lampWish.value = "";
+    if (lampFlame) lampFlame.classList.remove("typing-bright");
+    updateKarma(1, lightLamp);
     saveState();
-    lampStage.classList.remove("lit");
-    void lampStage.offsetWidth;
-    lampStage.classList.add("lit");
+
+    if (lampStage) {
+      lampStage.classList.remove("lit", "lifting");
+      void lampStage.offsetWidth;
+      lampStage.classList.add("lit", "lifting");
+      setTimeout(() => {
+        lampStage.classList.remove("lifting");
+      }, 2200);
+    }
+
     renderLamps();
     logActivity("lamp");
     showActionWhisper("lampWhispers");
+
+    // Audio & Haptics & Particles
+    window.FOOBOW_RITUAL_ENGINE?.audio?.playLanternLift?.();
+    window.FOOBOW_RITUAL_ENGINE?.audio?.playEmberSpark?.();
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone?.();
+    if (lampStage) {
+      window.FOOBOW_RITUAL_ENGINE?.particles?.spawnRisingGoldParticle?.(lampStage, "✨");
+    }
+
+    // Community global count toast
+    if (lampJoinedToast) {
+      const copy = dictionary();
+      lampJoinedToast.textContent = copy.lampJoinedWorld || "Your wish has joined 8,412,597 quiet lights.";
+      lampJoinedToast.hidden = false;
+      setTimeout(() => {
+        lampJoinedToast.hidden = true;
+      }, 4500);
+    }
+
     if (window.spawnDriftingSkyLantern) {
       window.spawnDriftingSkyLantern(wish);
     }
-  });
+  }
+
+  // Tactile Hold to Light (1.2s progressive hold)
+  let holdStartTime = 0;
+  let holdInterval = null;
+  let holdCompleted = false;
+
+  function startHold(e) {
+    holdStartTime = Date.now();
+    holdCompleted = false;
+    if (lampHoldProgress) lampHoldProgress.style.width = "0%";
+    if (lampStage) lampStage.classList.add("holding");
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.holdTick?.();
+
+    if (holdInterval) clearInterval(holdInterval);
+    holdInterval = setInterval(() => {
+      const elapsed = Date.now() - holdStartTime;
+      const pct = Math.min(100, Math.round((elapsed / 1200) * 100));
+      if (lampHoldProgress) lampHoldProgress.style.width = `${pct}%`;
+
+      if (elapsed >= 300 && elapsed < 350) {
+        window.FOOBOW_RITUAL_ENGINE?.haptics?.holdTick?.();
+      } else if (elapsed >= 600 && elapsed < 650) {
+        window.FOOBOW_RITUAL_ENGINE?.haptics?.holdTick?.();
+      } else if (elapsed >= 900 && elapsed < 950) {
+        window.FOOBOW_RITUAL_ENGINE?.haptics?.holdTick?.();
+      }
+
+      if (elapsed >= 1200) {
+        clearInterval(holdInterval);
+        holdInterval = null;
+        holdCompleted = true;
+        if (lampHoldProgress) lampHoldProgress.style.width = "100%";
+        setTimeout(() => {
+          if (lampHoldProgress) lampHoldProgress.style.width = "0%";
+        }, 400);
+        triggerLampLighting();
+      }
+    }, 40);
+  }
+
+  function cancelHold(e) {
+    if (holdInterval) {
+      clearInterval(holdInterval);
+      holdInterval = null;
+    }
+    if (lampStage) lampStage.classList.remove("holding");
+    if (!holdCompleted) {
+      if (lampHoldProgress) lampHoldProgress.style.width = "0%";
+    }
+  }
+
+  if (lightLamp) {
+    lightLamp.addEventListener("pointerdown", startHold);
+    lightLamp.addEventListener("pointerup", cancelHold);
+    lightLamp.addEventListener("pointercancel", cancelHold);
+    lightLamp.addEventListener("mouseleave", cancelHold);
+
+    // Click fallback for instant click & test automation
+    lightLamp.addEventListener("click", () => {
+      cancelHold();
+      triggerLampLighting();
+    });
+  }
 
   setupMuyu();
   setupIncense();
@@ -1320,10 +1444,11 @@ function setupMuyu() {
     if (countEl) countEl.textContent = String(state.muyuTaps);
     updateMuyuGoal();
 
-    btn.classList.remove("tapped");
+    // Tactile rebound animation
+    btn.classList.remove("tapped", "striking-bounce");
     void btn.offsetWidth;
-    btn.classList.add("tapped");
-    window.setTimeout(() => btn.classList.remove("tapped"), 180);
+    btn.classList.add("tapped", "striking-bounce");
+    window.setTimeout(() => btn.classList.remove("tapped", "striking-bounce"), 350);
 
     const mallet = document.getElementById("muyuMallet");
     if (mallet) {
@@ -1340,7 +1465,81 @@ function setupMuyu() {
       ripples.appendChild(ring);
       window.setTimeout(() => ring.remove(), 700);
     }
+
+    // Presence Calm Combo tracking
+    const pres = window.FOOBOW_RITUAL_ENGINE?.presence?.recordTap?.() || { level: "idle", taps: 0, leveledUp: false };
+    const fill = document.getElementById("muyuPresenceFill");
+    const badge = document.getElementById("muyuPresenceBadge");
+    const dict = dictionary();
+
+    if (fill) {
+      const pct = Math.min(100, Math.round((pres.taps / 30) * 100));
+      fill.style.width = `${pct}%`;
+    }
+
+    const node5 = document.querySelector(".presence-node.node-5");
+    const node15 = document.querySelector(".presence-node.node-15");
+    const node30 = document.querySelector(".presence-node.node-30");
+    if (node5) node5.classList.toggle("reached", pres.taps >= 5);
+    if (node15) node15.classList.toggle("reached", pres.taps >= 15);
+    if (node30) node30.classList.toggle("reached", pres.taps >= 30);
+
+    if (badge) {
+      badge.className = `presence-badge ${pres.level}`;
+      if (pres.level === "stillness") {
+        badge.textContent = dict.presenceStillness || "Stillness · 空寂";
+      } else if (pres.level === "flowing") {
+        badge.textContent = dict.presenceFlowing || "Flowing · 心澄";
+      } else if (pres.level === "settling") {
+        badge.textContent = dict.presenceSettling || "Settling · 心定";
+      } else {
+        badge.textContent = `${Math.max(1, 5 - pres.taps)} to Settle`;
+      }
+    }
+
+    if (pres.leveledUp) {
+      window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone();
+      playZenChime();
+      if (pres.level === "stillness") {
+        const card = document.querySelector(".muyu-card");
+        if (card) {
+          card.classList.add("stillness");
+          setTimeout(() => card.classList.remove("stillness"), 8000);
+        }
+        updateKarma(2, btn);
+      }
+    }
   }
+
+  // Tactile press-down and release gestures
+  const malletEl = document.getElementById("muyuMallet");
+  btn.addEventListener("pointerdown", () => {
+    btn.classList.add("compressing");
+    if (malletEl) malletEl.classList.add("anticipating");
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.tap();
+  });
+
+  const onPointerRelease = () => {
+    btn.classList.remove("compressing");
+    if (malletEl) malletEl.classList.remove("anticipating");
+  };
+
+  btn.addEventListener("pointerup", onPointerRelease);
+  btn.addEventListener("pointercancel", onPointerRelease);
+  btn.addEventListener("mouseleave", onPointerRelease);
+
+  btn.addEventListener("keydown", (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      btn.classList.add("compressing");
+      if (malletEl) malletEl.classList.add("anticipating");
+      window.FOOBOW_RITUAL_ENGINE?.haptics?.tap();
+      setTimeout(() => {
+        onPointerRelease();
+        handleTap();
+      }, 60);
+    }
+  });
 
   btn.addEventListener("click", handleTap);
 
@@ -1387,6 +1586,7 @@ function setupMuyu() {
 }
 
 let incenseTimer = null;
+let incenseSmokeSim = null;
 
 function setupIncense() {
   const stage = document.getElementById("incenseStage");
@@ -1394,6 +1594,12 @@ function setupIncense() {
   const countEl = document.getElementById("incenseCount");
   const statusLine = document.getElementById("incenseStatusLine");
   const intentionsRow = document.getElementById("incenseIntentions");
+  const smokeCanvasEl = document.getElementById("incenseSmokeCanvas");
+  const breathTraceRing = document.getElementById("breathTraceRing");
+  const traceProgressCircle = document.getElementById("traceProgressCircle");
+  const traceHandle = document.getElementById("traceHandle");
+  const traceHint = document.getElementById("traceBreathHint");
+
   if (!btn || !stage) return;
 
   if (typeof state.incenseLitCount !== "number") {
@@ -1401,17 +1607,32 @@ function setupIncense() {
   }
   if (countEl) countEl.textContent = String(state.incenseLitCount);
 
+  // Initialize interactive smoke canvas simulation
+  if (smokeCanvasEl && window.FOOBOW_RITUAL_ENGINE?.SmokeCanvas) {
+    if (!incenseSmokeSim) {
+      incenseSmokeSim = new window.FOOBOW_RITUAL_ENGINE.SmokeCanvas(smokeCanvasEl);
+    }
+  }
+
+  let currentIntent = "peace";
   if (intentionsRow) {
     intentionsRow.addEventListener("click", (e) => {
       const target = e.target.closest(".choice-pill");
       if (!target) return;
       intentionsRow.querySelectorAll(".choice-pill").forEach((p) => p.classList.remove("active"));
       target.classList.add("active");
+      currentIntent = target.dataset.intent || "peace";
+      if (incenseSmokeSim) {
+        incenseSmokeSim.setIntent(currentIntent);
+      }
     });
   }
 
-  btn.addEventListener("click", () => {
+  function kindleIncenseAction() {
     playIncenseChime();
+    window.FOOBOW_RITUAL_ENGINE?.audio?.playEmberSpark?.();
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.strike?.();
+
     state.incenseLitCount += 1;
     updateKarma(1, btn);
     spawnFloatingMerit(btn, getMeritText(1));
@@ -1422,14 +1643,98 @@ function setupIncense() {
 
     stage.classList.add("burning");
     if (statusLine) statusLine.hidden = false;
+    if (incenseSmokeSim) incenseSmokeSim.start();
 
     if (incenseTimer) clearTimeout(incenseTimer);
     incenseTimer = setTimeout(() => {
       stage.classList.remove("burning");
       if (statusLine) statusLine.hidden = true;
+      if (incenseSmokeSim) incenseSmokeSim.stop();
       incenseTimer = null;
     }, 40000);
-  });
+  }
+
+  btn.addEventListener("click", kindleIncenseAction);
+
+  // Circular Mindful Breath Trace Ring Interaction
+  if (breathTraceRing && traceProgressCircle && traceHandle) {
+    let isTracing = false;
+    let traceStartAngle = 0;
+    let traceCumulativeAngle = 0;
+    const ringRadius = 38;
+    const perimeter = 2 * Math.PI * ringRadius; // ~238.76
+
+    function getAngle(clientX, clientY) {
+      const rect = breathTraceRing.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      return Math.atan2(clientY - cy, clientX - cx);
+    }
+
+    function onTraceStart(e) {
+      isTracing = true;
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+      traceStartAngle = getAngle(clientX, clientY);
+      traceCumulativeAngle = 0;
+      window.FOOBOW_RITUAL_ENGINE?.haptics?.tap?.();
+    }
+
+    function onTraceMove(e) {
+      if (!isTracing) return;
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+      const curAngle = getAngle(clientX, clientY);
+      let diff = curAngle - traceStartAngle;
+      if (diff < -Math.PI) diff += Math.PI * 2;
+      if (diff > Math.PI) diff -= Math.PI * 2;
+
+      traceStartAngle = curAngle;
+      if (diff > 0) {
+        traceCumulativeAngle += diff;
+      }
+
+      const progress = Math.min(1, traceCumulativeAngle / (Math.PI * 2));
+      const offset = perimeter * (1 - progress);
+      traceProgressCircle.style.strokeDashoffset = String(offset);
+
+      const handleAngle = -Math.PI / 2 + progress * Math.PI * 2;
+      const hx = Math.cos(handleAngle) * ringRadius;
+      const hy = Math.sin(handleAngle) * ringRadius;
+      traceHandle.style.transform = `translate(${hx.toFixed(1)}px, ${hy.toFixed(1)}px)`;
+
+      if (progress >= 0.98) {
+        isTracing = false;
+        window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone?.();
+        window.FOOBOW_RITUAL_ENGINE?.audio?.playSingingBowl?.(659.25, 2.0);
+        if (traceHint) {
+          traceHint.textContent = "Mindful breath complete · 气息调匀";
+        }
+        kindleIncenseAction();
+        setTimeout(() => {
+          traceProgressCircle.style.strokeDashoffset = String(perimeter);
+          traceHandle.style.transform = "translate(0px, -38px)";
+          if (traceHint) {
+            traceHint.textContent = dictionary().traceBreathHint || "Trace one slow mindful breath";
+          }
+        }, 3000);
+      }
+    }
+
+    function onTraceEnd() {
+      if (!isTracing) return;
+      isTracing = false;
+      traceProgressCircle.style.strokeDashoffset = String(perimeter);
+      traceHandle.style.transform = "translate(0px, -38px)";
+    }
+
+    breathTraceRing.addEventListener("mousedown", onTraceStart);
+    breathTraceRing.addEventListener("touchstart", onTraceStart, { passive: true });
+    window.addEventListener("mousemove", onTraceMove);
+    window.addEventListener("touchmove", onTraceMove, { passive: true });
+    window.addEventListener("mouseup", onTraceEnd);
+    window.addEventListener("touchend", onTraceEnd, { passive: true });
+  }
 }
 
 let wheelAngle = 0;
@@ -1482,11 +1787,28 @@ function setupPrayerWheel() {
     }
   }
 
+  function spawnOrbitGlyph() {
+    const orbitLayer = document.getElementById("wheelOrbitLayer");
+    if (!orbitLayer) return;
+    const glyphs = ["唵", "嘛", "呢", "叭", "咪", "吽", "ॐ", "☸"];
+    const glyph = document.createElement("span");
+    glyph.className = "mantra-orbit-glyph";
+    glyph.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 55 + Math.random() * 32;
+    glyph.style.left = "50%";
+    glyph.style.top = "42%";
+    glyph.style.setProperty("--tx", `${Math.cos(angle) * dist}px`);
+    glyph.style.setProperty("--ty", `${Math.sin(angle) * dist}px`);
+    orbitLayer.appendChild(glyph);
+    setTimeout(() => glyph.remove(), 1600);
+  }
+
   function wheelLoop() {
     if (isWheelAuto) {
       if (wheelVelocity < 5.5) wheelVelocity += 0.4;
     } else {
-      wheelVelocity *= 0.962;
+      wheelVelocity *= 0.964;
     }
 
     if (Math.abs(wheelVelocity) < 0.05 && !isWheelAuto) {
@@ -1496,6 +1818,10 @@ function setupPrayerWheel() {
       return;
     }
 
+    if (Math.abs(wheelVelocity) > 2.2 && Math.random() < 0.2) {
+      spawnOrbitGlyph();
+    }
+
     const prevAngle = wheelAngle;
     wheelAngle += wheelVelocity;
 
@@ -1503,7 +1829,29 @@ function setupPrayerWheel() {
     if (Math.floor(wheelAngle / 360) > Math.floor(prevAngle / 360)) {
       state.wheelTurns += 1;
       if (countEl) countEl.textContent = String(state.wheelTurns);
-      playWheelChime();
+
+      // Syllable progressive illumination (唵 嘛 呢 叭 咪 吽)
+      const syllableIdx = (state.wheelTurns - 1) % 6;
+      const chars = document.querySelectorAll("#wheelMantraStrip .mantra-char");
+      chars.forEach((charEl, idx) => {
+        charEl.classList.toggle("active-glow", idx <= syllableIdx);
+      });
+
+      // After 6 full rotations: entire mantra softly glows with unison celebration
+      if (state.wheelTurns % 6 === 0) {
+        const mantraStrip = document.getElementById("wheelMantraStrip");
+        if (mantraStrip) {
+          mantraStrip.classList.add("all-mantras-unison-glow");
+          setTimeout(() => mantraStrip.classList.remove("all-mantras-unison-glow"), 4000);
+        }
+        window.FOOBOW_RITUAL_ENGINE?.audio?.playSingingBowl?.(523.25, 2.4);
+        window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone?.();
+        spawnFloatingMerit(drum, "唵嘛呢叭咪吽 · 功德圆满");
+      } else {
+        playWheelChime();
+        window.FOOBOW_RITUAL_ENGINE?.haptics?.strike?.();
+      }
+
       spawnMantraSparkles(drum);
       const now = Date.now();
       if (now - lastKarmaAwardTime > 2500) {
@@ -1706,6 +2054,7 @@ function renderAll() {
   if (typeof renderCommunityFeed === "function") renderCommunityFeed();
   renderSettings();
   renderFocusSession();
+  if (typeof renderKindnessGarden === "function") renderKindnessGarden();
   updateMuyuGoal();
   document.getElementById("journalEntry").value = state.journal;
   const mood = data.moods.find((item) => item.id === state.mood) || data.moods[0];
@@ -1971,19 +2320,50 @@ document.getElementById("completeDaily").addEventListener("click", () => {
   renderAll();
 });
 
-document.getElementById("performRitual").addEventListener("click", () => {
+function executeFishRelease(triggerEl) {
   logActivity("deed");
-  const btn = document.getElementById("performRitual");
   playMuyuSound();
   playWaterSplash();
+  window.FOOBOW_RITUAL_ENGINE?.audio?.playWaterRipple?.();
+  window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone?.();
   window.setTimeout(playZenChime, 240);
-  if (btn) spawnFloatingMerit(btn, dictionary().meritGain || "功德 +5");
-  updateKarma(5, btn);
+
+  const anchor = triggerEl || document.getElementById("performRitual");
+  if (anchor) spawnFloatingMerit(anchor, dictionary().meritGain || "功德 +5");
+  updateKarma(5, anchor);
+
   const scene = document.getElementById("ritualScene");
   if (scene) {
     scene.classList.remove("completed");
     window.requestAnimationFrame(() => scene.classList.add("completed"));
   }
+
+  // Animate main koi accelerating toward horizon
+  const mainKoi = document.getElementById("koiTouchTarget");
+  const releasedKoi = document.getElementById("koiReleased");
+  if (mainKoi) {
+    mainKoi.style.transition = "transform 1.4s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 1.2s ease";
+    mainKoi.style.transform = "translate(-80px, -70px) scale(0.35)";
+    mainKoi.style.opacity = "0";
+    setTimeout(() => {
+      mainKoi.style.transition = "";
+      mainKoi.style.transform = "";
+      mainKoi.style.opacity = "";
+    }, 3800);
+  }
+
+  if (releasedKoi) {
+    releasedKoi.classList.remove("swimming-away");
+    void releasedKoi.offsetWidth;
+    releasedKoi.classList.add("swimming-away");
+    setTimeout(() => releasedKoi.classList.remove("swimming-away"), 3500);
+  }
+
+  // Global map connection ripple
+  if (window.triggerGlobePulse) {
+    window.triggerGlobePulse(0.5, 0.45);
+  }
+
   const dedication = document.getElementById("ritualDedication");
   if (dedication) {
     dedication.textContent = dictionary().ritualDedication || "A gentle deed in the stream ripples into an ocean of peace. (Merit +5)";
@@ -1994,7 +2374,69 @@ document.getElementById("performRitual").addEventListener("click", () => {
   if (window.triggerPondRitualBurst) {
     window.triggerPondRitualBurst();
   }
-});
+}
+
+const performRitualBtn = document.getElementById("performRitual");
+if (performRitualBtn) {
+  performRitualBtn.addEventListener("click", () => executeFishRelease(performRitualBtn));
+}
+
+function setupKoiDirectGesture() {
+  const koiEl = document.getElementById("koiTouchTarget");
+  if (!koiEl) return;
+
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let hasMoved = false;
+
+  function onPointerDown(e) {
+    isDragging = true;
+    hasMoved = false;
+    startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.tap?.();
+    koiEl.style.transition = "none";
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    const curX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const curY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    const dx = curX - startX;
+    const dy = curY - startY;
+    if (Math.hypot(dx, dy) > 8) hasMoved = true;
+
+    // Follow finger slightly
+    koiEl.style.transform = `translate(${dx * 0.35}px, ${dy * 0.35}px)`;
+
+    // Detect swipe toward open water (upwards)
+    if (dy < -45) {
+      isDragging = false;
+      executeFishRelease(koiEl);
+    }
+  }
+
+  function onPointerUp(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    if (!hasMoved) {
+      // Direct tap release
+      executeFishRelease(koiEl);
+    } else {
+      // Elastic return to calm swimming track
+      koiEl.style.transition = "transform 0.4s ease";
+      koiEl.style.transform = "";
+    }
+  }
+
+  koiEl.addEventListener("mousedown", onPointerDown);
+  koiEl.addEventListener("touchstart", onPointerDown, { passive: true });
+  window.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("touchmove", onPointerMove, { passive: true });
+  window.addEventListener("mouseup", onPointerUp);
+  window.addEventListener("touchend", onPointerUp, { passive: true });
+}
 
 document.getElementById("startFocusSession").addEventListener("click", startFocusSession);
 document.getElementById("completeFocusedRitual").addEventListener("click", completeFocusedRitual);
@@ -2816,6 +3258,24 @@ function setupSanskritPlayer() {
     });
   }
 
+  let chantInactivityTimer = null;
+  function resetChantInactivity() {
+    if (!chantsDialog) return;
+    chantsDialog.classList.remove("zen-focus-mode");
+    if (chantInactivityTimer) clearTimeout(chantInactivityTimer);
+    if (chantPlaying) {
+      chantInactivityTimer = setTimeout(() => {
+        chantsDialog.classList.add("zen-focus-mode");
+      }, 5000);
+    }
+  }
+
+  if (chantsDialog) {
+    ["mousemove", "keydown", "touchstart", "pointerdown"].forEach((evt) => {
+      chantsDialog.addEventListener(evt, resetChantInactivity, { passive: true });
+    });
+  }
+
   renderChantsPlaylist();
   updateMiniPlayerUI();
 }
@@ -3083,6 +3543,153 @@ function setupTonightRitual() {
   });
 
   setupTonightRitual();
+  setupKoiDirectGesture();
+  setupSeedlingMicroGame();
+}
+
+function renderKindnessGarden() {
+  const grid = document.getElementById("gardenPlantsGrid");
+  const countEl = document.getElementById("gardenCount");
+  if (!grid) return;
+  const plants = window.FOOBOW_RITUAL_ENGINE?.garden?.getPlants?.() || [];
+  if (countEl) countEl.textContent = `${plants.length} Plants`;
+  grid.replaceChildren();
+
+  const iconMap = {
+    lotus: { icon: "🪷", name: "Lotus" },
+    bamboo: { icon: "🎋", name: "Bamboo" },
+    pine: { icon: "🌲", name: "Pine" },
+    flower: { icon: "🌸", name: "Blossom" },
+    tree: { icon: "🌳", name: "Tree" }
+  };
+
+  if (plants.length === 0) {
+    const emptyNotice = document.createElement("span");
+    emptyNotice.className = "garden-plant-name";
+    emptyNotice.style.fontStyle = "italic";
+    emptyNotice.textContent = "Your garden awaits its first seedling...";
+    grid.appendChild(emptyNotice);
+    return;
+  }
+
+  plants.slice(0, 16).forEach((item) => {
+    const meta = iconMap[item.species] || iconMap.lotus;
+    const card = document.createElement("div");
+    card.className = "garden-plant-item";
+    card.innerHTML = `
+      <span class="garden-plant-icon">${meta.icon}</span>
+      <span class="garden-plant-name">${meta.name}</span>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function setupSeedlingMicroGame() {
+  const seedBtn = document.getElementById("draggableSeed");
+  const waterBtn = document.getElementById("waterCanBtn");
+  const sunBtn = document.getElementById("sunBeamBtn");
+  const sproutEl = document.getElementById("seedlingSprout");
+  const sproutIcon = document.getElementById("sproutIcon");
+  const promptEl = document.getElementById("seedlingPrompt");
+  const waterAnim = document.getElementById("waterStreamAnim");
+  const sunOverlay = document.getElementById("sunBeamOverlay");
+
+  if (!seedBtn || !waterBtn || !sunBtn) return;
+
+  let step = 1; // 1: Plant seed, 2: Water, 3: Sunlight, 4: Harvested
+
+  function resetGame() {
+    step = 1;
+    seedBtn.style.display = "";
+    seedBtn.style.transform = "";
+    if (sproutEl) sproutEl.hidden = true;
+    if (waterAnim) waterAnim.hidden = true;
+    if (sunOverlay) sunOverlay.hidden = true;
+    if (promptEl) promptEl.textContent = "Step 1: Tap seed to plant into soil";
+  }
+
+  // Step 1: Plant seed
+  seedBtn.addEventListener("click", () => {
+    if (step !== 1) return;
+    step = 2;
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.tap?.();
+    window.FOOBOW_RITUAL_ENGINE?.audio?.playTok?.({ timbre: "wood", detune: 0.95 });
+    seedBtn.style.transform = "translateY(8px) scale(0.75)";
+    if (promptEl) promptEl.textContent = "Step 2: Hold watering can to nourish";
+  });
+
+  // Step 2: Water
+  let waterTimer = null;
+  function startWatering() {
+    if (step !== 2) return;
+    window.FOOBOW_RITUAL_ENGINE?.audio?.playWaterRipple?.();
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.holdTick?.();
+    if (waterAnim) waterAnim.hidden = false;
+    waterBtn.classList.add("active");
+
+    if (waterTimer) clearTimeout(waterTimer);
+    waterTimer = setTimeout(() => {
+      step = 3;
+      if (waterAnim) waterAnim.hidden = true;
+      waterBtn.classList.remove("active");
+      window.FOOBOW_RITUAL_ENGINE?.haptics?.tap?.();
+      if (promptEl) promptEl.textContent = "Step 3: Guide warm sunlight over seedling";
+    }, 1200);
+  }
+
+  function stopWatering() {
+    if (step === 2 && waterTimer) {
+      clearTimeout(waterTimer);
+      waterTimer = null;
+      if (waterAnim) waterAnim.hidden = true;
+      waterBtn.classList.remove("active");
+    }
+  }
+
+  waterBtn.addEventListener("pointerdown", startWatering);
+  waterBtn.addEventListener("pointerup", stopWatering);
+  waterBtn.addEventListener("pointercancel", stopWatering);
+  waterBtn.addEventListener("mouseleave", stopWatering);
+  waterBtn.addEventListener("click", () => {
+    if (step === 2) {
+      startWatering();
+      setTimeout(stopWatering, 1250);
+    }
+  });
+
+  // Step 3: Sunlight & Sprout
+  sunBtn.addEventListener("click", () => {
+    if (step !== 3) return;
+    step = 4;
+    if (sunOverlay) {
+      sunOverlay.hidden = false;
+      setTimeout(() => { sunOverlay.hidden = true; }, 1800);
+    }
+    seedBtn.style.display = "none";
+    if (sproutEl) sproutEl.hidden = false;
+
+    const species = ["lotus", "bamboo", "pine", "flower", "tree"];
+    const icons = { lotus: "🪷", bamboo: "🎋", pine: "🌲", flower: "🌸", tree: "🌳" };
+    const picked = species[Math.floor(Math.random() * species.length)];
+
+    if (sproutIcon) sproutIcon.textContent = icons[picked] || "🪷";
+
+    window.FOOBOW_RITUAL_ENGINE?.garden?.addPlant?.(picked);
+    window.FOOBOW_RITUAL_ENGINE?.audio?.playSingingBowl?.(587.33, 2.2);
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone?.();
+
+    updateKarma(5, sunBtn);
+    spawnFloatingMerit(sunBtn, "功德 +5 · 善苗成长");
+    logActivity("deed");
+    saveState();
+
+    if (promptEl) promptEl.textContent = `Sprouted a gentle ${picked}! Added to your Kindness Garden.`;
+    renderKindnessGarden();
+
+    setTimeout(resetGame, 6500);
+  });
+
+  renderKindnessGarden();
 }
 
 function setupWaterRipples() {

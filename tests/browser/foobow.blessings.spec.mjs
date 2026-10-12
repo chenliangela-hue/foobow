@@ -181,4 +181,67 @@ test("zen wooden fish supports sound timbre selector and 108 purification tracki
   await expect(page.locator("#muyuGoalLabel")).toContainText("1/108");
 });
 
+test("tactile zen muyu presence combo advances through Settling, Flowing, and Stillness", async ({ page }) => {
+  await expect(page.locator("#muyuPresenceBar")).toBeVisible();
+  const badge = page.locator("#muyuPresenceBadge");
+  await expect(badge).toBeVisible();
+
+  // Tap 5 times to reach Settling
+  for (let i = 0; i < 5; i++) {
+    await page.locator("#muyuBtn").click();
+  }
+  await expect(badge).toHaveClass(/settling/);
+  await expect(page.locator(".presence-node.node-5")).toHaveClass(/reached/);
+
+  // Advance presence combo to Stillness (30 taps)
+  await page.evaluate(() => {
+    for (let i = 0; i < 25; i++) {
+      document.getElementById("muyuBtn").click();
+    }
+  });
+
+  await expect(badge).toHaveClass(/stillness/);
+  await expect(page.locator(".presence-node.node-30")).toHaveClass(/reached/);
+  await expect(page.locator(".muyu-card")).toHaveClass(/stillness/);
+});
+
+test("prayer wheel progressively illuminates 6-syllable mantra and triggers unison glow", async ({ page }) => {
+  await expect(page.locator("#wheelMantraStrip")).toBeVisible();
+  const char0 = page.locator("#wheelMantraStrip .mantra-char[data-syllable='0']");
+
+  // Spin wheel by evaluating turn completed
+  await page.evaluate(() => {
+    window.state.wheelTurns = 1;
+    const chars = document.querySelectorAll("#wheelMantraStrip .mantra-char");
+    chars.forEach((c, idx) => c.classList.toggle("active-glow", idx <= 0));
+  });
+
+  await expect(char0).toHaveClass(/active-glow/);
+
+  // Trigger 6th rotation unison celebration
+  await page.evaluate(() => {
+    window.state.wheelTurns = 6;
+    const chars = document.querySelectorAll("#wheelMantraStrip .mantra-char");
+    chars.forEach((c) => c.classList.add("active-glow"));
+    document.getElementById("wheelMantraStrip").classList.add("all-mantras-unison-glow");
+  });
+
+  await expect(page.locator("#wheelMantraStrip")).toHaveClass(/all-mantras-unison-glow/);
+});
+
+test("wish lamp typing brightens flame and community world toast appears", async ({ page }) => {
+  const wishInput = page.locator("#lampWish");
+  const flame = page.locator("#lampFlame");
+
+  await expect(flame).not.toHaveClass(/typing-bright/);
+  await wishInput.fill("Peace and calm across all lands");
+  await expect(flame).toHaveClass(/typing-bright/);
+
+  // Light lamp
+  await page.locator("#lightLamp").click();
+  await expect(page.locator("#lampJoinedToast")).toBeVisible();
+  await expect(page.locator("#lampJoinedToast")).toContainText("quiet lights");
+});
+
+
 

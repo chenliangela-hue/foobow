@@ -302,11 +302,21 @@
             </div>
             <div class="lamp-stage" id="lampStage" aria-hidden="true">
               <canvas id="lampSkyCanvas" class="lamp-sky-canvas"></canvas>
-              <span class="lamp-flame"></span>
+              <div class="lamp-body-wrap" id="lampBodyWrap">
+                <span class="lamp-glow" id="lampGlow"></span>
+                <span class="lamp-flame" id="lampFlame"></span>
+              </div>
               <div class="drifting-lanterns-layer" id="driftingLanternsLayer"></div>
             </div>
             <input class="pray-input" id="lampWish" type="text" maxlength="80" data-i18n-placeholder="lampPlaceholder" placeholder="A quiet wish..." />
-            <button class="primary-action" id="lightLamp" type="button" data-i18n="lampLight">Light the lamp</button>
+            <div class="lamp-hold-action-wrap">
+              <button class="primary-action hold-light-btn" id="lightLamp" type="button" aria-label="Light the lamp">
+                <span class="hold-btn-text" id="lightLampText" data-i18n="lampHoldPrompt">Hold to Light</span>
+                <span class="hold-progress-fill" id="lampHoldProgress"></span>
+              </button>
+              <span class="hold-hint" id="lampHoldHint">Hold 1.2s to kindle & release into the night sky</span>
+            </div>
+            <div class="lamp-joined-toast" id="lampJoinedToast" aria-live="polite" hidden></div>
             <ul class="lamp-list" id="lampList"></ul>
           </section>
 
@@ -328,6 +338,7 @@
             </div>
 
             <div class="incense-stage" id="incenseStage" aria-label="Virtual incense burner">
+              <canvas class="incense-smoke-canvas" id="incenseSmokeCanvas"></canvas>
               <div class="incense-censer-wrap">
                 <!-- Rising animated smoke ribbons -->
                 <div class="incense-smoke-layer" id="incenseSmokeLayer" aria-hidden="true">
@@ -373,6 +384,17 @@
                   <ellipse cx="70" cy="24" rx="46" ry="10" fill="url(#censerAsh)" stroke="url(#censerGoldRim)" stroke-width="1.8"/>
                   <ellipse cx="70" cy="38" rx="36" ry="6" fill="none" stroke="url(#censerGoldRim)" stroke-width="1.2" stroke-dasharray="3 3"/>
                 </svg>
+              </div>
+            </div>
+
+            <div class="breath-trace-wrap" id="breathTraceWrap">
+              <span class="trace-hint" id="traceBreathHint" data-i18n="traceBreathHint">Trace one slow mindful breath</span>
+              <div class="breath-trace-ring" id="breathTraceRing" role="slider" aria-label="Mindful breath circular trace" tabindex="0">
+                <svg viewBox="0 0 90 90" class="trace-ring-svg">
+                  <circle cx="45" cy="45" r="38" class="trace-bg-circle"/>
+                  <circle cx="45" cy="45" r="38" class="trace-progress-circle" id="traceProgressCircle"/>
+                </svg>
+                <div class="trace-handle" id="traceHandle">✨</div>
               </div>
             </div>
 
@@ -448,6 +470,20 @@
             <div class="muyu-controls">
               <button class="text-button" id="muyuAutoBtn" type="button" data-i18n="muyuAutoTap">Auto tap</button>
               <span class="muyu-hint" data-i18n="muyuHint">Knock softly to gather presence</span>
+            </div>
+            <!-- Presence Calm Combo Bar -->
+            <div class="muyu-presence-bar" id="muyuPresenceBar">
+              <div class="presence-header">
+                <span class="presence-title" id="muyuPresenceTitle" data-i18n="presenceTitle">Presence · 静心定念</span>
+                <span class="presence-badge" id="muyuPresenceBadge">5 taps to Settle</span>
+              </div>
+              <div class="presence-track-visual">
+                <div class="presence-track-fill" id="muyuPresenceFill" style="width: 0%"></div>
+                <span class="presence-node node-5" title="5 taps: Settling">5</span>
+                <span class="presence-node node-15" title="15 taps: Flowing">15</span>
+                <span class="presence-node node-30" title="30 taps: Stillness">30</span>
+              </div>
+              <span class="presence-sub" id="muyuPresenceStateText" data-i18n="presenceHint">5 taps: Settling · 15 taps: Flowing · 30 taps: Stillness</span>
             </div>
             <!-- 108 Purification Progress & Sound Timbre Selector -->
             <div class="muyu-extras-bar">
@@ -538,19 +574,21 @@
                   </div>
                 </div>
               </div>
+              <!-- Midground orbiting Sanskrit glyphs layer -->
+              <div class="wheel-orbit-layer" id="wheelOrbitLayer" aria-hidden="true"></div>
             </div>
-            <div class="wheel-mantra-strip" aria-hidden="true">
-              <span class="mantra-char">唵</span>
+            <div class="wheel-mantra-strip" id="wheelMantraStrip" aria-hidden="true">
+              <span class="mantra-char" data-syllable="0">唵</span>
               <span class="mantra-dot">·</span>
-              <span class="mantra-char">嘛</span>
+              <span class="mantra-char" data-syllable="1">嘛</span>
               <span class="mantra-dot">·</span>
-              <span class="mantra-char">呢</span>
+              <span class="mantra-char" data-syllable="2">呢</span>
               <span class="mantra-dot">·</span>
-              <span class="mantra-char">叭</span>
+              <span class="mantra-char" data-syllable="3">叭</span>
               <span class="mantra-dot">·</span>
-              <span class="mantra-char">咪</span>
+              <span class="mantra-char" data-syllable="4">咪</span>
               <span class="mantra-dot">·</span>
-              <span class="mantra-char">吽</span>
+              <span class="mantra-char" data-syllable="5">吽</span>
             </div>
             <div class="wheel-controls">
               <button class="text-button" id="wheelAutoBtn" type="button" data-i18n="wheelAutoSpin">Auto spin</button>
@@ -768,8 +806,9 @@
                 </svg>
               </div>
 
-              <!-- Swimming Koi Fish -->
-              <div class="swimming-koi-track koi-main" aria-hidden="true">
+              <!-- Swimming Koi Fish (Direct Gesture Control) -->
+              <div class="swimming-koi-track koi-main" id="koiTouchTarget" role="button" tabindex="0" aria-label="Guide swimming koi fish toward open water">
+                <div class="koi-gesture-prompt" id="koiGesturePrompt" data-i18n="koiGuideHint">Guide toward open water</div>
                 <div class="koi-body-wrap">
                   <svg class="koi-svg" viewBox="0 0 70 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
@@ -857,6 +896,23 @@
               <div class="breath-aura-ring" id="breathAuraRing" aria-hidden="true"></div>
               <div class="breath-orb" id="breathOrb" aria-hidden="true">
                 <div class="breath-orb-inner">
+                  <div class="breath-lotus-flower" id="breathLotusFlower" aria-hidden="true">
+                    <svg viewBox="0 0 100 80" class="breath-lotus-svg">
+                      <defs>
+                        <linearGradient id="lotusPetalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#fff4cc"/>
+                          <stop offset="45%" stop-color="#f6d37a"/>
+                          <stop offset="100%" stop-color="#2a7a6c"/>
+                        </linearGradient>
+                      </defs>
+                      <path class="lotus-petal petal-left" d="M50 70 C30 55 15 35 25 20 C35 25 45 45 50 70 Z" fill="url(#lotusPetalGrad)"/>
+                      <path class="lotus-petal petal-right" d="M50 70 C70 55 85 35 75 20 C65 25 55 45 50 70 Z" fill="url(#lotusPetalGrad)"/>
+                      <path class="lotus-petal petal-mid-left" d="M50 70 C38 50 30 30 40 12 C48 20 50 45 50 70 Z" fill="url(#lotusPetalGrad)"/>
+                      <path class="lotus-petal petal-mid-right" d="M50 70 C62 50 70 30 60 12 C52 20 50 45 50 70 Z" fill="url(#lotusPetalGrad)"/>
+                      <path class="lotus-petal petal-center" d="M50 70 C44 45 42 25 50 5 C58 25 56 45 50 70 Z" fill="url(#lotusPetalGrad)"/>
+                      <circle cx="50" cy="46" r="6" fill="#fff" opacity="0.85" class="lotus-core-glow"/>
+                    </svg>
+                  </div>
                   <span class="breath-phase-text" id="breathPhaseText" data-i18n="breathePhaseRest">Breathe</span>
                   <span class="breath-countdown" id="breathCountdown"></span>
                 </div>
@@ -889,6 +945,45 @@
               <button class="primary-action" id="completeFocusedRitual" type="button" data-i18n="completeFocused" disabled>Complete with focus</button>
             </div>
             <p class="safety-note" data-i18n="calmSafety">This is symbolic comfort only. It does not guarantee luck, virtue, health, or real-world impact.</p>
+          </section>
+
+          <!-- Nurturing Seedling & Kindness Garden Micro-Game -->
+          <section class="seedling-card" id="seedlingCard" aria-labelledby="seedling-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="plantSeedlingTitle">Nurture Seedling · 培育善苗</p>
+                <h3 id="seedling-title">10-Second Nurturing Micro-Game</h3>
+              </div>
+              <span class="soft-pill" id="gardenCount">0 Plants</span>
+            </div>
+            <p class="seedling-copy">Drag a seed into fertile soil, offer gentle water, and guide warm sunlight to sprout a lasting plant for your Kindness Garden.</p>
+            
+            <div class="seedling-stage" id="seedlingStage" aria-label="Seedling nurturing stage">
+              <div class="seedling-soil-mound" id="soilMound">
+                <div class="seedling-seed" id="draggableSeed" role="button" tabindex="0" title="Tap or drag seed into soil">🌱</div>
+                <div class="seedling-sprout" id="seedlingSprout" hidden>
+                  <span class="sprout-icon" id="sproutIcon">🪷</span>
+                </div>
+              </div>
+              <div class="seedling-tools-row">
+                <button class="seedling-tool-btn" id="waterCanBtn" type="button" title="Hold to water">🚿 Hold to Water</button>
+                <button class="seedling-tool-btn" id="sunBeamBtn" type="button" title="Guide sunlight">☀️ Guide Sunlight</button>
+              </div>
+              <div class="water-stream-anim" id="waterStreamAnim" hidden></div>
+              <div class="sun-beam-overlay" id="sunBeamOverlay" hidden></div>
+            </div>
+            <div class="seedling-prompt" id="seedlingPrompt">Step 1: Tap seed to plant into soil</div>
+            
+            <!-- Kindness Garden Collection Shelf -->
+            <div class="kindness-garden-shelf" id="kindnessGardenShelf">
+              <div class="shelf-header">
+                <span class="shelf-title" data-i18n="kindnessGardenTitle">Kindness Garden · 善行花园</span>
+                <span class="shelf-badge" id="gardenBadge">Sanctuary Garden</span>
+              </div>
+              <div class="garden-plants-grid" id="gardenPlantsGrid">
+                <!-- Dynamically populated plants -->
+              </div>
+            </div>
           </section>
         </section>
 
@@ -1288,6 +1383,11 @@
 
         <div class="chants-player-hero">
           <div class="chants-disk-wrapper">
+            <div class="chants-mantra-rings" id="chantsMantraRings" aria-hidden="true">
+              <span class="mantra-ring ring-1"></span>
+              <span class="mantra-ring ring-2"></span>
+              <span class="mantra-ring ring-3"></span>
+            </div>
             <div class="chants-halo-pulse" id="chantsHalo"></div>
             <div class="chants-lotus-disk" id="chantsDisk">
               <span class="chants-disk-icon" id="chantsDiskIcon">📿</span>
@@ -1486,6 +1586,7 @@
     <script src="i18n.js"></script>
     <script src="sanskrit-tracks.js"></script>
     <script src="auth.js"></script>
+    <script src="ritual-engine.js"></script>
     <script src="app.js"></script>
     <script src="game3d.js"></script>
     <script src="community.js"></script>
