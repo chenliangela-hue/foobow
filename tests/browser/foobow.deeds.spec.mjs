@@ -83,13 +83,29 @@ test("3D sanctuary mini-game launches, switches scenarios, and allows interactiv
   await expect(page.locator("#sanctuary3DCanvas")).toBeVisible();
   await expect(page.locator("#gameScenarioTitle")).toContainText("East Lake");
 
+  // Select turtle species
+  await page.locator(".species-btn[data-species='turtle']").click();
+  await expect(page.locator(".species-btn[data-species='turtle']")).toHaveClass(/active/);
+
   // Interactive release button
   await page.locator("#gamePrimaryActionBtn").click();
   await expect(page.locator("#gameGoalCounter")).toContainText("1/5");
 
-  // Switch scenario to Toronto
-  await page.locator(".game-scenario-tab[data-scenario='toronto-crosswalk']").click();
-  await expect(page.locator("#gameScenarioTitle")).toContainText("Toronto");
+  // Switch atmosphere to sunset
+  await page.locator(".tod-btn[data-tod='sunset']").click();
+  await expect(page.locator(".tod-btn[data-tod='sunset']")).toHaveClass(/active/);
+
+  // Switch camera mode
+  await page.locator("#gameCamModeBtn").click();
+  await expect(page.locator("#gameCamModeLabel")).toHaveText("Follow");
+
+  // Switch scenario to Oxford Wisdom Library
+  await page.locator(".game-scenario-tab[data-scenario='reading-room']").click();
+  await expect(page.locator("#gameScenarioTitle")).toContainText("Oxford");
+
+  // Perform reading action in Oxford
+  await page.locator("#gamePrimaryActionBtn").click();
+  await expect(page.locator("#gameGoalCounter")).toContainText("1/3");
 
   // Close modal
   await page.locator("#close3DGameTopBtn").click();

@@ -1314,12 +1314,30 @@
           <button class="game-scenario-tab" type="button" data-scenario="toronto-crosswalk" role="tab">👵 Toronto (Crosswalk)</button>
           <button class="game-scenario-tab" type="button" data-scenario="amazon-grove" role="tab">🌱 Amazon (Tree Planting)</button>
           <button class="game-scenario-tab" type="button" data-scenario="night-corridor" role="tab">🏮 Kyoto (Wish Lantern)</button>
+          <button class="game-scenario-tab" type="button" data-scenario="reading-room" role="tab">📖 Oxford (Wisdom Library)</button>
+        </div>
+
+        <!-- Atmosphere & Customization Toolbar -->
+        <div class="game-settings-bar">
+          <div class="game-tod-picker" role="radiogroup" aria-label="Atmosphere / Time of Day">
+            <button class="tod-btn" type="button" data-tod="dawn" title="Dawn / 晨曦" aria-label="Dawn">🌅</button>
+            <button class="tod-btn active" type="button" data-tod="day" title="Day / 晴昼" aria-label="Day">☀️</button>
+            <button class="tod-btn" type="button" data-tod="sunset" title="Sunset / 暮霞" aria-label="Sunset">🌇</button>
+            <button class="tod-btn" type="button" data-tod="night" title="Night / 星夜" aria-label="Night">🌙</button>
+          </div>
+          <div class="game-species-picker" id="gameSpeciesPicker" role="radiogroup" aria-label="Release Species">
+            <button class="species-btn active" type="button" data-species="yamabuki" title="Golden Koi · 黄金锦鲤">🟡 金鲤</button>
+            <button class="species-btn" type="button" data-species="kohaku" title="Kohaku · 红白锦鲤">🔴 红白</button>
+            <button class="species-btn" type="button" data-species="showa" title="Showa · 昭和三色">⚫ 昭和</button>
+            <button class="species-btn" type="button" data-species="turtle" title="River Terrapin · 吉祥灵龟">🐢 灵龟</button>
+          </div>
         </div>
 
         <!-- 3D Viewport Stage -->
         <div class="sanctuary-3d-viewport" id="sanctuary3DViewport" aria-label="3D Sanctuary Interactive Viewport">
           <canvas id="sanctuary3DCanvas" class="sanctuary-3d-canvas"></canvas>
           <div class="game-3d-overlay-hint" data-i18n="gameCanvasHint">Drag to rotate 3D camera · Tap water to interact</div>
+          <div class="game-badge-toast" id="gameBadgeToast" hidden role="status" aria-live="polite"></div>
         </div>
 
         <!-- Real-time HUD and Gameplay Controls -->
@@ -1330,6 +1348,7 @@
           <div class="game-hud-actions">
             <button class="primary-action game-hud-btn" id="gamePrimaryActionBtn" type="button">🐟 Release Koi (+1)</button>
             <button class="text-button game-hud-btn" id="gameSecondaryActionBtn" type="button">Feed Lotus Petals</button>
+            <button class="text-button game-hud-btn-sm" id="gameCamModeBtn" type="button" title="Switch Camera Mode">🎥 <span id="gameCamModeLabel">Orbit</span></button>
             <button class="text-button game-hud-btn-sm" id="gameResetCamBtn" type="button" title="Reset Camera View">🔄 View</button>
           </div>
         </div>

@@ -27,6 +27,8 @@
       actionNameZh: "放归锦鲤 (+1)",
       feedActionName: "Feed Lotus Petals",
       feedActionNameZh: "投喂莲华 (+1)",
+      badgeTitle: "Lake Guardian",
+      badgeTitleZh: "东湖护生使",
       defaultCam: { rotX: 0.44, rotY: 0, zoom: 1, dist: 280 }
     },
     "toronto-crosswalk": {
@@ -43,6 +45,8 @@
       actionNameZh: "按通行信号灯",
       feedActionName: "Guide Elder Forward",
       feedActionNameZh: "温和护送前行",
+      badgeTitle: "Kindness Escort",
+      badgeTitleZh: "慈心护行使",
       defaultCam: { rotX: 0.38, rotY: 0.2, zoom: 0.95, dist: 300 }
     },
     "amazon-grove": {
@@ -59,6 +63,8 @@
       actionNameZh: "播下菩提种",
       feedActionName: "Sprinkle Rain",
       feedActionNameZh: "细雨浇灌生机",
+      badgeTitle: "Rainforest Custodian",
+      badgeTitleZh: "雨林绿洲守护者",
       defaultCam: { rotX: 0.46, rotY: -0.15, zoom: 1.05, dist: 290 }
     },
     "night-corridor": {
@@ -75,7 +81,27 @@
       actionNameZh: "奉放莲花水灯",
       feedActionName: "Gentle Breeze",
       feedActionNameZh: "微风引渡水流",
+      badgeTitle: "Illumination Bearer",
+      badgeTitleZh: "心灯引路人",
       defaultCam: { rotX: 0.42, rotY: 0.1, zoom: 1, dist: 285 }
+    },
+    "reading-room": {
+      id: "reading-room",
+      icon: "📖",
+      name: "Oxford Wisdom Library",
+      nameZh: "牛津 · 般若智慧伴读舍",
+      coords: "51.7548° N, 1.2544° W",
+      biosphere: "Intergenerational literacy room & archive",
+      targetGoal: 3,
+      goalLabel: "Turn pages & read 3 wisdom passages",
+      goalLabelZh: "温习诵读 3 篇智慧善言",
+      actionName: "Read Aloud / Turn Page",
+      actionNameZh: "诵读开卷 (+1)",
+      feedActionName: "Share Book / Light Lamp",
+      feedActionNameZh: "温润案灯 · 结缘明光",
+      badgeTitle: "Wisdom Keeper",
+      badgeTitleZh: "般若智慧守护者",
+      defaultCam: { rotX: 0.52, rotY: 0.08, zoom: 1.1, dist: 270 }
     }
   };
 
@@ -87,6 +113,9 @@
   let animFrameId = null;
   let isRunning = false;
   let currentScenarioKey = "east-lake";
+  let currentTimeOfDay = "day"; // "dawn", "day", "sunset", "night"
+  let currentSpecies = "yamabuki"; // "yamabuki", "kohaku", "showa", "turtle"
+  let cameraMode = "orbit"; // "orbit", "follow", "topdown"
   let width = 640;
   let height = 480;
   let dpr = 1;
@@ -113,7 +142,18 @@
     "east-lake": { count: 0, score: 0, completed: false },
     "toronto-crosswalk": { count: 0, score: 0, completed: false },
     "amazon-grove": { count: 0, score: 0, completed: false },
-    "night-corridor": { count: 0, score: 0, completed: false }
+    "night-corridor": { count: 0, score: 0, completed: false },
+    "reading-room": { count: 0, score: 0, completed: false }
+  };
+
+  // Gamification Celebration Badge
+  const celebrationBadge = {
+    active: false,
+    title: "",
+    titleZh: "",
+    icon: "🌟",
+    timer: 0,
+    scale: 0
   };
 
   // Scenario 1: East Lake Entities
@@ -136,6 +176,24 @@
   // Scenario 4: Kyoto Night River Entities
   let riverLanterns = [];
   let riverWaterOffset = 0;
+
+  // Scenario 5: Oxford Reading Room Entities
+  let readingBook = {
+    x: 0,
+    y: 10,
+    z: 5,
+    pageAngle: 0,
+    isFlipping: false,
+    curQuoteIdx: 0,
+    quotes: [
+      { en: "Kindness in words creates confidence. Kindness in giving creates love.", zh: "口出善言增信愿，慈心布施润世间。" },
+      { en: "To hold onto a worry is like grasping a hot coal. Let it rest in peace.", zh: "执着忧恼如握热炭，释然放下即得清凉。" },
+      { en: "A single candle loses none of its light by lighting a thousand others.", zh: "一灯燃百千灯，光明展转，无有穷尽。" },
+      { en: "Step softly upon the earth. Every quiet gesture bears infinite fruit.", zh: "步履轻安践大地，纤芥善行结万功德。" }
+    ]
+  };
+  let readingLamp = { x: -55, y: 35, z: -35, lit: true, intensity: 1.0 };
+  let wisdomGlyphs = [];
 
   // Floating merit particles in 3D
   let meritParticles3D = [];
@@ -490,6 +548,11 @@
     const headPt = project(koi.spine[0].x, 0, koi.spine[0].z);
     if (!headPt.visible) return;
 
+    if (koi.pattern === "turtle") {
+      draw3DTurtle(koi, headPt);
+      return;
+    }
+
     // Body segments width profile
     const widths = [6.8, 8.2, 7.5, 5.8, 3.8, 2.0];
 
@@ -646,6 +709,86 @@
       ctx.strokeStyle = isDark ? "#2e2014" : "#5c3d20";
       ctx.lineWidth = 1.2;
       ctx.fill();
+      ctx.stroke();
+    }
+  }
+
+  function draw3DTurtle(koi, headPt) {
+    const centerPt = project(koi.x, 1, koi.z);
+    if (!centerPt.visible) return;
+
+    const scale = headPt.scale * (koi.size || 1.0);
+    const heading = koi.heading;
+
+    ctx.save();
+    ctx.translate(centerPt.sx, centerPt.sy);
+    ctx.rotate(heading);
+
+    // 1. Oval Shell Carapace with Gold Border
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 16 * scale, 12 * scale, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "#1e4d3a";
+    ctx.strokeStyle = "#e5b869";
+    ctx.lineWidth = 2 * scale;
+    ctx.fill();
+    ctx.stroke();
+
+    // Hexagonal shell plates
+    ctx.strokeStyle = "rgba(229, 184, 105, 0.45)";
+    ctx.lineWidth = 1.2 * scale;
+    [-6, 0, 6].forEach((ox) => {
+      ctx.beginPath();
+      ctx.ellipse(ox * scale, 0, 3.8 * scale, 3.2 * scale, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    // 2. Head & Neck
+    ctx.beginPath();
+    ctx.arc(19 * scale, 0, 4.2 * scale, 0, Math.PI * 2);
+    ctx.fillStyle = "#2d6a4f";
+    ctx.fill();
+
+    // Eyes
+    ctx.fillStyle = "#1b0805";
+    ctx.beginPath();
+    ctx.arc(20 * scale, -2.5 * scale, 1 * scale, 0, Math.PI * 2);
+    ctx.arc(20 * scale, 2.5 * scale, 1 * scale, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. Four Swimming Paddle Flippers (animated flapping)
+    const flap = Math.sin(koi.phase * 1.6) * 0.35;
+    [
+      { x: 9 * scale, y: -13 * scale, angle: -0.6 + flap },
+      { x: 9 * scale, y: 13 * scale, angle: 0.6 - flap },
+      { x: -11 * scale, y: -10 * scale, angle: -1.8 - flap * 0.5 },
+      { x: -11 * scale, y: 10 * scale, angle: 1.8 + flap * 0.5 }
+    ].forEach((f) => {
+      ctx.save();
+      ctx.translate(f.x, f.y);
+      ctx.rotate(f.angle);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 6.5 * scale, 3 * scale, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#2d6a4f";
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // 4. Little Tail
+    ctx.beginPath();
+    ctx.moveTo(-16 * scale, 0);
+    ctx.lineTo(-21 * scale, 0);
+    ctx.strokeStyle = "#2d6a4f";
+    ctx.lineWidth = 2.5 * scale;
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Golden release blessing aura
+    if (koi.isReleased && Date.now() - koi.bornAt < 6000) {
+      ctx.beginPath();
+      ctx.arc(centerPt.sx, centerPt.sy, 22 * scale, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(255, 215, 0, 0.6)";
+      ctx.lineWidth = 2;
       ctx.stroke();
     }
   }
@@ -1130,6 +1273,400 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Scenario 5: Oxford Wisdom Reading Room (3D Manuscript & Desk)
+  // ---------------------------------------------------------------------------
+  function initReadingRoom() {
+    wisdomGlyphs = [];
+    readingBook.pageAngle = 0;
+    readingBook.isFlipping = false;
+    readingBook.curQuoteIdx = 0;
+    spawnWisdomGlyphs(0, 12, 5);
+  }
+
+  function spawnWisdomGlyphs(x, y, z) {
+    const chars = ["智", "慧", "明", "心", "慈", "悲", "善", "愿", "清", "安"];
+    for (let i = 0; i < 6; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      wisdomGlyphs.push({
+        x: x + (Math.random() - 0.5) * 45,
+        y: y + Math.random() * 5,
+        z: z + (Math.random() - 0.5) * 35,
+        char,
+        alpha: 1.0,
+        vy: 0.4 + Math.random() * 0.35,
+        scale: 0.9 + Math.random() * 0.4,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function updateReadingRoom(dt) {
+    // Animate page turn
+    if (readingBook.isFlipping) {
+      readingBook.pageAngle += dt * 3.8;
+      if (readingBook.pageAngle >= Math.PI) {
+        readingBook.pageAngle = 0;
+        readingBook.isFlipping = false;
+      }
+    }
+
+    // Update wisdom glyphs
+    for (let i = wisdomGlyphs.length - 1; i >= 0; i--) {
+      const g = wisdomGlyphs[i];
+      g.y += g.vy;
+      g.x += Math.sin(g.phase + g.y * 0.1) * 0.2;
+      g.alpha -= dt * 0.35;
+      if (g.alpha <= 0) {
+        wisdomGlyphs.splice(i, 1);
+      }
+    }
+  }
+
+  function drawReadingRoom() {
+    const isDark = document.body.classList.contains("dark");
+
+    // 1. 3D Polished Mahogany Study Desk
+    const dW = 120;
+    const dD = 80;
+    const dTop = 8;
+    const d0 = project(-dW, dTop, -dD);
+    const d1 = project(dW, dTop, -dD);
+    const d2 = project(dW, dTop, dD);
+    const d3 = project(-dW, dTop, dD);
+
+    if (d0.visible && d1.visible) {
+      ctx.beginPath();
+      ctx.moveTo(d0.sx, d0.sy);
+      ctx.lineTo(d1.sx, d1.sy);
+      ctx.lineTo(d2.sx, d2.sy);
+      ctx.lineTo(d3.sx, d3.sy);
+      ctx.closePath();
+
+      const deskGrad = ctx.createLinearGradient(d0.sx, d0.sy, d2.sx, d2.sy);
+      deskGrad.addColorStop(0, isDark ? "#2c1810" : "#5d3720");
+      deskGrad.addColorStop(1, isDark ? "#1a0e0a" : "#3b2214");
+      ctx.fillStyle = deskGrad;
+      ctx.fill();
+
+      // Polished Gold/Brass Inlay Edge
+      ctx.strokeStyle = "#c69214";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Desk Front Apron Face
+      const b2 = project(dW, -10, dD);
+      const b3 = project(-dW, -10, dD);
+      ctx.beginPath();
+      ctx.moveTo(d3.sx, d3.sy);
+      ctx.lineTo(d2.sx, d2.sy);
+      ctx.lineTo(b2.sx, b2.sy);
+      ctx.lineTo(b3.sx, b3.sy);
+      ctx.closePath();
+      ctx.fillStyle = isDark ? "#150b07" : "#2f1b10";
+      ctx.fill();
+    }
+
+    // 2. Banker's Library Lamp with Warm Radial Light
+    const lampPos = project(readingLamp.x, readingLamp.y, readingLamp.z);
+    if (lampPos.visible) {
+      // Warm Radial Illumination Pool onto Desk
+      if (readingLamp.lit) {
+        const poolCenter = project(readingLamp.x + 18, 9, readingLamp.z + 18);
+        const poolGrad = ctx.createRadialGradient(poolCenter.sx, poolCenter.sy, 5, poolCenter.sx, poolCenter.sy, 110 * poolCenter.scale);
+        poolGrad.addColorStop(0, `rgba(255, 235, 150, ${(0.45 * readingLamp.intensity).toFixed(2)})`);
+        poolGrad.addColorStop(1, "rgba(255, 235, 150, 0)");
+        ctx.beginPath();
+        ctx.arc(poolCenter.sx, poolCenter.sy, 110 * poolCenter.scale, 0, Math.PI * 2);
+        ctx.fillStyle = poolGrad;
+        ctx.fill();
+      }
+
+      // Brass Stand & Curved Neck
+      const basePos = project(readingLamp.x, 9, readingLamp.z);
+      ctx.beginPath();
+      ctx.ellipse(basePos.sx, basePos.sy, 12 * basePos.scale, 6 * basePos.scale, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "#c69214";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(basePos.sx, basePos.sy);
+      ctx.lineTo(lampPos.sx, lampPos.sy);
+      ctx.strokeStyle = "#c69214";
+      ctx.lineWidth = 4 * lampPos.scale;
+      ctx.stroke();
+
+      // Emerald Green Glass Shade
+      ctx.beginPath();
+      ctx.ellipse(lampPos.sx, lampPos.sy, 18 * lampPos.scale, 9 * lampPos.scale, 0.2, 0, Math.PI * 2);
+      ctx.fillStyle = "#1e4d3a";
+      ctx.strokeStyle = "#2d7a5b";
+      ctx.lineWidth = 1.5;
+      ctx.fill();
+      ctx.stroke();
+
+      // Glowing Lamp Bulb
+      if (readingLamp.lit) {
+        ctx.beginPath();
+        ctx.arc(lampPos.sx, lampPos.sy + 4 * lampPos.scale, 5 * lampPos.scale, 0, Math.PI * 2);
+        ctx.fillStyle = "#fffaa0";
+        ctx.shadowColor = "#ffea75";
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    // 3. Open Ancient Manuscript Book
+    const bW = 42;
+    const bL = 30;
+    const bY = 10;
+    // Left Page
+    const lp0 = project(-bW, bY, -bL);
+    const lp1 = project(0, bY, -bL);
+    const lp2 = project(0, bY, bL);
+    const lp3 = project(-bW, bY, bL);
+
+    // Right Page
+    const rp0 = project(0, bY, -bL);
+    const rp1 = project(bW, bY, -bL);
+    const rp2 = project(bW, bY, bL);
+    const rp3 = project(0, bY, bL);
+
+    if (lp0.visible && rp1.visible) {
+      // Draw Book Cover Rim
+      ctx.beginPath();
+      ctx.moveTo(lp0.sx - 3, lp0.sy);
+      ctx.lineTo(rp1.sx + 3, rp1.sy);
+      ctx.lineTo(rp2.sx + 3, rp2.sy);
+      ctx.lineTo(lp3.sx - 3, lp3.sy);
+      ctx.closePath();
+      ctx.fillStyle = "#4a1c14";
+      ctx.fill();
+
+      // Left Parchment Page
+      ctx.beginPath();
+      ctx.moveTo(lp0.sx, lp0.sy);
+      ctx.lineTo(lp1.sx, lp1.sy);
+      ctx.lineTo(lp2.sx, lp2.sy);
+      ctx.lineTo(lp3.sx, lp3.sy);
+      ctx.closePath();
+      ctx.fillStyle = "#faf3dd";
+      ctx.fill();
+      ctx.strokeStyle = "#d8c292";
+      ctx.stroke();
+
+      // Right Parchment Page
+      ctx.beginPath();
+      ctx.moveTo(rp0.sx, rp0.sy);
+      ctx.lineTo(rp1.sx, rp1.sy);
+      ctx.lineTo(rp2.sx, rp2.sy);
+      ctx.lineTo(rp3.sx, rp3.sy);
+      ctx.closePath();
+      ctx.fillStyle = "#fdf9ec";
+      ctx.fill();
+      ctx.strokeStyle = "#d8c292";
+      ctx.stroke();
+
+      // Central Spine Shadow
+      ctx.beginPath();
+      ctx.moveTo(lp1.sx, lp1.sy);
+      ctx.lineTo(lp2.sx, lp2.sy);
+      ctx.strokeStyle = "rgba(70, 40, 20, 0.4)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Turning Middle Page (when flipping)
+      if (readingBook.isFlipping) {
+        const midX = Math.cos(readingBook.pageAngle) * bW;
+        const midY = bY + Math.sin(readingBook.pageAngle) * 16;
+        const tp0 = project(0, bY, -bL);
+        const tp1 = project(midX, midY, -bL);
+        const tp2 = project(midX, midY, bL);
+        const tp3 = project(0, bY, bL);
+
+        ctx.beginPath();
+        ctx.moveTo(tp0.sx, tp0.sy);
+        ctx.lineTo(tp1.sx, tp1.sy);
+        ctx.lineTo(tp2.sx, tp2.sy);
+        ctx.lineTo(tp3.sx, tp3.sy);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(253, 249, 236, 0.95)";
+        ctx.fill();
+        ctx.strokeStyle = "#c69214";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      // Wisdom Quote Calligraphy on Pages
+      const isZh = document.documentElement.lang.startsWith("zh");
+      const quote = readingBook.quotes[readingBook.curQuoteIdx] || readingBook.quotes[0];
+      const text = isZh ? quote.zh : quote.en;
+
+      const pageCenter = project(0, bY + 2, 0);
+      ctx.font = `italic ${Math.max(10, Math.round(11 * pageCenter.scale))}px 'Noto Serif SC', serif`;
+      ctx.fillStyle = "#3d271d";
+      ctx.textAlign = "center";
+      ctx.fillText(text, pageCenter.sx, pageCenter.sy);
+    }
+
+    // 4. Floating 3D Wisdom Glyphs
+    wisdomGlyphs.forEach((g) => {
+      const gp = project(g.x, g.y, g.z);
+      if (!gp.visible) return;
+
+      ctx.font = `bold ${Math.max(12, Math.round(16 * gp.scale * g.scale))}px 'Noto Serif SC', serif`;
+      ctx.fillStyle = `rgba(255, 215, 0, ${g.alpha.toFixed(3)})`;
+      ctx.textAlign = "center";
+      ctx.shadowColor = "rgba(255, 180, 0, 0.8)";
+      ctx.shadowBlur = 8;
+      ctx.fillText(g.char, gp.sx, gp.sy);
+      ctx.shadowBlur = 0;
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Atmospheric Sky & Dynamic Lighting
+  // ---------------------------------------------------------------------------
+  function drawAtmosphere(dt) {
+    const isDark = document.body.classList.contains("dark");
+    let topColor = "#0d2b2c";
+    let botColor = "#031517";
+
+    if (currentTimeOfDay === "dawn") {
+      topColor = isDark ? "#2b1b24" : "#ffeedd";
+      botColor = isDark ? "#542c33" : "#fcd5b5";
+    } else if (currentTimeOfDay === "day") {
+      topColor = isDark ? "#0d2b2c" : "#e8f4f2";
+      botColor = isDark ? "#031517" : "#cbe3de";
+    } else if (currentTimeOfDay === "sunset") {
+      topColor = isDark ? "#1b0a2a" : "#fae1dd";
+      botColor = isDark ? "#4d1938" : "#f38375";
+    } else if (currentTimeOfDay === "night") {
+      topColor = "#040914";
+      botColor = "#0a192f";
+    }
+
+    const grad = ctx.createLinearGradient(0, 0, 0, height);
+    grad.addColorStop(0, topColor);
+    grad.addColorStop(1, botColor);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+
+    // Stars at night
+    if (currentTimeOfDay === "night") {
+      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+      for (let s = 0; s < 35; s++) {
+        const sx = ((s * 97 + waterTime * 5) % width);
+        const sy = (s * 31) % (height * 0.45);
+        const r = (s % 3 === 0) ? 1.5 : 1.0;
+        ctx.beginPath();
+        ctx.arc(sx, sy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Gamification Celebration Badge Renderer
+  // ---------------------------------------------------------------------------
+  function drawCelebrationBadge(dt) {
+    if (!celebrationBadge.active) return;
+    celebrationBadge.timer -= dt;
+    if (celebrationBadge.timer <= 0) {
+      celebrationBadge.active = false;
+      return;
+    }
+
+    celebrationBadge.scale = Math.min(1.0, celebrationBadge.scale + dt * 4);
+    const cx = width / 2;
+    const cy = height / 2 - 25;
+    const s = celebrationBadge.scale;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(s, s);
+
+    // Rotating golden sunburst rays
+    const rot = (performance.now() / 1000) * 0.6;
+    ctx.save();
+    ctx.rotate(rot);
+    const rays = 12;
+    for (let r = 0; r < rays; r++) {
+      const angle = (r / rays) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(angle) * 75, Math.sin(angle) * 75);
+      ctx.strokeStyle = "rgba(239, 201, 120, 0.35)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // Central circular mandala medallion
+    const medGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, 55);
+    medGrad.addColorStop(0, "rgba(255, 235, 170, 0.95)");
+    medGrad.addColorStop(0.7, "rgba(239, 201, 120, 0.9)");
+    medGrad.addColorStop(1, "rgba(184, 137, 42, 0.95)");
+
+    ctx.beginPath();
+    ctx.arc(0, 0, 52, 0, Math.PI * 2);
+    ctx.fillStyle = medGrad;
+    ctx.shadowColor = "rgba(239, 201, 120, 0.8)";
+    ctx.shadowBlur = 24;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle = "#fff2b2";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Badge Icon
+    ctx.font = "32px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(celebrationBadge.icon, 0, -2);
+
+    // Title banner beneath
+    ctx.font = "bold 15px 'Noto Serif SC', serif";
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+    ctx.shadowBlur = 6;
+    ctx.fillText(celebrationBadge.title, 0, 72);
+    ctx.font = "12px sans-serif";
+    ctx.fillStyle = "#ffe7ad";
+    ctx.fillText("Sanctuary Goal Dedicated · 功德圆满", 0, 92);
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+  }
+
+  function triggerBadgeUnlock(scenarioKey) {
+    const scen = SCENARIOS[scenarioKey];
+    const isZh = document.documentElement.lang.startsWith("zh");
+    const title = isZh ? (scen.badgeTitleZh || scen.nameZh) : (scen.badgeTitle || scen.name);
+
+    celebrationBadge.active = true;
+    celebrationBadge.title = title;
+    celebrationBadge.icon = scen.icon;
+    celebrationBadge.timer = 4.5;
+    celebrationBadge.scale = 0;
+
+    awardKarma(10, `Dedicated Sanctuary Guardian Badge: ${title}`);
+    playSound("chime");
+
+    const badgeToast = document.getElementById("gameBadgeToast");
+    if (badgeToast) {
+      badgeToast.textContent = `🌟 ${isZh ? "荣膺净域守护勋章" : "Guardian Badge Unlocked"}: ${title}`;
+      badgeToast.hidden = false;
+      badgeToast.classList.add("show");
+      window.setTimeout(() => {
+        badgeToast.classList.remove("show");
+        badgeToast.hidden = true;
+      }, 4500);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // Floating Merit 3D Particle Text
   // ---------------------------------------------------------------------------
   function spawnFloatingMerit3D(x, y, z, text) {
@@ -1203,10 +1740,31 @@
     const dt = Math.min(0.1, (time - lastTime) / 1000 || 0.016);
     lastTime = time;
 
-    // Clear background
-    ctx.clearRect(0, 0, width, height);
+    // 1. Atmosphere / Dynamic Sky & Stars
+    drawAtmosphere(dt);
 
-    // Update and draw according to active scenario
+    // 2. Camera Follow / Mode Updates
+    if (cameraMode === "follow") {
+      let targetEntity = null;
+      if (currentScenarioKey === "east-lake" && koiFishList.length > 0) {
+        targetEntity = koiFishList[koiFishList.length - 1];
+      } else if (currentScenarioKey === "toronto-crosswalk") {
+        targetEntity = elderPedestrian;
+      } else if (currentScenarioKey === "night-corridor" && riverLanterns.length > 0) {
+        targetEntity = riverLanterns[riverLanterns.length - 1];
+      } else if (currentScenarioKey === "reading-room") {
+        targetEntity = readingBook;
+      }
+      if (targetEntity) {
+        camera.targetX += (targetEntity.x - camera.targetX) * 0.06;
+        camera.targetZ += (targetEntity.z - camera.targetZ) * 0.06;
+      }
+    } else if (cameraMode === "topdown") {
+      camera.rotX = 1.35;
+      camera.rotY = 0;
+    }
+
+    // 3. Update and draw according to active scenario
     if (currentScenarioKey === "east-lake") {
       updateEastLake(dt);
       drawEastLake();
@@ -1219,10 +1777,16 @@
     } else if (currentScenarioKey === "night-corridor") {
       updateKyotoLanterns(dt);
       drawKyotoLanterns();
+    } else if (currentScenarioKey === "reading-room") {
+      updateReadingRoom(dt);
+      drawReadingRoom();
     }
 
-    // Draw 3D Floating Merit Particles
+    // 4. Draw 3D Floating Merit Particles
     updateAndDrawMerit3D(dt);
+
+    // 5. Draw 3D Celebration Badge
+    drawCelebrationBadge(dt);
 
     animFrameId = requestAnimationFrame(renderLoop);
   }
@@ -1258,13 +1822,58 @@
     camera.rotY = scen.defaultCam.rotY;
     camera.zoom = scen.defaultCam.zoom;
     camera.dist = scen.defaultCam.dist;
+    camera.targetX = 0;
+    camera.targetY = 0;
+    camera.targetZ = 0;
+
+    // Automatically suggest atmosphere per scenario
+    if (key === "night-corridor") {
+      setTimeOfDay("night");
+    } else if (key === "reading-room") {
+      setTimeOfDay("sunset");
+    } else {
+      setTimeOfDay("day");
+    }
 
     // Init entities
     if (key === "east-lake") initEastLake();
     else if (key === "toronto-crosswalk") initTorontoCrosswalk();
     else if (key === "amazon-grove") initAmazonGrove();
     else if (key === "night-corridor") initKyotoLanterns();
+    else if (key === "reading-room") initReadingRoom();
 
+    updateHUD();
+  }
+
+  function setTimeOfDay(tod) {
+    currentTimeOfDay = tod;
+    document.querySelectorAll(".tod-btn").forEach((b) => {
+      b.classList.toggle("active", b.dataset.tod === tod);
+    });
+  }
+
+  function setSpecies(sp) {
+    currentSpecies = sp;
+    document.querySelectorAll(".species-btn").forEach((b) => {
+      b.classList.toggle("active", b.dataset.species === sp);
+    });
+  }
+
+  function toggleCameraMode() {
+    if (cameraMode === "orbit") {
+      cameraMode = "follow";
+    } else if (cameraMode === "follow") {
+      cameraMode = "topdown";
+      camera.rotX = 1.35;
+      camera.rotY = 0;
+    } else {
+      cameraMode = "orbit";
+      const scen = SCENARIOS[currentScenarioKey];
+      camera.rotX = scen.defaultCam.rotX;
+      camera.rotY = scen.defaultCam.rotY;
+      camera.targetX = 0;
+      camera.targetZ = 0;
+    }
     updateHUD();
   }
 
@@ -1294,13 +1903,26 @@
     const prog = progressState[currentScenarioKey];
     const goalEl = document.getElementById("gameGoalCounter");
     if (goalEl) {
-      goalEl.textContent = `${isZh ? scen.goalLabelZh : scen.goalLabel}: ${prog.count}/${scen.targetGoal} · 功德 +${prog.score || 0}`;
+      const badgeText = prog.completed ? ` · 🏅 ${isZh ? scen.badgeTitleZh : scen.badgeTitle}` : "";
+      goalEl.textContent = `${isZh ? scen.goalLabelZh : scen.goalLabel}: ${prog.count}/${scen.targetGoal} · 功德 +${prog.score || 0}${badgeText}`;
     }
 
     // Active pill styling
     document.querySelectorAll(".game-scenario-tab").forEach((tab) => {
       tab.classList.toggle("active", tab.dataset.scenario === currentScenarioKey);
     });
+
+    // Species picker: only shown for East Lake
+    const spPicker = document.getElementById("gameSpeciesPicker");
+    if (spPicker) {
+      spPicker.style.display = currentScenarioKey === "east-lake" ? "inline-flex" : "none";
+    }
+
+    // Camera Mode button label
+    const camModeLabel = document.getElementById("gameCamModeLabel");
+    if (camModeLabel) {
+      camModeLabel.textContent = cameraMode.charAt(0).toUpperCase() + cameraMode.slice(1);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -1311,13 +1933,14 @@
     const prog = progressState[currentScenarioKey];
 
     if (currentScenarioKey === "east-lake") {
-      // Release a fish into East Lake
+      // Release fish / turtle into East Lake
       const rx = (Math.random() - 0.5) * 80;
       const rz = -60 + Math.random() * 40;
-      spawnKoi(rx, rz, Math.random() * Math.PI * 2, "yamabuki", 1.15, true);
+      spawnKoi(rx, rz, Math.random() * Math.PI * 2, currentSpecies, 1.15, true);
       addWaterRipple(rx, rz, 55, 1.2);
       playSound("water");
-      spawnFloatingMerit3D(rx, 12, rz, "Liberation · 善念放生 (+1)");
+      const label = currentSpecies === "turtle" ? "Terrapin Freed · 龟放深潭 (+1)" : "Liberation · 善念放生 (+1)";
+      spawnFloatingMerit3D(rx, 12, rz, label);
 
       prog.count += 1;
       prog.score += 5;
@@ -1325,8 +1948,7 @@
 
       if (prog.count >= scen.targetGoal && !prog.completed) {
         prog.completed = true;
-        awardKarma(10, "Completed East Lake fish release sanctuary dedication");
-        spawnFloatingMerit3D(0, 30, 0, "East Lake Sanctuary Dedicated · 功德圆满");
+        triggerBadgeUnlock("east-lake");
       }
       updateHUD();
     } else if (currentScenarioKey === "toronto-crosswalk") {
@@ -1336,6 +1958,13 @@
       elderPedestrian.walking = true;
       playSound("muyu");
       spawnFloatingMerit3D(elderPedestrian.x, 20, 0, "Walk Signal Activated · 慈心护行");
+      prog.count += 1;
+      prog.score += 5;
+      awardKarma(2, "Activated safe walk chime in Toronto");
+      if (prog.count >= scen.targetGoal && !prog.completed) {
+        prog.completed = true;
+        triggerBadgeUnlock("toronto-crosswalk");
+      }
       updateHUD();
     } else if (currentScenarioKey === "amazon-grove") {
       // Plant seed / nurture tree
@@ -1344,6 +1973,13 @@
         tree.targetHeight = Math.min(65, tree.targetHeight + 15);
         playSound("chime");
         spawnFloatingMerit3D(tree.x, tree.height + 10, tree.z, "Tree Nurtured · 繁荣生机");
+      }
+      prog.count += 1;
+      prog.score += 5;
+      awardKarma(2, "Nurtured sacred Bodhi tree in Amazon grove");
+      if (prog.count >= scen.targetGoal && !prog.completed) {
+        prog.completed = true;
+        triggerBadgeUnlock("amazon-grove");
       }
       updateHUD();
     } else if (currentScenarioKey === "night-corridor") {
@@ -1354,6 +1990,27 @@
       prog.count += 1;
       prog.score += 5;
       awardKarma(2, "Sent gentle wish lantern down Kyoto river");
+      if (prog.count >= scen.targetGoal && !prog.completed) {
+        prog.completed = true;
+        triggerBadgeUnlock("night-corridor");
+      }
+      updateHUD();
+    } else if (currentScenarioKey === "reading-room") {
+      // Turn page and read aloud
+      readingBook.isFlipping = true;
+      readingBook.pageAngle = 0;
+      readingBook.curQuoteIdx = (readingBook.curQuoteIdx + 1) % readingBook.quotes.length;
+      spawnWisdomGlyphs(0, 14, 5);
+      playSound("chime");
+      spawnFloatingMerit3D(0, 24, 5, "Wisdom Inscribed · 般若生辉 (+1)");
+
+      prog.count += 1;
+      prog.score += 5;
+      awardKarma(2, "Contemplated wisdom quote in Oxford Reading Room");
+      if (prog.count >= scen.targetGoal && !prog.completed) {
+        prog.completed = true;
+        triggerBadgeUnlock("reading-room");
+      }
       updateHUD();
     }
   }
@@ -1390,6 +2047,12 @@
       // Gentle wind breeze
       riverLanterns.forEach((l) => (l.vz += 0.4));
       playSound("chime");
+    } else if (currentScenarioKey === "reading-room") {
+      // Dim or brighten banker's reading lamp
+      readingLamp.lit = !readingLamp.lit;
+      readingLamp.intensity = readingLamp.lit ? 1.4 : 0;
+      playSound("muyu");
+      spawnFloatingMerit3D(readingLamp.x, 30, readingLamp.z, readingLamp.lit ? "Lamp Illuminated · 智光普照" : "Lamp Softened · 恬淡");
     }
   }
 
@@ -1458,6 +2121,26 @@
       });
     });
 
+    // Time of Day Buttons
+    document.querySelectorAll(".tod-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        setTimeOfDay(btn.dataset.tod || "day");
+      });
+    });
+
+    // Species Buttons
+    document.querySelectorAll(".species-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        setSpecies(btn.dataset.species || "yamabuki");
+      });
+    });
+
+    // Camera Mode Button
+    const camModeBtn = document.getElementById("gameCamModeBtn");
+    if (camModeBtn) {
+      camModeBtn.addEventListener("click", toggleCameraMode);
+    }
+
     // Action Buttons
     const primaryBtn = document.getElementById("gamePrimaryActionBtn");
     if (primaryBtn) primaryBtn.addEventListener("click", performPrimaryAction);
@@ -1473,6 +2156,9 @@
         camera.rotY = scen.defaultCam.rotY;
         camera.zoom = scen.defaultCam.zoom;
         camera.dist = scen.defaultCam.dist;
+        camera.targetX = 0;
+        camera.targetY = 0;
+        camera.targetZ = 0;
       });
     }
 
@@ -1506,7 +2192,6 @@
         const clickX = e.clientX - rect.left - width / 2;
         const clickY = e.clientY - rect.top - height / 2;
 
-        // Approximate inverse projection onto water plane
         const worldX = (clickX / (camera.fov * camera.zoom)) * camera.dist;
         const worldZ = (clickY / (camera.fov * camera.zoom)) * camera.dist;
 
@@ -1514,6 +2199,9 @@
           addWaterRipple(worldX, worldZ, 45, 1.0);
           foodCrumbs.push({ x: worldX, y: 0, z: worldZ, life: 1.0 });
           playSound("water");
+        } else if (currentScenarioKey === "reading-room") {
+          spawnWisdomGlyphs(worldX, 12, worldZ);
+          playSound("chime");
         }
       });
 
@@ -1546,6 +2234,9 @@
     open: openGame,
     close: closeGame,
     setScenario,
+    setTimeOfDay,
+    setSpecies,
+    toggleCameraMode,
     performPrimary: performPrimaryAction,
     performSecondary: performSecondaryAction
   };

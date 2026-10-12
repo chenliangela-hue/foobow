@@ -254,6 +254,14 @@
   - Added full 6-locale translation parity across all new game controls in `prototype/app/i18n.js` (`en`, `zh-Hans`, `fr`, `es`, `th`, `ja`).
   - Enhanced Mobile app `LotusPondScene.tsx` with interactive touch-to-release mechanics, animated ripples, and haptic vibration.
   - Verified 100% test pass across all quality gates: 40/40 root tests, mobile TypeScript typecheck (0 errors), and 94/94 Playwright browser tests.
+- Phase 5 Track 4 (Full 5-Sanctuary Gamification, Atmospheric Lighting & Creature Customizer):
+  - Added 5th Sanctuary Scenario: Oxford Wisdom Library (51.7548° N, 1.2544° W) with 3D polished mahogany study desk, brass banker's green glass desk lamp casting radial lighting, open illuminated manuscript book with 3D curling page flips, and ascending floating golden wisdom glyphs (`智`, `慧`, `明`, `心`).
+  - Added real-time Atmospheric Time-of-Day Lighting engine (Dawn 🌅, Day ☀️, Sunset 🌇, Night 🌙) dynamically tinting sky gradients, starry night cosmos, and water specular highlights.
+  - Added Species & Creature Customizer in East Lake fish release: Golden Koi (Yamabuki 🟡), Kohaku (Red/White 🔴), Showa (Tricolor ⚫), and River Terrapin (灵龟 🐢 with jade shell, gold border, and 4 swimming paddle flippers).
+  - Added Sanctuary Guardian Badges achievement celebration system with rotating 3D golden sunburst mandala medal, acoustic chime fanfare, and permanent profile karma award.
+  - Added multi-mode camera system: Free Orbit (🎥), Cinematic Follow (🐟 tracking released creatures/lanterns), and Tranquil Zen Top-Down (🔭).
+  - Enhanced Mobile app `LotusPondScene.tsx` with species selection bar (`🟡`, `🔴`, `🐢`), haptic vibration pulses, and guardian badge progression.
+  - Verified 100% test pass: 40/40 unit tests, mobile typecheck (0 errors), and 95/95 Playwright browser tests.
 
 ## Next
 

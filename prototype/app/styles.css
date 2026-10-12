@@ -7057,7 +7057,75 @@ body.dark .buddhist-compass-rose {
   }
 }
 
+/* 3D Game Settings Bar & Customizers */
+.game-settings-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
+.game-tod-picker,
+.game-species-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
+.tod-btn,
+.species-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
 
+.tod-btn:hover,
+.species-btn:hover {
+  color: var(--foreground);
+  background: rgba(255, 255, 255, 0.08);
+}
 
+.tod-btn.active,
+.species-btn.active {
+  background: linear-gradient(135deg, rgba(239, 201, 120, 0.35), rgba(184, 137, 42, 0.45));
+  border-color: #efc978;
+  color: #ffe7ad;
+  box-shadow: 0 0 10px rgba(239, 201, 120, 0.2);
+}
+
+/* Badge Celebration Toast in 3D Viewport */
+.game-badge-toast {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(30, 20, 10, 0.95), rgba(50, 35, 15, 0.95));
+  border: 1.5px solid #efc978;
+  color: #ffe7ad;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 8px 32px rgba(239, 201, 120, 0.4), 0 0 16px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 300ms cubic-bezier(0.2, 0.8, 0.25, 1);
+  z-index: 10;
+  backdrop-filter: blur(12px);
+}
+
+.game-badge-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}

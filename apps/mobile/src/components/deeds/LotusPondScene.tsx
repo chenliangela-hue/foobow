@@ -20,6 +20,7 @@ type LotusPondSceneProps = {
 export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }: LotusPondSceneProps) {
   const currentColors = useThemeColors();
   const [interactiveCount, setInteractiveCount] = useState(0);
+  const [species, setSpecies] = useState<"yamabuki" | "kohaku" | "turtle">("yamabuki");
   const touchRippleAnim = useRef(new Animated.Value(0)).current;
 
   // Swimming koi orbit animations
@@ -283,12 +284,53 @@ export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }:
         </Animated.View>
       )}
 
-      {/* Interactive Released Counter Pill */}
+      {/* Interactive Released Counter & Badge Pill */}
       {interactiveCount > 0 && (
         <View style={styles.interactivePill} pointerEvents="none">
-          <Text style={styles.interactivePillText}>🐟 Released: {interactiveCount}</Text>
+          <Text style={styles.interactivePillText}>
+            {interactiveCount >= 5
+              ? `🏅 Guardian (${interactiveCount})`
+              : `${species === "turtle" ? "🐢" : "🐟"} Released: ${interactiveCount}`}
+          </Text>
         </View>
       )}
+
+      {/* Species Selector Mini Bar */}
+      <View style={styles.speciesBar}>
+        <Pressable
+          style={[styles.speciesChip, species === "yamabuki" && styles.speciesChipActive]}
+          onPress={() => {
+            try { Vibration.vibrate(10); } catch {}
+            setSpecies("yamabuki");
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Golden Koi"
+        >
+          <Text style={styles.speciesChipText}>🟡</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.speciesChip, species === "kohaku" && styles.speciesChipActive]}
+          onPress={() => {
+            try { Vibration.vibrate(10); } catch {}
+            setSpecies("kohaku");
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Red and White Koi"
+        >
+          <Text style={styles.speciesChipText}>🔴</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.speciesChip, species === "turtle" && styles.speciesChipActive]}
+          onPress={() => {
+            try { Vibration.vibrate(10); } catch {}
+            setSpecies("turtle");
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="River Terrapin"
+        >
+          <Text style={styles.speciesChipText}>🐢</Text>
+        </Pressable>
+      </View>
 
       {/* Soft shoreline curve */}
       <View style={styles.shoreline} pointerEvents="none" />
@@ -483,5 +525,32 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     color: "#ffe7ad"
+  },
+  speciesBar: {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
+    flexDirection: "row",
+    gap: 4,
+    backgroundColor: "rgba(10, 36, 40, 0.75)",
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    zIndex: 10
+  },
+  speciesChip: {
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 999
+  },
+  speciesChipActive: {
+    backgroundColor: "rgba(239, 201, 120, 0.35)",
+    borderWidth: 1,
+    borderColor: "#efc978"
+  },
+  speciesChipText: {
+    fontSize: 12
   }
 });
