@@ -261,7 +261,20 @@
   - Added Sanctuary Guardian Badges achievement celebration system with rotating 3D golden sunburst mandala medal, acoustic chime fanfare, and permanent profile karma award.
   - Added multi-mode camera system: Free Orbit (🎥), Cinematic Follow (🐟 tracking released creatures/lanterns), and Tranquil Zen Top-Down (🔭).
   - Enhanced Mobile app `LotusPondScene.tsx` with species selection bar (`🟡`, `🔴`, `🐢`), haptic vibration pulses, and guardian badge progression.
-  - Verified 100% test pass: 40/40 unit tests, mobile typecheck (0 errors), and 95/95 Playwright browser tests.
+  - Phase 5 Track 5 (Immersive Zen Mini-Game Arcade Overhaul & Glassmorphic HUD UX):
+  - Overhauled the 3D sanctuary mini-game into an authentic, polished, immersive web mini-game inspired by Zen Koi simulations.
+  - Re-architected modal canvas to full edge-to-edge arcade viewport (`max-width: min(1040px, 96vw)`, `height: min(800px, 92vh)`) with responsive scaling and zero floating-polygon voids.
+  - Designed floating glassmorphic in-canvas HUD overlays with zero text truncation:
+    - Top bar with non-truncating scenario pills, atmosphere selector, and sleek close button.
+    - Floating quest progress card with live telemetry, deed counter, and animated fill progress bar.
+    - Bottom action dock with species selector, radiant primary action button, secondary action, and camera controls.
+  - Dynamic full-viewport aquatic simulation for East Lake:
+    - Multi-stop natural aquatic depth gradient filling the entire viewport.
+    - Dynamic multi-frequency sun/moon caustics on pond floor.
+    - Underwater depth drop shadows beneath swimming koi and turtles.
+    - Organic lily pads with dew drops, 3D riverbed pebbles, and lakeside timber dock.
+  - Full-screen scene upgrades for all other scenarios: Toronto crosswalk with double yellow lines and autumn trees; Amazon grove with volumetric god rays and jungle floor; Kyoto night river with stone banks and stone lanterns (*tōrō*); Oxford library with rich mahogany desk and banker's lamp.
+  - 100% test pass verified: 40/40 root tests, 14/14 browser deeds tests, and 0 mobile TypeScript errors.
 
 ## Next
 

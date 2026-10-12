@@ -1299,62 +1299,73 @@
     </dialog>
 
     <dialog id="sanctuary3DGameModal" class="zen-dialog sanctuary-3d-dialog">
-      <div class="dialog-body sanctuary-3d-dialog-body">
-        <div class="dialog-header">
-          <div>
-            <p class="eyebrow" id="gameScenarioCoords">📍 30.5539° N, 114.3644° E · Freshwater Sanctuary</p>
-            <h2 id="gameScenarioTitle">East Lake Sanctuary · 慈心放生池</h2>
-          </div>
-          <button class="icon-close-btn" id="close3DGameTopBtn" type="button" aria-label="Close 3D game">✕</button>
-        </div>
-
-        <!-- Scenario Quick Switcher -->
-        <div class="game-scenario-tabs" role="tablist" aria-label="Sanctuary 3D Scenarios">
-          <button class="game-scenario-tab active" type="button" data-scenario="east-lake" role="tab">🐟 East Lake (Fish Release)</button>
-          <button class="game-scenario-tab" type="button" data-scenario="toronto-crosswalk" role="tab">👵 Toronto (Crosswalk)</button>
-          <button class="game-scenario-tab" type="button" data-scenario="amazon-grove" role="tab">🌱 Amazon (Tree Planting)</button>
-          <button class="game-scenario-tab" type="button" data-scenario="night-corridor" role="tab">🏮 Kyoto (Wish Lantern)</button>
-          <button class="game-scenario-tab" type="button" data-scenario="reading-room" role="tab">📖 Oxford (Wisdom Library)</button>
-        </div>
-
-        <!-- Atmosphere & Customization Toolbar -->
-        <div class="game-settings-bar">
-          <div class="game-tod-picker" role="radiogroup" aria-label="Atmosphere / Time of Day">
-            <button class="tod-btn" type="button" data-tod="dawn" title="Dawn / 晨曦" aria-label="Dawn">🌅</button>
-            <button class="tod-btn active" type="button" data-tod="day" title="Day / 晴昼" aria-label="Day">☀️</button>
-            <button class="tod-btn" type="button" data-tod="sunset" title="Sunset / 暮霞" aria-label="Sunset">🌇</button>
-            <button class="tod-btn" type="button" data-tod="night" title="Night / 星夜" aria-label="Night">🌙</button>
-          </div>
-          <div class="game-species-picker" id="gameSpeciesPicker" role="radiogroup" aria-label="Release Species">
-            <button class="species-btn active" type="button" data-species="yamabuki" title="Golden Koi · 黄金锦鲤">🟡 金鲤</button>
-            <button class="species-btn" type="button" data-species="kohaku" title="Kohaku · 红白锦鲤">🔴 红白</button>
-            <button class="species-btn" type="button" data-species="showa" title="Showa · 昭和三色">⚫ 昭和</button>
-            <button class="species-btn" type="button" data-species="turtle" title="River Terrapin · 吉祥灵龟">🐢 灵龟</button>
-          </div>
-        </div>
-
-        <!-- 3D Viewport Stage -->
+      <div class="sanctuary-3d-stage-wrapper">
+        <!-- Main 3D Viewport Stage (fills stage) -->
         <div class="sanctuary-3d-viewport" id="sanctuary3DViewport" aria-label="3D Sanctuary Interactive Viewport">
           <canvas id="sanctuary3DCanvas" class="sanctuary-3d-canvas"></canvas>
-          <div class="game-3d-overlay-hint" data-i18n="gameCanvasHint">Drag to rotate 3D camera · Tap water to interact</div>
+
+          <!-- Floating Glass Top Navigation Bar -->
+          <div class="game-hud-top-bar">
+            <!-- Scenario Quick Switcher Pills -->
+            <div class="game-scenario-tabs" role="tablist" aria-label="Sanctuary 3D Scenarios">
+              <button class="game-scenario-tab active" type="button" data-scenario="east-lake" role="tab">🐟 East Lake</button>
+              <button class="game-scenario-tab" type="button" data-scenario="toronto-crosswalk" role="tab">👵 Toronto</button>
+              <button class="game-scenario-tab" type="button" data-scenario="amazon-grove" role="tab">🌱 Amazon</button>
+              <button class="game-scenario-tab" type="button" data-scenario="night-corridor" role="tab">🏮 Kyoto</button>
+              <button class="game-scenario-tab" type="button" data-scenario="reading-room" role="tab">📖 Oxford</button>
+            </div>
+
+            <!-- Atmosphere Picker & Close Button -->
+            <div class="game-hud-top-right">
+              <div class="game-tod-picker" role="radiogroup" aria-label="Atmosphere / Time of Day">
+                <button class="tod-btn" type="button" data-tod="dawn" title="Dawn / 晨曦" aria-label="Dawn">🌅</button>
+                <button class="tod-btn active" type="button" data-tod="day" title="Day / 晴昼" aria-label="Day">☀️</button>
+                <button class="tod-btn" type="button" data-tod="sunset" title="Sunset / 暮霞" aria-label="Sunset">🌇</button>
+                <button class="tod-btn" type="button" data-tod="night" title="Night / 星夜" aria-label="Night">🌙</button>
+              </div>
+              <button class="icon-close-btn game-top-close-btn" id="close3DGameTopBtn" type="button" aria-label="Close 3D game">✕</button>
+            </div>
+          </div>
+
+          <!-- Floating Quest & Sanctuary Status Banner -->
+          <div class="game-quest-badge">
+            <p class="eyebrow game-quest-coords" id="gameScenarioCoords">📍 30.5539° N, 114.3644° E · Freshwater Sanctuary</p>
+            <h2 class="game-quest-title" id="gameScenarioTitle">East Lake Sanctuary · 慈心放生池</h2>
+            <div class="game-hud-status">
+              <span class="game-goal-counter" id="gameGoalCounter">Release 5 fish: 0/5 · 功德 +0</span>
+            </div>
+            <div class="game-goal-bar-wrap" aria-hidden="true">
+              <div class="game-goal-bar-fill" id="gameGoalBarFill"></div>
+            </div>
+          </div>
+
+          <!-- Interactive Center Overlays & Toasts -->
+          <div class="game-3d-overlay-hint" data-i18n="gameCanvasHint">💡 Tap water to scatter food · Drag to orbit · Scroll to zoom</div>
           <div class="game-badge-toast" id="gameBadgeToast" hidden role="status" aria-live="polite"></div>
-        </div>
 
-        <!-- Real-time HUD and Gameplay Controls -->
-        <div class="game-hud-panel">
-          <div class="game-hud-status">
-            <span class="game-goal-counter" id="gameGoalCounter">Release 5 fish: 0/5 · 功德 +0</span>
-          </div>
-          <div class="game-hud-actions">
-            <button class="primary-action game-hud-btn" id="gamePrimaryActionBtn" type="button">🐟 Release Koi (+1)</button>
-            <button class="text-button game-hud-btn" id="gameSecondaryActionBtn" type="button">Feed Lotus Petals</button>
-            <button class="text-button game-hud-btn-sm" id="gameCamModeBtn" type="button" title="Switch Camera Mode">🎥 <span id="gameCamModeLabel">Orbit</span></button>
-            <button class="text-button game-hud-btn-sm" id="gameResetCamBtn" type="button" title="Reset Camera View">🔄 View</button>
-          </div>
-        </div>
+          <!-- Floating Glass Bottom Action Dock -->
+          <div class="game-hud-panel">
+            <!-- Species Selector Chips (shown in East Lake) -->
+            <div class="game-species-picker" id="gameSpeciesPicker" role="radiogroup" aria-label="Release Species">
+              <button class="species-btn active" type="button" data-species="yamabuki" title="Golden Koi · 黄金锦鲤">🟡 金鲤</button>
+              <button class="species-btn" type="button" data-species="kohaku" title="Kohaku · 红白锦鲤">🔴 红白</button>
+              <button class="species-btn" type="button" data-species="showa" title="Showa · 昭和三色">⚫ 昭和</button>
+              <button class="species-btn" type="button" data-species="turtle" title="River Terrapin · 吉祥灵龟">🐢 灵龟</button>
+            </div>
 
-        <div class="dialog-actions">
-          <button class="text-button" id="close3DGameBottomBtn" type="button" data-i18n="closeDialog">Close</button>
+            <!-- Primary & Secondary Interactive Action Buttons -->
+            <div class="game-hud-actions">
+              <button class="primary-action game-hud-btn" id="gamePrimaryActionBtn" type="button">🐟 Release Koi (+1)</button>
+              <button class="text-button game-hud-btn game-secondary-btn" id="gameSecondaryActionBtn" type="button">Feed Lotus Petals</button>
+            </div>
+
+            <!-- Camera & Utility Controls -->
+            <div class="game-hud-controls">
+              <button class="text-button game-hud-btn-sm" id="gameCamModeBtn" type="button" title="Switch Camera Mode">🎥 <span id="gameCamModeLabel">Orbit</span></button>
+              <button class="text-button game-hud-btn-sm" id="gameResetCamBtn" type="button" title="Reset Camera View">🔄 View</button>
+              <button class="text-button game-hud-btn-sm game-hud-close-btn" id="close3DGameBottomBtn" type="button" data-i18n="closeDialog">Close</button>
+            </div>
+          </div>
         </div>
       </div>
     </dialog>

@@ -6888,85 +6888,50 @@ body.dark .buddhist-compass-rose {
    3D Sanctuary Interactive Mini-Game Dialog & Viewport
    ========================================================================== */
 .sanctuary-3d-dialog {
-  border: 1px solid rgba(239, 201, 120, 0.35);
-  border-radius: 20px;
-  background: rgba(10, 36, 40, 0.94);
+  border: 1.5px solid rgba(239, 201, 120, 0.4);
+  border-radius: 24px;
+  background: #041014;
   color: #fffaf0;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 32px rgba(239, 201, 120, 0.15);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.85), 0 0 48px rgba(239, 201, 120, 0.18);
   padding: 0;
-  max-width: min(880px, 94vw);
-  width: 100%;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  max-width: min(1040px, 96vw);
+  width: 96vw;
+  height: min(800px, 92vh);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   overflow: hidden;
 }
 
 .sanctuary-3d-dialog::backdrop {
-  background: rgba(4, 20, 22, 0.82);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(3, 12, 14, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.sanctuary-3d-dialog-body {
-  padding: 24px;
+.sanctuary-3d-stage-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  overflow: hidden;
 }
 
-/* Scenario Quick Tabs */
-.game-scenario-tabs {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
-}
-
-.game-scenario-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.game-scenario-tab {
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.06);
-  color: #d1d5db;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 200ms ease;
-}
-
-.game-scenario-tab:hover {
-  background: rgba(239, 201, 120, 0.15);
-  color: #fffaf0;
-  border-color: rgba(239, 201, 120, 0.3);
-}
-
-.game-scenario-tab.active {
-  background: linear-gradient(135deg, rgba(239, 201, 120, 0.3), rgba(184, 137, 42, 0.4));
-  border-color: #efc978;
-  color: #ffe7ad;
-  box-shadow: 0 0 14px rgba(239, 201, 120, 0.25);
-}
-
-/* 3D Viewport Stage */
+/* 3D Viewport Stage — edge to edge */
 .sanctuary-3d-viewport {
   position: relative;
   width: 100%;
-  height: 420px;
-  border-radius: 14px;
+  height: 100%;
+  flex: 1;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 40%, rgba(16, 68, 72, 0.8) 0%, rgba(5, 24, 26, 0.98) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 2px 24px rgba(0, 0, 0, 0.6);
+  background: radial-gradient(circle at 50% 50%, #0d383b 0%, #031416 100%);
   touch-action: none;
 }
 
 .sanctuary-3d-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: block;
@@ -6977,155 +6942,436 @@ body.dark .buddhist-compass-rose {
   cursor: grabbing;
 }
 
-.game-3d-overlay-hint {
+/* Floating Glass Top Navigation Bar */
+.game-hud-top-bar {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 0.76rem;
-  color: rgba(255, 250, 240, 0.72);
-  background: rgba(0, 0, 0, 0.55);
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
   pointer-events: none;
-  backdrop-filter: blur(6px);
 }
 
-/* HUD and Controls Panel */
-.game-hud-panel {
+.game-scenario-tabs {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 6px;
+  background: rgba(8, 22, 26, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 4px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  overflow-x: auto;
+  max-width: calc(100% - 190px);
+  scrollbar-width: none;
+  pointer-events: auto;
+}
+
+.game-scenario-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.game-scenario-tab {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #cfd8dc;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 180ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.game-scenario-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fffaf0;
+}
+
+.game-scenario-tab.active {
+  background: linear-gradient(135deg, rgba(239, 201, 120, 0.35), rgba(184, 137, 42, 0.45));
+  border-color: #efc978;
+  color: #ffe7ad;
+  box-shadow: 0 0 14px rgba(239, 201, 120, 0.3);
+}
+
+.game-hud-top-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.game-tod-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(8, 22, 26, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 3px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.tod-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 160ms ease;
+  line-height: 1;
+}
+
+.tod-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.06);
+}
+
+.tod-btn.active {
+  background: rgba(239, 201, 120, 0.3);
+  border-color: #efc978;
+  box-shadow: 0 0 10px rgba(239, 201, 120, 0.3);
+  transform: scale(1.08);
+}
+
+.game-top-close-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(8, 22, 26, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fffaf0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 180ms ease;
+  line-height: 1;
+}
+
+.game-top-close-btn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.7);
+  transform: scale(1.06);
+}
+
+/* Floating Quest & Sanctuary Status Banner */
+.game-quest-badge {
+  position: absolute;
+  top: 68px;
+  left: 16px;
+  z-index: 10;
+  background: rgba(8, 22, 26, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(239, 201, 120, 0.32);
+  border-radius: 16px;
+  padding: 12px 18px;
+  max-width: 340px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.game-quest-coords {
+  font-size: 0.72rem;
+  color: #8ecae6;
+  letter-spacing: 0.4px;
+  margin: 0 0 3px 0;
+}
+
+.game-quest-title {
+  margin: 0 0 8px 0;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #fffaf0;
+  line-height: 1.25;
 }
 
 .game-hud-status {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .game-goal-counter {
   font-family: 'Noto Serif SC', serif;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #ffe7ad;
+}
+
+.game-goal-bar-wrap {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.game-goal-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f77f00, #efc978);
+  transition: width 400ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+/* Floating Center Hint */
+.game-3d-overlay-hint {
+  position: absolute;
+  bottom: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.76rem;
+  color: rgba(255, 250, 240, 0.85);
+  background: rgba(8, 22, 26, 0.75);
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  z-index: 5;
+}
+
+/* Floating Glass Bottom Action Dock */
+.game-hud-panel {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 10;
+  background: rgba(8, 22, 26, 0.86);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 0, 0, 0.4);
+}
+
+.game-species-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.species-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #cfd8dc;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 160ms ease;
+  white-space: nowrap;
+}
+
+.species-btn:hover {
+  color: var(--foreground);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.species-btn.active {
+  background: linear-gradient(135deg, rgba(239, 201, 120, 0.35), rgba(184, 137, 42, 0.45));
+  border-color: #efc978;
+  color: #ffe7ad;
+  box-shadow: 0 0 12px rgba(239, 201, 120, 0.25);
 }
 
 .game-hud-actions {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .game-hud-btn {
-  padding: 8px 18px;
+  padding: 10px 22px;
   border-radius: 999px;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 180ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#gamePrimaryActionBtn {
+  background: linear-gradient(135deg, #f77f00, #d62828);
+  border: 0;
+  color: #fffaf0;
+  box-shadow: 0 4px 18px rgba(247, 127, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+#gamePrimaryActionBtn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 22px rgba(247, 127, 0, 0.6);
+}
+
+#gamePrimaryActionBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.game-secondary-btn {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fffaf0;
+  font-size: 0.86rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 180ms ease;
 }
 
-.game-hud-btn-sm {
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  border-radius: 999px;
+.game-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(239, 201, 120, 0.4);
 }
 
-@media (max-width: 640px) {
-  .sanctuary-3d-viewport {
-    height: 320px;
-  }
-  .game-hud-panel {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-  .game-hud-actions {
-    justify-content: stretch;
-  }
-  .game-hud-actions .game-hud-btn {
-    flex: 1;
-    text-align: center;
-  }
-}
-
-/* 3D Game Settings Bar & Customizers */
-.game-settings-bar {
+.game-hud-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.game-tod-picker,
-.game-species-picker {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 4px 8px;
+.game-hud-btn-sm {
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.tod-btn,
-.species-btn {
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--muted);
-  font-size: 0.8rem;
-  padding: 4px 10px;
-  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #cfd8dc;
   cursor: pointer;
   transition: all 160ms ease;
 }
 
-.tod-btn:hover,
-.species-btn:hover {
-  color: var(--foreground);
-  background: rgba(255, 255, 255, 0.08);
+.game-hud-btn-sm:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fffaf0;
 }
 
-.tod-btn.active,
-.species-btn.active {
-  background: linear-gradient(135deg, rgba(239, 201, 120, 0.35), rgba(184, 137, 42, 0.45));
-  border-color: #efc978;
-  color: #ffe7ad;
-  box-shadow: 0 0 10px rgba(239, 201, 120, 0.2);
+.game-hud-close-btn {
+  display: none;
 }
 
 /* Badge Celebration Toast in 3D Viewport */
 .game-badge-toast {
   position: absolute;
-  top: 16px;
+  top: 24px;
   left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  padding: 8px 18px;
+  transform: translateX(-50%) translateY(-24px);
+  padding: 10px 22px;
   border-radius: 999px;
   background: linear-gradient(135deg, rgba(30, 20, 10, 0.95), rgba(50, 35, 15, 0.95));
   border: 1.5px solid #efc978;
   color: #ffe7ad;
   font-family: 'Noto Serif SC', serif;
   font-weight: 700;
-  font-size: 0.9rem;
-  box-shadow: 0 8px 32px rgba(239, 201, 120, 0.4), 0 0 16px rgba(0, 0, 0, 0.8);
+  font-size: 0.94rem;
+  box-shadow: 0 8px 32px rgba(239, 201, 120, 0.4), 0 0 20px rgba(0, 0, 0, 0.85);
   pointer-events: none;
   opacity: 0;
   transition: all 300ms cubic-bezier(0.2, 0.8, 0.25, 1);
-  z-index: 10;
-  backdrop-filter: blur(12px);
+  z-index: 20;
+  backdrop-filter: blur(14px);
 }
 
 .game-badge-toast.show {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
+}
+
+@media (max-width: 820px) {
+  .sanctuary-3d-dialog {
+    max-width: 98vw;
+    width: 98vw;
+    height: 94vh;
+    border-radius: 18px;
+  }
+  .game-scenario-tabs {
+    max-width: calc(100% - 170px);
+  }
+  .game-quest-badge {
+    top: 62px;
+    max-width: 280px;
+    padding: 10px 14px;
+  }
+  .game-hud-panel {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 12px;
+  }
+  .game-hud-actions {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+  }
+  #gamePrimaryActionBtn {
+    flex: 1;
+    justify-content: center;
+  }
+  .game-secondary-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .game-3d-overlay-hint {
+    bottom: 110px;
+  }
+}
+
+@media (max-width: 540px) {
+  .game-scenario-tabs {
+    max-width: calc(100% - 150px);
+  }
+  .game-quest-badge {
+    top: 58px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+  }
+  .game-hud-panel {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  .game-hud-close-btn {
+    display: inline-block;
+  }
 }
