@@ -6,11 +6,13 @@ test("prototype JavaScript has valid syntax", async () => {
   const dataSource = await readText("prototype/app/data.js");
   const authSource = await readText("prototype/app/auth.js");
   const source = await readText("prototype/app/app.js");
+  const game3dSource = await readText("prototype/app/game3d.js");
   const landingSource = await readText("prototype/landing.js");
   const landingI18n = await readText("prototype/landing.i18n.js");
   assert.doesNotThrow(() => new Function(dataSource));
   assert.doesNotThrow(() => new Function(authSource));
   assert.doesNotThrow(() => new Function(source));
+  assert.doesNotThrow(() => new Function(game3dSource));
   assert.doesNotThrow(() => new Function(landingI18n));
   assert.doesNotThrow(() => new Function(landingSource));
 });
@@ -24,6 +26,7 @@ test("site serves the landing at root and the app under /app over HTTP", async (
     const data = await fetch(`${baseUrl}/app/data.js`);
     const auth = await fetch(`${baseUrl}/app/auth.js`);
     const js = await fetch(`${baseUrl}/app/app.js`);
+    const game3d = await fetch(`${baseUrl}/app/game3d.js`);
 
     assert.equal(landing.status, 200);
     assert.equal(landingCss.status, 200);
@@ -32,6 +35,7 @@ test("site serves the landing at root and the app under /app over HTTP", async (
     assert.equal(data.status, 200);
     assert.equal(auth.status, 200);
     assert.equal(js.status, 200);
+    assert.equal(game3d.status, 200);
 
     const landingHtml = await landing.text();
     assert.match(landingHtml, /Foobow/);
@@ -43,6 +47,7 @@ test("site serves the landing at root and the app under /app over HTTP", async (
     assert.match(html, /data\.js/);
     assert.match(html, /auth\.js/);
     assert.match(html, /app\.js/);
+    assert.match(html, /game3d\.js/);
   });
 });
 

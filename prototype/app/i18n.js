@@ -253,6 +253,9 @@ window.FOOBOW_APP_I18N = {
       "deckDeedTree": "Plant Seedling",
       "deckDeedTreeDesc": "Sprout green virtue",
       "performMapDeed": "🌊 Perform Deed Here (+5 Merit)",
+      "launch3DGame": "🎮 3D Sanctuary Game · 场景三维互动",
+      "open3DDeedGame": "🎮 3D Interactive Release Game",
+      "gameCanvasHint": "Drag to rotate 3D camera · Tap water to interact",
       "dailyThoughts": [
         "A small kindness is still kindness.",
         "You can begin the day again at any hour.",
@@ -630,6 +633,9 @@ window.FOOBOW_APP_I18N = {
       "deckDeedTree": "共植绿树",
       "deckDeedTreeDesc": "播种新芽，福泽大地",
       "performMapDeed": "🌊 在此践行善举（功德 +5）",
+      "launch3DGame": "🎮 3D 净域三维互动 · 真实善行场景",
+      "open3DDeedGame": "🎮 3D 互动放生游戏",
+      "gameCanvasHint": "滑动旋转三维视角 · 点击水面互动",
       "dailyThoughts": [
         "微小的善意，也是善意。",
         "一天中的任何时刻，都可以重新开始。",
@@ -1007,6 +1013,9 @@ window.FOOBOW_APP_I18N = {
       "deckDeedTree": "Planter un arbre",
       "deckDeedTreeDesc": "Faire germer la vertu",
       "performMapDeed": "🌊 Accomplir l'action ici (+5 mérite)",
+      "launch3DGame": "🎮 Jeu 3D du sanctuaire · Scène interactive",
+      "open3DDeedGame": "🎮 Jeu interactif 3D de libération",
+      "gameCanvasHint": "Glissez pour pivoter la caméra 3D · Touchez l'eau pour interagir",
       "dailyThoughts": [
         "Une petite bonté reste une bonté.",
         "On peut recommencer la journée à toute heure.",
@@ -1379,6 +1388,9 @@ window.FOOBOW_APP_I18N = {
       "deckDeedTree": "Plantar un brote",
       "deckDeedTreeDesc": "Germinar virtud verde",
       "performMapDeed": "🌊 Realizar acción aquí (+5 mérito)",
+      "launch3DGame": "🎮 Juego 3D del santuario · Escena interactiva",
+      "open3DDeedGame": "🎮 Juego interactivo 3D de liberación",
+      "gameCanvasHint": "Arrastra para rotar la cámara 3D · Toca el agua para interactuar",
       "dailyThoughts": [
         "Una pequeña bondad sigue siendo bondad.",
         "Puedes empezar el día de nuevo a cualquier hora.",
@@ -1750,6 +1762,9 @@ window.FOOBOW_APP_I18N = {
       "deckDeedTree": "ปลูกต้นกล้า",
       "deckDeedTreeDesc": "เพาะพันธุ์กุศลอันเขียวขจี",
       "performMapDeed": "🌊 ทำความดี ณ ที่นี่ (+5 บุญ)",
+      "launch3DGame": "🎮 มินิเกม 3 มิติแดนบุญ · ฉากจำลองสถานการณ์จริง",
+      "open3DDeedGame": "🎮 เกมจำลองการปล่อยปลา 3 มิติ",
+      "gameCanvasHint": "ลากเพื่อหมุนมุมมอง 3 มิติ · แตะผิวน้ำเพื่อโต้ตอบ",
       "dailyThoughts": [
         "ความเมตตาเล็กๆ ก็ยังคือความเมตตา",
         "คุณเริ่มต้นวันใหม่ได้ทุกเวลา",
@@ -2122,6 +2137,9 @@ window.FOOBOW_APP_I18N = {
       "deckDeedTree": "若木を植える",
       "deckDeedTreeDesc": "緑の徳を育む",
       "performMapDeed": "🌊 ここで善行を行う（功徳 +5）",
+      "launch3DGame": "🎮 3D 聖地インタラクティブゲーム · 善行シナリオ",
+      "open3DDeedGame": "🎮 3D 放生インタラクティブゲーム",
+      "gameCanvasHint": "ドラッグして3Dカメラを回転 · 水面をタップして対話",
       "dailyThoughts": [
         "小さなやさしさも、やさしさです。",
         "一日は、どの時間からでもやり直せます。",

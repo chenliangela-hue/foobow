@@ -74,3 +74,26 @@ test("ritual preview: animated lotus pond and swimming koi swoops on perform", a
   await expect(page.locator("#ritualDedication")).toBeVisible();
 });
 
+test("3D sanctuary mini-game launches, switches scenarios, and allows interactive fish release", async ({ page }) => {
+  await expect(page.locator("#open3DDeedGameBtn")).toBeVisible();
+  await page.locator("#open3DDeedGameBtn").click();
+
+  const modal = page.locator("#sanctuary3DGameModal");
+  await expect(modal).toBeVisible();
+  await expect(page.locator("#sanctuary3DCanvas")).toBeVisible();
+  await expect(page.locator("#gameScenarioTitle")).toContainText("East Lake");
+
+  // Interactive release button
+  await page.locator("#gamePrimaryActionBtn").click();
+  await expect(page.locator("#gameGoalCounter")).toContainText("1/5");
+
+  // Switch scenario to Toronto
+  await page.locator(".game-scenario-tab[data-scenario='toronto-crosswalk']").click();
+  await expect(page.locator("#gameScenarioTitle")).toContainText("Toronto");
+
+  // Close modal
+  await page.locator("#close3DGameTopBtn").click();
+  await expect(modal).not.toBeVisible();
+});
+
+

@@ -243,7 +243,17 @@
   - Deployed zero-token interaction blessing pack (`content/blessing-pack.v1.json`) to Supabase CDN via `content:upload`, verified live via HTTP 200.
   - Optimized OpenStreetMap vector tile rendering with configurable tile templates (`FOOBOW_MAP_TILE_URL`), security/referrer headers, and theme-adaptive vector parchment SVG fallbacks for light and dark modes.
   - Added 40th root test verifying sanctuary coordinates, telemetry bounds, and tile configuration (40/40 root tests passing).
-  - Passed all 9 quality gates in `npm run test:all` (40 unit, catalog, env, advisories, 26 API, mobile typecheck, 93 browser, 8 visual baselines, 0 security vulnerabilities).
+- Phase 5 Track 3 (3D & Animated Interactive Sanctuary Mini-Game with Real Scenarios):
+  - Built zero-dependency 3D perspective mini-game engine in `prototype/app/game3d.js` with real-time camera projection, dynamic water vertex wave mesh, articulated multi-segment swimming koi kinematics, lighting, and touch physics.
+  - Implemented 4 real-world sanctuary scenarios linked to the World Map & Deeds:
+    - Wuhan East Lake (30.5539° N, 114.3644° E): Flagship 3D Fish Release with drag/tap release bowl, swimming koi kinematics, lotus petal feeding, and sanctuary dedication goal.
+    - Toronto Crosswalk (43.6532° N, 79.3832° W): 3D Safe Elder Escort with street perspective, pedestrian signal chimes, animated stopping cars, and kindness shields.
+    - Amazon Rainforest (-3.4653° S, 62.2159° W): 3D Sacred Tree Planting with real-time sprouting, rain shower nurturing, and blossoming golden canopy.
+    - Kyoto Night River (35.0116° N, 135.7681° E): 3D Flowing Wish Lanterns under moonlight with water caustics and breeze guidance.
+  - Integrated 3D Game modal dialog (`#sanctuary3DGameModal`), Map screen launch button (`#launch3DGameBtn`), and Deeds screen trigger (`#open3DDeedGameBtn`).
+  - Added full 6-locale translation parity across all new game controls in `prototype/app/i18n.js` (`en`, `zh-Hans`, `fr`, `es`, `th`, `ja`).
+  - Enhanced Mobile app `LotusPondScene.tsx` with interactive touch-to-release mechanics, animated ripples, and haptic vibration.
+  - Verified 100% test pass across all quality gates: 40/40 root tests, mobile TypeScript typecheck (0 errors), and 94/94 Playwright browser tests.
 
 ## Next
 

@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Easing,
+  Pressable,
   StyleSheet,
   Text,
+  Vibration,
   View
 } from "react-native";
 import { layout } from "../../theme/theme";
@@ -12,10 +14,13 @@ import { useThemeColors } from "../../theme/ThemeContext";
 type LotusPondSceneProps = {
   isReleased?: boolean;
   seniorMode?: boolean;
+  onInteractiveRelease?: () => void;
 };
 
-export function LotusPondScene({ isReleased, seniorMode }: LotusPondSceneProps) {
+export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }: LotusPondSceneProps) {
   const currentColors = useThemeColors();
+  const [interactiveCount, setInteractiveCount] = useState(0);
+  const touchRippleAnim = useRef(new Animated.Value(0)).current;
 
   // Swimming koi orbit animations
   const koiOrbitAnim = useRef(new Animated.Value(0)).current;
@@ -122,8 +127,60 @@ export function LotusPondScene({ isReleased, seniorMode }: LotusPondSceneProps) 
     outputRange: [0, -5]
   });
 
+  const handlePondPress = () => {
+    try {
+      Vibration.vibrate(15);
+    } catch {}
+    setInteractiveCount((c) => c + 1);
+    touchRippleAnim.setValue(0);
+    Animated.timing(touchRippleAnim, {
+      toValue: 1,
+      duration: 1200,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true
+    }).start();
+
+    releaseAnim.setValue(0);
+    Animated.timing(releaseAnim, {
+      toValue: 1,
+      duration: 2400,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true
+    }).start();
+
+    if (onInteractiveRelease) {
+      onInteractiveRelease();
+    }
+  };
+
   return (
-    <View style={[styles.pondContainer, { borderColor: currentColors.gold }]}>
+    <Pressable
+      style={[styles.pondContainer, { borderColor: currentColors.gold }]}
+      onPress={handlePondPress}
+      accessibilityRole="button"
+      accessibilityLabel="Zen lotus pond, tap to release swimming koi"
+    >
+      {/* Interactive touch ripple ring */}
+      <Animated.View
+        style={[
+          styles.touchRippleRing,
+          {
+            opacity: touchRippleAnim.interpolate({
+              inputRange: [0, 0.7, 1],
+              outputRange: [0.8, 0.3, 0]
+            }),
+            transform: [
+              {
+                scale: touchRippleAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.2, 3.5]
+                })
+              }
+            ]
+          }
+        ]}
+        pointerEvents="none"
+      />
       {/* Water shimmer backdrop */}
       <View style={styles.waterShimmer} pointerEvents="none" />
 
@@ -226,9 +283,16 @@ export function LotusPondScene({ isReleased, seniorMode }: LotusPondSceneProps) 
         </Animated.View>
       )}
 
+      {/* Interactive Released Counter Pill */}
+      {interactiveCount > 0 && (
+        <View style={styles.interactivePill} pointerEvents="none">
+          <Text style={styles.interactivePillText}>🐟 Released: {interactiveCount}</Text>
+        </View>
+      )}
+
       {/* Soft shoreline curve */}
       <View style={styles.shoreline} pointerEvents="none" />
-    </View>
+    </Pressable>
   );
 }
 
@@ -393,5 +457,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#cbb382",
     transform: [{ rotate: "-3deg" }],
     opacity: 0.3
+  },
+  touchRippleRing: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: "#efc978",
+    zIndex: 2
+  },
+  interactivePill: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    backgroundColor: "rgba(10, 36, 40, 0.8)",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(239, 201, 120, 0.5)",
+    zIndex: 10
+  },
+  interactivePillText: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#ffe7ad"
   }
 });

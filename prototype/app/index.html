@@ -665,6 +665,7 @@
             </section>
 
             <div class="spot-actions-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 8px;">
+              <button class="primary-action" id="launch3DGameBtn" type="button" data-i18n="launch3DGame">🎮 3D Sanctuary Game · 场景三维互动</button>
               <button class="text-button" id="spotActionBtn" type="button" data-i18n="matchDeedBtn">Perform matching deed →</button>
               <button class="text-button" id="openLiveMapBtn" type="button" data-i18n="liveMapOpen">🌐 Live OpenStreetMap Sanctuary</button>
             </div>
@@ -788,16 +789,19 @@
               <div class="deed-scene-layer scene-crosswalk-layer" id="sceneCrosswalkLayer" aria-hidden="true">
                 <div class="crosswalk-lantern lantern-left">🏮</div>
                 <div class="crosswalk-lantern lantern-right">🏮</div>
-                <div class="crosswalk-pedestrian-light">🚶‍♂️</div>
+                <div class="crosswalk-stripes"></div>
+                <div class="elder-pedestrian">👵</div>
+                <div class="escort-heart">🤝</div>
               </div>
               <div class="deed-scene-layer scene-blessing-layer" id="sceneBlessingLayer" aria-hidden="true">
+                <div class="floating-lotus-lantern">🪔</div>
                 <div class="blessing-floating-heart">💖</div>
-                <div class="blessing-floating-lantern">🪔</div>
+                <div class="blessing-streamer">✨</div>
               </div>
               <div class="deed-scene-layer scene-coastline-layer" id="sceneCoastlineLayer" aria-hidden="true">
-                <div class="coastline-sparkle sparkle-1">✨</div>
-                <div class="coastline-sparkle sparkle-2">🌱</div>
-                <div class="coastline-sparkle sparkle-3">🐚</div>
+                <div class="coastline-sparkle sparkle-1">🌱</div>
+                <div class="coastline-sparkle sparkle-2">🐚</div>
+                <div class="coastline-sparkle sparkle-3">✨</div>
               </div>
 
               <div class="shoreline"></div>
@@ -806,7 +810,10 @@
               <p class="eyebrow" data-i18n="ritualPreview">Ritual preview</p>
               <h3 id="ritualTitle">Compassionate Fish Release</h3>
               <p id="ritualDesc">Release a digital fish into a selected lake or river.</p>
-              <button class="primary-action" id="performRitual" type="button" data-i18n="performRitual">Perform ritual</button>
+              <div class="ritual-buttons-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+                <button class="primary-action" id="performRitual" type="button" data-i18n="performRitual">Perform ritual</button>
+                <button class="text-button" id="open3DDeedGameBtn" type="button" data-i18n="open3DDeedGame">🎮 3D Interactive Release Game</button>
+              </div>
               <div class="ritual-dedication" id="ritualDedication" aria-live="polite" hidden></div>
             </div>
           </section>
@@ -1291,6 +1298,48 @@
       </div>
     </dialog>
 
+    <dialog id="sanctuary3DGameModal" class="zen-dialog sanctuary-3d-dialog">
+      <div class="dialog-body sanctuary-3d-dialog-body">
+        <div class="dialog-header">
+          <div>
+            <p class="eyebrow" id="gameScenarioCoords">📍 30.5539° N, 114.3644° E · Freshwater Sanctuary</p>
+            <h2 id="gameScenarioTitle">East Lake Sanctuary · 慈心放生池</h2>
+          </div>
+          <button class="icon-close-btn" id="close3DGameTopBtn" type="button" aria-label="Close 3D game">✕</button>
+        </div>
+
+        <!-- Scenario Quick Switcher -->
+        <div class="game-scenario-tabs" role="tablist" aria-label="Sanctuary 3D Scenarios">
+          <button class="game-scenario-tab active" type="button" data-scenario="east-lake" role="tab">🐟 East Lake (Fish Release)</button>
+          <button class="game-scenario-tab" type="button" data-scenario="toronto-crosswalk" role="tab">👵 Toronto (Crosswalk)</button>
+          <button class="game-scenario-tab" type="button" data-scenario="amazon-grove" role="tab">🌱 Amazon (Tree Planting)</button>
+          <button class="game-scenario-tab" type="button" data-scenario="night-corridor" role="tab">🏮 Kyoto (Wish Lantern)</button>
+        </div>
+
+        <!-- 3D Viewport Stage -->
+        <div class="sanctuary-3d-viewport" id="sanctuary3DViewport" aria-label="3D Sanctuary Interactive Viewport">
+          <canvas id="sanctuary3DCanvas" class="sanctuary-3d-canvas"></canvas>
+          <div class="game-3d-overlay-hint" data-i18n="gameCanvasHint">Drag to rotate 3D camera · Tap water to interact</div>
+        </div>
+
+        <!-- Real-time HUD and Gameplay Controls -->
+        <div class="game-hud-panel">
+          <div class="game-hud-status">
+            <span class="game-goal-counter" id="gameGoalCounter">Release 5 fish: 0/5 · 功德 +0</span>
+          </div>
+          <div class="game-hud-actions">
+            <button class="primary-action game-hud-btn" id="gamePrimaryActionBtn" type="button">🐟 Release Koi (+1)</button>
+            <button class="text-button game-hud-btn" id="gameSecondaryActionBtn" type="button">Feed Lotus Petals</button>
+            <button class="text-button game-hud-btn-sm" id="gameResetCamBtn" type="button" title="Reset Camera View">🔄 View</button>
+          </div>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="text-button" id="close3DGameBottomBtn" type="button" data-i18n="closeDialog">Close</button>
+        </div>
+      </div>
+    </dialog>
+
     <audio id="sanskritAudio" preload="auto"></audio>
 
     <script src="data.js"></script>
@@ -1298,6 +1347,7 @@
     <script src="sanskrit-tracks.js"></script>
     <script src="auth.js"></script>
     <script src="app.js"></script>
+    <script src="game3d.js"></script>
     <script src="community.js"></script>
   </body>
 </html>

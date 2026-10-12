@@ -492,9 +492,18 @@ function renderSelectedDeed() {
   const crosswalk = document.getElementById("sceneCrosswalkLayer");
   const blessing = document.getElementById("sceneBlessingLayer");
   const coastline = document.getElementById("sceneCoastlineLayer");
-  if (crosswalk) crosswalk.classList.toggle("active", deed.id === "elder-crosswalk" || deed.categoryKey === "elders");
-  if (blessing) blessing.classList.toggle("active", deed.id === "anonymous-blessing" || deed.categoryKey === "support");
-  if (coastline) coastline.classList.toggle("active", deed.id === "coastline-cleanup" || deed.categoryKey === "environment");
+  const isElder = deed.id === "elder-crosswalk" || deed.categoryKey === "elders";
+  const isBlessing = deed.id === "anonymous-blessing" || deed.categoryKey === "support";
+  const isCoastline = deed.id === "coastline-cleanup" || deed.categoryKey === "environment";
+
+  if (crosswalk) crosswalk.classList.toggle("active", isElder);
+  if (blessing) blessing.classList.toggle("active", isBlessing);
+  if (coastline) coastline.classList.toggle("active", isCoastline);
+
+  const ritualScene = document.getElementById("ritualScene");
+  if (ritualScene) {
+    ritualScene.classList.toggle("custom-scene-active", isElder || isBlessing || isCoastline);
+  }
 
   renderFocusSession();
 }
@@ -978,6 +987,24 @@ function renderPrayCategories() {
   });
 }
 
+const GENTLE_LAMP_WISHES = [
+  "May all beings find peace & well-being (愿众生安康)",
+  "Silent prayer held in a peaceful heart (心中默默祈愿)",
+  "Light, warmth, and safe paths for all in need (愿光明温暖世间)",
+  "Peace and harmony for family and dear ones (祈愿家人安宁)",
+  "May every mindful step bring calm and clarity (愿步步安详)"
+];
+
+function getAuspiciousLampWish(rawWish) {
+  if (rawWish && rawWish !== "·" && rawWish !== "." && rawWish.trim().length > 0) {
+    return rawWish.trim();
+  }
+  const dict = dictionary();
+  if (dict.defaultLampWish) return dict.defaultLampWish;
+  const idx = Math.floor(Math.random() * GENTLE_LAMP_WISHES.length);
+  return GENTLE_LAMP_WISHES[idx];
+}
+
 function renderLamps() {
   const list = document.getElementById("lampList");
   const count = document.getElementById("lampCount");
@@ -992,7 +1019,7 @@ function renderLamps() {
     flame.setAttribute("aria-hidden", "true");
     flame.textContent = "🪔";
     const text = document.createElement("span");
-    text.textContent = lamp.wish || "·";
+    text.textContent = getAuspiciousLampWish(lamp.wish);
     li.append(flame, text);
     list.append(li);
   });
@@ -1075,7 +1102,8 @@ function setupBlessings() {
   });
 
   lightLamp.addEventListener("click", function () {
-    const wish = lampWish.value.trim();
+    const inputWish = lampWish.value.trim();
+    const wish = getAuspiciousLampWish(inputWish);
     state.lamps.unshift({ id: "lamp_" + Date.now(), wish: wish, litAt: Date.now() });
     lampWish.value = "";
     updateKarma(1);
