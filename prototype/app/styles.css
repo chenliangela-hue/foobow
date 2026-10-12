@@ -7212,6 +7212,61 @@ body.dark .buddhist-compass-rose {
   box-shadow: 0 0 12px rgba(239, 201, 120, 0.25);
 }
 
+.game-wish-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.wish-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #cfd8dc;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+  white-space: nowrap;
+}
+
+.wish-btn:hover {
+  color: #fffaf0;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wish-btn.active {
+  background: linear-gradient(135deg, rgba(239, 201, 120, 0.35), rgba(184, 137, 42, 0.45));
+  border-color: #efc978;
+  color: #ffe7ad;
+  box-shadow: 0 0 12px rgba(239, 201, 120, 0.25);
+}
+
+.game-combo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(239, 201, 120, 0.28), rgba(247, 127, 0, 0.35));
+  border: 1px solid #efc978;
+  color: #ffe7ad;
+  font-size: 0.74rem;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(239, 201, 120, 0.35);
+  animation: comboPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes comboPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 3px #efc978); }
+  50% { transform: scale(1.06); filter: drop-shadow(0 0 8px #ffd166); }
+}
+
 .game-hud-actions {
   display: flex;
   align-items: center;

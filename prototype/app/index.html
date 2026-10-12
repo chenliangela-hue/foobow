@@ -1333,6 +1333,7 @@
             <h2 class="game-quest-title" id="gameScenarioTitle">East Lake Sanctuary · 慈心放生池</h2>
             <div class="game-hud-status">
               <span class="game-goal-counter" id="gameGoalCounter">Release 5 fish: 0/5 · 功德 +0</span>
+              <span class="game-combo-badge" id="gameComboBadge" hidden>✨ <span id="gameComboMultiplier">2</span>x Serenity</span>
             </div>
             <div class="game-goal-bar-wrap" aria-hidden="true">
               <div class="game-goal-bar-fill" id="gameGoalBarFill"></div>
@@ -1340,7 +1341,7 @@
           </div>
 
           <!-- Interactive Center Overlays & Toasts -->
-          <div class="game-3d-overlay-hint" data-i18n="gameCanvasHint">💡 Tap water to scatter food · Drag to orbit · Scroll to zoom</div>
+          <div class="game-3d-overlay-hint" id="gameCanvasHint" data-i18n="gameCanvasHint">💡 Tap water to scatter food · Drag to orbit · Scroll to zoom</div>
           <div class="game-badge-toast" id="gameBadgeToast" hidden role="status" aria-live="polite"></div>
 
           <!-- Floating Glass Bottom Action Dock -->
@@ -1351,6 +1352,15 @@
               <button class="species-btn" type="button" data-species="kohaku" title="Kohaku · 红白锦鲤">🔴 红白</button>
               <button class="species-btn" type="button" data-species="showa" title="Showa · 昭和三色">⚫ 昭和</button>
               <button class="species-btn" type="button" data-species="turtle" title="River Terrapin · 吉祥灵龟">🐢 灵龟</button>
+            </div>
+
+            <!-- Wish Selector Chips (shown in Kyoto Night River) -->
+            <div class="game-wish-picker" id="gameWishPicker" role="radiogroup" aria-label="Lantern Wish Intention" style="display: none;">
+              <button class="wish-btn active" type="button" data-wish="peace" title="Peace · 平安">🕊️ 平安</button>
+              <button class="wish-btn" type="button" data-wish="health" title="Health · 安康">🌿 安康</button>
+              <button class="wish-btn" type="button" data-wish="wisdom" title="Wisdom · 般若">✨ 般若</button>
+              <button class="wish-btn" type="button" data-wish="love" title="Compassion · 慈爱">💖 慈爱</button>
+              <button class="wish-btn" type="button" data-wish="release" title="Release · 释然">🌊 释然</button>
             </div>
 
             <!-- Primary & Secondary Interactive Action Buttons -->

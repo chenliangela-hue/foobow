@@ -21,7 +21,10 @@ export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }:
   const currentColors = useThemeColors();
   const [interactiveCount, setInteractiveCount] = useState(0);
   const [species, setSpecies] = useState<"yamabuki" | "kohaku" | "turtle">("yamabuki");
+  const [comboCount, setComboCount] = useState(0);
   const touchRippleAnim = useRef(new Animated.Value(0)).current;
+  const touchCrumbAnim = useRef(new Animated.Value(0)).current;
+  const comboTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Swimming koi orbit animations
   const koiOrbitAnim = useRef(new Animated.Value(0)).current;
@@ -133,6 +136,10 @@ export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }:
       Vibration.vibrate(15);
     } catch {}
     setInteractiveCount((c) => c + 1);
+    setComboCount((c) => c + 1);
+    if (comboTimerRef.current) clearTimeout(comboTimerRef.current);
+    comboTimerRef.current = setTimeout(() => setComboCount(0), 3200);
+
     touchRippleAnim.setValue(0);
     Animated.timing(touchRippleAnim, {
       toValue: 1,
@@ -140,6 +147,22 @@ export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }:
       easing: Easing.out(Easing.ease),
       useNativeDriver: true
     }).start();
+
+    touchCrumbAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(touchCrumbAnim, {
+        toValue: 1,
+        duration: 350,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true
+      }),
+      Animated.timing(touchCrumbAnim, {
+        toValue: 0,
+        duration: 650,
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true
+      })
+    ]).start();
 
     releaseAnim.setValue(0);
     Animated.timing(releaseAnim, {
@@ -284,6 +307,34 @@ export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }:
         </Animated.View>
       )}
 
+      {/* Interactive Food Pellet Particle */}
+      <Animated.View
+        style={[
+          styles.foodPellet,
+          {
+            opacity: touchCrumbAnim.interpolate({
+              inputRange: [0, 0.2, 1],
+              outputRange: [0, 1, 0.9]
+            }),
+            transform: [
+              {
+                translateY: touchCrumbAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-18, 12]
+                })
+              },
+              {
+                scale: touchCrumbAnim.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [0.5, 1.3, 0.8]
+                })
+              }
+            ]
+          }
+        ]}
+        pointerEvents="none"
+      />
+
       {/* Interactive Released Counter & Badge Pill */}
       {interactiveCount > 0 && (
         <View style={styles.interactivePill} pointerEvents="none">
@@ -291,6 +342,7 @@ export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }:
             {interactiveCount >= 5
               ? `🏅 Guardian (${interactiveCount})`
               : `${species === "turtle" ? "🐢" : "🐟"} Released: ${interactiveCount}`}
+            {comboCount > 1 ? ` · ✨ ${comboCount >= 3 ? "3x Bloom" : "2x Flow"}` : ""}
           </Text>
         </View>
       )}
@@ -489,6 +541,17 @@ const styles = StyleSheet.create({
   },
   goldKoiTail: {
     backgroundColor: "rgba(246, 211, 122, 0.9)"
+  },
+  foodPellet: {
+    position: "absolute",
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#ffd166",
+    borderWidth: 1,
+    borderColor: "#e65c00",
+    top: 60,
+    zIndex: 6
   },
   shoreline: {
     position: "absolute",

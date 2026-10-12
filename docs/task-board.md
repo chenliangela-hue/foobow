@@ -274,7 +274,16 @@
     - Underwater depth drop shadows beneath swimming koi and turtles.
     - Organic lily pads with dew drops, 3D riverbed pebbles, and lakeside timber dock.
   - Full-screen scene upgrades for all other scenarios: Toronto crosswalk with double yellow lines and autumn trees; Amazon grove with volumetric god rays and jungle floor; Kyoto night river with stone banks and stone lanterns (*tōrō*); Oxford library with rich mahogany desk and banker's lamp.
-  - 100% test pass verified: 40/40 root tests, 14/14 browser deeds tests, and 0 mobile TypeScript errors.
+  - Phase 5 Track 6 (Multi-Scenario Tactile Mini-Game Mechanics, Serenity Combo Streaks & Wish Selector):
+    - Added rich interactive click/tap physics across all 5 scenarios:
+      - East Lake: tap-to-scatter food pellets with water splash droplets, ripples, and enthusiastic koi school feeding AI.
+      - Toronto Crosswalk: tap-to-place Safe Haven Kindness Beacons on roadway with smooth car braking physics, glowing brake lights, and pedestrian guidance.
+      - Amazon Rainforest: tap-to-sprout Bodhi saplings on the forest floor, rain showers with leaf splashes, and radiant canopy rainbow arc.
+      - Kyoto Night River: tap-to-float wish lanterns directly into current, interactive Wish Intention Selector (Peace, Health, Wisdom, Love, Release), and celebratory ascending sky lanterns.
+      - Oxford Library: tap-to-flip manuscript pages, cozy steaming teacup on mahogany desk, and calligraphy quill ink strokes.
+    - Added Serenity Combo Streak engine (`x2 -> x3 -> x5`) with animated floating HUD combo badge and multiplied karma scoring.
+    - Enhanced mobile `LotusPondScene.tsx` with animated food pellet drop physics, combo streak counter, and haptic vibration feedback.
+    - Verified 100% test pass: 40/40 root tests, 14/14 browser deeds tests, and 0 mobile TypeScript errors.
 
 ## Next
 

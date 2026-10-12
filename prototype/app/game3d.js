@@ -146,6 +146,30 @@
     "reading-room": { count: 0, score: 0, completed: false }
   };
 
+  // Serenity Combo State
+  const comboState = {
+    count: 0,
+    timer: 0,
+    multiplier: 1
+  };
+
+  const WISH_LABELS = {
+    peace: { en: "Peace · 平安", zh: "平安" },
+    health: { en: "Health · 安康", zh: "安康" },
+    wisdom: { en: "Wisdom · 般若", zh: "般若" },
+    love: { en: "Compassion · 慈爱", zh: "慈爱" },
+    release: { en: "Release · 释然", zh: "释然" }
+  };
+  let currentWish = "peace";
+
+  const SCENARIO_HINTS = {
+    "east-lake": "💡 Tap water to scatter food · Drag to orbit · Scroll to zoom",
+    "toronto-crosswalk": "💡 Tap avenue to place safe haven beacon · Press signal to walk",
+    "amazon-grove": "💡 Tap jungle floor to sprout Bodhi saplings · Rain brings full bloom",
+    "night-corridor": "💡 Tap river to float wish lanterns · Guide light into the night",
+    "reading-room": "💡 Tap manuscript to turn pages · Contemplate timeless wisdom proverbs"
+  };
+
   // Gamification Celebration Badge
   const celebrationBadge = {
     active: false,
@@ -160,6 +184,7 @@
   let koiFishList = [];
   let lakeRipples = [];
   let foodCrumbs = [];
+  let splashDroplets = [];
   let waterTime = 0;
 
   // Scenario 2: Toronto Crosswalk Entities
@@ -291,6 +316,22 @@
     });
   }
 
+  function spawnWaterSplash(x, z) {
+    for (let i = 0; i < 9; i++) {
+      const angle = (i / 9) * Math.PI * 2 + Math.random() * 0.4;
+      const speed = 1.0 + Math.random() * 1.5;
+      splashDroplets.push({
+        x: x + Math.cos(angle) * 3,
+        y: 2,
+        z: z + Math.sin(angle) * 3,
+        vx: Math.cos(angle) * speed,
+        vy: 2.2 + Math.random() * 2.0,
+        vz: Math.sin(angle) * speed,
+        life: 1.0
+      });
+    }
+  }
+
   function updateEastLake(dt) {
     waterTime += dt;
 
@@ -311,6 +352,19 @@
       crumb.life -= dt * 0.2;
       if (crumb.life <= 0) {
         foodCrumbs.splice(i, 1);
+      }
+    }
+
+    // Update water splash droplets
+    for (let i = splashDroplets.length - 1; i >= 0; i--) {
+      const drop = splashDroplets[i];
+      drop.x += drop.vx;
+      drop.y += drop.vy;
+      drop.z += drop.vz;
+      drop.vy -= 0.16;
+      drop.life -= dt * 1.6;
+      if (drop.y <= 0 || drop.life <= 0) {
+        splashDroplets.splice(i, 1);
       }
     }
 
@@ -340,8 +394,10 @@
           const idx = foodCrumbs.indexOf(nearestFood);
           if (idx !== -1) foodCrumbs.splice(idx, 1);
           addWaterRipple(koi.x, koi.z, 22, 0.7);
-          spawnFloatingMerit3D(koi.x, 8, koi.z, "Harmony +5 · 悦纳");
-          progressState["east-lake"].score += 5;
+          spawnWaterSplash(koi.x, koi.z);
+          spawnFloatingMerit3D(koi.x, 8, koi.z, `Harmony +${5 * comboState.multiplier} · 悦纳`);
+          progressState["east-lake"].score += 5 * comboState.multiplier;
+          recordComboAction();
           updateHUD();
         }
       } else {
@@ -586,6 +642,19 @@
       ctx.fillStyle = "#ffd166";
       ctx.shadowColor = "#fca311";
       ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
+    // 7b. Water Splash Droplets
+    splashDroplets.forEach((drop) => {
+      const p = project(drop.x, drop.y, drop.z);
+      if (!p.visible) return;
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, Math.max(1.4, 2.6 * p.scale), 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.shadowColor = "#8ecae6";
+      ctx.shadowBlur = 4;
       ctx.fill();
       ctx.shadowBlur = 0;
     });
@@ -2022,6 +2091,16 @@
     const dt = Math.min(0.1, (time - lastTime) / 1000 || 0.016);
     lastTime = time;
 
+    // 0. Serenity Combo Decay
+    if (comboState.timer > 0) {
+      comboState.timer -= dt;
+      if (comboState.timer <= 0) {
+        comboState.count = 0;
+        comboState.multiplier = 1;
+        updateHUD();
+      }
+    }
+
     // 1. Atmosphere / Dynamic Sky & Stars
     drawAtmosphere(dt);
 
@@ -2159,6 +2238,20 @@
     updateHUD();
   }
 
+  function recordComboAction() {
+    if (comboState.timer > 0) {
+      comboState.count += 1;
+    } else {
+      comboState.count = 1;
+    }
+    comboState.timer = 4.2;
+    if (comboState.count >= 5) comboState.multiplier = 5;
+    else if (comboState.count >= 3) comboState.multiplier = 3;
+    else if (comboState.count >= 2) comboState.multiplier = 2;
+    else comboState.multiplier = 1;
+    updateHUD();
+  }
+
   function updateHUD() {
     const scen = SCENARIOS[currentScenarioKey];
     const isZh = document.documentElement.lang.startsWith("zh");
@@ -2195,6 +2288,24 @@
       fillEl.style.width = `${pct}%`;
     }
 
+    // Combo badge
+    const comboBadge = document.getElementById("gameComboBadge");
+    const comboMultiplier = document.getElementById("gameComboMultiplier");
+    if (comboBadge && comboMultiplier) {
+      if (comboState.multiplier > 1 && comboState.timer > 0) {
+        comboBadge.hidden = false;
+        comboMultiplier.textContent = String(comboState.multiplier);
+      } else {
+        comboBadge.hidden = true;
+      }
+    }
+
+    // Dynamic scenario hint
+    const hintEl = document.getElementById("gameCanvasHint");
+    if (hintEl && SCENARIO_HINTS[currentScenarioKey]) {
+      hintEl.textContent = SCENARIO_HINTS[currentScenarioKey];
+    }
+
     // Active pill styling
     document.querySelectorAll(".game-scenario-tab").forEach((tab) => {
       tab.classList.toggle("active", tab.dataset.scenario === currentScenarioKey);
@@ -2204,6 +2315,12 @@
     const spPicker = document.getElementById("gameSpeciesPicker");
     if (spPicker) {
       spPicker.style.display = currentScenarioKey === "east-lake" ? "inline-flex" : "none";
+    }
+
+    // Wish picker: only shown for Kyoto
+    const wishPicker = document.getElementById("gameWishPicker");
+    if (wishPicker) {
+      wishPicker.style.display = currentScenarioKey === "night-corridor" ? "inline-flex" : "none";
     }
 
     // Camera Mode button label
@@ -2219,6 +2336,7 @@
   function performPrimaryAction() {
     const scen = SCENARIOS[currentScenarioKey];
     const prog = progressState[currentScenarioKey];
+    recordComboAction();
 
     if (currentScenarioKey === "east-lake") {
       // Release fish / turtle into East Lake
@@ -2226,13 +2344,14 @@
       const rz = -60 + Math.random() * 40;
       spawnKoi(rx, rz, Math.random() * Math.PI * 2, currentSpecies, 1.15, true);
       addWaterRipple(rx, rz, 55, 1.2);
+      spawnWaterSplash(rx, rz);
       playSound("water");
       const label = currentSpecies === "turtle" ? "Terrapin Freed · 龟放深潭 (+1)" : "Liberation · 善念放生 (+1)";
       spawnFloatingMerit3D(rx, 12, rz, label);
 
       prog.count += 1;
-      prog.score += 5;
-      awardKarma(2, "Released digital koi into East Lake");
+      prog.score += 5 * comboState.multiplier;
+      awardKarma(2 * comboState.multiplier, "Released digital koi into East Lake");
 
       if (prog.count >= scen.targetGoal && !prog.completed) {
         prog.completed = true;
@@ -2247,8 +2366,8 @@
       playSound("muyu");
       spawnFloatingMerit3D(elderPedestrian.x, 20, 0, "Walk Signal Activated · 慈心护行");
       prog.count += 1;
-      prog.score += 5;
-      awardKarma(2, "Activated safe walk chime in Toronto");
+      prog.score += 5 * comboState.multiplier;
+      awardKarma(2 * comboState.multiplier, "Activated safe walk chime in Toronto");
       if (prog.count >= scen.targetGoal && !prog.completed) {
         prog.completed = true;
         triggerBadgeUnlock("toronto-crosswalk");
@@ -2263,21 +2382,25 @@
         spawnFloatingMerit3D(tree.x, tree.height + 10, tree.z, "Tree Nurtured · 繁荣生机");
       }
       prog.count += 1;
-      prog.score += 5;
-      awardKarma(2, "Nurtured sacred Bodhi tree in Amazon grove");
+      prog.score += 5 * comboState.multiplier;
+      awardKarma(2 * comboState.multiplier, "Nurtured sacred Bodhi tree in Amazon grove");
       if (prog.count >= scen.targetGoal && !prog.completed) {
         prog.completed = true;
         triggerBadgeUnlock("amazon-grove");
       }
       updateHUD();
     } else if (currentScenarioKey === "night-corridor") {
-      // Float new wish lantern
-      spawnRiverLantern((Math.random() - 0.5) * 30, -110, "Wisdom · 般若光明");
+      // Float new wish lantern with chosen wish
+      const isZh = document.documentElement.lang.startsWith("zh");
+      const wishObj = WISH_LABELS[currentWish] || WISH_LABELS.peace;
+      const wishText = isZh ? wishObj.zh : wishObj.en;
+      spawnRiverLantern((Math.random() - 0.5) * 30, -110, wishText);
+      addWaterRipple(0, -110, 40, 1.0);
       playSound("water");
-      spawnFloatingMerit3D(0, 15, -110, "Lantern Floated · 善愿通天");
+      spawnFloatingMerit3D(0, 15, -110, `${wishText} · 善愿通天`);
       prog.count += 1;
-      prog.score += 5;
-      awardKarma(2, "Sent gentle wish lantern down Kyoto river");
+      prog.score += 5 * comboState.multiplier;
+      awardKarma(2 * comboState.multiplier, "Sent gentle wish lantern down Kyoto river");
       if (prog.count >= scen.targetGoal && !prog.completed) {
         prog.completed = true;
         triggerBadgeUnlock("night-corridor");
@@ -2293,8 +2416,8 @@
       spawnFloatingMerit3D(0, 24, 5, "Wisdom Inscribed · 般若生辉 (+1)");
 
       prog.count += 1;
-      prog.score += 5;
-      awardKarma(2, "Contemplated wisdom quote in Oxford Reading Room");
+      prog.score += 5 * comboState.multiplier;
+      awardKarma(2 * comboState.multiplier, "Contemplated wisdom quote in Oxford Reading Room");
       if (prog.count >= scen.targetGoal && !prog.completed) {
         prog.completed = true;
         triggerBadgeUnlock("reading-room");
@@ -2424,6 +2547,16 @@
       });
     });
 
+    // Wish Intention Buttons (Kyoto)
+    document.querySelectorAll(".wish-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentWish = btn.dataset.wish || "peace";
+        document.querySelectorAll(".wish-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.wish === currentWish);
+        });
+      });
+    });
+
     // Camera Mode Button
     const camModeBtn = document.getElementById("gameCamModeBtn");
     if (camModeBtn) {
@@ -2474,7 +2607,7 @@
         isDragging = false;
       });
 
-      // Tap / Click on Canvas to trigger aquatic ripples or drop petals
+      // Tap / Click on Canvas to trigger interactive gameplay across all scenarios
       canvas.addEventListener("click", (e) => {
         if (!isRunning) return;
         const rect = canvas.getBoundingClientRect();
@@ -2484,13 +2617,59 @@
         const worldX = (clickX / (camera.fov * camera.zoom)) * camera.dist;
         const worldZ = (clickY / (camera.fov * camera.zoom)) * camera.dist;
 
+        recordComboAction();
+
         if (currentScenarioKey === "east-lake") {
-          addWaterRipple(worldX, worldZ, 45, 1.0);
-          foodCrumbs.push({ x: worldX, y: 0, z: worldZ, life: 1.0 });
+          addWaterRipple(worldX, worldZ, 50, 1.2);
+          foodCrumbs.push({ x: worldX, y: 0, z: worldZ, life: 1.2 });
+          spawnWaterSplash(worldX, worldZ);
           playSound("water");
-        } else if (currentScenarioKey === "reading-room") {
-          spawnWisdomGlyphs(worldX, 12, worldZ);
+        } else if (currentScenarioKey === "toronto-crosswalk") {
+          crosswalkShields.push({ x: worldX, z: worldZ, collected: false });
+          elderPedestrian.walking = true;
+          playSound("muyu");
+          spawnFloatingMerit3D(worldX, 15, worldZ, "Safe Beacon · 善护念");
+        } else if (currentScenarioKey === "amazon-grove") {
+          sacredTrees.push({
+            x: worldX,
+            z: worldZ,
+            height: 6,
+            targetHeight: 38 + Math.random() * 25,
+            foliageR: 8,
+            bloom: false
+          });
           playSound("chime");
+          spawnFloatingMerit3D(worldX, 14, worldZ, "Forest Sprout · 生机 (+1)");
+          progressState["amazon-grove"].count += 1;
+          updateHUD();
+        } else if (currentScenarioKey === "night-corridor") {
+          const isZh = document.documentElement.lang.startsWith("zh");
+          const wishObj = WISH_LABELS[currentWish] || WISH_LABELS.peace;
+          const wishText = isZh ? wishObj.zh : wishObj.en;
+          spawnRiverLantern(worldX, worldZ, wishText);
+          addWaterRipple(worldX, worldZ, 40, 1.0);
+          playSound("water");
+          spawnFloatingMerit3D(worldX, 12, worldZ, `${wishText} · 善愿 (+1)`);
+          progressState["night-corridor"].count += 1;
+          updateHUD();
+        } else if (currentScenarioKey === "reading-room") {
+          if (Math.abs(worldX) < 65 && Math.abs(worldZ) < 45) {
+            readingBook.isFlipping = true;
+            readingBook.pageAngle = 0;
+            readingBook.curQuoteIdx = (readingBook.curQuoteIdx + 1) % readingBook.quotes.length;
+            spawnWisdomGlyphs(0, 14, 5);
+            playSound("chime");
+            spawnFloatingMerit3D(0, 24, 5, "Wisdom Inscribed · 般若 (+1)");
+          } else if (Math.abs(worldX - readingLamp.x) < 40) {
+            readingLamp.lit = !readingLamp.lit;
+            readingLamp.intensity = readingLamp.lit ? 1.4 : 0;
+            playSound("muyu");
+            spawnFloatingMerit3D(readingLamp.x, 30, readingLamp.z, readingLamp.lit ? "Lamp Glowing · 智光" : "Lamp Softened · 恬静");
+          } else {
+            spawnWisdomGlyphs(worldX, 12, worldZ);
+            playSound("chime");
+            spawnFloatingMerit3D(worldX, 16, worldZ, "Calligraphy · 慧笔 (+1)");
+          }
         }
       });
 
