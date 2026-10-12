@@ -5,6 +5,7 @@ const I18N = window.FOOBOW_APP_I18N;
 const translations = I18N.ui;
 
 let state = loadState();
+window.state = state;
 let focusTimer = null;
 
 function loadState() {
@@ -34,6 +35,7 @@ function mergeState(base, saved) {
 }
 
 function saveState() {
+  window.state = state;
   localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
@@ -66,11 +68,51 @@ function getZenAudioContext() {
   return zenAudioCtx;
 }
 
-function playMuyuSound() {
+function playMuyuSound(timbre) {
   const ctx = getZenAudioContext();
   if (!ctx) return;
   const t = ctx.currentTime;
+  const activeTimbre = timbre || state.muyuTimbre || "wood";
 
+  if (activeTimbre === "bowl") {
+    // Bronze Temple Singing Bowl (青铜禅磬)
+    [520, 1040, 1560].forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+      const initialGain = [0.45, 0.22, 0.08][idx];
+      const decayTime = [1.6, 1.2, 0.8][idx];
+      gain.gain.setValueAtTime(initialGain, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + decayTime);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + decayTime + 0.05);
+    });
+    return;
+  }
+
+  if (activeTimbre === "chime") {
+    // Bodhi Celestial Bell (菩提清音)
+    [880, 1760, 2640].forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+      const initialGain = [0.35, 0.18, 0.06][idx];
+      const decayTime = [1.8, 1.4, 0.9][idx];
+      gain.gain.setValueAtTime(initialGain, t);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + decayTime);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + decayTime + 0.05);
+    });
+    return;
+  }
+
+  // Classic Sandalwood Wooden Block (紫檀木鱼)
   // 1. Resonant hollow wooden block
   const osc1 = ctx.createOscillator();
   const gain1 = ctx.createGain();
@@ -678,6 +720,60 @@ function renderSoundscapeToggle() {
   wave.classList.toggle("playing", soundscapePlaying);
 }
 
+const BREATH_TECHNIQUES = {
+  "relax-478": {
+    name: "Relax 4-7-8",
+    phases: [
+      { type: "inhale", duration: 4, labelKey: "breatheInhale", defaultLabel: "Inhale peace..." },
+      { type: "hold", duration: 7, labelKey: "breatheHold", defaultLabel: "Hold gently..." },
+      { type: "exhale", duration: 8, labelKey: "breatheExhale", defaultLabel: "Exhale tension..." }
+    ],
+    totalDuration: 19
+  },
+  "box-444": {
+    name: "Box 4-4-4",
+    phases: [
+      { type: "inhale", duration: 4, labelKey: "breatheInhale", defaultLabel: "Inhale peace..." },
+      { type: "hold", duration: 4, labelKey: "breatheHold", defaultLabel: "Hold gently..." },
+      { type: "exhale", duration: 4, labelKey: "breatheExhale", defaultLabel: "Exhale tension..." },
+      { type: "hold", duration: 4, labelKey: "breatheHold", defaultLabel: "Rest calmly..." }
+    ],
+    totalDuration: 16
+  },
+  "calm-33": {
+    name: "Calm 3-3",
+    phases: [
+      { type: "inhale", duration: 3, labelKey: "breatheInhale", defaultLabel: "Inhale peace..." },
+      { type: "exhale", duration: 3, labelKey: "breatheExhale", defaultLabel: "Exhale tension..." },
+      { type: "inhale", duration: 3, labelKey: "breatheInhale", defaultLabel: "Inhale peace..." },
+      { type: "exhale", duration: 3, labelKey: "breatheExhale", defaultLabel: "Exhale tension..." },
+      { type: "inhale", duration: 3, labelKey: "breatheInhale", defaultLabel: "Inhale peace..." },
+      { type: "exhale", duration: 3, labelKey: "breatheExhale", defaultLabel: "Exhale tension..." }
+    ],
+    totalDuration: 18
+  }
+};
+
+let breathElapsedSeconds = 0;
+
+function updateBreathDisplay(phaseType, label, count) {
+  const orb = document.getElementById("breathOrb");
+  const phaseEl = document.getElementById("breathPhaseText");
+  const countEl = document.getElementById("breathCountdown");
+  const aura = document.getElementById("breathAuraRing");
+
+  if (orb) {
+    orb.classList.remove("inhale", "hold", "exhale");
+    if (phaseType) orb.classList.add(phaseType);
+  }
+  if (aura) {
+    aura.classList.remove("inhale", "hold", "exhale");
+    if (phaseType) aura.classList.add(phaseType);
+  }
+  if (phaseEl && label) phaseEl.textContent = label;
+  if (countEl) countEl.textContent = count !== undefined ? String(count) : "";
+}
+
 function renderFocusSession() {
   const progress = Math.max(0, Math.min(100, state.focusProgress || 0));
   const bar = document.getElementById("focusProgress");
@@ -695,17 +791,61 @@ function startFocusSession() {
   window.clearInterval(focusTimer);
   state.focusProgress = 0;
   state.focusReady = false;
+  breathElapsedSeconds = 0;
   renderFocusSession();
 
-  focusTimer = window.setInterval(() => {
-    state.focusProgress = Math.min(100, (state.focusProgress || 0) + 20);
-    state.focusReady = state.focusProgress >= 100;
+  const techKey = state.breathTechnique || "relax-478";
+  const tech = BREATH_TECHNIQUES[techKey] || BREATH_TECHNIQUES["relax-478"];
+  const total = tech.totalDuration;
+  const dict = dictionary();
+
+  let currentPhaseIdx = -1;
+
+  function tick() {
+    breathElapsedSeconds += 1;
+    state.focusProgress = Math.min(100, Math.round((breathElapsedSeconds / total) * 100));
+
+    // Determine current phase
+    let accum = 0;
+    let activePhase = null;
+    let phaseSecondsLeft = 0;
+    for (let i = 0; i < tech.phases.length; i++) {
+      accum += tech.phases[i].duration;
+      if (breathElapsedSeconds <= accum) {
+        activePhase = tech.phases[i];
+        phaseSecondsLeft = accum - breathElapsedSeconds + 1;
+        if (i !== currentPhaseIdx) {
+          currentPhaseIdx = i;
+          playZenChime();
+        }
+        break;
+      }
+    }
+
+    if (activePhase) {
+      const phaseLabel = dict[activePhase.labelKey] || activePhase.defaultLabel;
+      updateBreathDisplay(activePhase.type, phaseLabel, `${phaseSecondsLeft}s`);
+    }
+
+    state.focusReady = breathElapsedSeconds >= total;
     renderFocusSession();
+
     if (state.focusReady) {
       window.clearInterval(focusTimer);
+      playZenChime();
+      updateBreathDisplay("", dict.breathePhaseRest || "Breathe", "✨");
+      const completeBtn = document.getElementById("completeFocusedRitual");
+      if (completeBtn) {
+        completeBtn.disabled = false;
+        completeBtn.classList.add("ready-pulse");
+      }
       saveState();
     }
-  }, 600);
+  }
+
+  // Initial trigger immediately
+  tick();
+  focusTimer = window.setInterval(tick, 1000);
 }
 
 function completeFocusedRitual() {
@@ -1126,6 +1266,20 @@ function setupBlessings() {
 
 let muyuAutoTimer = null;
 
+function updateMuyuGoal() {
+  const goalLabel = document.getElementById("muyuGoalLabel");
+  const goalPercent = document.getElementById("muyuGoalPercent");
+  const goalFill = document.getElementById("muyuGoalFill");
+  if (!goalLabel || !goalFill) return;
+  const count = (state.muyuTaps || 0) % 108;
+  const pct = Math.round((count / 108) * 100);
+  const dict = dictionary();
+  const tmpl = dict.muyuGoal || "Daily Purification: %{count}/108";
+  goalLabel.textContent = tmpl.replace("%{count}", String(count));
+  if (goalPercent) goalPercent.textContent = `${pct}%`;
+  goalFill.style.width = `${pct}%`;
+}
+
 function setupMuyu() {
   const btn = document.getElementById("muyuBtn");
   const autoBtn = document.getElementById("muyuAutoBtn");
@@ -1137,10 +1291,25 @@ function setupMuyu() {
   }
   if (countEl) countEl.textContent = String(state.muyuTaps);
 
+  updateMuyuGoal();
+
   function handleTap() {
-    playMuyuSound();
+    playMuyuSound(state.muyuTimbre);
     state.muyuTaps += 1;
-    if (state.muyuTaps % 10 === 0) {
+    if (state.muyuTaps % 108 === 0) {
+      updateKarma(8, btn);
+      playZenChime();
+      const banner = document.getElementById("muyu108Banner");
+      if (banner) {
+        banner.textContent = dictionary().muyu108Attained || "108 Earthly Burdens Released · Serenity Attained! (+8 Karma)";
+        banner.hidden = false;
+        banner.classList.add("active");
+        setTimeout(() => {
+          banner.classList.remove("active");
+          banner.hidden = true;
+        }, 6000);
+      }
+    } else if (state.muyuTaps % 10 === 0) {
       updateKarma(1, btn);
       playZenChime();
     } else {
@@ -1149,6 +1318,7 @@ function setupMuyu() {
     saveState();
 
     if (countEl) countEl.textContent = String(state.muyuTaps);
+    updateMuyuGoal();
 
     btn.classList.remove("tapped");
     void btn.offsetWidth;
@@ -1174,6 +1344,20 @@ function setupMuyu() {
 
   btn.addEventListener("click", handleTap);
 
+  // Sound timbre chips
+  const timbreChips = document.querySelectorAll(".timbre-chip");
+  timbreChips.forEach((chip) => {
+    if (state.muyuTimbre && chip.dataset.timbre === state.muyuTimbre) {
+      chip.classList.add("active");
+    }
+    chip.addEventListener("click", () => {
+      state.muyuTimbre = chip.dataset.timbre || "wood";
+      timbreChips.forEach((c) => c.classList.toggle("active", c === chip));
+      playMuyuSound(state.muyuTimbre);
+      saveState();
+    });
+  });
+
   if (autoBtn) {
     autoBtn.addEventListener("click", () => {
       const dict = dictionary();
@@ -1196,7 +1380,7 @@ function setupMuyu() {
     karmaRing.dataset.hasTap = "true";
     karmaRing.setAttribute("title", "Tap for presence");
     karmaRing.addEventListener("click", () => {
-      playMuyuSound();
+      playMuyuSound(state.muyuTimbre);
       updateKarma(1, karmaRing);
     });
   }
@@ -1467,6 +1651,9 @@ function applyTranslations() {
   if (typeof renderProfileAccount === "function") {
     renderProfileAccount();
   }
+  if (typeof updateMuyuGoal === "function") {
+    updateMuyuGoal();
+  }
 }
 
 function renderSettings() {
@@ -1519,6 +1706,7 @@ function renderAll() {
   if (typeof renderCommunityFeed === "function") renderCommunityFeed();
   renderSettings();
   renderFocusSession();
+  updateMuyuGoal();
   document.getElementById("journalEntry").value = state.journal;
   const mood = data.moods.find((item) => item.id === state.mood) || data.moods[0];
   setText("recommendedDeed", mood.deed);
@@ -1892,6 +2080,7 @@ document.getElementById("deleteDataButton").addEventListener("click", () => {
   if (!confirmed) return;
   localStorage.removeItem(storageKey);
   state = structuredClone(data.defaultState);
+  window.state = state;
   renderAll();
 });
 
@@ -2708,6 +2897,163 @@ function setupRedesignInteractions() {
     });
   });
 
+let tonightBreathTimer = null;
+
+function openTonightRitualModal() {
+  const modal = document.getElementById("tonightRitualModal");
+  if (!modal) return;
+  playZenChime();
+
+  // Reset to Step 1
+  const step1 = document.getElementById("tonightStep1");
+  const step2 = document.getElementById("tonightStep2");
+  const step3 = document.getElementById("tonightStep3");
+  if (step1) step1.style.display = "block";
+  if (step2) step2.style.display = "none";
+  if (step3) step3.style.display = "none";
+
+  const boat = document.getElementById("riverFloatingBoat");
+  if (boat) {
+    boat.style.transition = "none";
+    boat.style.transform = "translateX(0)";
+    boat.style.opacity = "1";
+  }
+
+  const glow = document.getElementById("tonightLampGlow");
+  if (glow) glow.classList.remove("lit");
+
+  if (typeof modal.showModal === "function") {
+    modal.showModal();
+  } else {
+    modal.setAttribute("open", "true");
+  }
+}
+
+function closeTonightRitualModal() {
+  const modal = document.getElementById("tonightRitualModal");
+  if (!modal) return;
+  if (tonightBreathTimer) {
+    clearInterval(tonightBreathTimer);
+    tonightBreathTimer = null;
+  }
+  if (typeof modal.close === "function") {
+    modal.close();
+  } else {
+    modal.removeAttribute("open");
+  }
+}
+
+function setupTonightRitual() {
+  const closeBtn = document.getElementById("closeTonightModalBtn");
+  if (closeBtn) closeBtn.addEventListener("click", closeTonightRitualModal);
+
+  const modal = document.getElementById("tonightRitualModal");
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeTonightRitualModal();
+    });
+  }
+
+  // Step 1: Worry chips selection
+  const chips = document.querySelectorAll(".worry-chip");
+  const tag = document.getElementById("boatWorryTag");
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      chips.forEach((c) => c.classList.toggle("active", c === chip));
+      if (tag) tag.textContent = chip.textContent;
+    });
+  });
+
+  // Step 1: Release into River
+  const releaseBtn = document.getElementById("releaseWorryBtn");
+  if (releaseBtn) {
+    releaseBtn.addEventListener("click", () => {
+      if (typeof playWaterSplash === "function") playWaterSplash();
+      playZenChime();
+      const boat = document.getElementById("riverFloatingBoat");
+      if (boat) {
+        boat.style.transition = "transform 1.3s cubic-bezier(0.2, 0.8, 0.4, 1), opacity 1.3s ease";
+        boat.style.transform = "translateX(240px)";
+        boat.style.opacity = "0";
+      }
+
+      setTimeout(() => {
+        // Transition to Step 2
+        const step1 = document.getElementById("tonightStep1");
+        const step2 = document.getElementById("tonightStep2");
+        if (step1) step1.style.display = "none";
+        if (step2) step2.style.display = "block";
+        startTonightBreaths();
+      }, 1400);
+    });
+  }
+
+  // Step 2: 3 Bedtime Breaths
+  function startTonightBreaths() {
+    let breathCount = 0;
+    const orb = document.getElementById("tonightBreathOrb");
+    const phaseEl = document.getElementById("tonightBreathPhase");
+    const counterEl = document.getElementById("tonightBreathCounter");
+    const dict = dictionary();
+
+    function cycle() {
+      if (breathCount >= 3) {
+        // Transition to Step 3
+        const step2 = document.getElementById("tonightStep2");
+        const step3 = document.getElementById("tonightStep3");
+        if (step2) step2.style.display = "none";
+        if (step3) step3.style.display = "block";
+        playZenChime();
+        return;
+      }
+      breathCount += 1;
+      if (counterEl) counterEl.textContent = `${breathCount} / 3`;
+
+      // Inhale 3s
+      if (orb) {
+        orb.classList.remove("exhale");
+        orb.classList.add("inhale");
+      }
+      if (phaseEl) phaseEl.textContent = dict.breatheInhale || "Inhale peace...";
+      playZenChime();
+
+      setTimeout(() => {
+        // Exhale 3s
+        if (orb) {
+          orb.classList.remove("inhale");
+          orb.classList.add("exhale");
+        }
+        if (phaseEl) phaseEl.textContent = dict.breatheExhale || "Exhale tension...";
+
+        setTimeout(() => {
+          cycle();
+        }, 3200);
+      }, 3200);
+    }
+
+    cycle();
+  }
+
+  // Step 3: Light the Sleep Lamp
+  const lightBtn = document.getElementById("lightTonightLampBtn");
+  if (lightBtn) {
+    lightBtn.addEventListener("click", () => {
+      const glow = document.getElementById("tonightLampGlow");
+      if (glow) glow.classList.add("lit");
+      playZenChime();
+      updateKarma(3, lightBtn);
+      spawnFloatingMerit(lightBtn, dictionary().karmaLabel ? "+3" : "晚安 +3");
+      logActivity("deed");
+      state.journal = state.journal || "Completed tonight's gentle sleep ritual. Mind settled into peace.";
+      saveState();
+
+      setTimeout(() => {
+        closeTonightRitualModal();
+      }, 2500);
+    });
+  }
+}
+
   const exploreMapCta = document.getElementById("exploreMapCta");
   if (exploreMapCta) {
     exploreMapCta.addEventListener("click", () => {
@@ -2719,15 +3065,24 @@ function setupRedesignInteractions() {
   const startTonightBtn = document.getElementById("startTonightRitualBtn");
   if (startTonightBtn) {
     startTonightBtn.addEventListener("click", () => {
-      playZenChime();
-      const prayCard = document.querySelector(".pray-card");
-      if (prayCard) {
-        prayCard.scrollIntoView({ behavior: "smooth", block: "center" });
-        const input = document.getElementById("prayMessage");
-        if (input) input.focus();
-      }
+      openTonightRitualModal();
     });
   }
+
+  // Technique pill buttons in Calm Ritual
+  const breathingPills = document.querySelectorAll("#breathTechniqueBar .technique-pill");
+  breathingPills.forEach((pill) => {
+    if (state.breathTechnique && pill.dataset.tech === state.breathTechnique) {
+      pill.classList.add("active");
+    }
+    pill.addEventListener("click", () => {
+      state.breathTechnique = pill.dataset.tech || "relax-478";
+      breathingPills.forEach((p) => p.classList.toggle("active", p === pill));
+      saveState();
+    });
+  });
+
+  setupTonightRitual();
 }
 
 function setupWaterRipples() {

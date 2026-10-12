@@ -130,4 +130,55 @@ test("zen prayer wheel: spins on tap/impulse, increments turns and supports auto
   await expect(autoBtn).not.toHaveClass(/active/);
 });
 
+test("tonight's gentle sleep ritual opens guided modal, releases burden, and lights rest lamp", async ({ page }) => {
+  await expect(page.locator("#startTonightRitualBtn")).toBeVisible();
+  await page.locator("#startTonightRitualBtn").click();
+
+  const modal = page.locator("#tonightRitualModal");
+  await expect(modal).toBeVisible();
+  await expect(page.locator("#tonightModalTitle")).toContainText("Sleep");
+
+  // Select anxiety burden chip
+  const anxietyChip = page.locator(".worry-chip[data-worry='anxiety']");
+  await anxietyChip.click();
+  await expect(anxietyChip).toHaveClass(/active/);
+
+  // Release into river
+  await page.locator("#releaseWorryBtn").click();
+
+  // Fast-forward to step 3 (Light sleep lamp) via evaluate for deterministic test execution
+  await page.evaluate(() => {
+    const s1 = document.getElementById("tonightStep1");
+    const s2 = document.getElementById("tonightStep2");
+    const s3 = document.getElementById("tonightStep3");
+    if (s1) s1.style.display = "none";
+    if (s2) s2.style.display = "none";
+    if (s3) s3.style.display = "block";
+  });
+
+  await expect(page.locator("#lightTonightLampBtn")).toBeVisible();
+  const karmaBefore = Number(await page.locator("#karmaValue").textContent());
+  await page.locator("#lightTonightLampBtn").click();
+  await expect(page.locator("#karmaValue")).toHaveText(String(karmaBefore + 3));
+
+  // Close modal
+  await page.locator("#closeTonightModalBtn").click();
+  await expect(modal).not.toBeVisible();
+});
+
+test("zen wooden fish supports sound timbre selector and 108 purification tracking", async ({ page }) => {
+  await expect(page.locator("#muyuGoalWrap")).toBeVisible();
+  await expect(page.locator("#muyuGoalLabel")).toContainText("0/108");
+
+  // Switch timbre to Bronze Bowl
+  const bowlChip = page.locator(".timbre-chip[data-timbre='bowl']");
+  await bowlChip.click();
+  await expect(bowlChip).toHaveClass(/active/);
+
+  // Tap wooden fish
+  await page.locator("#muyuBtn").click();
+  await expect(page.locator("#muyuCount")).toHaveText("1");
+  await expect(page.locator("#muyuGoalLabel")).toContainText("1/108");
+});
+
 

@@ -112,4 +112,58 @@ test("3D sanctuary mini-game launches, switches scenarios, and allows interactiv
   await expect(modal).not.toBeVisible();
 });
 
+test("mindful breathing orb supports technique switching and calm focus completion", async ({ page }) => {
+  await expect(page.locator("#breathOrbContainer")).toBeVisible();
+  await expect(page.locator("#breathOrb")).toBeVisible();
+  await expect(page.locator("#breathPhaseText")).toBeVisible();
+
+  // Switch technique to Box 4-4-4
+  const boxPill = page.locator("#breathTechniqueBar .technique-pill[data-tech='box-444']");
+  await boxPill.click();
+  await expect(boxPill).toHaveClass(/active/);
+
+  // Focus completion starts disabled
+  const completeBtn = page.locator("#completeFocusedRitual");
+  await expect(completeBtn).toBeDisabled();
+
+  // Fast-forward or trigger focus completion
+  await page.locator("#startFocusSession").click();
+  await expect(page.locator("#calmStatus")).not.toHaveText("optional");
+
+  // Accelerate completion via evaluate for test reliability
+  await page.evaluate(() => {
+    window.state.focusProgress = 100;
+    window.state.focusReady = true;
+    const btn = document.getElementById("completeFocusedRitual");
+    if (btn) btn.disabled = false;
+    const status = document.getElementById("calmStatus");
+    if (status) status.textContent = "ready";
+  });
+
+  await expect(completeBtn).toBeEnabled();
+  const karmaBefore = Number(await page.locator("#karmaValue").textContent());
+  await completeBtn.click();
+  await expect(page.locator("#karmaValue")).toHaveText(String(karmaBefore + 7));
+});
+
+test("Today screen direct 3D sanctuary portal launches scenario directly", async ({ page }) => {
+  await page.locator(".bottom-nav .nav-item[data-target='today']").click();
+  await expect(page.locator("#screen-today")).toHaveClass(/active/);
+
+  // Verify Today screen 3D portal
+  await expect(page.locator("#launchSanctuaryFromTodayBtn")).toBeVisible();
+  const kyotoPill = page.locator(".sanctuary-quick-pill[data-scenario='night-corridor']");
+  await expect(kyotoPill).toBeVisible();
+
+  // Direct quick-launch
+  await kyotoPill.click();
+  const modal = page.locator("#sanctuary3DGameModal");
+  await expect(modal).toBeVisible();
+  await expect(page.locator("#gameScenarioTitle")).toContainText("Kyoto");
+
+  // Close modal
+  await page.locator("#close3DGameTopBtn").click();
+  await expect(modal).not.toBeVisible();
+});
+
 

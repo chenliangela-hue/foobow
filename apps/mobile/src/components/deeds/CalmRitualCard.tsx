@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Pressable, StyleSheet, Text, Vibration, View } from "react-native";
 import { useI18n } from "../../i18n/LocaleContext";
 import { layout, typography } from "../../theme/theme";
@@ -23,12 +23,45 @@ export function CalmRitualCard({
   seniorMode
 }: CalmRitualCardProps) {
   const currentColors = useThemeColors();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const waveAnim1 = useRef(new Animated.Value(0.4)).current;
   const waveAnim2 = useRef(new Animated.Value(0.7)).current;
   const waveAnim3 = useRef(new Animated.Value(1)).current;
   const waveAnim4 = useRef(new Animated.Value(0.5)).current;
+  const breathAnim = useRef(new Animated.Value(1)).current;
+  const [breathPhase, setBreathPhase] = useState("Breathe");
+
+  useEffect(() => {
+    let active = true;
+    const runCycle = () => {
+      if (!active) return;
+      setBreathPhase(locale === "zh-Hans" ? "吸气 · 纳祥" : "Inhale peace...");
+      Animated.timing(breathAnim, {
+        toValue: 1.35,
+        duration: 3800,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true
+      }).start(() => {
+        if (!active) return;
+        setBreathPhase(locale === "zh-Hans" ? "屏息 · 凝神" : "Hold gently...");
+        setTimeout(() => {
+          if (!active) return;
+          setBreathPhase(locale === "zh-Hans" ? "呼气 · 释怀" : "Exhale tension...");
+          Animated.timing(breathAnim, {
+            toValue: 0.85,
+            duration: 3800,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true
+          }).start(() => {
+            if (active) runCycle();
+          });
+        }, 1800);
+      });
+    };
+    runCycle();
+    return () => { active = false; };
+  }, [locale]);
 
   useEffect(() => {
     const createBarAnim = (anim: Animated.Value, duration: number) => {
@@ -127,6 +160,24 @@ export function CalmRitualCard({
           <Animated.View style={[styles.waveBar, { backgroundColor: currentColors.coral, transform: [{ scaleY: waveAnim3 }] }]} />
           <Animated.View style={[styles.waveBar, { backgroundColor: currentColors.gold, transform: [{ scaleY: waveAnim4 }] }]} />
         </View>
+      </View>
+
+      {/* Animated Mindful Breathing Circle */}
+      <View style={styles.breathingOrbContainer}>
+        <Animated.View
+          style={[
+            styles.breathingOrb,
+            {
+              borderColor: currentColors.gold,
+              backgroundColor: currentColors.goldGlow,
+              transform: [{ scale: breathAnim }]
+            }
+          ]}
+        >
+          <Text style={[styles.breathingText, { color: currentColors.gold }]}>
+            {breathPhase}
+          </Text>
+        </Animated.View>
       </View>
 
       <View style={[styles.focusTrack, { backgroundColor: currentColors.line }]}>
@@ -308,5 +359,24 @@ const styles = StyleSheet.create({
     width: 3,
     height: 14,
     borderRadius: 1.5
+  },
+  breathingOrbContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: layout.spacing.sm
+  },
+  breathingOrb: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 6
+  },
+  breathingText: {
+    fontSize: 12,
+    fontWeight: "700",
+    textAlign: "center"
   }
 });

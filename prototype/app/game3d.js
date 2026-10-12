@@ -2520,6 +2520,17 @@
       deedLaunchBtn.addEventListener("click", () => openGame("east-lake"));
     }
 
+    const todayLaunchBtn = document.getElementById("launchSanctuaryFromTodayBtn");
+    if (todayLaunchBtn) {
+      todayLaunchBtn.addEventListener("click", () => openGame("east-lake"));
+    }
+
+    document.querySelectorAll(".sanctuary-quick-pill").forEach((pill) => {
+      pill.addEventListener("click", () => {
+        openGame(pill.dataset.scenario || "east-lake");
+      });
+    });
+
     // Modal Close Buttons
     const closeTopBtn = document.getElementById("close3DGameTopBtn");
     const closeBottomBtn = document.getElementById("close3DGameBottomBtn");

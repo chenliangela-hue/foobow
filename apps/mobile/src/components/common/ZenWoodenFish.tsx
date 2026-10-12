@@ -121,7 +121,12 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
     const nextCount = tapCount + 1;
     setTapCount(nextCount);
 
-    if (nextCount % 10 === 0 && onTapKarma) {
+    if (nextCount % 108 === 0 && onTapKarma) {
+      try {
+        Vibration.vibrate([0, 50, 100, 50, 100, 50]);
+      } catch (_) {}
+      onTapKarma(8);
+    } else if (nextCount % 10 === 0 && onTapKarma) {
       onTapKarma(1);
     }
   };
@@ -147,6 +152,29 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
       <Text style={[styles.body, { color: currentColors.muted }, seniorMode && { fontSize: typography.sizes.bodySenior }]}>
         {t("muyu.copy")}
       </Text>
+
+      {/* 108 Purification Progress */}
+      <View style={[styles.goalWrap, { backgroundColor: currentColors.surfaceStrong, borderColor: currentColors.line }]}>
+        <View style={styles.goalRow}>
+          <Text style={[styles.goalLabel, { color: currentColors.muted }]}>
+            {locale === "zh-Hans" ? `消业修持: ${tapCount % 108}/108` : `Purification: ${tapCount % 108}/108`}
+          </Text>
+          <Text style={[styles.goalPercent, { color: currentColors.gold }]}>
+            {`${Math.round(((tapCount % 108) / 108) * 100)}%`}
+          </Text>
+        </View>
+        <View style={[styles.goalTrack, { backgroundColor: currentColors.line }]}>
+          <View
+            style={[
+              styles.goalFill,
+              {
+                backgroundColor: currentColors.gold,
+                width: `${((tapCount % 108) / 108) * 100}%`
+              }
+            ]}
+          />
+        </View>
+      </View>
 
       <View style={styles.stage}>
         {/* Animated concentric gold ripple */}
@@ -390,5 +418,33 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: "italic",
     textAlign: "center"
+  },
+  goalWrap: {
+    padding: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    gap: 6
+  },
+  goalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  goalLabel: {
+    fontSize: 12,
+    fontWeight: "600"
+  },
+  goalPercent: {
+    fontSize: 12,
+    fontWeight: "700"
+  },
+  goalTrack: {
+    height: 6,
+    borderRadius: layout.borderRadius.full,
+    overflow: "hidden"
+  },
+  goalFill: {
+    height: "100%",
+    borderRadius: layout.borderRadius.full
   }
 });

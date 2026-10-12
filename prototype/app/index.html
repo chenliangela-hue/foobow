@@ -228,7 +228,15 @@
                 <span class="mini-world-dot">·</span>
                 <span class="mini-world-stat-item" data-i18n="peopleSpreadingKindness">2.4M people spreading kindness</span>
               </div>
-              <button class="primary-action mini-world-cta" id="exploreMapCta" type="button" data-i18n="exploreTheMapBtn">Explore Sanctuary →</button>
+              <div class="mini-world-actions-row">
+                <button class="primary-action mini-world-cta" id="exploreMapCta" type="button" data-i18n="exploreTheMapBtn">Explore Sanctuary →</button>
+                <button class="text-button mini-world-game-btn" id="launchSanctuaryFromTodayBtn" type="button" data-i18n="enterSanctuary3D">🎮 Enter 3D Sanctuary</button>
+              </div>
+              <div class="mini-world-shortcuts" id="miniWorldShortcuts" role="group" aria-label="Sanctuary 3D Mini-games">
+                <button class="sanctuary-quick-pill" type="button" data-scenario="east-lake">🐟 East Lake Release</button>
+                <button class="sanctuary-quick-pill" type="button" data-scenario="night-corridor">🏮 Kyoto Lanterns</button>
+                <button class="sanctuary-quick-pill" type="button" data-scenario="amazon-grove">🌱 Amazon Grove</button>
+              </div>
             </div>
             <div class="mini-world-globe-art" aria-hidden="true">
               <div class="spinning-globe-ring"></div>
@@ -441,6 +449,24 @@
               <button class="text-button" id="muyuAutoBtn" type="button" data-i18n="muyuAutoTap">Auto tap</button>
               <span class="muyu-hint" data-i18n="muyuHint">Knock softly to gather presence</span>
             </div>
+            <!-- 108 Purification Progress & Sound Timbre Selector -->
+            <div class="muyu-extras-bar">
+              <div class="muyu-goal-wrap" id="muyuGoalWrap" title="108 Taps Earthly Defilements Purification">
+                <div class="muyu-goal-header">
+                  <span class="muyu-goal-label" id="muyuGoalLabel">Daily Purification: 0/108</span>
+                  <span class="muyu-goal-percent" id="muyuGoalPercent">0%</span>
+                </div>
+                <div class="muyu-goal-bar">
+                  <div class="muyu-goal-fill" id="muyuGoalFill" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="muyu-timbre-selector" id="muyuTimbreSelector" role="radiogroup" aria-label="Sound timbre">
+                <button class="timbre-chip active" type="button" data-timbre="wood" data-i18n="timbreWood">🪵 Sandalwood</button>
+                <button class="timbre-chip" type="button" data-timbre="bowl" data-i18n="timbreBowl">🔔 Bronze Bowl</button>
+                <button class="timbre-chip" type="button" data-timbre="chime" data-i18n="timbreChime">🪷 Bodhi Bell</button>
+              </div>
+            </div>
+            <div class="muyu-108-banner" id="muyu108Banner" hidden></div>
           </section>
 
           <section class="wheel-card" id="wheelCard" aria-labelledby="wheel-title">
@@ -827,7 +853,20 @@
               <span class="soft-pill" id="calmStatus">optional</span>
             </div>
             <p class="calm-copy" data-i18n="calmCopy">Use a short presence timer, optional soundscape, and quiet reflection before recording a symbolic deed.</p>
-            <div class="breath-orb" aria-hidden="true"></div>
+            <div class="breath-orb-container" id="breathOrbContainer" role="region" aria-label="Mindful Breathing Orb">
+              <div class="breath-aura-ring" id="breathAuraRing" aria-hidden="true"></div>
+              <div class="breath-orb" id="breathOrb" aria-hidden="true">
+                <div class="breath-orb-inner">
+                  <span class="breath-phase-text" id="breathPhaseText" data-i18n="breathePhaseRest">Breathe</span>
+                  <span class="breath-countdown" id="breathCountdown"></span>
+                </div>
+              </div>
+              <div class="breath-technique-bar" id="breathTechniqueBar" role="radiogroup" aria-label="Breathing technique">
+                <button class="technique-pill active" type="button" data-tech="relax-478" data-i18n="tech478">Relax 4-7-8</button>
+                <button class="technique-pill" type="button" data-tech="box-444" data-i18n="techBox">Box 4-4-4</button>
+                <button class="technique-pill" type="button" data-tech="calm-33" data-i18n="techCalm">Calm 3-3</button>
+              </div>
+            </div>
             <div class="soundscape-row" id="soundscapeRow" aria-label="Optional soundscape choices"></div>
             <div class="sound-control">
               <button class="text-button" id="soundscapeToggle" type="button" aria-pressed="false">Play soundscape</button>
@@ -1375,6 +1414,67 @@
               <button class="text-button game-hud-btn-sm" id="gameResetCamBtn" type="button" title="Reset Camera View">🔄 View</button>
               <button class="text-button game-hud-btn-sm game-hud-close-btn" id="close3DGameBottomBtn" type="button" data-i18n="closeDialog">Close</button>
             </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- Tonight's Gentle Sleep Ritual Guided Modal -->
+    <dialog class="tonight-ritual-modal" id="tonightRitualModal" aria-labelledby="tonightModalTitle">
+      <div class="tonight-modal-shell">
+        <button class="tonight-modal-close" id="closeTonightModalBtn" type="button" aria-label="Close evening ritual">✕</button>
+        <div class="tonight-modal-backdrop-stars" aria-hidden="true"></div>
+        
+        <div class="tonight-modal-content">
+          <div class="tonight-modal-header">
+            <span class="tonight-moon-icon" aria-hidden="true">🌙</span>
+            <p class="eyebrow" data-i18n="tonightRitualBadge">Tonight's Gentle Ritual</p>
+            <h2 id="tonightModalTitle" data-i18n="tonightModalTitle">Sleep Peacefully · Night Wind-Down</h2>
+          </div>
+
+          <!-- Step 1: Release Daily Burden -->
+          <div class="tonight-step-card active" id="tonightStep1">
+            <div class="tonight-step-badge" data-i18n="tonightStep1Title">1. Release Daily Burden</div>
+            <p class="tonight-step-copy" data-i18n="tonightStep1Copy">What thought or fatigue do you want to let go of tonight?</p>
+            <div class="tonight-worry-chips" id="tonightWorryChips" role="radiogroup" aria-label="Burden to release">
+              <button class="worry-chip active" type="button" data-worry="fatigue" data-i18n="tonightChipFatigue">Work Fatigue</button>
+              <button class="worry-chip" type="button" data-worry="anxiety" data-i18n="tonightChipAnxiety">Anxious Thoughts</button>
+              <button class="worry-chip" type="button" data-worry="todo" data-i18n="tonightChipTodo">Unfinished Tasks</button>
+              <button class="worry-chip" type="button" data-worry="restless" data-i18n="tonightChipRestless">Restless Mind</button>
+            </div>
+            <div class="tonight-river-stage" id="tonightRiverStage" aria-hidden="true">
+              <div class="river-stream-glow"></div>
+              <div class="river-floating-boat" id="riverFloatingBoat">
+                <span class="boat-leaf">🍃</span>
+                <span class="boat-worry-tag" id="boatWorryTag">Work Fatigue</span>
+              </div>
+            </div>
+            <button class="primary-action tonight-flow-btn" id="releaseWorryBtn" type="button" data-i18n="tonightReleaseBtn">Release into the River →</button>
+          </div>
+
+          <!-- Step 2: 3 Deep Evening Breaths -->
+          <div class="tonight-step-card" id="tonightStep2" style="display: none;">
+            <div class="tonight-step-badge" data-i18n="tonightStep2Title">2. Three Mindful Breaths</div>
+            <div class="tonight-breath-orb-wrap">
+              <div class="tonight-breath-orb" id="tonightBreathOrb">
+                <div class="tonight-orb-core">
+                  <span id="tonightBreathPhase">Inhale...</span>
+                  <span id="tonightBreathCounter">1 / 3</span>
+                </div>
+              </div>
+            </div>
+            <p class="tonight-step-copy" id="tonightBreathSub">Breathe gently with the evening light. Release tension on every exhale.</p>
+          </div>
+
+          <!-- Step 3: Light the Sleep Lamp -->
+          <div class="tonight-step-card" id="tonightStep3" style="display: none;">
+            <div class="tonight-step-badge" data-i18n="tonightStep3Title">3. Light the Sleep Lamp</div>
+            <div class="tonight-lamp-stage" id="tonightLampStage">
+              <div class="tonight-lamp-glow" id="tonightLampGlow"></div>
+              <div class="tonight-lamp-lantern">🪔</div>
+            </div>
+            <p class="tonight-blessing-verse" id="tonightBlessingVerse" data-i18n="tonightBlessingVerse">Night falls softly. Today is complete. Sleep in deep peace.</p>
+            <button class="primary-action tonight-flow-btn" id="lightTonightLampBtn" type="button" data-i18n="tonightLightLampBtn">Kindle Sleep Lamp (+3 karma)</button>
           </div>
         </div>
       </div>

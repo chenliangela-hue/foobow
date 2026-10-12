@@ -2,6 +2,7 @@
 
 ## Done
 
+- Elevate mindfulness gamification and zen rituals: phased 4-7-8/4-4-4/3-3 breathing orb with Web Audio singing bowl guidance, 108 earthly defilements wooden fish purification with 3 resonant sound timbres (sandalwood, bronze bowl, bodhi bell), gentle tonight sleep ritual modal with anxiety burden river release & sleep lamp, direct Today screen 3D sanctuary portal, and automated Playwright + mobile test coverage.
 - Expand the deed catalog to 19 deeds grouped into five project categories (animals/elders/environment/community/learning), test-first, with localized headers and warm category marks.
 - Build the community feed (ODD objects Community Post/Reply/Reaction/Tag) test-first: share a deed or ask for help, replies, one-press support, tag + kind filters, and report-to-withdraw moderation.
 - Initialize local repo.
