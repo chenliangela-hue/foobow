@@ -20,6 +20,7 @@ window.FOOBOW_DATA = {
     muyuTaps: 0,
     incenseLitCount: 0,
     wheelTurns: 0,
+    lightsReleased: 14,
     posts: [],
     postKind: "share",
     postTag: null,

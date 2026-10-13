@@ -30,7 +30,8 @@ function mergeState(base, saved) {
     lamps: Array.isArray(saved.lamps) ? saved.lamps : base.lamps,
     activity: Array.isArray(saved.activity) ? saved.activity : base.activity,
     posts: Array.isArray(saved.posts) ? saved.posts : base.posts,
-    muyuTaps: typeof saved.muyuTaps === "number" ? saved.muyuTaps : 0
+    muyuTaps: typeof saved.muyuTaps === "number" ? saved.muyuTaps : 0,
+    lightsReleased: typeof saved.lightsReleased === "number" ? saved.lightsReleased : (base.lightsReleased || 14)
   };
 }
 
@@ -385,6 +386,7 @@ function renderProfileActivity() {
 function renderStats() {
   setText("karmaValue", state.karma);
   setText("deedCount", state.deeds);
+  setText("profileLightsCount", state.lightsReleased || 14);
   setText("streakLabel", dictionary().streakLabel.replace("%{count}", state.streak));
   const stats = dictionary().profileMenuStats
     .replace("%{karma}", state.karma)
@@ -549,6 +551,10 @@ function renderSelectedDeed() {
   const ritualScene = document.getElementById("ritualScene");
   if (ritualScene) {
     ritualScene.classList.toggle("custom-scene-active", isElder || isBlessing || isCoastline);
+  }
+
+  if (isBlessing && typeof setupSanctuaryLanternGame === "function") {
+    setupSanctuaryLanternGame();
   }
 
   renderFocusSession();
@@ -1506,6 +1512,8 @@ function setupMuyu() {
           card.classList.add("stillness");
           setTimeout(() => card.classList.remove("stillness"), 8000);
         }
+        document.body.classList.add("environment-stillness-bloom");
+        setTimeout(() => document.body.classList.remove("environment-stillness-bloom"), 10000);
         updateKarma(2, btn);
       }
     }
@@ -2192,6 +2200,8 @@ function executeMapDeed(deedKey, customX, customY) {
         }, delay);
       });
     } else if (deedKey === "light-lantern") {
+      state.lightsReleased = (state.lightsReleased || 14) + 1;
+      renderStats();
       const lantern = document.createElement("div");
       lantern.className = "map-lantern-sprite";
       lantern.style.left = `${posX}px`;
@@ -2359,6 +2369,12 @@ function executeFishRelease(triggerEl) {
     setTimeout(() => releasedKoi.classList.remove("swimming-away"), 3500);
   }
 
+  // 2-3 smaller companion fish briefly appear and swim along with it
+  spawnCompanionFish();
+
+  // One glowing line / arc travels from local water to globe/map
+  triggerWaterToGlobeArc();
+
   // Global map connection ripple
   if (window.triggerGlobePulse) {
     window.triggerGlobePulse(0.5, 0.45);
@@ -2374,6 +2390,192 @@ function executeFishRelease(triggerEl) {
   if (window.triggerPondRitualBurst) {
     window.triggerPondRitualBurst();
   }
+}
+
+function spawnCompanionFish() {
+  const layer = document.getElementById("companionFishLayer");
+  if (!layer) return;
+  layer.replaceChildren();
+  for (let i = 0; i < 3; i++) {
+    const fish = document.createElement("div");
+    fish.className = "companion-koi";
+    const startX = 48 + i * 26;
+    const startY = 110 + i * 22;
+    const targetX = -70 - i * 35;
+    const targetY = -65 - i * 28;
+    const dur = 1.7 + i * 0.35;
+    const angle = -26 + (i - 1) * 9;
+    fish.style.left = `${startX}px`;
+    fish.style.top = `${startY}px`;
+    fish.style.setProperty("--target-x", `${targetX}px`);
+    fish.style.setProperty("--target-y", `${targetY}px`);
+    fish.style.setProperty("--swim-dur", `${dur}s`);
+    fish.style.setProperty("--angle", `${angle}deg`);
+    fish.innerHTML = `
+      <svg viewBox="0 0 70 34" fill="none">
+        <path d="M12 17 C20 9 44 8 56 17 C44 26 20 25 12 17 Z" fill="#fca311"/>
+        <circle cx="56" cy="17" r="3" fill="#fff"/>
+        <path d="M12 17 C6 8 0 10 2 17 C0 24 6 26 12 17 Z" fill="#e0533c"/>
+      </svg>
+    `;
+    layer.appendChild(fish);
+    requestAnimationFrame(() => {
+      setTimeout(() => fish.classList.add("swimming"), 140 * (i + 1));
+    });
+    setTimeout(() => fish.remove(), (dur + 0.6) * 1000);
+  }
+}
+
+function triggerWaterToGlobeArc() {
+  const container = document.getElementById("waterToGlobeArc");
+  if (!container) return;
+  const spark = document.createElement("div");
+  spark.className = "arc-spark-dot";
+  spark.style.left = "48%";
+  spark.style.top = "60%";
+  container.appendChild(spark);
+  requestAnimationFrame(() => {
+    spark.style.transform = "translate(110px, -200px) scale(1.6)";
+    spark.style.opacity = "0";
+  });
+  setTimeout(() => spark.remove(), 1500);
+}
+
+function setupSanctuaryLanternGame() {
+  const target = document.getElementById("sanctuaryLanternTarget");
+  const sky = document.getElementById("sanctuaryLanternSky");
+  const constellation = document.getElementById("skyLanternConstellation");
+  if (!target || !sky || !constellation) return;
+
+  function renderConstellation() {
+    const total = Math.max(8, Math.min(32, state.lightsReleased || 14));
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < total; i++) {
+      const lantern = document.createElement("div");
+      lantern.className = "constellation-lantern";
+      const x = 5 + (i * 92) % 90 + (Math.sin(i * 3) * 6);
+      const y = 8 + (i * 27) % 65 + (Math.cos(i * 2) * 5);
+      const scale = 0.45 + (i % 5) * 0.12;
+      const dur = 5 + (i % 4) * 1.5;
+      const sway = 4 + (i % 3) * 3;
+      lantern.style.left = `${Math.min(94, Math.max(3, x))}%`;
+      lantern.style.top = `${Math.min(75, Math.max(5, y))}%`;
+      lantern.style.setProperty("--scale", String(scale));
+      lantern.style.setProperty("--float-dur", `${dur}s`);
+      lantern.style.setProperty("--sway", `${sway}px`);
+      fragment.appendChild(lantern);
+    }
+    constellation.replaceChildren(fragment);
+  }
+
+  renderConstellation();
+
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let startTime = 0;
+  let currentY = 0;
+
+  function onPointerDown(e) {
+    if (target.classList.contains("soaring-skyward")) return;
+    isDragging = true;
+    startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    currentY = startY;
+    startTime = Date.now();
+    target.classList.add("dragging");
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+    currentY = clientY;
+    const deltaY = clientY - startY;
+    const deltaX = clientX - startX;
+    if (deltaY < 0) {
+      target.style.transform = `translate(calc(-50% + ${deltaX * 0.35}px), ${deltaY * 0.85}px)`;
+    }
+  }
+
+  function releaseLantern(velocityMultiplier) {
+    target.classList.remove("dragging");
+    target.classList.add("soaring-skyward");
+
+    const vm = Math.max(1, Math.min(6, velocityMultiplier || 2.5));
+    const driftX = (Math.random() - 0.5) * 80;
+    const soarTime = Math.max(1.2, 2.2 - vm * 0.15);
+
+    target.style.setProperty("--drift-x", `${driftX}px`);
+    target.style.setProperty("--soar-time", `${soarTime}s`);
+
+    window.FOOBOW_RITUAL_ENGINE?.audio?.playLanternLift?.();
+    window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone?.();
+    window.FOOBOW_RITUAL_ENGINE?.particles?.spawnGoldenSparks?.(target);
+
+    state.lightsReleased = (state.lightsReleased || 14) + 1;
+    saveState();
+    renderStats();
+    updateKarma(5, target);
+
+    const prompt = document.getElementById("sanctuaryLanternPrompt");
+    if (prompt) {
+      prompt.textContent = dictionary().lanternJoinedSky || "Your lantern has joined the constellation.";
+    }
+
+    setTimeout(() => {
+      const newL = document.createElement("div");
+      newL.className = "constellation-lantern";
+      newL.style.left = `${45 + (Math.random() - 0.5) * 20}%`;
+      newL.style.top = `${15 + Math.random() * 20}%`;
+      newL.style.setProperty("--scale", "0.6");
+      newL.style.setProperty("--float-dur", "6s");
+      newL.style.setProperty("--sway", "6px");
+      constellation.appendChild(newL);
+
+      target.classList.remove("soaring-skyward");
+      target.style.transform = "";
+      if (prompt) {
+        prompt.textContent = dictionary().lanternSwipePrompt || "Swipe up to release into night sky";
+      }
+    }, soarTime * 1000 + 300);
+  }
+
+  function onPointerUp(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY) || currentY;
+    const deltaY = clientY - startY;
+    const dt = Math.max(10, Date.now() - startTime);
+    const speed = Math.abs(deltaY) / dt;
+
+    if (deltaY < -35 || speed > 0.45) {
+      releaseLantern(speed * 3.5);
+    } else {
+      target.classList.remove("dragging");
+      target.style.transform = "";
+    }
+  }
+
+  target.addEventListener("mousedown", onPointerDown);
+  target.addEventListener("touchstart", onPointerDown, { passive: true });
+  window.addEventListener("mousemove", onPointerMove);
+  window.addEventListener("touchmove", onPointerMove, { passive: true });
+  window.addEventListener("mouseup", onPointerUp);
+  window.addEventListener("touchend", onPointerUp, { passive: true });
+
+  target.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      releaseLantern(3);
+    }
+  });
+
+  target.addEventListener("click", () => {
+    if (!target.classList.contains("soaring-skyward") && !isDragging) {
+      releaseLantern(2.5);
+    }
+  });
 }
 
 const performRitualBtn = document.getElementById("performRitual");
@@ -3545,6 +3747,7 @@ function setupTonightRitual() {
   setupTonightRitual();
   setupKoiDirectGesture();
   setupSeedlingMicroGame();
+  setupSanctuaryLanternGame();
 }
 
 function renderKindnessGarden() {

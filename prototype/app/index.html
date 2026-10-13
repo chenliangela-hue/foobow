@@ -850,6 +850,10 @@
                 </div>
               </div>
 
+              <!-- Companion fish layer & glowing arc to globe -->
+              <div class="companion-fish-layer" id="companionFishLayer" aria-hidden="true"></div>
+              <div class="water-to-globe-arc" id="waterToGlobeArc" aria-hidden="true"></div>
+
               <!-- Multi-scene dynamic themes -->
               <div class="deed-scene-layer scene-crosswalk-layer" id="sceneCrosswalkLayer" aria-hidden="true">
                 <div class="crosswalk-lantern lantern-left">🏮</div>
@@ -859,6 +863,41 @@
                 <div class="escort-heart">🤝</div>
               </div>
               <div class="deed-scene-layer scene-blessing-layer" id="sceneBlessingLayer" aria-hidden="true">
+                <div class="sanctuary-lantern-sky" id="sanctuaryLanternSky" aria-hidden="true">
+                  <div class="sky-lantern-constellation" id="skyLanternConstellation"></div>
+                </div>
+                <!-- Interactive tactile sanctuary lantern with swipe up gesture -->
+                <div class="sanctuary-lantern-target" id="sanctuaryLanternTarget" role="button" tabindex="0" aria-label="Swipe up to release lantern into night sky">
+                  <div class="sanctuary-lantern-prompt" id="sanctuaryLanternPrompt" data-i18n="lanternSwipePrompt">Swipe up to release into night sky</div>
+                  <div class="sanctuary-lantern-item" id="sanctuaryLanternItem">
+                    <svg class="sanctuary-lantern-svg" viewBox="0 0 70 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="sanctuarySilkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#fff1cc"/>
+                          <stop offset="45%" stop-color="#ffb833"/>
+                          <stop offset="100%" stop-color="#d97706"/>
+                        </linearGradient>
+                        <radialGradient id="sanctuaryFlameGrad" cx="50%" cy="50%" r="50%">
+                          <stop offset="0%" stop-color="#ffffff"/>
+                          <stop offset="40%" stop-color="#ffd166"/>
+                          <stop offset="100%" stop-color="rgba(255,180,0,0)"/>
+                        </radialGradient>
+                      </defs>
+                      <ellipse cx="35" cy="12" rx="18" ry="4" fill="#a16207" stroke="#78350f" stroke-width="1.2"/>
+                      <path d="M35 12 L35 4" stroke="#a16207" stroke-width="1.5"/>
+                      <circle cx="35" cy="4" r="2.5" fill="#ffd700"/>
+                      <path d="M17 12 C10 32 10 65 20 80 C28 85 42 85 50 80 C60 65 60 32 53 12 Z" fill="url(#sanctuarySilkGrad)" stroke="#a16207" stroke-width="1.2" opacity="0.95"/>
+                      <circle cx="35" cy="52" r="14" fill="url(#sanctuaryFlameGrad)" class="sanctuary-flame-halo"/>
+                      <ellipse cx="35" cy="52" rx="4" ry="7" fill="#fff" class="sanctuary-flame-core"/>
+                      <path d="M22 25 Q35 32 48 25" stroke="rgba(120,53,15,0.35)" stroke-width="1"/>
+                      <path d="M19 45 Q35 53 51 45" stroke="rgba(120,53,15,0.35)" stroke-width="1"/>
+                      <path d="M21 65 Q35 72 49 65" stroke="rgba(120,53,15,0.35)" stroke-width="1"/>
+                      <ellipse cx="35" cy="80" rx="15" ry="3.5" fill="#a16207" stroke="#78350f" stroke-width="1.2"/>
+                      <path d="M35 84 L35 94" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/>
+                      <circle cx="35" cy="94" r="2" fill="#ffd700"/>
+                    </svg>
+                  </div>
+                </div>
                 <div class="floating-lotus-lantern">🪔</div>
                 <div class="blessing-floating-heart">💖</div>
                 <div class="blessing-streamer">✨</div>
@@ -1109,6 +1148,7 @@
           </section>
           <div class="stat-grid">
             <div><strong id="deedCount">42</strong><span data-i18n="statDeeds">deeds</span></div>
+            <div><strong id="profileLightsCount">14</strong><span data-i18n="statLightsReleased">lights released</span></div>
             <div><strong>9</strong><span data-i18n="statBadges">badges</span></div>
             <div><strong>$18</strong><span data-i18n="statDonated">donated</span></div>
           </div>

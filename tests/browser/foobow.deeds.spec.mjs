@@ -190,5 +190,27 @@ test("10-second seedling nurturing micro-game sprouts plant into personal Kindne
   await expect(page.locator("#gardenCount")).toHaveText("1 Plants");
 });
 
+test("sanctuary night lantern release game soars skyward and updates persistent profile lights", async ({ page }) => {
+  await page.locator(".bottom-nav .nav-item[data-target='deeds']").click();
+  
+  // Select blessing deed to show blessing layer with sanctuary lantern sky
+  const blessingDeed = page.locator(".deed-item[data-deed-id='anonymous-blessing']").first();
+  await blessingDeed.click();
+  await expect(page.locator("#sceneBlessingLayer")).toHaveClass(/active/);
+  await expect(page.locator("#sanctuaryLanternTarget")).toBeVisible();
+  
+  // Initial constellation lanterns
+  const initialLanterns = await page.locator("#skyLanternConstellation .constellation-lantern").count();
+  expect(initialLanterns).toBeGreaterThanOrEqual(8);
+  
+  // Release lantern
+  await page.locator("#sanctuaryLanternTarget").click();
+  await expect(page.locator("#sanctuaryLanternTarget")).toHaveClass(/soaring-skyward/);
+  
+  // Check profile lights count updated
+  await page.locator(".bottom-nav .nav-item[data-target='profile']").click();
+  await expect(page.locator("#profileLightsCount")).toHaveText("15");
+});
+
 
 

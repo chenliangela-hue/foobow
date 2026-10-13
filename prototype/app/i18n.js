@@ -444,7 +444,10 @@ window.FOOBOW_APP_I18N = {
       "breatheLetGoWords": "Let go",
       "koiGuideHint": "Guide toward open water",
       "kindnessGardenTitle": "Kindness Garden · 善行花园",
-      "plantSeedlingTitle": "Nurture Seedling · 培育善苗"
+      "plantSeedlingTitle": "Nurture Seedling · 培育善苗",
+      "statLightsReleased": "lights released",
+      "lanternSwipePrompt": "Swipe up to release into night sky",
+      "lanternJoinedSky": "Your lantern has joined the constellation."
     },
     "zh-Hans": {
       "eyebrow": "虚拟善缘地图",
@@ -863,7 +866,10 @@ window.FOOBOW_APP_I18N = {
       "breatheLetGoWords": "呼气 · 释怀",
       "koiGuideHint": "引向浩瀚水域",
       "kindnessGardenTitle": "善行花园 · 功德萌芽",
-      "plantSeedlingTitle": "培育善苗 · 生机盎然"
+      "plantSeedlingTitle": "培育善苗 · 生机盎然",
+      "statLightsReleased": "盏心灯已放飞",
+      "lanternSwipePrompt": "向上滑发放飞心灯",
+      "lanternJoinedSky": "您的心灯已汇入浩瀚星河"
     },
     "fr": {
       "eyebrow": "Carte du bon karma virtuel",
@@ -1277,7 +1283,10 @@ window.FOOBOW_APP_I18N = {
       "breatheLetGoWords": "Expirez",
       "koiGuideHint": "Guider vers le large",
       "kindnessGardenTitle": "Jardin de Bienveillance",
-      "plantSeedlingTitle": "Cultiver une pousse"
+      "plantSeedlingTitle": "Cultiver une pousse",
+      "statLightsReleased": "lampes libérées",
+      "lanternSwipePrompt": "Glissez vers le haut pour libérer",
+      "lanternJoinedSky": "Votre lampe a rejoint la constellation."
     },
     "es": {
       "eyebrow": "Mapa del buen karma virtual",
@@ -1690,7 +1699,10 @@ window.FOOBOW_APP_I18N = {
       "breatheLetGoWords": "Exhala",
       "koiGuideHint": "Guía hacia aguas abiertas",
       "kindnessGardenTitle": "Jardín de Bondad",
-      "plantSeedlingTitle": "Cultivar un brote"
+      "plantSeedlingTitle": "Cultivar un brote",
+      "statLightsReleased": "luces liberadas",
+      "lanternSwipePrompt": "Desliza hacia arriba para soltar",
+      "lanternJoinedSky": "Tu luz se ha unido a la constelación."
     },
     "th": {
       "eyebrow": "แผนที่กุศลเสมือน",
@@ -2104,7 +2116,10 @@ window.FOOBOW_APP_I18N = {
       "breatheLetGoWords": "หายใจออก",
       "koiGuideHint": "นำทางสู่ผืนน้ำกว้าง",
       "kindnessGardenTitle": "สวนแห่งความเมตตา",
-      "plantSeedlingTitle": "ปลูกต้นกล้าแห่งความดี"
+      "plantSeedlingTitle": "ปลูกต้นกล้าแห่งความดี",
+      "statLightsReleased": "โคมที่ปล่อยแล้ว",
+      "lanternSwipePrompt": "ปัดขึ้นเพื่อปล่อยโคม",
+      "lanternJoinedSky": "โคมของคุณลอยสู่ดวงดาราแล้ว"
     },
     "ja": {
       "eyebrow": "バーチャル善縁マップ",
@@ -2517,7 +2532,10 @@ window.FOOBOW_APP_I18N = {
       "breatheLetGoWords": "息を吐く",
       "koiGuideHint": "広い水域へ導く",
       "kindnessGardenTitle": "善行の庭",
-      "plantSeedlingTitle": "苗木を育てる"
+      "plantSeedlingTitle": "苗木を育てる",
+      "statLightsReleased": "灯火の放飛",
+      "lanternSwipePrompt": "上へスワイプして夜空へ放つ",
+      "lanternJoinedSky": "灯火が満天の星河へと加わりました"
     }
   },
   "blessingLines": {

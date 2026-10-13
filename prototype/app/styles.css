@@ -5446,6 +5446,7 @@ body.dark .mini-progress-fill {
 
 .deed-scene-layer.active {
   display: block;
+  pointer-events: auto;
 }
 
 /* Crosswalk & Escort Scene */
@@ -8648,5 +8649,205 @@ body.dark .buddhist-compass-rose {
 .ritual-rising-particle.animate {
   opacity: 1;
   transform: translateY(-48px) scale(1.1);
+}
+
+/* 8. Sanctuary Night Lantern Release Game */
+.sanctuary-lantern-sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 25%, rgba(20, 48, 72, 0.92) 0%, rgba(8, 20, 36, 0.98) 100%);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.deed-scene-layer.scene-blessing-layer.active .sanctuary-lantern-sky {
+  opacity: 1;
+}
+
+.sky-lantern-constellation {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.constellation-lantern {
+  position: absolute;
+  width: 14px;
+  height: 20px;
+  border-radius: 4px;
+  background: radial-gradient(ellipse at 50% 60%, #fff0a8 0%, #f6a938 55%, rgba(217, 119, 6, 0.8) 100%);
+  box-shadow: 0 0 10px rgba(255, 184, 51, 0.75), 0 0 20px rgba(255, 150, 0, 0.35);
+  opacity: 0.85;
+  animation: floatConstellationLantern var(--float-dur, 6s) ease-in-out infinite alternate;
+}
+
+@keyframes floatConstellationLantern {
+  0% { transform: translate(0, 0) scale(var(--scale, 0.8)); opacity: 0.65; }
+  50% { transform: translate(var(--sway, 6px), -8px) scale(var(--scale, 0.8)); opacity: 0.9; }
+  100% { transform: translate(calc(var(--sway, 6px) * -1), -16px) scale(var(--scale, 0.8)); opacity: 0.7; }
+}
+
+.sanctuary-lantern-target {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  cursor: grab;
+  touch-action: none;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.25s ease;
+}
+
+.sanctuary-lantern-target:active,
+.sanctuary-lantern-target.dragging {
+  cursor: grabbing;
+}
+
+.sanctuary-lantern-prompt {
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  color: #ffd97d;
+  background: rgba(10, 24, 38, 0.85);
+  border: 1px solid rgba(255, 217, 125, 0.35);
+  border-radius: 999px;
+  padding: 3px 12px;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: promptPulseGlow 2.4s ease-in-out infinite;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes promptPulseGlow {
+  0%, 100% { transform: translateY(0); box-shadow: 0 0 8px rgba(255, 217, 125, 0.2); }
+  50% { transform: translateY(-3px); box-shadow: 0 0 16px rgba(255, 217, 125, 0.6); }
+}
+
+.sanctuary-lantern-item {
+  width: 58px;
+  height: 78px;
+  filter: drop-shadow(0 6px 16px rgba(255, 184, 51, 0.5));
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.sanctuary-lantern-target:hover .sanctuary-lantern-item {
+  transform: scale(1.05);
+  filter: drop-shadow(0 8px 24px rgba(255, 184, 51, 0.8));
+}
+
+.sanctuary-lantern-target.soaring-skyward {
+  pointer-events: none;
+  transition: transform var(--soar-time, 1.8s) cubic-bezier(0.2, 0.9, 0.3, 1), opacity var(--soar-time, 1.8s) ease;
+  transform: translate(calc(-50% + var(--drift-x, 0px)), -360px) scale(0.2);
+  opacity: 0;
+}
+
+.sanctuary-flame-halo {
+  animation: flameHaloFlicker 1.8s ease-in-out infinite alternate;
+}
+
+.sanctuary-flame-core {
+  animation: flameCoreFlicker 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes flameHaloFlicker {
+  0% { transform: scale(0.92); opacity: 0.7; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes flameCoreFlicker {
+  0% { transform: scale(0.85); }
+  100% { transform: scale(1.1); }
+}
+
+/* 9. Virtual Fish Release Companion Fish & World Arc */
+.companion-fish-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.companion-koi {
+  position: absolute;
+  width: 44px;
+  height: 22px;
+  opacity: 0;
+  transform-origin: center center;
+  transition: transform var(--swim-dur, 2s) cubic-bezier(0.25, 0.8, 0.3, 1), opacity var(--swim-dur, 2s) ease;
+}
+
+.companion-koi.swimming {
+  opacity: 0.85;
+  transform: translate(var(--target-x, -120px), var(--target-y, -90px)) scale(0.4) rotate(var(--angle, -25deg));
+}
+
+.companion-koi svg {
+  width: 100%;
+  height: 100%;
+  animation: koiTailWiggle 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes koiTailWiggle {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
+}
+
+.water-to-globe-arc {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.arc-spark-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffd97d;
+  box-shadow: 0 0 12px #f6d37a, 0 0 24px rgba(246, 211, 122, 0.9);
+  transition: transform 1.4s cubic-bezier(0.1, 0.7, 0.2, 1), opacity 1.4s ease;
+}
+
+/* 10. Presence Stillness Environment Bloom */
+.environment-stillness-bloom #ritualScene,
+.environment-stillness-bloom #muyuContainer {
+  filter: drop-shadow(0 0 24px rgba(246, 211, 122, 0.45));
+}
+
+.environment-stillness-bloom .pond-lotus {
+  transform: scale(1.18);
+  transition: transform 2s ease;
+  filter: drop-shadow(0 0 16px rgba(255, 230, 240, 0.8));
+}
+
+.environment-stillness-bloom .muyu-rebound-wrapper {
+  box-shadow: 0 0 35px rgba(246, 211, 122, 0.4);
+}
+
+/* 11. Cinematic Lantern Screen Crossfade Transition */
+.lantern-screen-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 235, 180, 0.95) 0%, rgba(255, 200, 80, 0.8) 45%, rgba(18, 40, 60, 0.9) 100%);
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lantern-screen-transition-overlay.active {
+  opacity: 1;
 }
 
