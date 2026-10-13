@@ -42,6 +42,8 @@ Last updated: 2026-10-12 17:08 America/Toronto
 
 ## Last Sync Notes
 
+- 2026-10-12 ritual refinement health check: local Node is `20.19.4`. Claude CLI returned an expired OAuth session; Gemini CLI requested `GEMINI_API_KEY`. Neither was assigned blocking work. The web ritual changes were implemented and verified locally; no secrets were sent to either CLI.
+
 - Dashboard initialized from zero counters as requested.
 - `claude` and `gemini` CLIs are available on PATH.
 - Claude planning assignment initially failed due API socket connectivity; root cause was stale custom API/proxy settings overriding the user's logged-in Claude.ai account.

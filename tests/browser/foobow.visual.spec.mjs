@@ -8,6 +8,7 @@ const prototypeUrl = pathToFileURL(path.resolve(__dirname, "../../prototype/app/
 const landingUrl = pathToFileURL(path.resolve(__dirname, "../../prototype/index.html")).toString();
 
 async function resetPrototype(page) {
+  await page.clock.install({ time: new Date("2026-10-12T12:00:00-04:00") });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(prototypeUrl);
   await page.evaluate(() => localStorage.clear());

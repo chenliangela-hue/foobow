@@ -1314,7 +1314,7 @@ function setupBlessings() {
     // Community global count toast
     if (lampJoinedToast) {
       const copy = dictionary();
-      lampJoinedToast.textContent = copy.lampJoinedWorld || "Your wish has joined 8,412,597 quiet lights.";
+      lampJoinedToast.textContent = copy.lampJoinedWorld || "Your wish has joined the night sky.";
       lampJoinedToast.hidden = false;
       setTimeout(() => {
         lampJoinedToast.hidden = true;
@@ -1332,6 +1332,7 @@ function setupBlessings() {
   let holdCompleted = false;
 
   function startHold(e) {
+    if (holdInterval) return;
     holdStartTime = Date.now();
     holdCompleted = false;
     if (lampHoldProgress) lampHoldProgress.style.width = "0%";
@@ -1377,16 +1378,27 @@ function setupBlessings() {
   }
 
   if (lightLamp) {
-    lightLamp.addEventListener("pointerdown", startHold);
+    lightLamp.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      lightLamp.setPointerCapture?.(e.pointerId);
+      startHold(e);
+    });
     lightLamp.addEventListener("pointerup", cancelHold);
     lightLamp.addEventListener("pointercancel", cancelHold);
-    lightLamp.addEventListener("mouseleave", cancelHold);
-
-    // Click fallback for instant click & test automation
-    lightLamp.addEventListener("click", () => {
-      cancelHold();
-      triggerLampLighting();
+    lightLamp.addEventListener("keydown", (e) => {
+      if ((e.key === " " || e.key === "Enter") && !e.repeat) {
+        e.preventDefault();
+        startHold(e);
+      }
     });
+    lightLamp.addEventListener("keyup", (e) => {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        cancelHold(e);
+      }
+    });
+    lightLamp.addEventListener("blur", cancelHold);
+    lightLamp.addEventListener("click", (e) => e.preventDefault());
   }
 
   setupMuyu();
@@ -2446,6 +2458,8 @@ function setupSanctuaryLanternGame() {
   const sky = document.getElementById("sanctuaryLanternSky");
   const constellation = document.getElementById("skyLanternConstellation");
   if (!target || !sky || !constellation) return;
+  if (target.dataset.ritualBound === "true") return;
+  target.dataset.ritualBound = "true";
 
   function renderConstellation() {
     const total = Math.max(8, Math.min(32, state.lightsReleased || 14));
@@ -2499,6 +2513,7 @@ function setupSanctuaryLanternGame() {
   }
 
   function releaseLantern(velocityMultiplier) {
+    if (target.classList.contains("soaring-skyward")) return;
     target.classList.remove("dragging");
     target.classList.add("soaring-skyward");
 
@@ -2547,10 +2562,10 @@ function setupSanctuaryLanternGame() {
     const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY) || currentY;
     const deltaY = clientY - startY;
     const dt = Math.max(10, Date.now() - startTime);
-    const speed = Math.abs(deltaY) / dt;
+    const upwardSpeed = Math.max(0, -deltaY) / dt;
 
-    if (deltaY < -35 || speed > 0.45) {
-      releaseLantern(speed * 3.5);
+    if (deltaY < -35 || (deltaY < -18 && upwardSpeed > 0.45)) {
+      releaseLantern(upwardSpeed * 3.5);
     } else {
       target.classList.remove("dragging");
       target.style.transform = "";
@@ -2571,11 +2586,6 @@ function setupSanctuaryLanternGame() {
     }
   });
 
-  target.addEventListener("click", () => {
-    if (!target.classList.contains("soaring-skyward") && !isDragging) {
-      releaseLantern(2.5);
-    }
-  });
 }
 
 const performRitualBtn = document.getElementById("performRitual");
@@ -2634,6 +2644,12 @@ function setupKoiDirectGesture() {
 
   koiEl.addEventListener("mousedown", onPointerDown);
   koiEl.addEventListener("touchstart", onPointerDown, { passive: true });
+  koiEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      executeFishRelease(koiEl);
+    }
+  });
   window.addEventListener("mousemove", onPointerMove);
   window.addEventListener("touchmove", onPointerMove, { passive: true });
   window.addEventListener("mouseup", onPointerUp);
@@ -3796,8 +3812,10 @@ function setupSeedlingMicroGame() {
   const promptEl = document.getElementById("seedlingPrompt");
   const waterAnim = document.getElementById("waterStreamAnim");
   const sunOverlay = document.getElementById("sunBeamOverlay");
+  const soil = document.getElementById("soilMound");
+  const stage = document.getElementById("seedlingStage");
 
-  if (!seedBtn || !waterBtn || !sunBtn) return;
+  if (!seedBtn || !waterBtn || !sunBtn || !soil || !stage) return;
 
   let step = 1; // 1: Plant seed, 2: Water, 3: Sunlight, 4: Harvested
 
@@ -3805,20 +3823,63 @@ function setupSeedlingMicroGame() {
     step = 1;
     seedBtn.style.display = "";
     seedBtn.style.transform = "";
+    seedBtn.classList.remove("planted", "dragging");
+    soil.classList.remove("ready");
     if (sproutEl) sproutEl.hidden = true;
     if (waterAnim) waterAnim.hidden = true;
     if (sunOverlay) sunOverlay.hidden = true;
-    if (promptEl) promptEl.textContent = "Step 1: Tap seed to plant into soil";
+    stage.style.removeProperty("--sun-x");
+    stage.style.removeProperty("--sun-y");
+    if (promptEl) promptEl.textContent = "Step 1: Drag seed into soil";
   }
 
   // Step 1: Plant seed
-  seedBtn.addEventListener("click", () => {
+  function plantSeed() {
     if (step !== 1) return;
     step = 2;
     window.FOOBOW_RITUAL_ENGINE?.haptics?.tap?.();
     window.FOOBOW_RITUAL_ENGINE?.audio?.playTok?.({ timbre: "wood", detune: 0.95 });
-    seedBtn.style.transform = "translateY(8px) scale(0.75)";
+    seedBtn.classList.add("planted");
+    seedBtn.style.transform = "";
     if (promptEl) promptEl.textContent = "Step 2: Hold watering can to nourish";
+  }
+
+  function insideSoil(x, y) {
+    const rect = soil.getBoundingClientRect();
+    return x >= rect.left && x <= rect.right && y >= rect.top - 12 && y <= rect.bottom + 12;
+  }
+
+  let seedDrag = null;
+  seedBtn.addEventListener("pointerdown", (e) => {
+    if (step !== 1 || e.button !== 0) return;
+    seedDrag = { x: e.clientX, y: e.clientY };
+    seedBtn.setPointerCapture(e.pointerId);
+    seedBtn.classList.add("dragging");
+  });
+  seedBtn.addEventListener("pointermove", (e) => {
+    if (!seedDrag) return;
+    seedBtn.style.transform = `translate(${e.clientX - seedDrag.x}px, ${e.clientY - seedDrag.y}px)`;
+    soil.classList.toggle("ready", insideSoil(e.clientX, e.clientY));
+  });
+  seedBtn.addEventListener("pointerup", (e) => {
+    if (!seedDrag) return;
+    seedDrag = null;
+    seedBtn.classList.remove("dragging");
+    soil.classList.remove("ready");
+    if (insideSoil(e.clientX, e.clientY)) plantSeed();
+    else seedBtn.style.transform = "";
+  });
+  seedBtn.addEventListener("pointercancel", () => {
+    seedDrag = null;
+    seedBtn.classList.remove("dragging");
+    soil.classList.remove("ready");
+    seedBtn.style.transform = "";
+  });
+  seedBtn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      plantSeed();
+    }
   });
 
   // Step 2: Water
@@ -3832,6 +3893,7 @@ function setupSeedlingMicroGame() {
 
     if (waterTimer) clearTimeout(waterTimer);
     waterTimer = setTimeout(() => {
+      waterTimer = null;
       step = 3;
       if (waterAnim) waterAnim.hidden = true;
       waterBtn.classList.remove("active");
@@ -3849,19 +3911,29 @@ function setupSeedlingMicroGame() {
     }
   }
 
-  waterBtn.addEventListener("pointerdown", startWatering);
+  waterBtn.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    waterBtn.setPointerCapture(e.pointerId);
+    startWatering();
+  });
   waterBtn.addEventListener("pointerup", stopWatering);
   waterBtn.addEventListener("pointercancel", stopWatering);
-  waterBtn.addEventListener("mouseleave", stopWatering);
-  waterBtn.addEventListener("click", () => {
-    if (step === 2) {
+  waterBtn.addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && !e.repeat) {
+      e.preventDefault();
       startWatering();
-      setTimeout(stopWatering, 1250);
     }
   });
+  waterBtn.addEventListener("keyup", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      stopWatering();
+    }
+  });
+  waterBtn.addEventListener("blur", stopWatering);
 
   // Step 3: Sunlight & Sprout
-  sunBtn.addEventListener("click", () => {
+  function growSeedling() {
     if (step !== 3) return;
     step = 4;
     if (sunOverlay) {
@@ -3890,6 +3962,42 @@ function setupSeedlingMicroGame() {
     renderKindnessGarden();
 
     setTimeout(resetGame, 6500);
+  }
+
+  let sunDragging = false;
+  sunBtn.addEventListener("pointerdown", (e) => {
+    if (step !== 3 || e.button !== 0) return;
+    sunDragging = true;
+    sunBtn.setPointerCapture(e.pointerId);
+    sunBtn.classList.add("active");
+    if (sunOverlay) sunOverlay.hidden = false;
+  });
+  sunBtn.addEventListener("pointermove", (e) => {
+    if (!sunDragging) return;
+    const rect = stage.getBoundingClientRect();
+    stage.style.setProperty("--sun-x", `${e.clientX - rect.left}px`);
+    stage.style.setProperty("--sun-y", `${e.clientY - rect.top}px`);
+    soil.classList.toggle("ready", insideSoil(e.clientX, e.clientY));
+  });
+  sunBtn.addEventListener("pointerup", (e) => {
+    if (!sunDragging) return;
+    sunDragging = false;
+    sunBtn.classList.remove("active");
+    soil.classList.remove("ready");
+    if (insideSoil(e.clientX, e.clientY)) growSeedling();
+    else if (sunOverlay) sunOverlay.hidden = true;
+  });
+  sunBtn.addEventListener("pointercancel", () => {
+    sunDragging = false;
+    sunBtn.classList.remove("active");
+    soil.classList.remove("ready");
+    if (sunOverlay) sunOverlay.hidden = true;
+  });
+  sunBtn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      growSeedling();
+    }
   });
 
   renderKindnessGarden();

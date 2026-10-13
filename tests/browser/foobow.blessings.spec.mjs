@@ -35,7 +35,13 @@ test("pray for someone: pick a category, receive a mock blessing, keep it", asyn
 test("wish lamp: lighting adds a lamp and records the wish", async ({ page }) => {
   await expect(page.locator("#lampCount")).toHaveText("0");
   await page.locator("#lampWish").fill("safe travels home");
-  await page.getByRole("button", { name: "Light the lamp" }).click();
+  const lamp = page.locator("#lightLamp");
+  await lamp.hover();
+  const box = await lamp.boundingBox();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.waitForTimeout(1300);
+  await page.mouse.up();
 
   await expect(page.locator("#lampCount")).toHaveText("1");
   await expect(page.locator(".lamp-item")).toHaveCount(1);
@@ -46,7 +52,10 @@ test("wish lamp: lighting adds a lamp and records the wish", async ({ page }) =>
 
 test("profile records progress and a running activity history", async ({ page }) => {
   await page.locator("#lampWish").fill("peace");
-  await page.getByRole("button", { name: "Light the lamp" }).click();
+  await page.locator("#lightLamp").focus();
+  await page.keyboard.down("Space");
+  await page.waitForTimeout(1300);
+  await page.keyboard.up("Space");
   await page.locator(".bottom-nav .nav-item[data-target='profile']").click();
 
   // Progress toward the next milestone.
@@ -66,7 +75,10 @@ test("profile records progress and a running activity history", async ({ page })
 
 test("kept blessings and lamps persist across reload", async ({ page }) => {
   await page.locator("#lampWish").fill("a quiet year");
-  await page.getByRole("button", { name: "Light the lamp" }).click();
+  await page.locator("#lightLamp").focus();
+  await page.keyboard.down("Space");
+  await page.waitForTimeout(1300);
+  await page.keyboard.up("Space");
   await expect(page.locator("#lampCount")).toHaveText("1");
 
   await page.reload();
@@ -238,9 +250,27 @@ test("wish lamp typing brightens flame and community world toast appears", async
   await expect(flame).toHaveClass(/typing-bright/);
 
   // Light lamp
-  await page.locator("#lightLamp").click();
+  await page.locator("#lightLamp").focus();
+  await page.keyboard.down("Space");
+  await page.waitForTimeout(1300);
+  await page.keyboard.up("Space");
   await expect(page.locator("#lampJoinedToast")).toBeVisible();
-  await expect(page.locator("#lampJoinedToast")).toContainText("quiet lights");
+  await expect(page.locator("#lampJoinedToast")).toContainText("night sky");
+});
+
+test("wish lamp cancels a short press without recording a wish", async ({ page }) => {
+  await page.locator("#lampWish").fill("a quiet wish");
+  await page.locator("#lightLamp").click();
+  await expect(page.locator("#lampCount")).toHaveText("0");
+  await expect(page.locator("#lampWish")).toHaveValue("a quiet wish");
+});
+
+test("Muyu keyboard activation counts once per key", async ({ page }) => {
+  await page.locator("#muyuBtn").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#muyuCount")).toHaveText("1");
+  await page.keyboard.press("Space");
+  await expect(page.locator("#muyuCount")).toHaveText("2");
 });
 
 

@@ -38,6 +38,16 @@ Foobow pattern to borrow: show many small actions accumulating into visible comm
 
 Foobow pattern to borrow: enable people to support each other without turning the product into a noisy social feed.
 
+## Open-source ritual interaction scan (2026-10-12)
+
+| Candidate | Strength worth reusing | Fit and maintenance limits | Decision |
+| --- | --- | --- | --- |
+| [Fathom](https://github.com/JayJay-101/fathom) (MIT) | Guided breathing, local history, clock-derived timing, tests and CI. | React/Web Worker architecture does not fit this static web prototype without a rewrite. The public repository shows four commits and no published releases; adoption and long-term issue health are unproven. | Adapt the guided flow and deterministic timing ideas within Foobow's existing engine; do not import code or a dependency. |
+| [ZenBreath](https://github.com/gardvori/zenbreath) (MIT) | A small HTML/CSS/JS breathing interface with Web Audio and local progress. | Single-file design is easy to inspect but not a suitable module boundary for Foobow. The public repository shows one commit and no release cadence or test evidence. | Use as visual/interaction reference only; keep Foobow's existing modules. |
+| [MDN reduced-motion guidance](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion) | Established browser feature for reducing nonessential motion. | Browser support is broad; no package, provider, or security advisory surface is added. | Use CSS media rules and preserve keyboard controls when motion is reduced. |
+
+No external code or assets were copied. No production dependency was added.
+
 ## Design Implications
 
 - Main surface should be a map, not a generic feed.

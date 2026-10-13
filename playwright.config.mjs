@@ -8,7 +8,8 @@ export default defineConfig({
     timeout: 7_500
   },
   use: {
-    trace: "retain-on-failure"
+    trace: "retain-on-failure",
+    ...(process.env.FOOBOW_TEST_CHROME ? { launchOptions: { executablePath: process.env.FOOBOW_TEST_CHROME } } : {})
   },
   projects: [
     {

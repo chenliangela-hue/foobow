@@ -126,19 +126,11 @@ test("mindful breathing orb supports technique switching and calm focus completi
   const completeBtn = page.locator("#completeFocusedRitual");
   await expect(completeBtn).toBeDisabled();
 
-  // Fast-forward or trigger focus completion
+  // Complete the real breathing cycle with a virtual clock.
+  await page.clock.install();
   await page.locator("#startFocusSession").click();
   await expect(page.locator("#calmStatus")).not.toHaveText("optional");
-
-  // Accelerate completion via evaluate for test reliability
-  await page.evaluate(() => {
-    window.state.focusProgress = 100;
-    window.state.focusReady = true;
-    const btn = document.getElementById("completeFocusedRitual");
-    if (btn) btn.disabled = false;
-    const status = document.getElementById("calmStatus");
-    if (status) status.textContent = "ready";
-  });
+  await page.clock.runFor(16000);
 
   await expect(completeBtn).toBeEnabled();
   const karmaBefore = Number(await page.locator("#karmaValue").textContent());
@@ -171,17 +163,23 @@ test("10-second seedling nurturing micro-game sprouts plant into personal Kindne
   await expect(page.locator("#seedlingCard")).toBeVisible();
   await expect(page.locator("#kindnessGardenShelf")).toBeVisible();
 
-  // Step 1: Plant seed
-  await page.locator("#draggableSeed").click();
+  // Step 1: Move the seed into soil
+  await page.locator("#draggableSeed").dragTo(page.locator("#soilMound"));
   await expect(page.locator("#seedlingPrompt")).toContainText("Step 2");
 
-  // Step 2: Water
+  // Step 2: A short press does not water the seed
   await page.locator("#waterCanBtn").click();
+  await expect(page.locator("#seedlingPrompt")).toContainText("Step 2");
+  const water = page.locator("#waterCanBtn");
+  await water.hover();
+  await page.mouse.down();
+  await page.waitForTimeout(1300);
+  await page.mouse.up();
   await expect(page.locator("#seedlingPrompt")).toContainText("Step 3");
 
   // Step 3: Guide sunlight
   const karmaBefore = Number(await page.locator("#karmaValue").textContent());
-  await page.locator("#sunBeamBtn").click();
+  await page.locator("#sunBeamBtn").dragTo(page.locator("#soilMound"));
   await expect(page.locator("#seedlingSprout")).toBeVisible();
   await expect(page.locator("#karmaValue")).toHaveText(String(karmaBefore + 5));
 
@@ -202,14 +200,36 @@ test("sanctuary night lantern release game soars skyward and updates persistent 
   // Initial constellation lanterns
   const initialLanterns = await page.locator("#skyLanternConstellation .constellation-lantern").count();
   expect(initialLanterns).toBeGreaterThanOrEqual(8);
+  const lightsBefore = await page.evaluate(() => window.state.lightsReleased);
   
   // Release lantern
-  await page.locator("#sanctuaryLanternTarget").click();
+  await page.locator("#sanctuaryLanternTarget").focus();
+  await page.keyboard.press("Enter");
   await expect(page.locator("#sanctuaryLanternTarget")).toHaveClass(/soaring-skyward/);
   
   // Check profile lights count updated
   await page.locator(".bottom-nav .nav-item[data-target='profile']").click();
-  await expect(page.locator("#profileLightsCount")).toHaveText("15");
+  await expect(page.locator("#profileLightsCount")).toHaveText(String(lightsBefore + 1));
+});
+
+test("downward swipe does not release a sanctuary lantern", async ({ page }) => {
+  await page.locator(".deed-item[data-deed-id='anonymous-blessing']").first().click();
+  const target = page.locator("#sanctuaryLanternTarget");
+  const box = await target.boundingBox();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2 + 90, { steps: 4 });
+  await page.mouse.up();
+  await expect(target).not.toHaveClass(/soaring-skyward/);
+  await page.locator(".bottom-nav .nav-item[data-target='profile']").click();
+  await expect(page.locator("#profileLightsCount")).toHaveText("14");
+});
+
+test("koi release is available from the keyboard", async ({ page }) => {
+  const koi = page.locator("#koiTouchTarget");
+  await koi.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#ritualScene")).toHaveClass(/completed/);
 });
 
 

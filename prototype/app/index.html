@@ -199,22 +199,22 @@
               <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="lamp">
                 <span class="quick-ritual-icon">🪔</span>
                 <span class="quick-ritual-name" data-i18n="quickRitualLamp">Light a Lamp</span>
-                <span class="quick-ritual-duration" data-i18n="duration3Min">3 min</span>
+                <span class="quick-ritual-duration" data-i18n="duration30Sec">30 sec</span>
               </button>
               <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="incense">
                 <span class="quick-ritual-icon">🕯️</span>
                 <span class="quick-ritual-name" data-i18n="quickRitualIncense">Burn Incense</span>
-                <span class="quick-ritual-duration" data-i18n="duration5Min">5 min</span>
+                <span class="quick-ritual-duration" data-i18n="duration1Min">1 min</span>
               </button>
               <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="muyu">
                 <span class="quick-ritual-icon">🪵</span>
                 <span class="quick-ritual-name" data-i18n="quickRitualMuyu">Wooden Fish</span>
-                <span class="quick-ritual-duration" data-i18n="duration5Min">5 min</span>
+                <span class="quick-ritual-duration" data-i18n="duration30Sec">30 sec</span>
               </button>
               <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="wheel">
                 <span class="quick-ritual-icon">☸️</span>
                 <span class="quick-ritual-name" data-i18n="quickRitualWheel">Prayer Wheel</span>
-                <span class="quick-ritual-duration" data-i18n="duration7Min">7 min</span>
+                <span class="quick-ritual-duration" data-i18n="duration1Min">1 min</span>
               </button>
             </div>
           </section>
@@ -999,11 +999,11 @@
             
             <div class="seedling-stage" id="seedlingStage" aria-label="Seedling nurturing stage">
               <div class="seedling-soil-mound" id="soilMound">
-                <div class="seedling-seed" id="draggableSeed" role="button" tabindex="0" title="Tap or drag seed into soil">🌱</div>
                 <div class="seedling-sprout" id="seedlingSprout" hidden>
                   <span class="sprout-icon" id="sproutIcon">🪷</span>
                 </div>
               </div>
+              <div class="seedling-seed" id="draggableSeed" role="button" tabindex="0" aria-label="Move seed into soil"><span aria-hidden="true"></span></div>
               <div class="seedling-tools-row">
                 <button class="seedling-tool-btn" id="waterCanBtn" type="button" title="Hold to water">🚿 Hold to Water</button>
                 <button class="seedling-tool-btn" id="sunBeamBtn" type="button" title="Guide sunlight">☀️ Guide Sunlight</button>
@@ -1011,7 +1011,7 @@
               <div class="water-stream-anim" id="waterStreamAnim" hidden></div>
               <div class="sun-beam-overlay" id="sunBeamOverlay" hidden></div>
             </div>
-            <div class="seedling-prompt" id="seedlingPrompt">Step 1: Tap seed to plant into soil</div>
+            <div class="seedling-prompt" id="seedlingPrompt" aria-live="polite">Step 1: Drag seed into soil</div>
             
             <!-- Kindness Garden Collection Shelf -->
             <div class="kindness-garden-shelf" id="kindnessGardenShelf">
