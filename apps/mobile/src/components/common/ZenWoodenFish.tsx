@@ -28,6 +28,8 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
   const { t, locale } = useI18n();
   const [tapCount, setTapCount] = useState(0);
   const [particles, setParticles] = useState<FloatingParticle[]>([]);
+  const [selectedTimbre, setSelectedTimbre] = useState<"wood" | "bowl" | "chime">("wood");
+  const [presenceStreak, setPresenceStreak] = useState(0);
 
   // Physics animation values
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -35,6 +37,15 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
   const rippleOpacity = useRef(new Animated.Value(0)).current;
   const malletAnim = useRef(new Animated.Value(0)).current;
   const nextParticleId = useRef(0);
+  const lastTapTime = useRef(0);
+  const presenceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const getPresenceStage = () => {
+    if (presenceStreak >= 30) return { key: "stillness", label: locale === "zh-Hans" ? "寂静 · Stillness Bloom" : "Stillness Bloom" };
+    if (presenceStreak >= 15) return { key: "flowing", label: locale === "zh-Hans" ? "心流 · Flowing Peace" : "Flowing Peace" };
+    if (presenceStreak >= 5) return { key: "settling", label: locale === "zh-Hans" ? "凝神 · Settling Mind" : "Settling Mind" };
+    return null;
+  };
 
   const getMeritLabel = () => {
     if (locale === "zh-Hans") {
@@ -49,8 +60,25 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
   };
 
   const handlePress = () => {
+    // 0. Rhythm & Presence calculation
+    const now = Date.now();
+    const interval = now - lastTapTime.current;
+    lastTapTime.current = now;
+
+    if (interval >= 350 && interval <= 3000) {
+      setPresenceStreak((prev) => prev + 1);
+    } else if (interval > 3000) {
+      setPresenceStreak(1);
+    }
+    if (presenceTimer.current) clearTimeout(presenceTimer.current);
+    presenceTimer.current = setTimeout(() => {
+      setPresenceStreak(0);
+    }, 4500);
+
+    // Micro-pitch varied tactile haptics based on timbre
     try {
-      Vibration.vibrate(25);
+      const vibDuration = selectedTimbre === "bowl" ? 38 : selectedTimbre === "chime" ? 18 : 26;
+      Vibration.vibrate(vibDuration);
     } catch (_) {}
 
     // 0. Mallet strike sequence
@@ -131,6 +159,8 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
     }
   };
 
+  const presenceStage = getPresenceStage();
+
   return (
     <View style={[styles.card, { backgroundColor: currentColors.surface, borderColor: currentColors.gold }]}>
       <View style={styles.headerRow}>
@@ -175,6 +205,50 @@ export function ZenWoodenFish({ onTapKarma, seniorMode }: ZenWoodenFishProps) {
           />
         </View>
       </View>
+
+      {/* Sound Timbre Selector */}
+      <View style={styles.timbreRow}>
+        {(["wood", "bowl", "chime"] as const).map((tId) => {
+          const isActive = selectedTimbre === tId;
+          const labels = {
+            wood: locale === "zh-Hans" ? "🪵 沉水檀木" : "🪵 Sandalwood",
+            bowl: locale === "zh-Hans" ? "🔔 避世颂钵" : "🔔 Bronze Bowl",
+            chime: locale === "zh-Hans" ? "🪷 菩提清磬" : "🪷 Bodhi Bell"
+          };
+          return (
+            <Pressable
+              key={tId}
+              onPress={() => setSelectedTimbre(tId)}
+              style={[
+                styles.timbreChip,
+                {
+                  backgroundColor: isActive ? currentColors.goldGlow : currentColors.surfaceStrong,
+                  borderColor: isActive ? currentColors.gold : currentColors.line
+                }
+              ]}
+            >
+              <Text
+                style={[
+                  styles.timbreText,
+                  { color: isActive ? currentColors.gold : currentColors.muted },
+                  seniorMode && { fontSize: typography.sizes.body }
+                ]}
+              >
+                {labels[tId]}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* Presence Combo Banner */}
+      {presenceStage && (
+        <View style={[styles.presenceBanner, { backgroundColor: currentColors.goldGlow, borderColor: currentColors.gold }]}>
+          <Text style={[styles.presenceText, { color: currentColors.gold }]}>
+            ✨ {presenceStage.label}
+          </Text>
+        </View>
+      )}
 
       <View style={styles.stage}>
         {/* Animated concentric gold ripple */}
@@ -446,5 +520,35 @@ const styles = StyleSheet.create({
   goalFill: {
     height: "100%",
     borderRadius: layout.borderRadius.full
+  },
+  timbreRow: {
+    flexDirection: "row",
+    gap: layout.spacing.xs,
+    justifyContent: "center",
+    marginVertical: 4
+  },
+  timbreChip: {
+    paddingVertical: 4,
+    paddingHorizontal: layout.spacing.sm,
+    borderRadius: layout.borderRadius.full,
+    borderWidth: 1
+  },
+  timbreText: {
+    fontSize: 12,
+    fontWeight: "600"
+  },
+  presenceBanner: {
+    paddingVertical: 5,
+    paddingHorizontal: layout.spacing.sm,
+    borderRadius: layout.borderRadius.md,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 2
+  },
+  presenceText: {
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 0.5
   }
 });

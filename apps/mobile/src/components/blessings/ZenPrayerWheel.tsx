@@ -92,10 +92,16 @@ export function ZenPrayerWheel({ onSpinRevolution, seniorMode }: ZenPrayerWheelP
   };
 
   const triggerRevolution = () => {
+    const nextRev = revolutions + 1;
+    setRevolutions(nextRev);
     try {
-      Vibration.vibrate(20);
+      if (nextRev % 6 === 0) {
+        // Unison celebration haptic when completing all 6 mantra syllables!
+        Vibration.vibrate([0, 30, 80, 40, 100, 30]);
+      } else {
+        Vibration.vibrate(20);
+      }
     } catch (_) {}
-    setRevolutions((prev) => prev + 1);
     spawnParticle();
     if (onSpinRevolution) {
       onSpinRevolution();
@@ -358,27 +364,41 @@ export function ZenPrayerWheel({ onSpinRevolution, seniorMode }: ZenPrayerWheelP
         })}
       </View>
 
-      {/* Six Syllables Mantra strip */}
+      {/* Six Syllables Mantra strip with Progressive Illumination */}
       <View
         style={[
           styles.mantraStrip,
           {
             backgroundColor: currentColors.goldGlow,
             borderColor: currentColors.gold
+          },
+          revolutions > 0 && revolutions % 6 === 0 && {
+            borderColor: currentColors.coral,
+            backgroundColor: currentColors.goldGlow
           }
         ]}
       >
-        <Text style={[styles.stripChar, { color: currentColors.coral }]}>唵</Text>
-        <Text style={[styles.stripDot, { color: currentColors.gold }]}>·</Text>
-        <Text style={[styles.stripChar, { color: currentColors.coral }]}>嘛</Text>
-        <Text style={[styles.stripDot, { color: currentColors.gold }]}>·</Text>
-        <Text style={[styles.stripChar, { color: currentColors.coral }]}>呢</Text>
-        <Text style={[styles.stripDot, { color: currentColors.gold }]}>·</Text>
-        <Text style={[styles.stripChar, { color: currentColors.coral }]}>叭</Text>
-        <Text style={[styles.stripDot, { color: currentColors.gold }]}>·</Text>
-        <Text style={[styles.stripChar, { color: currentColors.coral }]}>咪</Text>
-        <Text style={[styles.stripDot, { color: currentColors.gold }]}>·</Text>
-        <Text style={[styles.stripChar, { color: currentColors.coral }]}>吽</Text>
+        {["唵", "嘛", "呢", "叭", "咪", "吽"].map((char, idx) => {
+          const isLit = (revolutions > 0 && revolutions % 6 === 0) || (revolutions % 6 > idx);
+          return (
+            <React.Fragment key={idx}>
+              {idx > 0 && (
+                <Text style={[styles.stripDot, { color: currentColors.gold }]}>·</Text>
+              )}
+              <Text
+                style={[
+                  styles.stripChar,
+                  {
+                    color: isLit ? currentColors.coral : currentColors.muted,
+                    fontWeight: isLit ? "700" : "400"
+                  }
+                ]}
+              >
+                {char}
+              </Text>
+            </React.Fragment>
+          );
+        })}
       </View>
 
       {/* Controls */}

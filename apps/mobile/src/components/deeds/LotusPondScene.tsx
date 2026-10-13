@@ -260,51 +260,131 @@ export function LotusPondScene({ isReleased, seniorMode, onInteractiveRelease }:
         </View>
       </Animated.View>
 
-      {/* Released Golden Koi Fish (Appears on release) */}
+      {/* Released Golden Koi Fish & Companion School */}
       {isReleased && (
-        <Animated.View
-          style={[
-            styles.releasedKoiWrap,
-            {
-              opacity: releaseAnim.interpolate({
-                inputRange: [0, 0.2, 0.8, 1],
-                outputRange: [0, 1, 0.9, 0]
-              }),
-              transform: [
-                {
-                  translateX: releaseAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: [20, -35, -90]
-                  })
-                },
-                {
-                  translateY: releaseAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: [30, -10, -50]
-                  })
-                },
-                {
-                  scale: releaseAnim.interpolate({
-                    inputRange: [0, 0.3, 1],
-                    outputRange: [0.5, 1.1, 0.7]
-                  })
-                },
-                {
-                  rotate: releaseAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ["-30deg", "-65deg"]
-                  })
-                }
-              ]
-            }
-          ]}
-          pointerEvents="none"
-        >
-          <View style={[styles.koiBody, styles.goldKoiBody]}>
-            <View style={[styles.koiHead, styles.goldKoiHead]} />
-            <View style={[styles.koiTail, styles.goldKoiTail]} />
-          </View>
-        </Animated.View>
+        <>
+          <Animated.View
+            style={[
+              styles.releasedKoiWrap,
+              {
+                opacity: releaseAnim.interpolate({
+                  inputRange: [0, 0.2, 0.8, 1],
+                  outputRange: [0, 1, 0.9, 0]
+                }),
+                transform: [
+                  {
+                    translateX: releaseAnim.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [20, -35, -90]
+                    })
+                  },
+                  {
+                    translateY: releaseAnim.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [30, -10, -50]
+                    })
+                  },
+                  {
+                    scale: releaseAnim.interpolate({
+                      inputRange: [0, 0.3, 1],
+                      outputRange: [0.5, 1.1, 0.7]
+                    })
+                  },
+                  {
+                    rotate: releaseAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["-30deg", "-65deg"]
+                    })
+                  }
+                ]
+              }
+            ]}
+            pointerEvents="none"
+          >
+            <View style={[styles.koiBody, styles.goldKoiBody]}>
+              <View style={[styles.koiHead, styles.goldKoiHead]} />
+              <View style={[styles.koiTail, styles.goldKoiTail]} />
+            </View>
+          </Animated.View>
+
+          {/* Companion School Koi 1 */}
+          <Animated.View
+            style={[
+              styles.releasedKoiWrap,
+              {
+                opacity: releaseAnim.interpolate({
+                  inputRange: [0, 0.25, 0.75, 1],
+                  outputRange: [0, 0.85, 0.8, 0]
+                }),
+                transform: [
+                  {
+                    translateX: releaseAnim.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [38, -12, -65]
+                    })
+                  },
+                  {
+                    translateY: releaseAnim.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [48, 8, -28]
+                    })
+                  },
+                  {
+                    scale: 0.65
+                  },
+                  {
+                    rotate: "-45deg"
+                  }
+                ]
+              }
+            ]}
+            pointerEvents="none"
+          >
+            <View style={[styles.koiBody, styles.goldKoiBody]}>
+              <View style={[styles.koiHead, styles.goldKoiHead]} />
+              <View style={[styles.koiTail, styles.goldKoiTail]} />
+            </View>
+          </Animated.View>
+
+          {/* Companion School Koi 2 */}
+          <Animated.View
+            style={[
+              styles.releasedKoiWrap,
+              {
+                opacity: releaseAnim.interpolate({
+                  inputRange: [0, 0.3, 0.7, 1],
+                  outputRange: [0, 0.75, 0.7, 0]
+                }),
+                transform: [
+                  {
+                    translateX: releaseAnim.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [12, -45, -110]
+                    })
+                  },
+                  {
+                    translateY: releaseAnim.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [18, -25, -70]
+                    })
+                  },
+                  {
+                    scale: 0.55
+                  },
+                  {
+                    rotate: "-70deg"
+                  }
+                ]
+              }
+            ]}
+            pointerEvents="none"
+          >
+            <View style={[styles.koiBody, styles.goldKoiBody]}>
+              <View style={[styles.koiHead, styles.goldKoiHead]} />
+              <View style={[styles.koiTail, styles.goldKoiTail]} />
+            </View>
+          </Animated.View>
+        </>
       )}
 
       {/* Interactive Food Pellet Particle */}
