@@ -2010,6 +2010,19 @@ function applyTranslations() {
     node.placeholder = copy[node.dataset.i18nPlaceholder];
   });
 
+  const quietCopy = window.FOOBOW_QUIET_I18N?.[locale] || window.FOOBOW_QUIET_I18N?.en;
+  if (quietCopy) {
+    document.querySelectorAll("[data-quiet-i18n]").forEach((node) => {
+      const value = quietCopy[node.dataset.quietI18n];
+      if (value) node.textContent = value;
+    });
+    const activeMood = document.querySelector(".quiet-mood.active")?.dataset.quietMood || "calm";
+    const prompt = document.getElementById("quietFeaturePrompt");
+    if (prompt) prompt.textContent = quietCopy[`prompt${activeMood.charAt(0).toUpperCase()}${activeMood.slice(1)}`];
+    document.querySelector(".quiet-feature")?.setAttribute("aria-label", `${quietCopy.begin}: ${quietCopy.breathe}`);
+    document.getElementById("ritualFocusClose")?.setAttribute("aria-label", quietCopy.close);
+  }
+
   if (typeof updateMiniPlayerUI === "function") {
     updateMiniPlayerUI();
   }
@@ -3554,26 +3567,69 @@ function setupRedesignInteractions() {
   if (viewAllBtn) {
     viewAllBtn.addEventListener("click", () => {
       navigateTo("blessings");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      document.getElementById("quietMomentsHub")?.scrollIntoView({ block: "start" });
     });
   }
 
   document.querySelectorAll(".quick-ritual-card").forEach((card) => {
     card.addEventListener("click", () => {
-      const ritual = card.dataset.quickRitual;
-      navigateTo("blessings");
-      let targetEl = null;
-      if (ritual === "lamp") targetEl = document.querySelector(".lamp-card");
-      else if (ritual === "incense") targetEl = document.querySelector(".incense-card");
-      else if (ritual === "muyu") targetEl = document.querySelector(".muyu-card");
-      else if (ritual === "wheel") targetEl = document.querySelector(".wheel-card");
-      if (targetEl) {
-        setTimeout(() => {
-          targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 120);
-      }
+      openQuietRitual(card.dataset.quickRitual);
     });
   });
+
+  document.querySelectorAll("[data-play-ritual]").forEach((button) => {
+    button.addEventListener("click", () => openQuietRitual(button.dataset.playRitual));
+  });
+
+  document.querySelectorAll(".quiet-mood").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".quiet-mood").forEach((mood) => {
+        const selected = mood === button;
+        mood.classList.toggle("active", selected);
+        mood.setAttribute("aria-pressed", String(selected));
+      });
+      const copy = window.FOOBOW_QUIET_I18N?.[normalizeLocale(state.language)] || window.FOOBOW_QUIET_I18N.en;
+      const mood = button.dataset.quietMood;
+      document.getElementById("quietFeaturePrompt").textContent = copy[`prompt${mood.charAt(0).toUpperCase()}${mood.slice(1)}`];
+    });
+  });
+
+  const dialog = document.getElementById("ritualFocusDialog");
+  const stage = document.getElementById("ritualFocusStage");
+  const close = () => {
+    const card = stage.firstElementChild;
+    if (card && card._quietPlaceholder) {
+      card._quietPlaceholder.replaceWith(card);
+      delete card._quietPlaceholder;
+    }
+    document.body.classList.remove("ritual-focus-open");
+  };
+  dialog.addEventListener("close", close);
+  document.getElementById("ritualFocusClose").addEventListener("click", () => dialog.close());
+
+  function openQuietRitual(ritual) {
+    if (ritual === "lantern") {
+      document.querySelector('.sanctuary-quick-pill[data-scenario="night-corridor"]')?.click();
+      return;
+    }
+    const cards = {
+      lamp: ".lamp-card",
+      incense: ".incense-card",
+      muyu: ".muyu-card",
+      wheel: ".wheel-card",
+      breathe: ".calm-ritual-card"
+    };
+    const copy = window.FOOBOW_QUIET_I18N?.[normalizeLocale(state.language)] || window.FOOBOW_QUIET_I18N.en;
+    const card = document.querySelector(cards[ritual]);
+    if (!card || dialog.open) return;
+    const placeholder = document.createComment(`quiet-ritual-${ritual}`);
+    card.replaceWith(placeholder);
+    card._quietPlaceholder = placeholder;
+    stage.append(card);
+    document.getElementById("ritualFocusTitle").textContent = copy[ritual];
+    document.body.classList.add("ritual-focus-open");
+    dialog.showModal();
+  }
 
 let tonightBreathTimer = null;
 

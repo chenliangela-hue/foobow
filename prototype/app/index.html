@@ -190,10 +190,10 @@
           <section class="quick-rituals-panel" id="quickRitualsPanel" aria-labelledby="quick-rituals-title">
             <div class="section-heading">
               <div>
-                <p class="eyebrow" data-i18n="quickRitualsTitle">Quick Rituals</p>
+                <p class="eyebrow" data-i18n="quickRitualsTitle">Quiet Moments</p>
                 <h3 id="quick-rituals-title" data-i18n="quickRitualsSubtitle">Find peace in a busy day</h3>
               </div>
-              <button class="text-button quick-rituals-link" id="viewAllRitualsBtn" type="button" data-i18n="viewAllRituals">View all rituals →</button>
+              <button class="text-button quick-rituals-link" id="viewAllRitualsBtn" type="button" data-i18n="viewAllRituals">Explore all six rituals →</button>
             </div>
             <div class="quick-rituals-grid">
               <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="lamp">
@@ -260,6 +260,33 @@
               <h2 id="blessings-title" data-i18n="blessingsTitle">Offer a blessing for someone you love.</h2>
             </div>
           </div>
+
+          <section class="quiet-hub" id="quietMomentsHub" aria-labelledby="quietHubTitle">
+            <div class="quiet-hub-intro">
+              <p class="quiet-hub-kicker" data-quiet-i18n="kicker">FOOBOW · A MOMENT FOR YOU</p>
+              <h2 id="quietHubTitle" data-quiet-i18n="title">Quiet Moments</h2>
+              <p data-quiet-i18n="intro">Small rituals for whatever this moment asks of you. Choose a feeling, then follow your hands.</p>
+              <div class="quiet-moods" role="group" aria-label="Choose how you want to feel">
+                <button class="quiet-mood active" type="button" data-quiet-mood="calm" data-quiet-i18n="calm" aria-pressed="true">Calm</button>
+                <button class="quiet-mood" type="button" data-quiet-mood="focus" data-quiet-i18n="focus" aria-pressed="false">Focus</button>
+                <button class="quiet-mood" type="button" data-quiet-mood="release" data-quiet-i18n="release" aria-pressed="false">Release</button>
+                <button class="quiet-mood" type="button" data-quiet-mood="gratitude" data-quiet-i18n="gratitude" aria-pressed="false">Gratitude</button>
+              </div>
+            </div>
+            <button class="quiet-feature" type="button" data-play-ritual="breathe" aria-label="Begin today's quiet ritual: mindful breathing">
+              <span class="quiet-feature-art" aria-hidden="true"><span class="quiet-lotus">❀</span></span>
+              <span class="quiet-feature-copy"><small data-quiet-i18n="featured">TODAY'S QUIET RITUAL · 2 MIN</small><strong data-quiet-i18n="featureTitle">Take one breath. Let the day soften.</strong><span id="quietFeaturePrompt" data-quiet-i18n="promptCalm">A little calm starts here</span><span class="quiet-feature-action"><span data-quiet-i18n="begin">Begin ritual</span> <span aria-hidden="true">↗</span></span></span>
+            </button>
+            <div class="quiet-grid-heading"><span data-quiet-i18n="explore">EXPLORE THE RITUALS</span><span data-quiet-i18n="sixWays">Six small ways to pause</span></div>
+            <div class="quiet-game-grid">
+              <button class="quiet-game" type="button" data-play-ritual="muyu"><span class="quiet-game-art" aria-hidden="true">◉</span><strong data-quiet-i18n="muyu">Wooden Fish</strong><small data-quiet-i18n="muyuDesc">Tap into stillness</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game" type="button" data-play-ritual="lamp"><span class="quiet-game-art" aria-hidden="true">✧</span><strong data-quiet-i18n="lamp">Wish Lamp</strong><small data-quiet-i18n="lampDesc">Hold a wish to the light</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game" type="button" data-play-ritual="incense"><span class="quiet-game-art" aria-hidden="true">〰</span><strong data-quiet-i18n="incense">Incense</strong><small data-quiet-i18n="incenseDesc">Follow the rising smoke</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game" type="button" data-play-ritual="wheel"><span class="quiet-game-art" aria-hidden="true">☸</span><strong data-quiet-i18n="wheel">Prayer Wheel</strong><small data-quiet-i18n="wheelDesc">Turn a gentle thought</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game" type="button" data-play-ritual="breathe"><span class="quiet-game-art" aria-hidden="true">❀</span><strong data-quiet-i18n="breathe">Mindful Breath</strong><small data-quiet-i18n="breatheDesc">Make room to breathe</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game" type="button" data-play-ritual="lantern"><span class="quiet-game-art" aria-hidden="true">✴</span><strong data-quiet-i18n="lantern">Night Lantern</strong><small data-quiet-i18n="lanternDesc">Release it to the sky</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+            </div>
+          </section>
 
           <section class="tonight-ritual-card tilt-card" id="tonightRitualCard" aria-labelledby="tonight-ritual-title">
             <div class="tonight-ritual-header">
@@ -1620,10 +1647,20 @@
       </div>
     </dialog>
 
+    <dialog id="ritualFocusDialog" class="ritual-focus-dialog" aria-labelledby="ritualFocusTitle">
+      <div class="ritual-focus-shell">
+        <div class="ritual-focus-header"><span class="ritual-focus-brand" data-quiet-i18n="focusBrand">FOOBOW · QUIET MOMENTS</span><button id="ritualFocusClose" class="ritual-focus-close" type="button" aria-label="Close quiet ritual">✕ <span data-quiet-i18n="close">Close</span></button></div>
+        <div class="ritual-focus-heading"><p data-quiet-i18n="takeTime">Take your time</p><h2 id="ritualFocusTitle">A quiet moment</h2></div>
+        <div id="ritualFocusStage" class="ritual-focus-stage"></div>
+        <p class="ritual-focus-footer" data-quiet-i18n="footer">Follow your own pace. Stay for a moment.</p>
+      </div>
+    </dialog>
+
     <audio id="sanskritAudio" preload="auto"></audio>
 
     <script src="data.js"></script>
     <script src="i18n.js"></script>
+    <script src="quiet-i18n.js"></script>
     <script src="sanskrit-tracks.js"></script>
     <script src="auth.js"></script>
     <script src="ritual-engine.js"></script>

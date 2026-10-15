@@ -9009,3 +9009,93 @@ body.dark .seedling-card .garden-plant-item { background: rgba(255, 255, 255, .0
   opacity: 1;
 }
 
+/* Keep key actions legible over the illustrated backgrounds. */
+.mood.selected {
+  background: #fff3d5;
+  color: #5e4214;
+}
+
+.daily-thought {
+  color: #76511d;
+}
+
+.mini-world-game-btn {
+  background: #fff2d9;
+  color: #654414;
+  border-color: #ba8a39;
+}
+
+body.dark .mood.selected {
+  background: #4b3b20;
+  color: #fff3d5;
+}
+
+body.dark .spot-detail {
+  background: rgba(8, 38, 42, .96);
+}
+
+body.dark .spot-detail p,
+body.dark #topNav a {
+  color: #f4f1df;
+}
+
+/* Quiet Moments: an editorial ritual gallery with the object as the invitation. */
+.quiet-hub {
+  margin: 24px 0 42px;
+  scroll-margin-top: 112px;
+  padding: clamp(22px, 4vw, 48px);
+  color: #f7f0de;
+  background: radial-gradient(circle at 78% 20%, rgba(214, 169, 79, .22), transparent 34%), linear-gradient(145deg, #092f32, #092125 70%, #183c38);
+  border: 1px solid rgba(241, 203, 131, .34);
+  border-radius: 32px;
+  box-shadow: 0 24px 70px rgba(8, 39, 38, .24);
+}
+.quiet-hub-intro { max-width: 760px; }
+.quiet-hub-kicker, .quiet-grid-heading, .quiet-feature-copy small, .ritual-focus-brand {
+  letter-spacing: .17em;
+  font-size: .7rem;
+  font-weight: 700;
+  color: #d9b979;
+}
+.quiet-hub h2 { margin: 8px 0 10px; font: 600 clamp(3rem, 7vw, 5.6rem)/.95 'Cormorant Garamond', Georgia, serif; letter-spacing: -.035em; }
+.quiet-hub h2 em { color: #edcb88; font-weight: 400; }
+.quiet-hub-intro > p:last-of-type { color: #d5dfd3; max-width: 560px; line-height: 1.65; }
+.quiet-moods { display: flex; flex-wrap: wrap; gap: 10px; margin: 23px 0 28px; }
+.quiet-mood { min-height: 44px; padding: 8px 20px; border: 1px solid rgba(242, 222, 178, .37); border-radius: 999px; color: #f4e8cd; background: rgba(255,255,255,.05); cursor: pointer; }
+.quiet-mood.active, .quiet-mood:hover { background: #eac783; color: #173731; border-color: #eac783; }
+.quiet-mood:focus-visible, .quiet-feature:focus-visible, .quiet-game:focus-visible, .ritual-focus-close:focus-visible { outline: 3px solid #ffdf87; outline-offset: 3px; }
+.quiet-feature { width: 100%; display: grid; grid-template-columns: minmax(170px, 35%) 1fr; align-items: center; min-height: 272px; padding: 0; text-align: left; color: #fff8e8; background: radial-gradient(circle at 25% 52%, #867148 0, #2e564d 31%, #173e3d 68%, #244949); border: 1px solid rgba(248, 219, 156, .5); border-radius: 25px; overflow: hidden; cursor: pointer; box-shadow: 0 14px 35px rgba(0,0,0,.24); }
+.quiet-feature-art { display: grid; place-items: center; height: 100%; min-height: 272px; background: radial-gradient(circle, rgba(255,240,177,.27), transparent 62%); }
+.quiet-lotus { display: grid; place-items: center; width: 166px; height: 166px; border: 1px solid rgba(255,231,168,.6); border-radius: 50%; color: #ffe3a2; font: 8rem/.8 'Cormorant Garamond', Georgia, serif; text-shadow: 0 0 22px #fce2a6; box-shadow: 0 0 0 24px rgba(249,219,149,.05), 0 0 55px rgba(246,218,152,.34); transform: rotate(45deg); }
+.quiet-feature-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 11px; padding: 28px clamp(20px, 4vw, 54px) 28px 8px; }
+.quiet-feature-copy strong { font: 600 clamp(2.3rem, 4vw, 4rem)/.98 'Cormorant Garamond', Georgia, serif; }
+.quiet-feature-copy > span:not(.quiet-feature-action) { color: #d7e3db; }
+.quiet-feature-action { display: inline-flex; gap: 14px; align-items: center; margin-top: 10px; border-bottom: 1px solid #edcc88; padding-bottom: 5px; color: #f8d793; font-weight: 700; }
+.quiet-feature:hover .quiet-lotus { box-shadow: 0 0 0 28px rgba(249,219,149,.09), 0 0 85px rgba(246,218,152,.55); }
+.quiet-grid-heading { display: flex; justify-content: space-between; gap: 14px; margin: 36px 0 14px; }
+.quiet-grid-heading span:last-child { color: #b4c9bc; letter-spacing: .03em; text-transform: none; font-weight: 400; }
+.quiet-game-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.quiet-game { position: relative; display: flex; flex-direction: column; align-items: flex-start; min-height: 206px; padding: 20px; text-align: left; color: #f8f1df; border: 1px solid rgba(238,211,151,.26); border-radius: 20px; background: linear-gradient(155deg, rgba(255,255,255,.11), rgba(255,255,255,.035)); cursor: pointer; transition: transform .25s ease, border-color .25s ease, background .25s ease; }
+.quiet-game:nth-child(2), .quiet-game:nth-child(5) { background: linear-gradient(155deg, rgba(210,165,93,.19), rgba(255,255,255,.035)); }
+.quiet-game:hover { transform: translateY(-5px); border-color: #edcb88; background: rgba(255,255,255,.16); }
+.quiet-game-art { display: grid; place-items: center; width: 76px; height: 76px; margin-bottom: auto; border-radius: 50%; color: #f6d38d; background: radial-gradient(circle, rgba(244,209,132,.24), rgba(244,209,132,.04) 68%); font: 3.4rem/1 'Cormorant Garamond', Georgia, serif; }
+.quiet-game strong { margin-top: 12px; font: 600 1.65rem/1 'Cormorant Garamond', Georgia, serif; }
+.quiet-game small { margin-top: 4px; color: #c9d9cf; }
+.quiet-game-arrow { position: absolute; right: 18px; bottom: 16px; color: #eac783; font-size: 1.2rem; }
+.ritual-focus-dialog { width: min(100vw, 1100px); max-width: none; height: min(94dvh, 960px); max-height: none; padding: 0; border: 1px solid #d9b979; border-radius: 28px; color: #f7f0de; background: radial-gradient(circle at 50% 38%, #20534c, #0b292d 72%); box-shadow: 0 30px 100px rgba(0,0,0,.5); }
+.ritual-focus-dialog::backdrop { background: rgba(5,23,25,.82); backdrop-filter: blur(10px); }
+.ritual-focus-shell { display: flex; flex-direction: column; height: 100%; overflow: auto; padding: clamp(16px, 3vw, 32px); }
+.ritual-focus-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+.ritual-focus-close { min-height: 44px; padding: 9px 17px; border: 1px solid rgba(244,218,164,.5); border-radius: 999px; background: rgba(255,255,255,.08); color: #fff3d8; cursor: pointer; }
+.ritual-focus-heading { text-align: center; margin: 10px 0 12px; }
+.ritual-focus-heading p { margin: 0; color: #d9b979; letter-spacing: .15em; font-size: .72rem; text-transform: uppercase; }
+.ritual-focus-heading h2 { margin: 2px 0; font: 600 clamp(2.5rem, 5vw, 4rem)/1 'Cormorant Garamond', Georgia, serif; }
+.ritual-focus-stage { width: min(100%, 790px); margin: auto; }
+.ritual-focus-stage > section { margin: 0; width: 100%; max-width: none; }
+.ritual-focus-stage .section-heading { color: #1a3431; }
+.ritual-focus-stage .muyu-stage, .ritual-focus-stage .wheel-stage, .ritual-focus-stage .incense-stage, .ritual-focus-stage .lamp-stage { min-height: 230px; }
+.ritual-focus-footer { text-align: center; color: #c5d4c8; font: italic 1.25rem 'Cormorant Garamond', Georgia, serif; margin: 16px 0 0; }
+body.ritual-focus-open { overflow: hidden; }
+@media (max-width: 700px) { .quiet-game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .quiet-feature { grid-template-columns: 1fr; } .quiet-feature-art { min-height: 170px; } .quiet-lotus { width: 125px; height: 125px; font-size: 6rem; } .quiet-feature-copy { padding: 0 23px 26px; } .ritual-focus-dialog { width: 100vw; height: 100dvh; border-radius: 0; } }
+@media (max-width: 420px) { .quiet-hub { padding: 20px 15px; border-radius: 23px; } .quiet-game { min-height: 192px; padding: 15px 15px 31px; } .quiet-game-art { width: 58px; height: 58px; font-size: 2.8rem; } .quiet-game strong { font-size: 1.35rem; } .quiet-game-arrow { top: 15px; bottom: auto; } .quiet-grid-heading span:last-child { display: none; } }
+@media (prefers-reduced-motion: reduce) { .quiet-game { transition: none; } .quiet-game:hover { transform: none; } .quiet-feature:hover .quiet-lotus { box-shadow: none; } }

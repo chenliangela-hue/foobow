@@ -2,6 +2,8 @@
 
 ## Done
 
+- Added a six-ritual Quiet Moments hub with mood choices, featured breathing, localized copy, immersive play views for the existing tactile rituals, and a direct Night Lantern entry; verified desktop and phone flows locally.
+
 - Refine web micro-game interactions and discovery: enforce a real 1.2-second Wish Lamp hold with keyboard parity, remove unsupported global lamp count copy, prevent duplicate sanctuary lantern awards and downward-swipe release, add keyboard koi release, turn seedling planting/watering/sunlight into drag/hold gestures with keyboard paths, and refresh Quick Ritual and Kindness Garden visuals. Browser gesture tests and Today visual baselines updated.
 
 - Transform rituals into tactile micro-games: unified client-side ritual engine (Web Audio micro-pitch synthesizer, haptic feedback, particle physics, Kindness Garden persistence, smoke canvas fluid simulation), Zen Muyu with mallet anticipation and calm Presence combo (Settling, Flowing, Stillness bloom with calmer water, open lotus, cleared fog, enhanced sunlight/moonlight), physical Prayer Wheel with angular momentum, inertia, damping, and 6-syllable mantra celebration, cinematic Hold-to-Light Wish Lamp ceremony with community toast, interactive incense smoke deflection and mindful breath trace, swipe-to-release koi with companion fish school and water-to-globe luminous kindness arc, 10-second seedling nurturing garden mini-game, Sanctuary Night Lantern release micro-game soaring into persistent celestial constellation with profile emotional history ("14 lights released"), and Zen focus mode. Full mobile app parity across ZenWoodenFish, ZenPrayerWheel, and LotusPondScene.
@@ -291,6 +293,10 @@
 
 ## Next
 
+- Verify the Quiet Moments hub and immersive ritual cards on the deployed `/app/` route after the next `main` push. Check the six card paths, locale/theme switching, phone layout, Escape/Close return, and reduced motion against the live asset version.
+- Resolve the 2026-10-14 online PAQA release gates for commit `da88d61`: GitHub Actions run `38480620567` has a passing API DB smoke job, but `verify` stops at `npm --prefix apps/mobile ci` because Linux/npm reports missing `utf-8-validate@5.0.10` lock entries; reproduce in a Linux clean install and repair the lock without changing direct mobile dependencies.
+- Review the CI `visual-diffs` artifact for run `38480620567` and stabilize/rebaseline the five failing landing, Today, and map snapshots on the Windows CI browser. Keep the three passing snapshots and unrelated user edits intact.
+- Finish the live accessibility fixes found at `www.foobow.com`: pale selected Calm text, daily thought, and 3D entry button in light mode; washed-out map detail text in dark mode. A scoped CSS draft is local and still needs verification and publication. Also sync the 3D scenario tabs' `aria-selected` state when opening Kyoto directly; coordinate with the existing uncommitted `game3d.js` changes.
 
 - Optional payments/Stripe mode and real map host provider setup if desired.
 
