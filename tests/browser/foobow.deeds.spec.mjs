@@ -112,6 +112,34 @@ test("3D sanctuary mini-game launches, switches scenarios, and allows interactiv
   await expect(modal).not.toBeVisible();
 });
 
+test("world journeys support location-aware virtual fish releases in the US and Japan", async ({ page }) => {
+  await page.locator('.bottom-nav .nav-item[data-target="map"]').click();
+
+  const merritt = page.locator('[data-journey-id="lake-merritt"]');
+  const biwa = page.locator('[data-journey-id="lake-biwa"]');
+  await expect(merritt).toContainText("Lake Merritt");
+  await expect(biwa).toContainText("Lake Biwa");
+  await expect(page.locator("#journeySafetyNote")).toContainText("entirely virtual");
+
+  await merritt.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#spotName")).toContainText("Lake Merritt");
+  await expect(page.locator("#embeddedOsmViewport")).toBeVisible();
+  await expect(page.locator('.deck-deed-btn[data-deed="release-fish"]')).toHaveClass(/active/);
+
+  await page.locator("#performMapDeedBtn").click();
+  await expect(merritt.locator(".journey-count")).toContainText("1 virtual deed");
+  await page.reload();
+  await page.locator('.bottom-nav .nav-item[data-target="map"]').click();
+  await expect(page.locator('[data-journey-id="lake-merritt"] .journey-count')).toContainText("1 virtual deed");
+
+  await page.selectOption("#languageSelect", "ja");
+  await expect(page.locator('[data-journey-id="lake-biwa"]')).toContainText("琵琶湖");
+  await biwa.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#spotName")).toContainText("琵琶湖");
+});
+
 test("mindful breathing orb supports technique switching and calm focus completion", async ({ page }) => {
   await expect(page.locator("#breathOrbContainer")).toBeVisible();
   await expect(page.locator("#breathOrb")).toBeVisible();

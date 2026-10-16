@@ -30,6 +30,7 @@ function mergeState(base, saved) {
     lamps: Array.isArray(saved.lamps) ? saved.lamps : base.lamps,
     activity: Array.isArray(saved.activity) ? saved.activity : base.activity,
     posts: Array.isArray(saved.posts) ? saved.posts : base.posts,
+    mapJourneys: saved.mapJourneys && typeof saved.mapJourneys === "object" ? saved.mapJourneys : {},
     muyuTaps: typeof saved.muyuTaps === "number" ? saved.muyuTaps : 0,
     lightsReleased: typeof saved.lightsReleased === "number" ? saved.lightsReleased : (base.lightsReleased || 14)
   };
@@ -919,10 +920,67 @@ function renderSpot(spotId) {
   }
   const hudBiosphere = document.getElementById("hudBiosphere");
   if (hudBiosphere) {
-    hudBiosphere.textContent = spot.environment || "Freshwater wetland sanctuary";
+    const envKey = "spot_env_" + spotId.replace(/-/g, "_");
+    hudBiosphere.textContent = copy[envKey] || spot.environment || "Freshwater wetland sanctuary";
   }
 
   saveState();
+}
+
+function renderLocationJourneys() {
+  const grid = document.getElementById("worldJourneyGrid");
+  const sources = document.getElementById("journeySources");
+  if (!grid) return;
+  const copy = dictionary();
+  const journeys = Object.entries(data.spots).filter(([, spot]) => spot.journey);
+  grid.replaceChildren();
+  if (sources) sources.replaceChildren();
+
+  journeys.forEach(([spotId, spot]) => {
+    const key = spotId.replace(/-/g, "_");
+    const count = Number(state.mapJourneys?.[spotId] || 0);
+    const countTemplate = count === 1 ? copy.mapJourneyCount : copy.mapJourneyCountPlural;
+    const button = document.createElement("button");
+    button.className = "world-journey-card";
+    button.type = "button";
+    button.dataset.journeyId = spotId;
+    button.setAttribute("aria-pressed", String(state.selectedSpot === spotId));
+
+    const flag = document.createElement("span");
+    flag.className = "journey-flag";
+    flag.setAttribute("aria-hidden", "true");
+    flag.textContent = spot.journey.flag;
+
+    const text = document.createElement("span");
+    text.className = "journey-copy";
+    const region = document.createElement("span");
+    region.className = "journey-region";
+    region.textContent = spot.journey.region;
+    const name = document.createElement("strong");
+    name.textContent = copy[`spot_name_${key}`] || spot.name;
+    const fact = document.createElement("small");
+    fact.textContent = copy[`journey_fact_${key}`] || spot.text;
+    const countEl = document.createElement("span");
+    countEl.className = "journey-count";
+    countEl.textContent = (countTemplate || "%{count} virtual deeds").replace("%{count}", count);
+    text.append(region, name, fact, countEl);
+
+    const arrow = document.createElement("span");
+    arrow.className = "journey-arrow";
+    arrow.setAttribute("aria-hidden", "true");
+    arrow.textContent = "→";
+    button.append(flag, text, arrow);
+    grid.append(button);
+
+    if (sources) {
+      const source = document.createElement("a");
+      source.href = spot.journey.sourceUrl;
+      source.target = "_blank";
+      source.rel = "noopener";
+      source.textContent = `${copy.mapJourneySource || "Place context"}: ${spot.journey.sourceName}`;
+      sources.append(source);
+    }
+  });
 }
 
 function renderMapPins() {
@@ -2077,6 +2135,7 @@ function renderAll() {
   renderMoods();
   renderDeeds();
   renderSpot(state.selectedSpot);
+  renderLocationJourneys();
   renderBlessings();
   renderPrayCategories();
   renderLamps();
@@ -2166,6 +2225,13 @@ document.querySelectorAll(".map-pin").forEach((pin) => {
 });
 
 let selectedMapDeedKey = "release-fish";
+
+function selectMapDeed(deedKey) {
+  selectedMapDeedKey = deedKey || "release-fish";
+  document.querySelectorAll(".deck-deed-btn").forEach((button) => {
+    button.classList.toggle("active", button.dataset.deed === selectedMapDeedKey);
+  });
+}
 
 function executeMapDeed(deedKey, customX, customY) {
   const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
@@ -2269,6 +2335,11 @@ function executeMapDeed(deedKey, customX, customY) {
   }
 
   spot.ripples = (spot.ripples || 1000) + 1;
+  if (spot.journey) {
+    state.mapJourneys = state.mapJourneys || {};
+    state.mapJourneys[state.selectedSpot] = Number(state.mapJourneys[state.selectedSpot] || 0) + 1;
+    renderLocationJourneys();
+  }
   const ripplesEl = document.getElementById("spotRipples");
   if (ripplesEl) {
     ripplesEl.textContent = `${spot.ripples.toLocaleString()} ripples`;
@@ -2309,9 +2380,7 @@ function setupMapDeck() {
   const deckBtns = document.querySelectorAll(".deck-deed-btn");
   deckBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      deckBtns.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedMapDeedKey = btn.dataset.deed || "release-fish";
+      selectMapDeed(btn.dataset.deed || "release-fish");
     });
   });
 
@@ -2332,6 +2401,23 @@ function setupMapDeck() {
       executeMapDeed(selectedMapDeedKey, clickX, clickY);
     });
   }
+}
+
+function setupLocationJourneys() {
+  const grid = document.getElementById("worldJourneyGrid");
+  if (!grid) return;
+  grid.addEventListener("click", (event) => {
+    const card = event.target.closest(".world-journey-card");
+    const spotId = card?.dataset.journeyId;
+    const spot = spotId ? data.spots[spotId] : null;
+    if (!spot) return;
+    renderSpot(spotId);
+    selectMapDeed(spot.deedKey || "release-fish");
+    document.getElementById("mapModeOsmBtn")?.click();
+    renderLocationJourneys();
+    card.focus();
+    if (typeof playZenChime === "function") playZenChime();
+  });
 }
 
 const spotActionBtn = document.getElementById("spotActionBtn");
@@ -4633,6 +4719,7 @@ setupBlessings();
 setupLiveMap();
 setupEmbeddedMapMode();
 setupMapDeck();
+setupLocationJourneys();
 setupDeedSearch();
 setupImpactDialog();
 setupSanskritPlayer();

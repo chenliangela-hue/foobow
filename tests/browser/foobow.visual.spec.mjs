@@ -62,6 +62,14 @@ test("map exploration visual baseline", async ({ page }) => {
   });
 });
 
+test("real-world journey picker visual baseline", async ({ page }) => {
+  await page.locator('.bottom-nav .nav-item[data-target="map"]').click();
+  await expect(page.locator(".world-journeys")).toHaveScreenshot("map-world-journeys.png", {
+    animations: "disabled",
+    maxDiffPixelRatio: 0.006
+  });
+});
+
 test("dark community visual baseline", async ({ page }) => {
   await page.getByRole("button", { name: "Toggle dark mode" }).click();
   await page.getByRole("button", { name: "Community" }).click();

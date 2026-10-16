@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="map-journeys.css">
   </head>
   <body>
     <div class="cinematic-backdrop cinematic-backdrop-container" id="backdropContainer" aria-hidden="true">
@@ -627,6 +628,18 @@
         </section>
 
         <section class="screen" id="screen-map" aria-labelledby="map-title">
+          <section class="world-journeys" aria-labelledby="worldJourneysTitle">
+            <div class="world-journeys-heading">
+              <div>
+                <p class="eyebrow" data-i18n="mapJourneyEyebrow">WORLD JOURNEYS</p>
+                <h3 id="worldJourneysTitle" data-i18n="mapJourneyTitle">Choose a real place. Leave a virtual ripple.</h3>
+              </div>
+              <p data-i18n="mapJourneySubtitle">Travel through living waters in the United States and Japan, then complete a location-aware symbolic deed.</p>
+            </div>
+            <div class="world-journey-grid" id="worldJourneyGrid"></div>
+            <div class="journey-sources" id="journeySources"></div>
+            <p class="journey-safety-note" id="journeySafetyNote" data-i18n="mapJourneySafety">Every release here is entirely virtual. No animals are moved, purchased, or introduced into real ecosystems.</p>
+          </section>
           <div class="map-stage">
             <div class="map-copy">
               <div class="map-title-row">
@@ -652,6 +665,8 @@
                 <div class="buddhist-compass-rose" id="buddhistCompassRose" title="Dharma Compass · ☸️" aria-hidden="true">☸️</div>
                 <div class="sanctuary-quick-jump" id="sanctuaryQuickJump" role="group" aria-label="Sanctuary quick jump">
                   <button class="sanctuary-quick-chip active" type="button" data-spot-id="east-lake">🐟 East Lake</button>
+                  <button class="sanctuary-quick-chip" type="button" data-spot-id="lake-merritt">🇺🇸 Lake Merritt</button>
+                  <button class="sanctuary-quick-chip" type="button" data-spot-id="lake-biwa">🇯🇵 Lake Biwa</button>
                   <button class="sanctuary-quick-chip" type="button" data-spot-id="toronto-crosswalk">👵 Toronto</button>
                   <button class="sanctuary-quick-chip" type="button" data-spot-id="amazon-grove">🌱 Amazon</button>
                   <button class="sanctuary-quick-chip" type="button" data-spot-id="night-corridor">🏮 Kyoto</button>
@@ -1660,6 +1675,7 @@
 
     <script src="data.js"></script>
     <script src="i18n.js"></script>
+    <script src="map-scenarios.js"></script>
     <script src="quiet-i18n.js"></script>
     <script src="sanskrit-tracks.js"></script>
     <script src="auth.js"></script>

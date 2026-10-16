@@ -8,6 +8,7 @@
 
 ## Done
 
+- Created the dedicated Foobow Web Delivery GitHub Project and issue #1; implemented the first real-world map journey slice for Lake Merritt (United States) and Lake Biwa (Japan) with official place context, six-locale copy, keyboard/pointer travel, OpenStreetMap positioning, symbolic fish release, persisted per-location deed counts, responsive design, and explicit ecological safety copy.
 - Added a six-ritual Quiet Moments hub with mood choices, featured breathing, localized copy, immersive play views for the existing tactile rituals, and a direct Night Lantern entry; verified desktop and phone flows locally.
 
 - Refine web micro-game interactions and discovery: enforce a real 1.2-second Wish Lamp hold with keyboard parity, remove unsupported global lamp count copy, prevent duplicate sanctuary lantern awards and downward-swipe release, add keyboard koi release, turn seedling planting/watering/sunlight into drag/hold gestures with keyboard paths, and refresh Quick Ritual and Kindness Garden visuals. Browser gesture tests and Today visual baselines updated.
@@ -299,6 +300,7 @@
 
 ## Next
 
+- Continue GitHub issue #1 with additional location-appropriate scenarios beyond fish release, richer completion feedback on the selected map location, and deployed desktop/tablet/phone PAQA.
 - Complete the web experience before resuming mobile work: expose Quiet Moments from the public homepage, finish all web localization/accessibility paths, stabilize web visual baselines, and run live desktop/tablet/mobile-browser PAQA.
 - Verify the public Quiet Moments preview, deep link, hub, and immersive ritual cards on the deployed web routes after the next `main` push. Check all six ritual paths, locale/theme switching, phone layout, Escape/Close return, and reduced motion against the live asset version.
 - Confirm the repaired mobile lock entries pass the next GitHub Actions `verify` job. A local Linux Node 20.19.4/npm 10.8.2 clean-install dry run now succeeds without changing direct mobile dependencies.
