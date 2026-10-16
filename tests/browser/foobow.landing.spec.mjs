@@ -31,6 +31,16 @@ test("Enter CTA links into the app at /app/", async ({ page }) => {
   expect(href).toBe("/app/");
 });
 
+test("homepage exposes a localized direct path to Quiet Moments", async ({ page }) => {
+  await expect(page.locator("#quietPreviewTitle")).toHaveText("Six small rituals. One softer moment.");
+  await expect(page.locator(".quiet-preview-rituals span")).toHaveCount(6);
+  await expect(page.locator("#quietMomentsCta")).toHaveAttribute("href", "/app/?view=rituals");
+
+  await page.selectOption("#langSelect", "zh-Hans");
+  await expect(page.locator("#quietPreviewTitle")).toHaveText("六种小仪式，一段柔和时光。");
+  await expect(page.locator("#quietMomentsCta")).toContainText("体验静心片刻");
+});
+
 test("language switcher flips html lang and visible copy across all six locales", async ({ page }) => {
   const cases = [
     { value: "ja", lang: "ja", enter: "Foobow に入る" },

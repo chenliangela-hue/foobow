@@ -1,5 +1,11 @@
 # Foobow Task Board
 
+## Active product priority: complete the web experience
+
+- Web landing, web app, web API integration, accessibility, responsive behavior, release CI, and live PAQA are the only active feature track.
+- New Expo/mobile features are deferred until the web feature backlog and production acceptance gates are complete.
+- Existing mobile checks remain regression guardrails; do not add mobile parity work while this priority is active.
+
 ## Done
 
 - Added a six-ritual Quiet Moments hub with mood choices, featured breathing, localized copy, immersive play views for the existing tactile rituals, and a direct Night Lantern entry; verified desktop and phone flows locally.
@@ -293,8 +299,9 @@
 
 ## Next
 
-- Verify the Quiet Moments hub and immersive ritual cards on the deployed `/app/` route after the next `main` push. Check the six card paths, locale/theme switching, phone layout, Escape/Close return, and reduced motion against the live asset version.
-- Resolve the 2026-10-14 online PAQA release gates for commit `da88d61`: GitHub Actions run `38480620567` has a passing API DB smoke job, but `verify` stops at `npm --prefix apps/mobile ci` because Linux/npm reports missing `utf-8-validate@5.0.10` lock entries; reproduce in a Linux clean install and repair the lock without changing direct mobile dependencies.
+- Complete the web experience before resuming mobile work: expose Quiet Moments from the public homepage, finish all web localization/accessibility paths, stabilize web visual baselines, and run live desktop/tablet/mobile-browser PAQA.
+- Verify the public Quiet Moments preview, deep link, hub, and immersive ritual cards on the deployed web routes after the next `main` push. Check all six ritual paths, locale/theme switching, phone layout, Escape/Close return, and reduced motion against the live asset version.
+- Confirm the repaired mobile lock entries pass the next GitHub Actions `verify` job. A local Linux Node 20.19.4/npm 10.8.2 clean-install dry run now succeeds without changing direct mobile dependencies.
 - Review the CI `visual-diffs` artifact for run `38480620567` and stabilize/rebaseline the five failing landing, Today, and map snapshots on the Windows CI browser. Keep the three passing snapshots and unrelated user edits intact.
 - Finish the live accessibility fixes found at `www.foobow.com`: pale selected Calm text, daily thought, and 3D entry button in light mode; washed-out map detail text in dark mode. A scoped CSS draft is local and still needs verification and publication. Also sync the 3D scenario tabs' `aria-selected` state when opening Kyoto directly; coordinate with the existing uncommitted `game3d.js` changes.
 
@@ -309,6 +316,11 @@
 - Monitor Expo SDK 56 and Prisma CLI 7 moderate transitive audit advisories for safe upstream fixes without force-downgrading the stack.
 
 ## Backlog
+
+### Deferred mobile feature track
+
+- Resume Expo/mobile feature parity, mobile UI elevation, store-release preparation, and mobile provider integration only after the web acceptance gates are complete.
+- Keep existing mobile code and regression checks stable while the track is deferred.
 
 - Real map provider integration.
 - Deed action persistence.

@@ -4648,6 +4648,13 @@ setupMapKindnessStream();
 setupGlobeParticlesCanvas();
 setupCdnAssetPipeline();
 
+// Public landing links can open the ritual gallery directly without creating
+// a second router or duplicating any ritual state.
+if (new URLSearchParams(window.location.search).get("view") === "rituals") {
+  navigateTo("blessings");
+  requestAnimationFrame(() => document.getElementById("quietMomentsHub")?.scrollIntoView({ block: "start" }));
+}
+
 function setupCdnAssetPipeline() {
   const cdn = window.FOOBOW_CDN_URL || localStorage.getItem("foobow_cdn_url") || "";
   if (!cdn) return;

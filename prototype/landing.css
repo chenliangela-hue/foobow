@@ -528,6 +528,118 @@ h1, h2, h3, .hero-title, .brand-word, .section-eyebrow, .couplet {
   margin-bottom: 32px;
 }
 
+/* Quiet Moments preview — a direct, visible path from the public homepage. */
+.quiet-preview {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+  max-width: 1312px;
+  margin: 0 auto clamp(36px, 7vw, 88px);
+  padding: clamp(30px, 5vw, 64px);
+  overflow: hidden;
+  border: 1px solid rgba(239, 201, 120, .42);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 78% 35%, rgba(239, 201, 120, .16), transparent 34%),
+    linear-gradient(145deg, rgba(7, 43, 45, .96), rgba(8, 28, 33, .97));
+  box-shadow: 0 30px 90px rgba(3, 21, 24, .36);
+}
+
+.quiet-preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .14;
+  background-image: repeating-linear-gradient(120deg, transparent 0 34px, rgba(255,255,255,.08) 35px, transparent 36px);
+}
+
+.quiet-preview-kicker {
+  margin: 0 0 12px;
+  color: var(--gold);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .19em;
+}
+
+.quiet-preview h2 {
+  max-width: 700px;
+  margin: 0 0 16px;
+  color: #fff5df;
+  font: 600 clamp(2.4rem, 4.7vw, 4.8rem)/.98 "Cormorant Garamond", Georgia, serif;
+  letter-spacing: -.025em;
+}
+
+.quiet-preview-copy > p:last-of-type {
+  max-width: 600px;
+  color: #cbdcd2;
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.quiet-preview-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 48px;
+  margin-top: 14px;
+  padding: 12px 0 7px;
+  border-bottom: 1px solid var(--gold);
+  color: #f6d68e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.quiet-preview-cta:hover { color: #fff2cf; }
+.quiet-preview-cta:focus-visible { outline: 3px solid #f6d68e; outline-offset: 5px; }
+
+.quiet-preview-rituals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quiet-preview-rituals span {
+  display: flex;
+  min-height: 150px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 15px 10px;
+  border: 1px solid rgba(239, 201, 120, .26);
+  border-radius: 20px;
+  color: #f6eedc;
+  background: linear-gradient(155deg, rgba(255,255,255,.11), rgba(255,255,255,.025));
+}
+
+.quiet-preview-rituals b {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  border-radius: 50%;
+  color: #f5d384;
+  background: radial-gradient(circle, rgba(239,201,120,.24), rgba(239,201,120,.04) 70%);
+  font: 2.75rem/1 "Cormorant Garamond", Georgia, serif;
+  text-shadow: 0 0 18px rgba(244, 207, 125, .45);
+}
+
+.quiet-preview-rituals em { font: normal 600 1rem/1.15 "Cormorant Garamond", Georgia, serif; text-align: center; }
+
+@media (max-width: 959px) {
+  .quiet-preview { grid-template-columns: 1fr; margin-inline: 18px; }
+}
+
+@media (max-width: 560px) {
+  .quiet-preview { padding: 28px 18px; border-radius: 25px; }
+  .quiet-preview-rituals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quiet-preview-rituals span { min-height: 132px; }
+}
+
 .play-icon {
   font-size: 0.8rem;
   color: var(--gold);

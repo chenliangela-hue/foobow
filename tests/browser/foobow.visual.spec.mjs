@@ -30,6 +30,17 @@ test("landing hero visual baseline", async ({ page }) => {
   });
 });
 
+test("landing Quiet Moments preview visual baseline", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto(landingUrl);
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await expect(page.locator(".quiet-preview")).toHaveScreenshot("landing-quiet-moments.png", {
+    animations: "disabled",
+    maxDiffPixelRatio: 0.006
+  });
+});
+
 test.describe("app screens", () => {
   test.beforeEach(async ({ page }) => {
     await resetPrototype(page);

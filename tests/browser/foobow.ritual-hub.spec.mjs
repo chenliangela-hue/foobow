@@ -45,3 +45,10 @@ test("Quiet Moments responds to mood, locale, and lantern choice", async ({ page
   await page.locator('[data-play-ritual="lantern"]').click();
   await expect(page.locator("#sanctuary3DGameModal")).toBeVisible();
 });
+
+test("landing deep link opens the Quiet Moments hub", async ({ page }) => {
+  await page.goto(`${appUrl}?view=rituals`);
+  await expect(page.locator("#screen-blessings")).toBeVisible();
+  await expect(page.locator("#quietMomentsHub")).toBeVisible();
+  await expect(page.locator(".top-nav-item[data-target=blessings]")).toHaveClass(/active/);
+});
