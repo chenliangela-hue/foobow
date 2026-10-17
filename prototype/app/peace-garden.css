@@ -1,0 +1,68 @@
+.gratitude-garden-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(230px, .82fr) minmax(280px, 1.18fr);
+  gap: clamp(20px, 4vw, 44px);
+  margin: 24px 0 40px;
+  padding: clamp(22px, 4vw, 42px);
+  overflow: hidden;
+  color: #f7f1df;
+  border: 1px solid rgba(239, 207, 143, .42);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 72% 28%, rgba(199, 160, 91, .2), transparent 28%),
+    linear-gradient(145deg, rgba(8, 49, 50, .98), rgba(6, 30, 35, .98));
+  box-shadow: 0 24px 64px rgba(4, 29, 31, .25);
+}
+
+.gratitude-garden-copy { align-self: center; z-index: 2; }
+.gratitude-garden-kicker { margin: 0 0 9px; color: #e2c17e; font-size: .7rem; font-weight: 700; letter-spacing: .16em; }
+.gratitude-garden-card h3 { margin: 0; font: 600 clamp(2.2rem, 4vw, 3.45rem)/.96 'Cormorant Garamond', Georgia, serif; letter-spacing: -.035em; }
+.gratitude-garden-copy > p:not(.gratitude-garden-kicker) { max-width: 430px; color: #ccdcd2; line-height: 1.65; }
+.gratitude-session-count { display: inline-flex; align-items: center; gap: 8px; margin-top: 13px; padding: 8px 13px; color: #f4dfad; border: 1px solid rgba(235, 205, 145, .28); border-radius: 999px; background: rgba(255, 255, 255, .05); font-size: .82rem; }
+
+.gratitude-pond { position: relative; min-height: 250px; overflow: hidden; border: 1px solid rgba(236, 212, 158, .25); border-radius: 50% 44% 48% 46%; background: radial-gradient(ellipse at 50% 35%, #326e68 0, #164b4e 42%, #082f36 75%); box-shadow: inset 0 20px 55px rgba(255, 226, 159, .1), 0 18px 38px rgba(0, 0, 0, .22); }
+.gratitude-pond::before { content: ""; position: absolute; inset: 7% 8%; border-radius: inherit; background: repeating-radial-gradient(ellipse at 55% 40%, transparent 0 21px, rgba(222, 205, 154, .08) 23px 24px); }
+.gratitude-moon { position: absolute; width: 72px; height: 72px; top: 18px; right: 48px; border-radius: 50%; background: rgba(255, 231, 175, .25); filter: blur(1px); box-shadow: 0 0 35px rgba(255, 223, 156, .27); }
+.gratitude-lotus { position: absolute; color: #f2cf89; text-shadow: 0 0 15px rgba(241, 203, 128, .8); font-size: 2.4rem; }
+.lotus-one { left: 17%; bottom: 21%; }
+.lotus-two { right: 15%; bottom: 34%; font-size: 1.7rem; opacity: .75; }
+.gratitude-ripple { position: absolute; width: 42px; height: 18px; border: 1px solid rgba(241, 218, 166, .52); border-radius: 50%; opacity: .55; }
+.ripple-one { left: 13%; top: 27%; }
+.ripple-two { right: 24%; bottom: 19%; transform: scale(1.5); }
+
+.gratitude-form { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.gratitude-form label { display: flex; flex-direction: column; gap: 7px; color: #ead5a4; font-size: .78rem; font-weight: 700; letter-spacing: .03em; }
+.gratitude-form input { width: 100%; min-height: 52px; padding: 12px 14px; color: #fff8e7; border: 1px solid rgba(236, 211, 157, .34); border-radius: 14px; background: rgba(255, 255, 255, .075); font: inherit; font-size: .92rem; }
+.gratitude-form input::placeholder { color: #a9c0b6; }
+.gratitude-form input:focus-visible, .gratitude-settle:focus-visible, .gratitude-again:focus-visible { outline: 3px solid #ffdf87; outline-offset: 3px; }
+.gratitude-privacy { grid-column: 1 / -1; margin: 2px 0 0; color: #adc4ba; font-size: .78rem; }
+.gratitude-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; }
+.gratitude-settle, .gratitude-again { min-height: 48px; padding: 11px 19px; border-radius: 999px; cursor: pointer; font-weight: 700; }
+.gratitude-settle { display: inline-flex; align-items: center; justify-content: center; gap: 24px; border: 0; color: #17352f; background: linear-gradient(135deg, #f3dba4, #d5a852); box-shadow: 0 10px 26px rgba(218, 177, 94, .24); }
+.gratitude-settle:disabled { cursor: default; opacity: .48; box-shadow: none; }
+.gratitude-again { border: 1px solid rgba(240, 216, 165, .4); color: #f5e5be; background: rgba(255, 255, 255, .06); }
+.gratitude-status { grid-column: 1 / -1; min-height: 1.5em; margin: 0; color: #f3d698; font: italic 1.12rem 'Cormorant Garamond', Georgia, serif; }
+
+.gratitude-pebble { position: absolute; display: grid; place-items: center; width: clamp(86px, 14vw, 126px); min-height: 58px; padding: 10px; color: #2a3e3b; border: 1px solid rgba(255, 242, 208, .72); border-radius: 48% 52% 45% 55%; background: linear-gradient(145deg, #efe0bb, #bfa56f); box-shadow: 0 13px 28px rgba(3, 28, 31, .38), inset 4px 5px 10px rgba(255, 255, 255, .35); font-size: .72rem; text-align: center; animation: gratitudeSettle .8s cubic-bezier(.2, .8, .2, 1) both; }
+.gratitude-pebble:nth-last-child(3) { left: 13%; top: 44%; transform: rotate(-5deg); }
+.gratitude-pebble:nth-last-child(2) { left: 39%; top: 58%; transform: rotate(3deg); animation-delay: .12s; }
+.gratitude-pebble:nth-last-child(1) { right: 10%; top: 38%; transform: rotate(-2deg); animation-delay: .24s; }
+.gratitude-pond.celebrating::after { content: ""; position: absolute; left: 50%; top: 54%; width: 40px; height: 18px; border: 2px solid rgba(255, 225, 158, .75); border-radius: 50%; animation: gratitudeRipple 1.7s ease-out 2; }
+
+.ritual-focus-stage .gratitude-garden-card { margin: 0; }
+
+@keyframes gratitudeSettle { from { opacity: 0; translate: 0 -34px; scale: .78; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes gratitudeRipple { from { opacity: .85; transform: translate(-50%, -50%) scale(.4); } to { opacity: 0; transform: translate(-50%, -50%) scale(8); } }
+
+@media (max-width: 720px) {
+  .gratitude-garden-card { grid-template-columns: 1fr; padding: 20px 16px; border-radius: 22px; }
+  .gratitude-pond { min-height: 210px; }
+  .gratitude-form { grid-template-columns: 1fr; }
+  .gratitude-form label, .gratitude-privacy, .gratitude-actions, .gratitude-status { grid-column: 1; }
+  .gratitude-settle, .gratitude-again { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gratitude-pebble, .gratitude-pond.celebrating::after { animation: none; }
+}

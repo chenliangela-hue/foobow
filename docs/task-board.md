@@ -8,6 +8,7 @@
 
 ## Done
 
+- Implemented the web Gratitude Pebble Garden as a seventh Quiet Moment: three private prompts, tactile pond completion, device-local count-only persistence, six-locale copy, keyboard focus return, reduced-motion handling, and desktop/phone visual coverage. Research and reuse decisions are recorded in `docs/web-peace-game-research.md`; mobile implementation remains deferred.
 - Created the dedicated Foobow Web Delivery GitHub Project and issue #1; implemented the first real-world map journey slice for Lake Merritt (United States) and Lake Biwa (Japan) with official place context, six-locale copy, keyboard/pointer travel, OpenStreetMap positioning, symbolic fish release, persisted per-location deed counts, responsive design, and explicit ecological safety copy.
 - Added a six-ritual Quiet Moments hub with mood choices, featured breathing, localized copy, immersive play views for the existing tactile rituals, and a direct Night Lantern entry; verified desktop and phone flows locally.
 
@@ -300,9 +301,10 @@
 
 ## Next
 
+- Live-verify the web Gratitude Pebble Garden, then build the researched web backlog in order: Kindness Quest Cards, Five Senses Grounding Garden, and the account/moderation-gated Community Kindness Mosaic.
 - Continue GitHub issue #1 with additional location-appropriate scenarios beyond fish release, richer completion feedback on the selected map location, and deployed desktop/tablet/phone PAQA.
 - Complete the web experience before resuming mobile work: expose Quiet Moments from the public homepage, finish all web localization/accessibility paths, stabilize web visual baselines, and run live desktop/tablet/mobile-browser PAQA.
-- Verify the public Quiet Moments preview, deep link, hub, and immersive ritual cards on the deployed web routes after the next `main` push. Check all six ritual paths, locale/theme switching, phone layout, Escape/Close return, and reduced motion against the live asset version.
+- Verify the public Quiet Moments preview, deep link, hub, and immersive ritual cards on the deployed web routes after the next `main` push. Check all seven ritual paths, locale/theme switching, phone layout, Escape/Close return, and reduced motion against the live asset version.
 - Confirm the repaired mobile lock entries pass the next GitHub Actions `verify` job. A local Linux Node 20.19.4/npm 10.8.2 clean-install dry run now succeeds without changing direct mobile dependencies.
 - Review the CI `visual-diffs` artifact for run `38480620567` and stabilize/rebaseline the five failing landing, Today, and map snapshots on the Windows CI browser. Keep the three passing snapshots and unrelated user edits intact.
 - Finish the live accessibility fixes found at `www.foobow.com`: pale selected Calm text, daily thought, and 3D entry button in light mode; washed-out map detail text in dark mode. A scoped CSS draft is local and still needs verification and publication. Also sync the 3D scenario tabs' `aria-selected` state when opening Kyoto directly; coordinate with the existing uncommitted `game3d.js` changes.

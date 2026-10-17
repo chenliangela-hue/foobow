@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="map-journeys.css">
+    <link rel="stylesheet" href="peace-garden.css">
   </head>
   <body>
     <div class="cinematic-backdrop cinematic-backdrop-container" id="backdropContainer" aria-hidden="true">
@@ -278,15 +279,43 @@
               <span class="quiet-feature-art" aria-hidden="true"><span class="quiet-lotus">❀</span></span>
               <span class="quiet-feature-copy"><small data-quiet-i18n="featured">TODAY'S QUIET RITUAL · 2 MIN</small><strong data-quiet-i18n="featureTitle">Take one breath. Let the day soften.</strong><span id="quietFeaturePrompt" data-quiet-i18n="promptCalm">A little calm starts here</span><span class="quiet-feature-action"><span data-quiet-i18n="begin">Begin ritual</span> <span aria-hidden="true">↗</span></span></span>
             </button>
-            <div class="quiet-grid-heading"><span data-quiet-i18n="explore">EXPLORE THE RITUALS</span><span data-quiet-i18n="sixWays">Six small ways to pause</span></div>
+            <div class="quiet-grid-heading"><span data-quiet-i18n="explore">EXPLORE THE RITUALS</span><span data-quiet-i18n="sixWays">Seven small ways to pause</span></div>
             <div class="quiet-game-grid">
               <button class="quiet-game" type="button" data-play-ritual="muyu"><span class="quiet-game-art" aria-hidden="true">◉</span><strong data-quiet-i18n="muyu">Wooden Fish</strong><small data-quiet-i18n="muyuDesc">Tap into stillness</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game" type="button" data-play-ritual="lamp"><span class="quiet-game-art" aria-hidden="true">✧</span><strong data-quiet-i18n="lamp">Wish Lamp</strong><small data-quiet-i18n="lampDesc">Hold a wish to the light</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game" type="button" data-play-ritual="incense"><span class="quiet-game-art" aria-hidden="true">〰</span><strong data-quiet-i18n="incense">Incense</strong><small data-quiet-i18n="incenseDesc">Follow the rising smoke</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game" type="button" data-play-ritual="wheel"><span class="quiet-game-art" aria-hidden="true">☸</span><strong data-quiet-i18n="wheel">Prayer Wheel</strong><small data-quiet-i18n="wheelDesc">Turn a gentle thought</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game" type="button" data-play-ritual="breathe"><span class="quiet-game-art" aria-hidden="true">❀</span><strong data-quiet-i18n="breathe">Mindful Breath</strong><small data-quiet-i18n="breatheDesc">Make room to breathe</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game gratitude-game" type="button" data-play-ritual="gratitudeGarden"><span class="quiet-game-art" aria-hidden="true">◒</span><strong data-quiet-i18n="gratitudeGarden">Gratitude Pebble Garden</strong><small data-quiet-i18n="gratitudeGardenDesc">Settle three good moments</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game" type="button" data-play-ritual="lantern"><span class="quiet-game-art" aria-hidden="true">✴</span><strong data-quiet-i18n="lantern">Night Lantern</strong><small data-quiet-i18n="lanternDesc">Release it to the sky</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
             </div>
+          </section>
+
+          <section class="gratitude-garden-card" id="gratitudeGardenCard" aria-labelledby="gratitudeGardenTitle">
+            <div class="gratitude-garden-copy">
+              <p class="gratitude-garden-kicker" data-gratitude-i18n="kicker">THREE GOOD THINGS · 3 MIN</p>
+              <h3 id="gratitudeGardenTitle" data-gratitude-i18n="title">Settle three good things into the water.</h3>
+              <p data-gratitude-i18n="intro">Recall three moments, people, or small comforts from today. Each one becomes a pebble in your quiet garden.</p>
+              <div class="gratitude-session-count"><span aria-hidden="true">◌</span> <span id="gratitudeSessionCount">0 gardens tended</span></div>
+            </div>
+            <div class="gratitude-pond" id="gratitudePond" aria-hidden="true">
+              <span class="gratitude-moon"></span>
+              <span class="gratitude-lotus lotus-one">✦</span>
+              <span class="gratitude-lotus lotus-two">✦</span>
+              <span class="gratitude-ripple ripple-one"></span>
+              <span class="gratitude-ripple ripple-two"></span>
+            </div>
+            <form class="gratitude-form" id="gratitudeGardenForm">
+              <label for="gratitudeMoment1"><span data-gratitude-i18n="prompt1">One small moment</span><input id="gratitudeMoment1" type="text" maxlength="72" autocomplete="off" data-gratitude-placeholder="placeholder1" placeholder="Warm sunlight, an easy laugh…"></label>
+              <label for="gratitudeMoment2"><span data-gratitude-i18n="prompt2">Someone or something kind</span><input id="gratitudeMoment2" type="text" maxlength="72" autocomplete="off" data-gratitude-placeholder="placeholder2" placeholder="A message, a helping hand…"></label>
+              <label for="gratitudeMoment3"><span data-gratitude-i18n="prompt3">Something you helped happen</span><input id="gratitudeMoment3" type="text" maxlength="72" autocomplete="off" data-gratitude-placeholder="placeholder3" placeholder="A task finished, care you gave…"></label>
+              <p class="gratitude-privacy" id="gratitudePrivacyNote"><span aria-hidden="true">⌁</span> <span data-gratitude-i18n="privacy">Your words stay on this page. Only your garden count is saved on this device.</span></p>
+              <div class="gratitude-actions">
+                <button class="gratitude-settle" id="settleGratitudeBtn" type="submit" disabled><span data-gratitude-i18n="settle">Settle these moments</span><span aria-hidden="true">→</span></button>
+                <button class="gratitude-again" id="gratitudeAgainBtn" type="button" hidden data-gratitude-i18n="again">Tend another garden</button>
+              </div>
+              <p class="gratitude-status" id="gratitudeGardenStatus" aria-live="polite"></p>
+            </form>
           </section>
 
           <section class="tonight-ritual-card tilt-card" id="tonightRitualCard" aria-labelledby="tonight-ritual-title">
@@ -1681,6 +1710,7 @@
     <script src="auth.js"></script>
     <script src="ritual-engine.js"></script>
     <script src="app.js"></script>
+    <script src="peace-garden.js"></script>
     <script src="game3d.js"></script>
     <script src="community.js"></script>
   </body>

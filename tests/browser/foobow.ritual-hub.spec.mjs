@@ -52,3 +52,36 @@ test("landing deep link opens the Quiet Moments hub", async ({ page }) => {
   await expect(page.locator("#quietMomentsHub")).toBeVisible();
   await expect(page.locator(".top-nav-item[data-target=blessings]")).toHaveClass(/active/);
 });
+
+test("Gratitude Pebble Garden settles three private good moments", async ({ page }) => {
+  await page.locator("#viewAllRitualsBtn").click();
+  const opener = page.locator('[data-play-ritual="gratitudeGarden"]');
+  await opener.click();
+
+  await expect(page.locator("#ritualFocusDialog #gratitudeGardenCard")).toBeVisible();
+  await expect(page.locator("#gratitudeGardenForm input")).toHaveCount(3);
+  await expect(page.locator("#settleGratitudeBtn")).toBeDisabled();
+
+  await page.locator("#gratitudeMoment1").fill("Warm tea before sunrise");
+  await page.locator("#gratitudeMoment2").fill("A kind message from a friend");
+  await page.locator("#gratitudeMoment3").fill("Rain on the garden");
+  await expect(page.locator("#settleGratitudeBtn")).toBeEnabled();
+  await page.locator("#settleGratitudeBtn").click();
+
+  await expect(page.locator("#gratitudePond .gratitude-pebble")).toHaveCount(3);
+  await expect(page.locator("#gratitudeGardenStatus")).toContainText("settled");
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("foobow.peaceGarden.v1")).sessions)).toBe(1);
+
+  await page.keyboard.press("Escape");
+  await expect(opener).toBeFocused();
+});
+
+test("Gratitude Pebble Garden localizes its private reflection copy", async ({ page }) => {
+  await page.locator("#viewAllRitualsBtn").click();
+  await page.locator("#languageSelect").selectOption("zh-Hans");
+  await page.locator('[data-play-ritual="gratitudeGarden"]').click();
+
+  await expect(page.locator("#ritualFocusTitle")).toHaveText("感恩石庭");
+  await expect(page.locator("#gratitudeGardenTitle")).toContainText("三件美好");
+  await expect(page.locator("#gratitudePrivacyNote")).toContainText("此设备只会保存");
+});

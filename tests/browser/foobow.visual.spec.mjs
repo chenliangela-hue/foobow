@@ -70,6 +70,20 @@ test("real-world journey picker visual baseline", async ({ page }) => {
   });
 });
 
+test("gratitude pebble garden visual baseline", async ({ page }) => {
+  await page.locator('.bottom-nav .nav-item[data-target="blessings"]').click();
+  await page.locator('[data-play-ritual="gratitudeGarden"]').click();
+  await page.locator("#gratitudeMoment1").fill("Warm tea before sunrise");
+  await page.locator("#gratitudeMoment2").fill("A kind message from a friend");
+  await page.locator("#gratitudeMoment3").fill("Rain on the garden");
+  await page.locator("#settleGratitudeBtn").click();
+  await page.locator("#gratitudePond").evaluate((pond) => pond.classList.remove("celebrating"));
+  await expect(page.locator("#ritualFocusDialog")).toHaveScreenshot("gratitude-pebble-garden.png", {
+    animations: "disabled",
+    maxDiffPixelRatio: 0.008
+  });
+});
+
 test("dark community visual baseline", async ({ page }) => {
   await page.getByRole("button", { name: "Toggle dark mode" }).click();
   await page.getByRole("button", { name: "Community" }).click();

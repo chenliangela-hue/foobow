@@ -29,7 +29,7 @@ test("daily ritual, map, deed, community, and profile flows work", async ({ page
   await page.getByLabel("Toronto crosswalk good deed spot").click();
   await expect(page.locator("#spotName")).toHaveText("Toronto crosswalk");
 
-  await page.getByRole("button", { name: "Deeds" }).click();
+  await page.locator(".bottom-nav").getByRole("button", { name: "Deeds" }).click();
   await page.getByText("Anonymous blessing").first().click();
   await expect(page.locator("#ritualTitle")).toHaveText("Anonymous blessing");
   await page.getByRole("button", { name: "Perform ritual" }).click();
@@ -74,7 +74,7 @@ test("category filters narrow map spots and deed catalog", async ({ page }) => {
   await expect(page.getByLabel("East Lake good deed spot")).toBeHidden();
   await expect(page.getByLabel("Toronto crosswalk good deed spot")).toBeVisible();
 
-  await page.getByRole("button", { name: "Deeds" }).click();
+  await page.locator(".bottom-nav").getByRole("button", { name: "Deeds" }).click();
   await expect(page.locator("#deedTypeCount")).toHaveText("4 shown");
   await expect(page.getByRole("button", { name: /(?:Help elder cross street|扶老奶奶过马路)/ })).toBeVisible();
 

@@ -3703,7 +3703,8 @@ function setupRedesignInteractions() {
       incense: ".incense-card",
       muyu: ".muyu-card",
       wheel: ".wheel-card",
-      breathe: ".calm-ritual-card"
+      breathe: ".calm-ritual-card",
+      gratitudeGarden: ".gratitude-garden-card"
     };
     const copy = window.FOOBOW_QUIET_I18N?.[normalizeLocale(state.language)] || window.FOOBOW_QUIET_I18N.en;
     const card = document.querySelector(cards[ritual]);
