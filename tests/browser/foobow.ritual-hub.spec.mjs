@@ -11,6 +11,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("Quiet Moments hub opens an immersive wooden fish and returns focus", async ({ page }) => {
+  await expect(page.locator("#viewAllRitualsBtn")).toHaveText("Explore all seven rituals →");
   await page.locator("#viewAllRitualsBtn").click();
   await expect(page.locator("#quietMomentsHub")).toBeVisible();
   await page.locator('#quietMomentsHub [data-play-ritual="muyu"]').click();
