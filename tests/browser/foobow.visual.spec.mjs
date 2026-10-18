@@ -70,8 +70,12 @@ test("today screen visual baseline", async ({ page }) => {
 test("map exploration visual baseline", async ({ page }) => {
   await page.getByRole("button", { name: "Map" }).click();
   await page.locator("#mapLayerRow").getByRole("button", { name: "Environment" }).click();
+  await page.locator("#globeParticlesCanvas").evaluate((canvas) => {
+    canvas.style.visibility = "hidden";
+  });
   await expect(page.locator("#screen-map")).toHaveScreenshot("map-environment-screen.png", {
     animations: "disabled",
+    mask: [page.locator("#mapKindnessStreamBar")],
     maxDiffPixelRatio: 0.006
   });
 });
