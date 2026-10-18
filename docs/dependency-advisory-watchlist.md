@@ -13,6 +13,13 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 - Track moderate advisories when the available automated fix would downgrade major framework/runtime packages or break the selected stack.
 - Do not run `npm audit fix --force` unless a maintainer has reviewed the dependency graph and verified the resulting package versions still match the project architecture.
 
+## Active Blocking Advisories
+
+| Area | Package Path | Advisory | Current Decision | Review Trigger |
+| --- | --- | --- | --- | --- |
+| Deferred mobile tooling | `expo -> metro -> micromatch -> braces` | `braces` stack exhaustion through deeply nested patterns (`GHSA-vfj7-8cjw-p6xm`) | Blocked upstream: npm currently marks every published `braces` version affected and proposes an incompatible Expo 44 downgrade | Re-check when `braces` publishes a patched release and Expo accepts it |
+| Deferred mobile tooling | `expo -> @expo/cli -> @expo/code-signing-certificates -> node-forge` | `node-forge` accepts extra nested signature algorithm elements (`GHSA-86w9-cpqp-85rv`) | Blocked upstream: npm currently marks every published `node-forge` version affected and proposes an incompatible Expo 44 downgrade | Re-check when `node-forge` publishes a patched release and Expo accepts it |
+
 ## Active Moderate Advisories
 
 | Area | Package Path | Advisory | Current Decision | Review Trigger |
@@ -26,16 +33,18 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 | API tooling | `prisma -> @prisma/dev -> @hono/node-server` | `@hono/node-server` repeated-slash `serveStatic` middleware bypass | Resolved 2026-07-23 by non-breaking `npm audit fix` in `apps/api`; Prisma stayed on the 7.x line and the API audit reports 0 vulnerabilities |
 | API tooling | `prisma -> @prisma/dev -> find-my-way` | `find-my-way` HTTP/2 DoS (GHSA-c96f-x56v-gq3h) | Resolved 2026-07-23 by pinning `find-my-way ^9.7.0` via an `overrides` entry in `apps/api/package.json` (audit fix could not resolve within Prisma's range); only affects Prisma dev tooling, not runtime; Prisma generate + API tests still pass |
 | API tooling | `@nestjs/swagger -> js-yaml` | `js-yaml` flow-collection DoS (GHSA-pm4m-ph32-ghv5) | Resolved 2026-07-24 by pinning `js-yaml ^5.2.2` via `overrides` in `apps/api/package.json` (audit fix could not move Swagger's pinned version); API audit clean, Prisma generate + typecheck + tests pass |
+| API runtime | `express -> proxy-addr` | IPv4-mapped IPv6 trust-subnet IP spoofing (`GHSA-jqcg-44mw-7w3h`) | Resolved 2026-10-18 by updating `proxy-addr` from 2.0.7 to 2.0.8; API audit and typecheck pass |
+| API tooling | `@nestjs/swagger -> js-yaml` | Merge-key CPU exhaustion (`GHSA-r3ph-w7gj-g6xm`) | Resolved 2026-10-18 by updating `js-yaml` from 5.2.2 to 5.5.0 and `argparse` from 2.0.1 to 3.0.3; API audit and typecheck pass |
 
 ## Acceptance Rule
 
-The current Foobow acceptance gate is:
+The Foobow acceptance gate remains:
 
 ```text
 npm run test:security
 ```
 
-This runs high/critical audit gates for the root, API, and mobile packages. The moderate advisories above are allowed only while they remain transitive tooling issues and while the documented force fixes would break the selected stack.
+This runs high/critical audit gates for the root, API, and mobile packages. The moderate advisories above are allowed only while they remain transitive tooling issues and while the documented force fixes would break the selected stack. Active high or critical advisories remain release blockers even while their product track is deferred; they are not suppressed or downgraded in CI.
 
 ## Next Review
 
