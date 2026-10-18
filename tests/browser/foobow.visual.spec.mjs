@@ -17,23 +17,17 @@ async function resetPrototype(page) {
 }
 
 async function freezeSanctuaryCanvas(page) {
-  const frame = await page.locator("#sanctuary3DCanvas").screenshot({ animations: "disabled" });
-  const frozenSource = `data:image/png;base64,${frame.toString("base64")}`;
+  await page.evaluate(() => window.FoobowGame3D.renderStill());
+}
 
-  await page.evaluate((src) => {
-    const canvas = document.querySelector("#sanctuary3DCanvas");
-    const frozenFrame = document.createElement("img");
-    frozenFrame.id = "sanctuary3DCanvas";
-    frozenFrame.alt = "";
-    frozenFrame.src = src;
-    frozenFrame.style.display = "block";
-    frozenFrame.style.width = "100%";
-    frozenFrame.style.height = "100%";
-    frozenFrame.style.objectFit = "fill";
-    canvas.removeAttribute("id");
-    canvas.hidden = true;
-    canvas.parentElement.insertBefore(frozenFrame, canvas);
-  }, frozenSource);
+async function seedSanctuaryRandom(page) {
+  await page.evaluate(() => {
+    let seed = 246813579;
+    Math.random = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+  });
 }
 
 test("landing hero visual baseline", async ({ page }) => {
@@ -108,6 +102,7 @@ test("storybook wooden fish ritual visual baseline", async ({ page }) => {
 });
 
 test("storybook East Lake sanctuary visual baseline", async ({ page }) => {
+  await seedSanctuaryRandom(page);
   await page.locator('.bottom-nav .nav-item[data-target="deeds"]').click();
   await page.locator("#open3DDeedGameBtn").click();
   await page.waitForTimeout(400);
@@ -127,6 +122,7 @@ const storybookWorldScenarios = [
 
 for (const [scenario, label, snapshot] of storybookWorldScenarios) {
   test(`storybook ${label} visual baseline`, async ({ page }) => {
+    await seedSanctuaryRandom(page);
     await page.locator('.bottom-nav .nav-item[data-target="deeds"]').click();
     await page.locator("#open3DDeedGameBtn").click();
     await page.locator(`.game-scenario-tab[data-scenario="${scenario}"]`).click();

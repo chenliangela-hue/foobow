@@ -2741,6 +2741,21 @@
     if (animFrameId) cancelAnimationFrame(animFrameId);
   }
 
+  function renderStillFrame() {
+    if (!ctx || !canvas) return;
+    isRunning = false;
+    if (animFrameId) cancelAnimationFrame(animFrameId);
+    setScenario(currentScenarioKey);
+    ctx.clearRect(0, 0, width, height);
+    drawAtmosphere(0);
+
+    if (currentScenarioKey === "east-lake") drawEastLake();
+    else if (currentScenarioKey === "toronto-crosswalk") drawTorontoCrosswalk();
+    else if (currentScenarioKey === "amazon-grove") drawAmazonGrove();
+    else if (currentScenarioKey === "night-corridor") drawKyotoLanterns();
+    else if (currentScenarioKey === "reading-room") drawReadingRoom();
+  }
+
   function setupBindings() {
     // Buttons to launch game
     const mapLaunchBtn = document.getElementById("launch3DGameBtn");
@@ -2954,6 +2969,7 @@
     setSpecies,
     toggleCameraMode,
     performPrimary: performPrimaryAction,
-    performSecondary: performSecondaryAction
+    performSecondary: performSecondaryAction,
+    renderStill: renderStillFrame
   };
 })();

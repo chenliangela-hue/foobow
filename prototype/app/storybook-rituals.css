@@ -261,9 +261,25 @@
 .sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-hud-top-bar,
 .sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-hud-panel,
 .sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-quest-badge { background: rgba(252, 247, 230, .9); color: #263e39; border-color: rgba(104, 82, 46, .3); box-shadow: 0 8px 26px rgba(35, 48, 40, .18); backdrop-filter: blur(12px); }
-.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-scenario-tab,
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-quest-coords { color: #245b70; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-quest-title { color: #203b36; text-shadow: none; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-goal-counter { color: #744114; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-goal-bar-wrap { background: rgba(54, 79, 70, .16); }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-scenario-tab { color: #dbe8e4; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-scenario-tab:hover { color: #fffaf0; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-scenario-tab.active { color: #ffe7ad; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-species-picker,
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-wish-picker { background: rgba(76, 104, 94, .08); border-color: rgba(76, 104, 94, .16); }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-secondary-btn,
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-hud-btn-sm,
 .sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .species-btn,
 .sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .wish-btn { color: #38534b; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-secondary-btn,
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-hud-btn-sm { border-color: rgba(56, 83, 75, .22); background: rgba(255, 255, 255, .38); }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-secondary-btn:disabled,
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .game-hud-btn-sm:disabled { color: #667b74; opacity: .72; }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .species-btn.active,
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] .wish-btn.active { color: #6f4a0e; }
 
 @keyframes storybookFloat { 50% { transform: translateY(-8px); } }
 @keyframes storybookSmoke { 0% { opacity: 0; transform: translateY(4px) rotate(4deg) scaleX(.7); } 45% { opacity: .8; } 100% { opacity: 0; transform: translate(-8px, -28px) rotate(-9deg) scaleX(1.2); } }
