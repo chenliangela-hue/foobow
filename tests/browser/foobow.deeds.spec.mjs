@@ -80,6 +80,7 @@ test("3D sanctuary mini-game launches, switches scenarios, and allows interactiv
 
   const modal = page.locator("#sanctuary3DGameModal");
   await expect(modal).toBeVisible();
+  await expect(modal).toHaveAttribute("data-visual-style", "storybook-sanctuary");
   await expect(page.locator("#sanctuary3DCanvas")).toBeVisible();
   await expect(page.locator("#gameScenarioTitle")).toContainText("East Lake");
 

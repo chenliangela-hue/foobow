@@ -47,7 +47,7 @@
       feedActionNameZh: "温和护送前行",
       badgeTitle: "Kindness Escort",
       badgeTitleZh: "慈心护行使",
-      defaultCam: { rotX: 0.38, rotY: 0.2, zoom: 0.95, dist: 300 }
+      defaultCam: { rotX: 0.38, rotY: 0, zoom: 0.95, dist: 300 }
     },
     "amazon-grove": {
       id: "amazon-grove",
@@ -65,7 +65,7 @@
       feedActionNameZh: "细雨浇灌生机",
       badgeTitle: "Rainforest Custodian",
       badgeTitleZh: "雨林绿洲守护者",
-      defaultCam: { rotX: 0.46, rotY: -0.15, zoom: 1.05, dist: 290 }
+      defaultCam: { rotX: 0.46, rotY: 0, zoom: 1.05, dist: 290 }
     },
     "night-corridor": {
       id: "night-corridor",
@@ -83,7 +83,7 @@
       feedActionNameZh: "微风引渡水流",
       badgeTitle: "Illumination Bearer",
       badgeTitleZh: "心灯引路人",
-      defaultCam: { rotX: 0.42, rotY: 0.1, zoom: 1, dist: 285 }
+      defaultCam: { rotX: 0.42, rotY: 0, zoom: 1, dist: 285 }
     },
     "reading-room": {
       id: "reading-room",
@@ -101,7 +101,7 @@
       feedActionNameZh: "温润案灯 · 结缘明光",
       badgeTitle: "Wisdom Keeper",
       badgeTitleZh: "般若智慧守护者",
-      defaultCam: { rotX: 0.52, rotY: 0.08, zoom: 1.1, dist: 270 }
+      defaultCam: { rotX: 0.52, rotY: 0, zoom: 1.1, dist: 270 }
     }
   };
 
@@ -119,6 +119,49 @@
   let width = 640;
   let height = 480;
   let dpr = 1;
+
+  // Shared painted locations keep every deed grounded in a recognizable place.
+  // The canvas still owns all interaction and animation; these illustrations are
+  // the quiet stage behind it rather than static replacements for the game.
+  const STORYBOOK_BACKDROP_SOURCES = {
+    "east-lake": "../assets/foobow/backgrounds/storybook/east-lake.webp",
+    "toronto-crosswalk": "../assets/foobow/backgrounds/storybook/toronto-crosswalk.webp",
+    "amazon-grove": "../assets/foobow/backgrounds/storybook/amazon-grove.webp",
+    "night-corridor": "../assets/foobow/backgrounds/storybook/kyoto-river.webp",
+    "reading-room": "../assets/foobow/backgrounds/storybook/oxford-reading-room.webp"
+  };
+  const storybookBackdrops = {};
+
+  Object.entries(STORYBOOK_BACKDROP_SOURCES).forEach(([key, src]) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = src;
+    storybookBackdrops[key] = image;
+  });
+
+  function drawStorybookBackdrop(key, fallbackTop, fallbackBottom, tint) {
+    const image = storybookBackdrops[key];
+
+    if (image && image.complete && image.naturalWidth > 0) {
+      const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
+      const sourceWidth = width / scale;
+      const sourceHeight = height / scale;
+      const sourceX = (image.naturalWidth - sourceWidth) / 2;
+      const sourceY = (image.naturalHeight - sourceHeight) / 2;
+      ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, width, height);
+    } else {
+      const fallback = ctx.createLinearGradient(0, 0, 0, height);
+      fallback.addColorStop(0, fallbackTop);
+      fallback.addColorStop(1, fallbackBottom);
+      ctx.fillStyle = fallback;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    if (tint) {
+      ctx.fillStyle = tint;
+      ctx.fillRect(0, 0, width, height);
+    }
+  }
 
   // 3D Camera
   const camera = {
@@ -260,7 +303,7 @@
       sy,
       scale,
       depth: camZ,
-      visible: sx >= -100 && sx <= width + 100 && sy >= -100 && sy <= height + 100
+      visible: sx >= -800 && sx <= width + 800 && sy >= -800 && sy <= height + 800
     };
   }
 
@@ -273,9 +316,9 @@
     foodCrumbs = [];
 
     // Pre-populate with 3 resident serene swimming koi
-    spawnKoi(20, -10, 0, "kohaku", 1.1);
-    spawnKoi(-40, 25, 2.2, "showa", 0.95);
-    spawnKoi(50, -40, 3.8, "yamabuki", 1.25);
+    spawnKoi(20, -10, 0, "kohaku", 1.55);
+    spawnKoi(-40, 25, 2.2, "showa", 1.35);
+    spawnKoi(50, -40, 3.8, "yamabuki", 1.7);
   }
 
   function spawnKoi(x, z, heading, pattern = "kohaku", size = 1.0, isReleased = false) {
@@ -453,92 +496,85 @@
     });
   }
 
-  const riverPebbles = [
-    { x: -110, z: -70, r: 14, color: "#2d3748" },
-    { x: -50, z: -105, r: 18, color: "#4a5568" },
-    { x: 75, z: -85, r: 15, color: "#3a4a58" },
-    { x: 120, z: 15, r: 20, color: "#2d3748" },
-    { x: -125, z: 35, r: 16, color: "#4a5568" },
-    { x: -45, z: 95, r: 22, color: "#3a4a58" },
-    { x: 85, z: 85, r: 17, color: "#2d3748" },
-    { x: 130, z: -40, r: 19, color: "#4a5568" }
-  ];
-
   function drawEastLake() {
     const isDark = document.body.classList.contains("dark");
 
-    // 1. Water Depth Gradient across full canvas
+    drawStorybookBackdrop(
+      "east-lake",
+      isDark ? "#163c3c" : "#8bc8c2",
+      isDark ? "#071919" : "#287f79",
+      isDark ? "rgba(3, 20, 23, 0.34)" : "rgba(20, 111, 104, 0.08)"
+    );
+
+    // 1. Transparent water light preserves the real East Lake shoreline.
     const waterGrad = ctx.createRadialGradient(width / 2, height * 0.48, 20, width / 2, height * 0.48, Math.max(width, height) * 0.85);
     if (currentTimeOfDay === "dawn") {
-      waterGrad.addColorStop(0, isDark ? "#1b4440" : "#32a297");
-      waterGrad.addColorStop(0.5, isDark ? "#102d2c" : "#1f6e67");
-      waterGrad.addColorStop(1, isDark ? "#061517" : "#0e3a36");
+      waterGrad.addColorStop(0, isDark ? "rgba(27, 68, 64, 0.3)" : "rgba(255, 225, 166, 0.14)");
+      waterGrad.addColorStop(0.5, isDark ? "rgba(16, 45, 44, 0.25)" : "rgba(31, 110, 103, 0.08)");
+      waterGrad.addColorStop(1, isDark ? "rgba(6, 21, 23, 0.34)" : "rgba(14, 58, 54, 0.12)");
     } else if (currentTimeOfDay === "sunset") {
-      waterGrad.addColorStop(0, isDark ? "#2a394a" : "#43788f");
-      waterGrad.addColorStop(0.5, isDark ? "#172332" : "#265267");
-      waterGrad.addColorStop(1, isDark ? "#08101a" : "#112a38");
+      waterGrad.addColorStop(0, isDark ? "rgba(42, 57, 74, 0.35)" : "rgba(247, 174, 108, 0.18)");
+      waterGrad.addColorStop(0.5, isDark ? "rgba(23, 35, 50, 0.3)" : "rgba(38, 82, 103, 0.1)");
+      waterGrad.addColorStop(1, isDark ? "rgba(8, 16, 26, 0.42)" : "rgba(17, 42, 56, 0.16)");
     } else if (currentTimeOfDay === "night") {
-      waterGrad.addColorStop(0, "#0c2033");
-      waterGrad.addColorStop(0.5, "#061320");
-      waterGrad.addColorStop(1, "#02070e");
+      waterGrad.addColorStop(0, "rgba(12, 32, 51, 0.58)");
+      waterGrad.addColorStop(0.5, "rgba(6, 19, 32, 0.62)");
+      waterGrad.addColorStop(1, "rgba(2, 7, 14, 0.72)");
     } else { // day
-      waterGrad.addColorStop(0, isDark ? "#15524e" : "#2cb4a4");
-      waterGrad.addColorStop(0.5, isDark ? "#0c3332" : "#17786e");
-      waterGrad.addColorStop(1, isDark ? "#041517" : "#0a3e39");
+      waterGrad.addColorStop(0, isDark ? "rgba(21, 82, 78, 0.3)" : "rgba(214, 249, 235, 0.04)");
+      waterGrad.addColorStop(0.5, isDark ? "rgba(12, 51, 50, 0.28)" : "rgba(23, 120, 110, 0.06)");
+      waterGrad.addColorStop(1, isDark ? "rgba(4, 21, 23, 0.4)" : "rgba(10, 62, 57, 0.12)");
     }
     ctx.fillStyle = waterGrad;
     ctx.fillRect(0, 0, width, height);
 
-    // 2. Animated Sunlight / Moonlight Caustics on Pond Floor
-    ctx.save();
-    const causticAlpha = currentTimeOfDay === "night" ? 0.09 : (isDark ? 0.16 : 0.24);
-    ctx.strokeStyle = currentTimeOfDay === "night" ? `rgba(180, 220, 255, ${causticAlpha})` : `rgba(255, 255, 230, ${causticAlpha})`;
-    ctx.lineWidth = 1.8;
-    ctx.beginPath();
-    const cStep = 34;
-    for (let cy = 0; cy < height + cStep; cy += cStep) {
-      for (let cx = 0; cx < width + cStep; cx += cStep) {
-        const nx = Math.sin((cx + waterTime * 22) * 0.018) * Math.cos((cy + waterTime * 17) * 0.018) * 14;
-        const ny = Math.cos((cx - waterTime * 19) * 0.018) * Math.sin((cy + waterTime * 25) * 0.018) * 14;
-        ctx.moveTo(cx + nx, cy + ny);
-        ctx.lineTo(cx + cStep * 0.75 - nx, cy + cStep * 0.75 - ny);
-      }
-    }
-    ctx.stroke();
-    ctx.restore();
+    // 1b. Distant Lakeside Shorebank & Bamboo Reeds (far behind water)
+    drawDistantShore();
 
-    // 3. Pond Floor Riverbed Pebbles (smooth rounded depth stones)
-    riverPebbles.forEach((peb) => {
-      const pp = project(peb.x, -12, peb.z);
-      if (!pp.visible) return;
+    // 2. Animated Sunlight / Moonlight Caustics on Pond Floor (Smooth organic 3D light web)
+    ctx.save();
+    const causticAlpha = currentTimeOfDay === "night" ? 0.08 : (isDark ? 0.13 : 0.20);
+    ctx.strokeStyle = currentTimeOfDay === "night" ? `rgba(180, 225, 255, ${causticAlpha})` : `rgba(255, 255, 225, ${causticAlpha})`;
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    // Soft organic sunlit water caustics dancing on the pond floor (smooth drifting light pools)
+    const causticPatches = 16;
+    for (let i = 0; i < causticPatches; i++) {
+      const cx = Math.sin(i * 1.35 + waterTime * 0.9) * 135;
+      const cz = Math.cos(i * 1.85 - waterTime * 0.7) * 110;
+      const cp = project(cx, -11, cz);
+      if (!cp.visible) continue;
+      const cRadius = (24 + Math.sin(waterTime * 2.1 + i * 1.5) * 8) * cp.scale;
+      const patchGrad = ctx.createRadialGradient(cp.sx, cp.sy, 2, cp.sx, cp.sy, cRadius);
+      const alpha = currentTimeOfDay === "night" ? 0.08 : (isDark ? 0.12 : 0.18);
+      patchGrad.addColorStop(0, currentTimeOfDay === "night" ? `rgba(180, 225, 255, ${alpha})` : `rgba(255, 255, 220, ${alpha})`);
+      patchGrad.addColorStop(0.6, currentTimeOfDay === "night" ? `rgba(180, 225, 255, ${(alpha * 0.4).toFixed(3)})` : `rgba(255, 255, 220, ${(alpha * 0.4).toFixed(3)})`);
+      patchGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+      ctx.fillStyle = patchGrad;
       ctx.beginPath();
-      ctx.ellipse(pp.sx, pp.sy, peb.r * pp.scale, peb.r * 0.75 * pp.scale, 0.2, 0, Math.PI * 2);
-      ctx.fillStyle = isDark ? "#1a252f" : peb.color;
+      ctx.arc(cp.sx, cp.sy, cRadius, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = isDark ? "#0e151b" : "#1f2937";
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
-    });
+    }
 
-    // 4. Subtle 3D Surface Water Waves (flowing across central pool)
-    ctx.save();
-    ctx.strokeStyle = isDark ? "rgba(112, 214, 176, 0.12)" : "rgba(255, 255, 255, 0.18)";
-    ctx.lineWidth = 1.0;
-    for (let rz = -150; rz <= 150; rz += 30) {
-      ctx.beginPath();
-      let started = false;
-      for (let rx = -170; rx <= 170; rx += 22) {
-        const waveY = Math.sin(rx * 0.04 + waterTime * 1.8) * Math.cos(rz * 0.04 + waterTime * 1.5) * 2.2;
-        const pt = project(rx, waveY, rz);
-        if (!pt.visible) continue;
-        if (!started) {
-          ctx.moveTo(pt.sx, pt.sy);
-          started = true;
-        } else {
-          ctx.lineTo(pt.sx, pt.sy);
-        }
+    // Soft glowing radial convergence nodes (specular caustic highlights)
+    const causticNodes = 12;
+    for (let i = 0; i < causticNodes; i++) {
+      const nx = Math.sin(i * 1.7 + waterTime * 0.85) * 115;
+      const nz = Math.cos(i * 2.1 - waterTime * 0.75) * 95;
+      const nPt = project(nx, -11, nz);
+      if (nPt.visible) {
+        const nR = (18 + Math.sin(waterTime * 1.8 + i) * 7) * nPt.scale;
+        const nGrad = ctx.createRadialGradient(nPt.sx, nPt.sy, 0, nPt.sx, nPt.sy, nR);
+        const nodeAlpha = currentTimeOfDay === "night" ? 0.16 : (isDark ? 0.20 : 0.28);
+        nGrad.addColorStop(0, currentTimeOfDay === "night" ? `rgba(180, 230, 255, ${nodeAlpha})` : `rgba(255, 255, 215, ${nodeAlpha})`);
+        nGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = nGrad;
+        ctx.beginPath();
+        ctx.arc(nPt.sx, nPt.sy, nR, 0, Math.PI * 2);
+        ctx.fill();
       }
-      if (started) ctx.stroke();
     }
     ctx.restore();
 
@@ -563,12 +599,10 @@
 
     // 6. Floating Lotus Pads & Flowers
     const lotusPads = [
-      { x: -75, z: -55, r: 24, flower: true },
-      { x: 80, z: 45, r: 28, flower: true },
-      { x: -35, z: 85, r: 20, flower: false },
-      { x: 60, z: -75, r: 25, flower: false },
-      { x: -110, z: 15, r: 22, flower: true },
-      { x: 105, z: -15, r: 21, flower: false }
+      { x: -112, z: -54, r: 11, flower: true },
+      { x: 112, z: 48, r: 13, flower: true },
+      { x: -94, z: 88, r: 10, flower: false },
+      { x: 104, z: -76, r: 11, flower: false }
     ];
 
     lotusPads.forEach((pad) => {
@@ -604,26 +638,18 @@
 
       // Blooming Lotus Flower
       if (pad.flower) {
-        const flowerR = padRadius * 0.8;
-        const petals = 8;
+        const flowerR = padRadius * 0.9;
+        const petals = 7;
         for (let p = 0; p < petals; p++) {
           const pAngle = (p / petals) * Math.PI * 2;
-          const px = center.sx + Math.cos(pAngle) * flowerR * 0.55;
-          const py = center.sy + Math.sin(pAngle) * flowerR * 0.55;
+          ctx.save();
+          ctx.translate(center.sx, center.sy);
+          ctx.rotate(pAngle);
           ctx.beginPath();
-          ctx.arc(px, py, flowerR * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255, 182, 193, 0.95)";
+          ctx.ellipse(0, -flowerR * 0.42, flowerR * 0.25, flowerR * 0.58, 0, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255, 203, 215, 0.96)";
           ctx.fill();
-        }
-        // Inner white layer
-        for (let p = 0; p < petals; p++) {
-          const pAngle = (p / petals) * Math.PI * 2 + 0.35;
-          const px = center.sx + Math.cos(pAngle) * flowerR * 0.32;
-          const py = center.sy + Math.sin(pAngle) * flowerR * 0.32;
-          ctx.beginPath();
-          ctx.arc(px, py, flowerR * 0.26, 0, Math.PI * 2);
-          ctx.fillStyle = "#fff0f5";
-          ctx.fill();
+          ctx.restore();
         }
         // Golden flower center
         ctx.beginPath();
@@ -670,8 +696,7 @@
       draw3DKoi(koi);
     });
 
-    // 9. Lakeside Timber Pier along bottom
-    drawWoodenDock();
+    // 9. Lake water surface remains serene and completely open
   }
 
   function draw3DKoi(koi) {
@@ -831,61 +856,58 @@
     }
   }
 
-  function drawWoodenDock() {
+  function drawDistantShore() {
     const isDark = document.body.classList.contains("dark");
-    const dockPlanks = 8;
-    for (let p = 0; p < dockPlanks; p++) {
-      const z = -145 + p * 13;
-      const p0 = project(-120, 6, z);
-      const p1 = project(120, 6, z);
-      const p2 = project(120, 6, z + 11);
-      const p3 = project(-120, 6, z + 11);
+    // Soft distant lakeshore embankment at z = -180 to -240
+    const s0 = project(-320, 4, -240);
+    const s1 = project(320, 4, -240);
+    const s2 = project(320, 0, -175);
+    const s3 = project(-320, 0, -175);
+    if (!s0.visible && !s1.visible) return;
 
-      if (!p0.visible && !p1.visible) continue;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(s0.sx, s0.sy);
+    ctx.lineTo(s1.sx, s1.sy);
+    ctx.lineTo(s2.sx, s2.sy);
+    ctx.lineTo(s3.sx, s3.sy);
+    ctx.closePath();
+    const bankGrad = ctx.createLinearGradient(0, s0.sy, 0, s2.sy);
+    bankGrad.addColorStop(0, isDark ? "#081b19" : "#1b3f36");
+    bankGrad.addColorStop(0.5, isDark ? "#061513" : "#14332b");
+    bankGrad.addColorStop(1, isDark ? "#04100f" : "#0d2620");
+    ctx.fillStyle = bankGrad;
+    ctx.fill();
 
-      ctx.beginPath();
-      ctx.moveTo(p0.sx, p0.sy);
-      ctx.lineTo(p1.sx, p1.sy);
-      ctx.lineTo(p2.sx, p2.sy);
-      ctx.lineTo(p3.sx, p3.sy);
-      ctx.closePath();
-
-      const plankGrad = ctx.createLinearGradient(p0.sx, p0.sy, p2.sx, p2.sy);
-      plankGrad.addColorStop(0, isDark ? "#4a3520" : "#8b5e34");
-      plankGrad.addColorStop(1, isDark ? "#362616" : "#6f4520");
-      ctx.fillStyle = plankGrad;
-      ctx.strokeStyle = isDark ? "#271b10" : "#4a2d12";
-      ctx.lineWidth = 1.4;
-      ctx.fill();
-      ctx.stroke();
-
-      // Brass deck screws
-      [-95, 95].forEach((nx) => {
-        const np = project(nx, 6.5, z + 5.5);
-        if (np.visible) {
-          ctx.beginPath();
-          ctx.arc(np.sx, np.sy, 2 * np.scale, 0, Math.PI * 2);
-          ctx.fillStyle = "#d4af37";
-          ctx.fill();
-        }
-      });
-    }
-
-    // Dock timber pilings in water
-    [-100, 100].forEach((px) => {
-      const pTop = project(px, 6, -55);
-      const pBot = project(px, -20, -55);
-      if (pTop.visible && pBot.visible) {
+    // Embankment shoreline stones
+    [-200, -130, -60, 20, 95, 170, 230].forEach((sx, idx) => {
+      const sp = project(sx, 1, -176);
+      if (sp.visible) {
         ctx.beginPath();
-        ctx.moveTo(pTop.sx - 5 * pTop.scale, pTop.sy);
-        ctx.lineTo(pTop.sx + 5 * pTop.scale, pTop.sy);
-        ctx.lineTo(pBot.sx + 4 * pBot.scale, pBot.sy);
-        ctx.lineTo(pBot.sx - 4 * pBot.scale, pBot.sy);
-        ctx.closePath();
-        ctx.fillStyle = isDark ? "#25180d" : "#452c16";
+        ctx.ellipse(sp.sx, sp.sy, (14 + (idx % 3) * 5) * sp.scale, 7 * sp.scale, 0, 0, Math.PI * 2);
+        ctx.fillStyle = isDark ? "#172b27" : "#2f4f46";
         ctx.fill();
+        ctx.strokeStyle = isDark ? "#0f1c1a" : "#203630";
+        ctx.lineWidth = 1;
+        ctx.stroke();
       }
     });
+
+    // Subtle distant bamboo reed stalks along the far bank
+    ctx.strokeStyle = isDark ? "rgba(112, 214, 176, 0.35)" : "rgba(35, 130, 100, 0.45)";
+    ctx.lineWidth = 1.3;
+    for (let rx = -260; rx <= 260; rx += 22) {
+      const sway = Math.sin(waterTime * 1.6 + rx * 0.12) * 4;
+      const bBase = project(rx, 2, -180);
+      const bTop = project(rx + sway, 28, -185);
+      if (bBase.visible && bTop.visible) {
+        ctx.beginPath();
+        ctx.moveTo(bBase.sx, bBase.sy);
+        ctx.lineTo(bTop.sx, bTop.sy);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
   }
 
   function draw3DTurtle(koi, headPt) {
@@ -1051,25 +1073,194 @@
   function drawTorontoCrosswalk() {
     const isDark = document.body.classList.contains("dark");
 
-    // 1. Broad Asphalt Road Plane spanning full width
-    const r0 = project(-350, 0, -80);
-    const r1 = project(350, 0, -80);
-    const r2 = project(350, 0, 80);
-    const r3 = project(-350, 0, 80);
+    drawStorybookBackdrop(
+      "toronto-crosswalk",
+      isDark ? "#263849" : "#d6d6cf",
+      isDark ? "#121a24" : "#8b6544",
+      isDark ? "rgba(10, 18, 28, 0.42)" : "rgba(255, 245, 226, 0.06)"
+    );
 
+    // 0. Distant Toronto Skyline Silhouette (CN Tower & Financial District)
+    ctx.save();
+    const towers = [
+      { x: -280, w: 45, h: 70 },
+      { x: -210, w: 35, h: 90 },
+      { x: -150, w: 50, h: 110 },
+      { x: -80, w: 40, h: 80 },
+      { x: 30, w: 14, h: 180, isCNTower: true },
+      { x: 80, w: 45, h: 125 },
+      { x: 150, w: 50, h: 95 },
+      { x: 230, w: 40, h: 75 }
+    ];
+    towers.forEach((tw) => {
+      const b0 = project(tw.x - tw.w / 2, 0, -290);
+      const b1 = project(tw.x + tw.w / 2, 0, -290);
+      const t0 = project(tw.x - tw.w / 2, tw.h, -290);
+      const t1 = project(tw.x + tw.w / 2, tw.h, -290);
+      if (!b0.visible && !b1.visible) return;
+
+      if (tw.isCNTower) {
+        // CN Tower needle spire
+        const tip = project(tw.x, tw.h + 50, -290);
+        const pod = project(tw.x, tw.h, -290);
+        if (tip.visible && pod.visible) {
+          ctx.beginPath();
+          ctx.moveTo(b0.sx + (b1.sx - b0.sx) * 0.35, b0.sy);
+          ctx.lineTo(tip.sx, tip.sy);
+          ctx.lineTo(b0.sx + (b1.sx - b0.sx) * 0.65, b0.sy);
+          ctx.fillStyle = isDark ? "#121b24" : "#4a5568";
+          ctx.fill();
+          // Observation pod
+          ctx.beginPath();
+          ctx.ellipse(pod.sx, pod.sy, 16 * pod.scale, 8 * pod.scale, 0, 0, Math.PI * 2);
+          ctx.fillStyle = isDark ? "#1e293b" : "#64748b";
+          ctx.fill();
+          // Flashing red beacon
+          const beaconAlpha = Math.sin(waterTime * 4) > 0 ? 1 : 0.2;
+          ctx.beginPath();
+          ctx.arc(tip.sx, tip.sy, 3 * tip.scale, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(239, 68, 68, ${beaconAlpha})`;
+          ctx.shadowColor = "#ef4444";
+          ctx.shadowBlur = 6;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      } else {
+        // Office Tower
+        ctx.beginPath();
+        ctx.moveTo(b0.sx, b0.sy);
+        ctx.lineTo(b1.sx, b1.sy);
+        ctx.lineTo(t1.sx, t1.sy);
+        ctx.lineTo(t0.sx, t0.sy);
+        ctx.closePath();
+        ctx.fillStyle = isDark ? "#0f172a" : "#334155";
+        ctx.fill();
+
+        // Glowing office window grid
+        const winCols = 3;
+        const winRows = 6;
+        for (let r = 0; r < winRows; r++) {
+          for (let c = 0; c < winCols; c++) {
+            const wx = tw.x - tw.w * 0.35 + c * (tw.w * 0.35);
+            const wy = 12 + r * 14;
+            const wp = project(wx, wy, -289);
+            if (wp.visible && (Math.sin(tw.x + r * 13 + c * 7) > -0.2)) {
+              ctx.fillStyle = (r + c) % 2 === 0 ? "rgba(253, 224, 71, 0.45)" : "rgba(147, 197, 253, 0.35)";
+              ctx.fillRect(wp.sx - 1.5 * wp.scale, wp.sy - 2 * wp.scale, 3 * wp.scale, 4 * wp.scale);
+            }
+          }
+        }
+      }
+    });
+    ctx.restore();
+
+    // Full Ground Urban Pavement Base (from horizon down to canvas bottom)
+    const groundGrad = ctx.createLinearGradient(0, height * 0.4, 0, height);
+    groundGrad.addColorStop(0, isDark ? "rgba(30, 41, 59, 0.36)" : "rgba(71, 85, 105, 0.12)");
+    groundGrad.addColorStop(1, isDark ? "rgba(15, 23, 42, 0.48)" : "rgba(30, 41, 59, 0.2)");
+    ctx.fillStyle = groundGrad;
+    ctx.fillRect(0, height * 0.42, width, height * 0.58);
+
+    // 1. Continuous Ground Plane: Sidewalks & Road spanning edge to edge
+    // North Sidewalk (z = -280 to -80)
+    const ns0 = project(-1400, 4, -280);
+    const ns1 = project(1400, 4, -280);
+    const ns2 = project(1400, 4, -80);
+    const ns3 = project(-1400, 4, -80);
+    if (ns0.visible || ns2.visible || ns1.visible || ns3.visible) {
+      ctx.beginPath();
+      ctx.moveTo(ns0.sx, ns0.sy);
+      ctx.lineTo(ns1.sx, ns1.sy);
+      ctx.lineTo(ns2.sx, ns2.sy);
+      ctx.lineTo(ns3.sx, ns3.sy);
+      ctx.closePath();
+      ctx.fillStyle = isDark ? "rgba(30, 41, 59, 0.42)" : "rgba(100, 116, 139, 0.18)";
+      ctx.fill();
+    }
+
+    // South Sidewalk (z = 80 to 600)
+    const ss0 = project(-1400, 4, 80);
+    const ss1 = project(1400, 4, 80);
+    const ss2 = project(1400, 4, 600);
+    const ss3 = project(-1400, 4, 600);
+    if (ss0.visible || ss2.visible || ss1.visible || ss3.visible) {
+      ctx.beginPath();
+      ctx.moveTo(ss0.sx, ss0.sy);
+      ctx.lineTo(ss1.sx, ss1.sy);
+      ctx.lineTo(ss2.sx, ss2.sy);
+      ctx.lineTo(ss3.sx, ss3.sy);
+      ctx.closePath();
+      ctx.fillStyle = isDark ? "rgba(30, 41, 59, 0.42)" : "rgba(100, 116, 139, 0.18)";
+      ctx.fill();
+    }
+
+    // Asphalt Road Plane (z = -80 to 80)
+    const r0 = project(-1400, 0, -80);
+    const r1 = project(1400, 0, -80);
+    const r2 = project(1400, 0, 80);
+    const r3 = project(-1400, 0, 80);
     ctx.beginPath();
     ctx.moveTo(r0.sx, r0.sy);
     ctx.lineTo(r1.sx, r1.sy);
     ctx.lineTo(r2.sx, r2.sy);
     ctx.lineTo(r3.sx, r3.sy);
     ctx.closePath();
-    ctx.fillStyle = isDark ? "#181d24" : "#2f3640";
+    ctx.fillStyle = isDark ? "rgba(15, 23, 42, 0.62)" : "rgba(31, 41, 55, 0.46)";
     ctx.fill();
+
+    // Sidewalk curb bevels
+    [-80, 80].forEach((cz) => {
+      const c0 = project(-1400, 4.5, cz);
+      const c1 = project(1400, 4.5, cz);
+      if (c0.visible || c1.visible) {
+        ctx.beginPath();
+        ctx.moveTo(c0.sx, c0.sy);
+        ctx.lineTo(c1.sx, c1.sy);
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+    });
+
+    // Warm street lamps on sidewalk curb casting radial illumination pools
+    [-150, -50, 50, 150].forEach((lx) => {
+      [-88, 88].forEach((lz) => {
+        const lBase = project(lx, 4, lz);
+        const lHead = project(lx, 36, lz);
+        if (lBase.visible && lHead.visible) {
+          // Warm pool on pavement
+          const poolGrad = ctx.createRadialGradient(lBase.sx, lBase.sy, 2, lBase.sx, lBase.sy, 32 * lBase.scale);
+          poolGrad.addColorStop(0, "rgba(254, 240, 138, 0.28)");
+          poolGrad.addColorStop(1, "rgba(254, 240, 138, 0)");
+          ctx.fillStyle = poolGrad;
+          ctx.beginPath();
+          ctx.arc(lBase.sx, lBase.sy, 32 * lBase.scale, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Lamp post
+          ctx.beginPath();
+          ctx.moveTo(lBase.sx, lBase.sy);
+          ctx.lineTo(lHead.sx, lHead.sy);
+          ctx.strokeStyle = "#475569";
+          ctx.lineWidth = 2.5 * lHead.scale;
+          ctx.stroke();
+
+          // Glowing lantern fixture
+          ctx.beginPath();
+          ctx.arc(lHead.sx, lHead.sy, 4 * lHead.scale, 0, Math.PI * 2);
+          ctx.fillStyle = "#fef08a";
+          ctx.shadowColor = "#facc15";
+          ctx.shadowBlur = 8;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      });
+    });
 
     // Double Solid Yellow Center Line
     [-2, 2].forEach((offsetZ) => {
-      const y0 = project(-350, 0.4, offsetZ);
-      const y1 = project(350, 0.4, offsetZ);
+      const y0 = project(-1400, 0.4, offsetZ);
+      const y1 = project(1400, 0.4, offsetZ);
       ctx.beginPath();
       ctx.moveTo(y0.sx, y0.sy);
       ctx.lineTo(y1.sx, y1.sy);
@@ -1105,49 +1296,6 @@
       ctx.strokeStyle = "#ffffff";
       ctx.lineWidth = 3.5;
       ctx.stroke();
-    });
-
-    // 3. Sidewalk Curbs & Paving spanning edge to edge
-    [-80, 80].forEach((sz) => {
-      const isTop = sz < 0;
-      const c0 = project(-350, 6, isTop ? sz - 35 : sz);
-      const c1 = project(350, 6, isTop ? sz - 35 : sz);
-      const c2 = project(350, 6, isTop ? sz : sz + 35);
-      const c3 = project(-350, 6, isTop ? sz : sz + 35);
-
-      ctx.beginPath();
-      ctx.moveTo(c0.sx, c0.sy);
-      ctx.lineTo(c1.sx, c1.sy);
-      ctx.lineTo(c2.sx, c2.sy);
-      ctx.lineTo(c3.sx, c3.sy);
-      ctx.closePath();
-      ctx.fillStyle = isDark ? "#28313b" : "#606a75";
-      ctx.fill();
-
-      // Curb bevel line
-      const curb0 = project(-350, 6, sz);
-      const curb1 = project(350, 6, sz);
-      ctx.beginPath();
-      ctx.moveTo(curb0.sx, curb0.sy);
-      ctx.lineTo(curb1.sx, curb1.sy);
-      ctx.strokeStyle = "#cbd5e1";
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    });
-
-    // Sidewalk Trees (Autumn Golden Maples)
-    [-180, -60, 60, 180].forEach((tx) => {
-      const tp = project(tx, 0, -98);
-      if (tp.visible) {
-        // Trunk
-        ctx.fillStyle = "#5c3d20";
-        ctx.fillRect(tp.sx - 2.5 * tp.scale, tp.sy - 24 * tp.scale, 5 * tp.scale, 24 * tp.scale);
-        // Foliage
-        ctx.beginPath();
-        ctx.arc(tp.sx, tp.sy - 30 * tp.scale, 16 * tp.scale, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(247, 127, 0, 0.85)";
-        ctx.fill();
-      }
     });
 
     // 4. Cars in 3D
@@ -1311,11 +1459,18 @@
   function drawAmazonGrove() {
     const isDark = document.body.classList.contains("dark");
 
-    // 1. Full-Canvas Lush Jungle Floor Gradient
+    drawStorybookBackdrop(
+      "amazon-grove",
+      isDark ? "#153929" : "#79a66e",
+      isDark ? "#07150e" : "#274f37",
+      isDark ? "rgba(3, 17, 10, 0.4)" : "rgba(25, 86, 52, 0.08)"
+    );
+
+    // 1. Transparent jungle atmosphere keeps the restoration clearing visible.
     const groveGrad = ctx.createRadialGradient(width / 2, height * 0.45, 30, width / 2, height * 0.45, Math.max(width, height) * 0.85);
-    groveGrad.addColorStop(0, isDark ? "#17432f" : "#2d6a4f");
-    groveGrad.addColorStop(0.5, isDark ? "#0d2c1e" : "#1b4332");
-    groveGrad.addColorStop(1, isDark ? "#05160e" : "#081c15");
+    groveGrad.addColorStop(0, isDark ? "rgba(23, 67, 47, 0.18)" : "rgba(218, 244, 187, 0.04)");
+    groveGrad.addColorStop(0.5, isDark ? "rgba(13, 44, 30, 0.25)" : "rgba(27, 67, 50, 0.08)");
+    groveGrad.addColorStop(1, isDark ? "rgba(5, 22, 14, 0.4)" : "rgba(8, 28, 21, 0.16)");
     ctx.fillStyle = groveGrad;
     ctx.fillRect(0, 0, width, height);
 
@@ -1335,15 +1490,70 @@
     ctx.fill();
     ctx.restore();
 
-    // 3. Sacred Rainforest Ground Mound with Tropical Foliage
-    const moundRadius = 160;
-    const center = project(0, -2, 0);
-    if (center.visible) {
+    // 3. Distant Rainforest Canopy Silhouettes & Expansive Forest Floor
+    // Distant background canopy layer (z = -260)
+    ctx.save();
+    for (let tx = -280; tx <= 280; tx += 45) {
+      const dp = project(tx, 32 + (Math.sin(tx * 0.1) * 12), -260);
+      if (dp.visible) {
+        ctx.beginPath();
+        ctx.arc(dp.sx, dp.sy, 32 * dp.scale, 0, Math.PI * 2);
+        ctx.fillStyle = isDark ? "rgba(9, 32, 23, 0.2)" : "rgba(20, 65, 48, 0.1)";
+        ctx.fill();
+      }
+    }
+
+    // Expansive Rainforest Floor Terrace (edge to edge)
+    const gf0 = project(-1600, 0, -280);
+    const gf1 = project(1600, 0, -280);
+    const gf2 = project(1600, 0, 700);
+    const gf3 = project(-1600, 0, 700);
+    if (gf0.visible || gf2.visible || gf1.visible || gf3.visible) {
       ctx.beginPath();
-      ctx.ellipse(center.sx, center.sy, moundRadius * center.scale, moundRadius * 0.65 * center.scale, 0, 0, Math.PI * 2);
-      ctx.fillStyle = isDark ? "#103322" : "#245840";
+      ctx.moveTo(gf0.sx, gf0.sy);
+      ctx.lineTo(gf1.sx, gf1.sy);
+      ctx.lineTo(gf2.sx, gf2.sy);
+      ctx.lineTo(gf3.sx, gf3.sy);
+      ctx.closePath();
+      const floorGrad = ctx.createLinearGradient(0, gf0.sy, 0, gf2.sy);
+      floorGrad.addColorStop(0, isDark ? "rgba(13, 40, 30, 0.34)" : "rgba(26, 77, 59, 0.08)");
+      floorGrad.addColorStop(0.5, isDark ? "rgba(8, 28, 21, 0.28)" : "rgba(20, 61, 47, 0.06)");
+      floorGrad.addColorStop(1, isDark ? "rgba(4, 16, 12, 0.42)" : "rgba(14, 41, 32, 0.12)");
+      ctx.fillStyle = floorGrad;
       ctx.fill();
     }
+
+    // Organic Moss Garden Stepping Stones through the grove
+    const steppingStones = [
+      { x: -55, z: 75, r: 16 },
+      { x: -25, z: 45, r: 19 },
+      { x: 5, z: 20, r: 22 },
+      { x: -10, z: -15, r: 18 },
+      { x: 25, z: -40, r: 20 },
+      { x: -20, z: -70, r: 17 }
+    ];
+    steppingStones.forEach((st) => {
+      const sp = project(st.x, 1, st.z);
+      if (sp.visible) {
+        ctx.beginPath();
+        ctx.ellipse(sp.sx, sp.sy, st.r * sp.scale, st.r * 0.7 * sp.scale, 0.15, 0, Math.PI * 2);
+        ctx.fillStyle = isDark ? "rgba(31, 59, 50, 0.48)" : "rgba(59, 110, 91, 0.35)";
+        ctx.fill();
+        ctx.strokeStyle = isDark ? "#142822" : "#2a5243";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    });
+
+    // Tropical Fern Leaves in foreground and edges
+    [-110, -70, 75, 120].forEach((fx) => {
+      const fp = project(fx, 2, 25);
+      if (fp.visible) {
+        ctx.font = `${Math.round(20 * fp.scale)}px sans-serif`;
+        ctx.fillText("🌿", fp.sx, fp.sy);
+      }
+    });
+    ctx.restore();
 
     // 4. Sacred Bodhi Trees in 3D with Roots & Shadow
     sacredTrees.forEach((tree) => {
@@ -1370,15 +1580,15 @@
       // Canopy Foliage Spheres
       const folR = tree.foliageR * top.scale;
       const canopyClusters = [
-        { ox: 0, oy: 0, r: folR },
-        { ox: -folR * 0.48, oy: folR * 0.22, r: folR * 0.78 },
-        { ox: folR * 0.48, oy: folR * 0.22, r: folR * 0.78 },
-        { ox: 0, oy: -folR * 0.3, r: folR * 0.65 }
+        { ox: 0, oy: 0, r: folR, angle: 0.08 },
+        { ox: -folR * 0.48, oy: folR * 0.22, r: folR * 0.78, angle: -0.55 },
+        { ox: folR * 0.48, oy: folR * 0.22, r: folR * 0.78, angle: 0.55 },
+        { ox: 0, oy: -folR * 0.3, r: folR * 0.65, angle: -0.12 }
       ];
 
       canopyClusters.forEach((c) => {
         ctx.beginPath();
-        ctx.arc(top.sx + c.ox, top.sy - c.oy, c.r, 0, Math.PI * 2);
+        ctx.ellipse(top.sx + c.ox, top.sy - c.oy, c.r * 0.58, c.r, c.angle, 0, Math.PI * 2);
         const canGrad = ctx.createRadialGradient(top.sx + c.ox, top.sy - c.oy, 2, top.sx + c.ox, top.sy - c.oy, c.r);
         canGrad.addColorStop(0, isDark ? "#388e6e" : "#70cca0");
         canGrad.addColorStop(1, isDark ? "#1d533d" : "#2d7a5b");
@@ -1456,8 +1666,8 @@
       lantern.z += lantern.vz;
       lantern.x += Math.sin(lantern.z * 0.05) * 0.35;
 
-      if (lantern.z > 140) {
-        lantern.z = -120;
+      if (lantern.z > 240) {
+        lantern.z = -220;
         lantern.x = (Math.random() - 0.5) * 40;
       }
     });
@@ -1466,22 +1676,29 @@
   function drawKyotoLanterns() {
     const isDark = document.body.classList.contains("dark");
 
-    // 1. Full-Canvas Night Water Background
+    drawStorybookBackdrop(
+      "night-corridor",
+      "#16304b",
+      "#050c18",
+      isDark ? "rgba(2, 7, 16, 0.42)" : "rgba(4, 16, 31, 0.2)"
+    );
+
+    // 1. Transparent night glaze preserves the Kyoto river and old town.
     const riverGrad = ctx.createLinearGradient(0, 0, 0, height);
-    riverGrad.addColorStop(0, "#081b2e");
-    riverGrad.addColorStop(0.6, "#04101e");
-    riverGrad.addColorStop(1, "#020710");
+    riverGrad.addColorStop(0, "rgba(8, 27, 46, 0.12)");
+    riverGrad.addColorStop(0.6, "rgba(4, 16, 30, 0.18)");
+    riverGrad.addColorStop(1, "rgba(2, 7, 16, 0.34)");
     ctx.fillStyle = riverGrad;
     ctx.fillRect(0, 0, width, height);
 
     // 2. Stone Riverbanks & Bamboo Groves on Left and Right
     [-1, 1].forEach((side) => {
-      const bx0 = side * 75;
-      const bx1 = side * 360;
-      const b0 = project(bx0, 4, -140);
-      const b1 = project(bx1, 4, -140);
-      const b2 = project(bx1, 4, 140);
-      const b3 = project(bx0, 4, 140);
+      const bx0 = side * 80;
+      const bx1 = side * 1400;
+      const b0 = project(bx0, 4, -220);
+      const b1 = project(bx1, 4, -220);
+      const b2 = project(bx1, 4, 240);
+      const b3 = project(bx0, 4, 240);
 
       ctx.beginPath();
       ctx.moveTo(b0.sx, b0.sy);
@@ -1489,7 +1706,7 @@
       ctx.lineTo(b2.sx, b2.sy);
       ctx.lineTo(b3.sx, b3.sy);
       ctx.closePath();
-      ctx.fillStyle = isDark ? "#0d1b1e" : "#1a2c30";
+      ctx.fillStyle = isDark ? "rgba(13, 27, 30, 0.24)" : "rgba(26, 44, 48, 0.13)";
       ctx.fill();
 
       // Stone Embankment Border
@@ -1523,19 +1740,19 @@
     });
 
     // 3. Central Flowing Night River in 3D
-    const riverLen = 16;
+    const riverLen = 24;
     for (let r = 0; r < riverLen; r++) {
-      const z0 = -140 + r * 18;
-      const z1 = z0 + 18;
+      const z0 = -220 + r * 19;
+      const z1 = z0 + 19;
       const curveX0 = Math.sin((z0 + riverWaterOffset * 22) * 0.03) * 16;
       const curveX1 = Math.sin((z1 + riverWaterOffset * 22) * 0.03) * 16;
 
-      const p0 = project(-75 + curveX0, 0, z0);
-      const p1 = project(75 + curveX0, 0, z0);
-      const p2 = project(75 + curveX1, 0, z1);
-      const p3 = project(-75 + curveX1, 0, z1);
+      const p0 = project(-80 + curveX0, 0, z0);
+      const p1 = project(80 + curveX0, 0, z0);
+      const p2 = project(80 + curveX1, 0, z1);
+      const p3 = project(-80 + curveX1, 0, z1);
 
-      if (!p0.visible && !p1.visible) continue;
+      if (!p0.visible && !p1.visible && !p2.visible && !p3.visible) continue;
 
       ctx.beginPath();
       ctx.moveTo(p0.sx, p0.sy);
@@ -1545,7 +1762,7 @@
       ctx.closePath();
 
       const waveLight = Math.sin((z0 + riverWaterOffset * 30) * 0.08) > 0.4;
-      ctx.fillStyle = waveLight ? "rgba(18, 54, 82, 0.85)" : "rgba(8, 30, 48, 0.8)";
+      ctx.fillStyle = waveLight ? "rgba(82, 151, 190, 0.12)" : "rgba(8, 30, 48, 0.1)";
       ctx.fill();
     }
 
@@ -1675,47 +1892,45 @@
   function drawReadingRoom() {
     const isDark = document.body.classList.contains("dark");
 
-    // 1. Full-Canvas Polished Mahogany Study Desk
-    const dW = 340;
-    const dD = 160;
-    const dTop = 8;
-    const d0 = project(-dW, dTop, -dD);
-    const d1 = project(dW, dTop, -dD);
-    const d2 = project(dW, dTop, dD);
-    const d3 = project(-dW, dTop, dD);
+    drawStorybookBackdrop(
+      "reading-room",
+      isDark ? "#21100b" : "#7e4c2a",
+      isDark ? "#0d0604" : "#2e160c",
+      isDark ? "rgba(12, 5, 3, 0.45)" : "rgba(75, 33, 12, 0.08)"
+    );
 
-    if (d0.visible && d1.visible) {
-      ctx.beginPath();
-      ctx.moveTo(d0.sx, d0.sy);
-      ctx.lineTo(d1.sx, d1.sy);
-      ctx.lineTo(d2.sx, d2.sy);
-      ctx.lineTo(d3.sx, d3.sy);
-      ctx.closePath();
+    // Warm archival glaze keeps the illustrated shelves and arched windows.
+    const wallGrad = ctx.createLinearGradient(0, 0, 0, height);
+    wallGrad.addColorStop(0, isDark ? "rgba(18, 9, 7, 0.3)" : "rgba(43, 20, 14, 0.06)");
+    wallGrad.addColorStop(0.65, isDark ? "rgba(28, 13, 10, 0.34)" : "rgba(61, 28, 20, 0.08)");
+    wallGrad.addColorStop(1, isDark ? "rgba(13, 6, 4, 0.5)" : "rgba(31, 13, 9, 0.14)");
+    ctx.fillStyle = wallGrad;
+    ctx.fillRect(0, 0, width, height);
 
-      const deskGrad = ctx.createLinearGradient(d0.sx, d0.sy, d2.sx, d2.sy);
-      deskGrad.addColorStop(0, isDark ? "#2a150e" : "#542e18");
-      deskGrad.addColorStop(0.5, isDark ? "#1f0f0a" : "#432311");
-      deskGrad.addColorStop(1, isDark ? "#140a06" : "#30180b");
-      ctx.fillStyle = deskGrad;
-      ctx.fill();
+    // 1. Full-Canvas Polished Mahogany Study Desk (from horizon to canvas bottom)
+    const deskHorizonY = height * 0.46;
+    const deskGrad = ctx.createLinearGradient(0, deskHorizonY, 0, height);
+    deskGrad.addColorStop(0, isDark ? "rgba(42, 21, 14, 0.42)" : "rgba(84, 46, 24, 0.12)");
+    deskGrad.addColorStop(0.5, isDark ? "rgba(31, 15, 10, 0.46)" : "rgba(67, 35, 17, 0.16)");
+    deskGrad.addColorStop(1, isDark ? "rgba(20, 10, 6, 0.55)" : "rgba(48, 24, 11, 0.22)");
+    ctx.fillStyle = deskGrad;
+    ctx.fillRect(0, deskHorizonY, width, height - deskHorizonY);
 
-      // Polished Gold/Brass Inlay Edge
-      ctx.strokeStyle = "#c69214";
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
+    // Polished Gold/Brass Trim along the Desk Horizon
+    ctx.beginPath();
+    ctx.moveTo(0, deskHorizonY);
+    ctx.lineTo(width, deskHorizonY);
+    ctx.strokeStyle = "#c69214";
+    ctx.lineWidth = 3;
+    ctx.stroke();
 
-      // Desk Front Apron Face
-      const b2 = project(dW, -14, dD);
-      const b3 = project(-dW, -14, dD);
-      ctx.beginPath();
-      ctx.moveTo(d3.sx, d3.sy);
-      ctx.lineTo(d2.sx, d2.sy);
-      ctx.lineTo(b2.sx, b2.sy);
-      ctx.lineTo(b3.sx, b3.sy);
-      ctx.closePath();
-      ctx.fillStyle = isDark ? "#120704" : "#261309";
-      ctx.fill();
-    }
+    // Subtle Desk Wood Inlay Line
+    ctx.beginPath();
+    ctx.moveTo(0, deskHorizonY + 4);
+    ctx.lineTo(width, deskHorizonY + 4);
+    ctx.strokeStyle = isDark ? "rgba(0, 0, 0, 0.6)" : "rgba(36, 16, 6, 0.5)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
 
     // 2. Banker's Library Lamp with Warm Radial Light
     const lampPos = project(readingLamp.x, readingLamp.y, readingLamp.z);
@@ -1854,10 +2069,32 @@
       const text = isZh ? quote.zh : quote.en;
 
       const pageCenter = project(0, bY + 2, 0);
-      ctx.font = `italic ${Math.max(10, Math.round(11 * pageCenter.scale))}px 'Noto Serif SC', serif`;
+      const fontSize = Math.max(9, Math.round(9 * pageCenter.scale));
+      const maxTextWidth = Math.max(90, Math.abs(rp1.sx - lp0.sx) - 18);
+      const tokens = isZh ? Array.from(text) : text.split(" ");
+      const joiner = isZh ? "" : " ";
+      const lines = [];
+      let line = "";
+      ctx.font = `italic ${fontSize}px 'Noto Serif SC', serif`;
+      tokens.forEach((token) => {
+        const candidate = line ? `${line}${joiner}${token}` : token;
+        if (ctx.measureText(candidate).width > maxTextWidth && line) {
+          lines.push(line);
+          line = token;
+        } else {
+          line = candidate;
+        }
+      });
+      if (line) lines.push(line);
       ctx.fillStyle = "#3d271d";
       ctx.textAlign = "center";
-      ctx.fillText(text, pageCenter.sx, pageCenter.sy);
+      const visibleLines = lines.slice(0, 3);
+      const lineHeight = fontSize + 2;
+      const startY = pageCenter.sy - ((visibleLines.length - 1) * lineHeight) / 2;
+      visibleLines.forEach((quoteLine, index) => {
+        const clippedLine = index === 2 && lines.length > 3 ? `${quoteLine}…` : quoteLine;
+        ctx.fillText(clippedLine, pageCenter.sx, startY + index * lineHeight);
+      });
     }
 
     // 4. Floating 3D Wisdom Glyphs
@@ -2342,7 +2579,7 @@
       // Release fish / turtle into East Lake
       const rx = (Math.random() - 0.5) * 80;
       const rz = -60 + Math.random() * 40;
-      spawnKoi(rx, rz, Math.random() * Math.PI * 2, currentSpecies, 1.15, true);
+      spawnKoi(rx, rz, Math.random() * Math.PI * 2, currentSpecies, 1.5, true);
       addWaterRipple(rx, rz, 55, 1.2);
       spawnWaterSplash(rx, rz);
       playSound("water");

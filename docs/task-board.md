@@ -8,6 +8,7 @@
 
 ## Done
 
+- Reframed the web ritual collection as one warm illustrated Storybook Sanctuary: eight concrete Quiet Moment scenes, a lakeside Gratitude Garden with three visible memory stones, and five real-world animated deed settings for East Lake, Toronto, the Amazon, Kyoto, and Oxford. Existing game mechanics remain intact, mobile feature work remains deferred, and desktop/phone visual baselines cover the shared style.
 - Implemented the web Gratitude Pebble Garden as a seventh Quiet Moment: three private prompts, tactile pond completion, device-local count-only persistence, six-locale copy, keyboard focus return, reduced-motion handling, and desktop/phone visual coverage. Research and reuse decisions are recorded in `docs/web-peace-game-research.md`; mobile implementation remains deferred.
 - Created the dedicated Foobow Web Delivery GitHub Project and issue #1; implemented the first real-world map journey slice for Lake Merritt (United States) and Lake Biwa (Japan) with official place context, six-locale copy, keyboard/pointer travel, OpenStreetMap positioning, symbolic fish release, persisted per-location deed counts, responsive design, and explicit ecological safety copy.
 - Added a six-ritual Quiet Moments hub with mood choices, featured breathing, localized copy, immersive play views for the existing tactile rituals, and a direct Night Lantern entry; verified desktop and phone flows locally.

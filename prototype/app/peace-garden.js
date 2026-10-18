@@ -51,7 +51,8 @@
   function resetGarden() {
     inputs.forEach((input) => { input.value = ""; input.disabled = false; });
     pond.querySelectorAll(".gratitude-pebble").forEach((pebble) => pebble.remove());
-    pond.classList.remove("celebrating");
+    pond.classList.remove("celebrating", "garden-complete");
+    pond.querySelectorAll(".storybook-memory-stone").forEach((stone) => stone.classList.remove("filled"));
     status.textContent = "";
     settleButton.hidden = false;
     settleButton.disabled = true;
@@ -73,7 +74,10 @@
       pebble.textContent = moment;
       pond.append(pebble);
     });
-    pond.classList.add("celebrating");
+    pond.querySelectorAll(".storybook-memory-stone").forEach((stone, index) => {
+      stone.classList.toggle("filled", Boolean(moments[index]));
+    });
+    pond.classList.add("celebrating", "garden-complete");
     inputs.forEach((input) => { input.disabled = true; });
     const next = { sessions: readState().sessions + 1 };
     localStorage.setItem(storageKey, JSON.stringify(next));

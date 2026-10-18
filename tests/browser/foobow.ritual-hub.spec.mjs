@@ -14,8 +14,10 @@ test("Quiet Moments hub opens an immersive wooden fish and returns focus", async
   await expect(page.locator("#viewAllRitualsBtn")).toHaveText("Explore all seven rituals →");
   await page.locator("#viewAllRitualsBtn").click();
   await expect(page.locator("#quietMomentsHub")).toBeVisible();
+  await expect(page.locator("#quietMomentsHub .ritual-story-scene")).toHaveCount(8);
   await page.locator('#quietMomentsHub [data-play-ritual="muyu"]').click();
   await expect(page.locator("#ritualFocusDialog")).toHaveJSProperty("open", true);
+  await expect(page.locator("#ritualFocusDialog")).toHaveAttribute("data-ritual", "muyu");
   await expect(page.locator("#ritualFocusDialog #muyuBtn")).toBeVisible();
   await page.locator("#ritualFocusDialog #muyuBtn").click();
   await expect(page.locator("#muyuCount")).toHaveText("1");
@@ -70,6 +72,8 @@ test("Gratitude Pebble Garden settles three private good moments", async ({ page
   await page.locator("#settleGratitudeBtn").click();
 
   await expect(page.locator("#gratitudePond .gratitude-pebble")).toHaveCount(3);
+  await expect(page.locator("#gratitudePond")).toHaveClass(/garden-complete/);
+  await expect(page.locator("#gratitudePond .storybook-memory-stone.filled")).toHaveCount(3);
   await expect(page.locator("#gratitudeGardenStatus")).toContainText("settled");
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("foobow.peaceGarden.v1")).sessions)).toBe(1);
 

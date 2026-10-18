@@ -16,6 +16,26 @@ async function resetPrototype(page) {
   await page.locator(".app-shell").waitFor();
 }
 
+async function freezeSanctuaryCanvas(page) {
+  const frame = await page.locator("#sanctuary3DCanvas").screenshot({ animations: "disabled" });
+  const frozenSource = `data:image/png;base64,${frame.toString("base64")}`;
+
+  await page.evaluate((src) => {
+    const canvas = document.querySelector("#sanctuary3DCanvas");
+    const frozenFrame = document.createElement("img");
+    frozenFrame.id = "sanctuary3DCanvas";
+    frozenFrame.alt = "";
+    frozenFrame.src = src;
+    frozenFrame.style.display = "block";
+    frozenFrame.style.width = "100%";
+    frozenFrame.style.height = "100%";
+    frozenFrame.style.objectFit = "fill";
+    canvas.removeAttribute("id");
+    canvas.hidden = true;
+    canvas.parentElement.insertBefore(frozenFrame, canvas);
+  }, frozenSource);
+}
+
 test("landing hero visual baseline", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(landingUrl);
@@ -69,6 +89,55 @@ test("real-world journey picker visual baseline", async ({ page }) => {
     maxDiffPixelRatio: 0.006
   });
 });
+
+test("storybook ritual gallery visual baseline", async ({ page }) => {
+  await page.locator('.bottom-nav .nav-item[data-target="blessings"]').click();
+  await expect(page.locator("#quietMomentsHub")).toHaveScreenshot("storybook-ritual-gallery.png", {
+    animations: "disabled",
+    maxDiffPixelRatio: 0.008
+  });
+});
+
+test("storybook wooden fish ritual visual baseline", async ({ page }) => {
+  await page.locator('.bottom-nav .nav-item[data-target="blessings"]').click();
+  await page.locator('[data-play-ritual="muyu"]').click();
+  await expect(page.locator("#ritualFocusDialog")).toHaveScreenshot("storybook-wooden-fish.png", {
+    animations: "disabled",
+    maxDiffPixelRatio: 0.008
+  });
+});
+
+test("storybook East Lake sanctuary visual baseline", async ({ page }) => {
+  await page.locator('.bottom-nav .nav-item[data-target="deeds"]').click();
+  await page.locator("#open3DDeedGameBtn").click();
+  await page.waitForTimeout(400);
+  await freezeSanctuaryCanvas(page);
+  await expect(page.locator("#sanctuary3DGameModal")).toHaveScreenshot("storybook-east-lake-sanctuary.png", {
+    animations: "disabled",
+    maxDiffPixelRatio: 0.01
+  });
+});
+
+const storybookWorldScenarios = [
+  ["toronto-crosswalk", "Toronto crosswalk", "storybook-toronto-crosswalk.png"],
+  ["amazon-grove", "Amazon grove", "storybook-amazon-grove.png"],
+  ["night-corridor", "Kyoto river", "storybook-kyoto-river.png"],
+  ["reading-room", "Oxford reading room", "storybook-oxford-reading-room.png"]
+];
+
+for (const [scenario, label, snapshot] of storybookWorldScenarios) {
+  test(`storybook ${label} visual baseline`, async ({ page }) => {
+    await page.locator('.bottom-nav .nav-item[data-target="deeds"]').click();
+    await page.locator("#open3DDeedGameBtn").click();
+    await page.locator(`.game-scenario-tab[data-scenario="${scenario}"]`).click();
+    await page.waitForTimeout(400);
+    await freezeSanctuaryCanvas(page);
+    await expect(page.locator("#sanctuary3DGameModal")).toHaveScreenshot(snapshot, {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.01
+    });
+  });
+}
 
 test("gratitude pebble garden visual baseline", async ({ page }) => {
   await page.locator('.bottom-nav .nav-item[data-target="blessings"]').click();

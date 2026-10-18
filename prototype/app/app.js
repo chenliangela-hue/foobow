@@ -3688,6 +3688,7 @@ function setupRedesignInteractions() {
       card._quietPlaceholder.replaceWith(card);
       delete card._quietPlaceholder;
     }
+    delete dialog.dataset.ritual;
     document.body.classList.remove("ritual-focus-open");
   };
   dialog.addEventListener("close", close);
@@ -3713,6 +3714,7 @@ function setupRedesignInteractions() {
     card.replaceWith(placeholder);
     card._quietPlaceholder = placeholder;
     stage.append(card);
+    dialog.dataset.ritual = ritual;
     document.getElementById("ritualFocusTitle").textContent = copy[ritual];
     document.body.classList.add("ritual-focus-open");
     dialog.showModal();
