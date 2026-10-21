@@ -105,6 +105,25 @@ test("storybook wooden fish ritual visual baseline", async ({ page }) => {
   });
 });
 
+const storybookQuietRituals = [
+  ["lamp", "wish lamp", "storybook-wish-lamp.png"],
+  ["incense", "incense", "storybook-incense.png"],
+  ["wheel", "prayer wheel", "storybook-prayer-wheel.png"],
+  ["breathe", "mindful breath", "storybook-mindful-breath.png"]
+];
+
+for (const [ritual, label, snapshot] of storybookQuietRituals) {
+  test(`storybook ${label} ritual visual baseline`, async ({ page }) => {
+    await page.locator('.bottom-nav .nav-item[data-target="blessings"]').click();
+    await page.locator(`.quiet-game[data-play-ritual="${ritual}"]`).click();
+    await page.waitForTimeout(600);
+    await expect(page.locator("#ritualFocusDialog")).toHaveScreenshot(snapshot, {
+      animations: "disabled",
+      maxDiffPixelRatio: 0.008
+    });
+  });
+}
+
 test("storybook East Lake sanctuary visual baseline", async ({ page }) => {
   await seedSanctuaryRandom(page);
   await page.locator('.bottom-nav .nav-item[data-target="deeds"]').click();

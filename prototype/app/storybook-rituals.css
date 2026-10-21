@@ -133,10 +133,68 @@
 .scene-lantern .story-effect-one { left: 57%; top: 32%; }
 .scene-lantern .story-effect-two { left: 72%; top: 16%; }
 
+/* Illustrated ritual cards: recognizable objects in a place, rather than diagram shapes. */
+.ritual-story-scene {
+  background:
+    linear-gradient(180deg, rgba(255, 252, 235, .06), rgba(24, 73, 67, .28)),
+    url("../assets/foobow/backgrounds/ritual-lake.png") center / cover;
+  box-shadow: inset 0 -35px 48px rgba(20, 61, 55, .2);
+}
+.ritual-story-scene.scene-lamp,
+.ritual-story-scene.scene-lantern {
+  background-image:
+    linear-gradient(180deg, rgba(25, 31, 57, .06), rgba(28, 32, 52, .3)),
+    url("../assets/foobow/backgrounds/mountain-moon.png");
+}
+.ritual-story-scene.scene-muyu,
+.ritual-story-scene.scene-incense,
+.ritual-story-scene.scene-breathe,
+.ritual-story-scene.scene-gratitudeGarden {
+  background-image:
+    linear-gradient(180deg, rgba(255, 252, 235, .08), rgba(24, 73, 67, .24)),
+    url("../assets/foobow/backgrounds/tab-blessings-light.png");
+}
+.ritual-story-scene .story-sky,
+.ritual-story-scene .story-sun,
+.ritual-story-scene .story-hill,
+.ritual-story-scene .story-water,
+.ritual-story-scene .story-path,
+.ritual-story-scene .story-place,
+.ritual-story-scene .story-character { display: none; }
+.ritual-story-scene .story-prop {
+  left: 50%;
+  right: auto;
+  bottom: 5%;
+  width: 72%;
+  height: 88%;
+  border: 0;
+  border-radius: 0;
+  background: center bottom / contain no-repeat;
+  box-shadow: none;
+  filter: drop-shadow(0 10px 9px rgba(20, 44, 38, .32));
+  transform: translateX(-50%);
+  transform-origin: center bottom;
+}
+.ritual-story-scene .story-prop::before,
+.ritual-story-scene .story-prop::after { content: none; }
+.scene-muyu .story-prop { background-image: url("../assets/foobow/sprites/storybook/ritual-muyu.webp"); }
+.scene-lamp .story-prop { width: 56%; background-image: url("../assets/foobow/sprites/storybook/ritual-wish-lamp.webp"); filter: drop-shadow(0 0 16px rgba(255, 193, 83, .58)); }
+.scene-incense .story-prop { width: 60%; background-image: url("../assets/foobow/sprites/storybook/ritual-incense.webp"); }
+.scene-wheel .story-prop { width: 55%; background-image: url("../assets/foobow/sprites/storybook/ritual-prayer-wheel.webp"); }
+.scene-breathe .story-prop { width: 72%; background-image: url("../assets/foobow/sprites/storybook/ritual-breath-lotus.webp"); animation: storybookBreathe 6s ease-in-out infinite; }
+.scene-gratitudeGarden .story-prop { width: 65%; background-image: url("../assets/foobow/sprites/storybook/ritual-pebbles.webp"); }
+.scene-lantern .story-prop { width: 48%; background-image: url("../assets/foobow/sprites/storybook/kyoto-lantern.webp"); filter: drop-shadow(0 0 16px rgba(255, 188, 73, .58)); animation: storybookFloat 3.6s ease-in-out infinite; }
+.ritual-story-scene .story-effect { z-index: 5; }
+.scene-feature .story-prop { width: min(76%, 330px); height: 82%; bottom: 4%; transform: translateX(-50%); }
+.scene-feature .story-effect-one { left: 25%; top: 30%; }
+.scene-feature .story-effect-two { left: 72%; top: 22%; }
+
+.quiet-game:hover .story-prop,
+.quiet-game:focus-visible .story-prop { transform: translateX(-50%) translateY(-4px) scale(1.035); }
+.quiet-game .story-prop { transition: transform .35s cubic-bezier(.2,.8,.2,1), filter .35s ease; }
+
 .scene-quick { height: 72px; border-radius: 13px; }
-.scene-quick .story-character { transform: scale(.62); transform-origin: bottom; }
-.scene-quick .story-place,
-.scene-quick .story-prop { transform: scale(.64); transform-origin: bottom right; }
+.scene-quick .story-prop { width: 48%; height: 92%; bottom: 1%; transform: translateX(-50%); }
 .quick-ritual-card .ritual-story-scene { grid-column: 1 / -1; }
 
 /* Focus play happens inside the same painted world instead of a generic dark void. */
@@ -202,6 +260,82 @@
 .ritual-focus-dialog[data-ritual="muyu"] .muyu-rebound-wrapper,
 .ritual-focus-dialog[data-ritual="incense"] .incense-censer-wrap,
 .ritual-focus-dialog[data-ritual="wheel"] .wheel-container { z-index: 2; }
+
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-btn {
+  width: 190px;
+  height: 150px;
+  background: url("../assets/foobow/sprites/storybook/ritual-muyu.webp") center / contain no-repeat;
+  filter: drop-shadow(0 14px 18px rgba(58, 30, 17, .3));
+}
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-icon { opacity: 0; }
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-mallet { right: calc(50% - 102px); }
+
+.ritual-focus-dialog[data-ritual="lamp"] .lamp-body-wrap {
+  width: 180px;
+  height: 190px;
+  background: url("../assets/foobow/sprites/storybook/ritual-wish-lamp.webp") center / contain no-repeat;
+  filter: drop-shadow(0 0 22px rgba(255, 183, 64, .52));
+}
+.ritual-focus-dialog[data-ritual="lamp"] .lamp-flame { opacity: .01; }
+.ritual-focus-dialog[data-ritual="lamp"] .lamp-glow { width: 150px; height: 150px; opacity: .5; }
+
+.ritual-focus-dialog[data-ritual="incense"] .incense-censer-wrap {
+  width: 210px;
+  height: 180px;
+  background: url("../assets/foobow/sprites/storybook/ritual-incense.webp") center bottom / contain no-repeat;
+  filter: drop-shadow(0 12px 18px rgba(48, 35, 20, .3));
+}
+.ritual-focus-dialog[data-ritual="incense"] .incense-censer-svg,
+.ritual-focus-dialog[data-ritual="incense"] .incense-sticks { opacity: 0; }
+
+.ritual-focus-dialog[data-ritual="incense"] .incense-intentions {
+  gap: 10px;
+}
+.ritual-focus-dialog[data-ritual="incense"] .choice-pill {
+  min-height: 38px;
+  padding: 8px 15px;
+  border: 1px solid rgba(117, 83, 44, .24);
+  border-radius: 999px;
+  color: #405650;
+  background: rgba(255, 253, 246, .72);
+  box-shadow: 0 4px 14px rgba(67, 65, 47, .06);
+  font: 600 .86rem/1.1 var(--font-sans);
+  cursor: pointer;
+  transition: transform .18s ease, color .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.ritual-focus-dialog[data-ritual="incense"] .choice-pill:hover,
+.ritual-focus-dialog[data-ritual="incense"] .choice-pill:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(171, 104, 42, .6);
+  box-shadow: 0 8px 20px rgba(108, 71, 34, .12);
+}
+.ritual-focus-dialog[data-ritual="incense"] .choice-pill.active {
+  color: #fffaf0;
+  border-color: #9c4f2c;
+  background: linear-gradient(135deg, #b86035, #873d26);
+  box-shadow: 0 8px 22px rgba(134, 60, 37, .22);
+}
+.ritual-focus-dialog[data-ritual="incense"] .breath-trace-wrap {
+  min-height: 92px;
+  justify-content: center;
+  border: 1px solid rgba(163, 111, 48, .18);
+  background:
+    radial-gradient(circle at 50% 62%, rgba(240, 190, 100, .17), transparent 30%),
+    linear-gradient(135deg, rgba(255, 251, 238, .72), rgba(239, 224, 188, .28));
+}
+.ritual-focus-dialog[data-ritual="incense"] .trace-hint {
+  color: #6f665a;
+  letter-spacing: .02em;
+}
+
+.ritual-focus-dialog[data-ritual="wheel"] .wheel-drum {
+  width: 190px;
+  height: 225px;
+  background: url("../assets/foobow/sprites/storybook/ritual-prayer-wheel.webp") center / contain no-repeat;
+  filter: drop-shadow(0 14px 20px rgba(54, 31, 17, .3));
+}
+.ritual-focus-dialog[data-ritual="wheel"] .wheel-svg,
+.ritual-focus-dialog[data-ritual="wheel"] .wheel-pendulum { opacity: 0; }
 
 /* Gratitude is now a recognizable lakeside garden with a guide and three destinations. */
 .gratitude-pond {
