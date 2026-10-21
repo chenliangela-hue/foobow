@@ -8,6 +8,7 @@
 
 ## Done
 
+- Added two web-first storybook games to Quiet Moments: Kindness Quest Cards with three voluntary real-world deed paths and completion-only rewards, plus a skip-friendly Five Senses Grounding Garden. Both use original illustrated scenes, six-locale interface copy, minimal device-local progress, keyboard-native controls, reduced-motion treatment, and desktop/phone behavior and visual coverage. Mobile feature work remains deferred.
 - Refactored all five web World Sanctuary games into a shared living-storybook diorama system: illustrated interaction sprites, scenario-specific mission copy, clearer progress, reduced duplicate scenery, and visible action-state feedback for East Lake, Toronto, the Amazon, Kyoto, and Oxford. Added desktop and phone visual baselines. Mobile feature work remains deferred.
 - Refactored all seven web Quiet Moment games into the same illustrated storybook system: painted environments and recognizable focal objects for Wooden Fish, Wish Lamp, Incense, Prayer Wheel, Mindful Breath, Gratitude Pebbles, and Night Lantern; modernized hover, selected, focus, and action states; and added dedicated desktop/phone visual baselines for the interactive focus scenes. Live acceptance covered all twelve redesigned game routes; GitHub issue #4 is complete.
 - Live-verified the Storybook Sanctuary release at `www.foobow.com` on desktop and a 390 x 844 phone viewport, corrected the rice-paper HUD contrast, added deterministic canvas still rendering for visual regression, and regenerated all affected baselines with the same repository-pinned Chromium build used by Windows CI. Also cleared the API audit blocker with non-breaking `proxy-addr`, `js-yaml`, and `argparse` lockfile updates.
@@ -305,7 +306,7 @@
 
 ## Next
 
-- Build the researched web backlog in order: Kindness Quest Cards, Five Senses Grounding Garden, and the account/moderation-gated Community Kindness Mosaic.
+- Continue the researched web backlog with the account/moderation-gated Community Kindness Mosaic; merge the three-recipient loving-kindness mode into the existing lantern rather than creating a duplicate game.
 - Continue GitHub issue #1 with additional location-appropriate scenarios beyond fish release, richer completion feedback on the selected map location, and deployed desktop/tablet/phone PAQA.
 - Complete the web experience before resuming mobile work: expose Quiet Moments from the public homepage, finish all web localization/accessibility paths, stabilize web visual baselines, and run live desktop/tablet/mobile-browser PAQA.
 - Keep the newly disclosed Expo transitive `braces` and `node-forge` high/critical advisories visible as a mobile security blocker. Their current npm fixes require an incompatible Expo downgrade and no patched package release is available; recheck upstream before resuming mobile work.

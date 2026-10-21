@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="map-journeys.css">
     <link rel="stylesheet" href="peace-garden.css">
     <link rel="stylesheet" href="storybook-rituals.css">
+    <link rel="stylesheet" href="peace-games.css">
   </head>
   <body>
     <div class="cinematic-backdrop cinematic-backdrop-container" id="backdropContainer" aria-hidden="true">
@@ -280,7 +281,7 @@
               <span class="quiet-feature-art" aria-hidden="true"><span class="quiet-lotus">❀</span></span>
               <span class="quiet-feature-copy"><small data-quiet-i18n="featured">TODAY'S QUIET RITUAL · 2 MIN</small><strong data-quiet-i18n="featureTitle">Take one breath. Let the day soften.</strong><span id="quietFeaturePrompt" data-quiet-i18n="promptCalm">A little calm starts here</span><span class="quiet-feature-action"><span data-quiet-i18n="begin">Begin ritual</span> <span aria-hidden="true">↗</span></span></span>
             </button>
-            <div class="quiet-grid-heading"><span data-quiet-i18n="explore">EXPLORE THE RITUALS</span><span data-quiet-i18n="sixWays">Seven small ways to pause</span></div>
+            <div class="quiet-grid-heading"><span data-quiet-i18n="explore">EXPLORE THE RITUALS</span><span data-quiet-i18n="sixWays">Nine small ways to pause</span></div>
             <div class="quiet-game-grid">
               <button class="quiet-game" type="button" data-play-ritual="muyu"><span class="quiet-game-art" aria-hidden="true">◉</span><strong data-quiet-i18n="muyu">Wooden Fish</strong><small data-quiet-i18n="muyuDesc">Tap into stillness</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game" type="button" data-play-ritual="lamp"><span class="quiet-game-art" aria-hidden="true">✧</span><strong data-quiet-i18n="lamp">Wish Lamp</strong><small data-quiet-i18n="lampDesc">Hold a wish to the light</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
@@ -289,6 +290,60 @@
               <button class="quiet-game" type="button" data-play-ritual="breathe"><span class="quiet-game-art" aria-hidden="true">❀</span><strong data-quiet-i18n="breathe">Mindful Breath</strong><small data-quiet-i18n="breatheDesc">Make room to breathe</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game gratitude-game" type="button" data-play-ritual="gratitudeGarden"><span class="quiet-game-art" aria-hidden="true">◒</span><strong data-quiet-i18n="gratitudeGarden">Gratitude Pebble Garden</strong><small data-quiet-i18n="gratitudeGardenDesc">Settle three good moments</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
               <button class="quiet-game" type="button" data-play-ritual="lantern"><span class="quiet-game-art" aria-hidden="true">✴</span><strong data-quiet-i18n="lantern">Night Lantern</strong><small data-quiet-i18n="lanternDesc">Release it to the sky</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game" type="button" data-play-ritual="kindnessQuest"><span class="quiet-game-art" aria-hidden="true">◇</span><strong data-quiet-i18n="kindnessQuest">Kindness Quest</strong><small data-quiet-i18n="kindnessQuestDesc">Choose one real-world good deed</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+              <button class="quiet-game" type="button" data-play-ritual="fiveSenses"><span class="quiet-game-art" aria-hidden="true">✿</span><strong data-quiet-i18n="fiveSenses">Five Senses Garden</strong><small data-quiet-i18n="fiveSensesDesc">Return gently to your surroundings</small><span class="quiet-game-arrow" aria-hidden="true">↗</span></button>
+            </div>
+          </section>
+
+          <section class="peace-game-card kindness-quest-card" id="kindnessQuestCard" aria-labelledby="kindnessQuestTitle">
+            <div class="peace-game-scene kindness-quest-scene">
+              <div class="peace-game-panel quest-panel">
+                <p class="peace-game-kicker" data-quest-i18n="kicker">KINDNESS QUEST · 2–10 MIN</p>
+                <h3 id="kindnessQuestTitle" data-quest-i18n="title">Choose one good deed for the world beyond this screen.</h3>
+                <p data-quest-i18n="intro">Pick a path, reveal a small mission, and mark it complete only after you really do it.</p>
+                <div class="peace-game-count"><span aria-hidden="true">✦</span> <span id="kindnessQuestCount">0 quests completed</span></div>
+                <div class="quest-paths" role="group" aria-label="Choose a kindness path">
+                  <button type="button" class="active" data-quest-path="nearby" aria-pressed="true" data-quest-i18n="nearby">Nearby</button>
+                  <button type="button" data-quest-path="home" aria-pressed="false" data-quest-i18n="home">At home</button>
+                  <button type="button" data-quest-path="reach" aria-pressed="false" data-quest-i18n="reach">Reach out</button>
+                </div>
+                <article class="quest-card" id="kindnessMissionCard" aria-live="polite">
+                  <span class="quest-card-seal" aria-hidden="true">福</span>
+                  <p class="quest-card-label" data-quest-i18n="readyLabel">YOUR NEXT SMALL QUEST</p>
+                  <h4 id="kindnessMission" data-quest-i18n="ready">Choose a path and draw a card.</h4>
+                  <p id="kindnessMissionWhy" data-quest-i18n="readyWhy">Every kind action begins with one clear next step.</p>
+                </article>
+                <div class="peace-game-actions">
+                  <button class="peace-game-primary" id="drawKindnessQuest" type="button" data-quest-i18n="draw">Draw a quest</button>
+                  <button class="peace-game-secondary" id="completeKindnessQuest" type="button" hidden data-quest-i18n="complete">I really did this</button>
+                </div>
+                <p class="peace-game-note" data-quest-i18n="privacy">Only completed quest IDs and your count are saved on this device.</p>
+                <p class="peace-game-status" id="kindnessQuestStatus" aria-live="polite"></p>
+              </div>
+            </div>
+          </section>
+
+          <section class="peace-game-card five-senses-card" id="fiveSensesCard" aria-labelledby="fiveSensesTitle">
+            <div class="peace-game-scene five-senses-scene" data-sense="see">
+              <div class="peace-game-panel senses-panel">
+                <p class="peace-game-kicker" data-senses-i18n="kicker">FIVE SENSES GARDEN · 3 MIN</p>
+                <h3 id="fiveSensesTitle" data-senses-i18n="title">Walk a gentle path back to your surroundings.</h3>
+                <p data-senses-i18n="intro">Visit each garden stop. Notice what is available, or skip anything that does not feel right.</p>
+                <div class="senses-progress" id="sensesProgress" role="list" aria-label="Five senses progress"></div>
+                <article class="sense-prompt" id="sensePrompt" aria-live="polite">
+                  <span class="sense-icon" id="senseIcon" aria-hidden="true">👀</span>
+                  <p id="senseStepLabel">1 of 5 · See</p>
+                  <h4 id="sensePromptTitle">Find one color that feels restful.</h4>
+                  <p id="sensePromptHint">Let your eyes settle without searching for anything perfect.</p>
+                </article>
+                <div class="peace-game-actions">
+                  <button class="peace-game-primary" id="noticeSenseBtn" type="button" data-senses-i18n="notice">I noticed it</button>
+                  <button class="peace-game-secondary" id="skipSenseBtn" type="button" data-senses-i18n="skip">Skip this sense</button>
+                  <button class="peace-game-secondary" id="restartSensesBtn" type="button" hidden data-senses-i18n="restart">Walk the garden again</button>
+                </div>
+                <p class="peace-game-note" data-senses-i18n="safety">A brief attention exercise for everyday wellbeing, not medical care.</p>
+                <p class="peace-game-status" id="fiveSensesStatus" aria-live="polite"></p>
+              </div>
             </div>
           </section>
 
@@ -1714,6 +1769,7 @@
     <script src="storybook-rituals.js"></script>
     <script src="app.js"></script>
     <script src="peace-garden.js"></script>
+    <script src="peace-games.js"></script>
     <script src="game3d.js"></script>
     <script src="community.js"></script>
   </body>

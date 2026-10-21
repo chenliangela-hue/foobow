@@ -3705,7 +3705,9 @@ function setupRedesignInteractions() {
       muyu: ".muyu-card",
       wheel: ".wheel-card",
       breathe: ".calm-ritual-card",
-      gratitudeGarden: ".gratitude-garden-card"
+      gratitudeGarden: ".gratitude-garden-card",
+      kindnessQuest: ".kindness-quest-card",
+      fiveSenses: ".five-senses-card"
     };
     const copy = window.FOOBOW_QUIET_I18N?.[normalizeLocale(state.language)] || window.FOOBOW_QUIET_I18N.en;
     const card = document.querySelector(cards[ritual]);

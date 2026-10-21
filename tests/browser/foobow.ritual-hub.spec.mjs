@@ -11,10 +11,10 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("Quiet Moments hub opens an immersive wooden fish and returns focus", async ({ page }) => {
-  await expect(page.locator("#viewAllRitualsBtn")).toHaveText("Explore all seven rituals →");
+  await expect(page.locator("#viewAllRitualsBtn")).toHaveText("Explore all nine rituals →");
   await page.locator("#viewAllRitualsBtn").click();
   await expect(page.locator("#quietMomentsHub")).toBeVisible();
-  await expect(page.locator("#quietMomentsHub .ritual-story-scene")).toHaveCount(8);
+  await expect(page.locator("#quietMomentsHub .ritual-story-scene")).toHaveCount(10);
   await page.locator('#quietMomentsHub [data-play-ritual="muyu"]').click();
   await expect(page.locator("#ritualFocusDialog")).toHaveJSProperty("open", true);
   await expect(page.locator("#ritualFocusDialog")).toHaveAttribute("data-ritual", "muyu");
@@ -89,4 +89,45 @@ test("Gratitude Pebble Garden localizes its private reflection copy", async ({ p
   await expect(page.locator("#ritualFocusTitle")).toHaveText("感恩石庭");
   await expect(page.locator("#gratitudeGardenTitle")).toContainText("三件美好");
   await expect(page.locator("#gratitudePrivacyNote")).toContainText("此设备只会保存");
+});
+
+test("Kindness Quest awards only after a real-world completion attestation", async ({ page }) => {
+  await page.locator("#viewAllRitualsBtn").click();
+  const opener = page.locator('[data-play-ritual="kindnessQuest"]');
+  await opener.click();
+  await expect(page.locator("#ritualFocusDialog #kindnessQuestCard")).toBeVisible();
+  await page.locator("#drawKindnessQuest").click();
+  await expect(page.locator("#kindnessMission")).not.toHaveText("Choose a path and draw a card.");
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("foobow.kindnessQuest.v1"))).toBeNull();
+  await page.locator("#completeKindnessQuest").click();
+  await expect(page.locator("#kindnessQuestStatus")).toContainText("real world");
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("foobow.kindnessQuest.v1")).sessions)).toBe(1);
+  await page.keyboard.press("Escape");
+  await expect(opener).toBeFocused();
+});
+
+test("Five Senses Garden supports notice, skip, completion, and restart", async ({ page }) => {
+  await page.locator("#viewAllRitualsBtn").click();
+  await page.locator('[data-play-ritual="fiveSenses"]').click();
+  await expect(page.locator("#ritualFocusDialog #fiveSensesCard")).toBeVisible();
+  await page.locator("#noticeSenseBtn").click();
+  await page.locator("#skipSenseBtn").click();
+  await page.locator("#noticeSenseBtn").click();
+  await page.locator("#noticeSenseBtn").click();
+  await page.locator("#noticeSenseBtn").click();
+  await expect(page.locator("#fiveSensesStatus")).toContainText("4 of 5");
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("foobow.fiveSenses.v1"))).toBe("1");
+  await expect(page.locator("#restartSensesBtn")).toBeVisible();
+  await page.locator("#restartSensesBtn").click();
+  await expect(page.locator("#senseStepLabel")).toContainText("1 of 5");
+});
+
+test("new peace games localize their hubs and instructions", async ({ page }) => {
+  await page.locator("#viewAllRitualsBtn").click();
+  await page.locator("#languageSelect").selectOption("zh-Hans");
+  await expect(page.locator('[data-play-ritual="kindnessQuest"] strong')).toHaveText("善意任务");
+  await page.locator('[data-play-ritual="fiveSenses"]').click();
+  await expect(page.locator("#ritualFocusTitle")).toHaveText("五感花园");
+  await expect(page.locator("#fiveSensesTitle")).toContainText("回到此刻");
+  await expect(page.locator("#sensePromptTitle")).toContainText("颜色");
 });
