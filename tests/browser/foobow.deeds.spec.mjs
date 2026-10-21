@@ -83,6 +83,8 @@ test("3D sanctuary mini-game launches, switches scenarios, and allows interactiv
   await expect(modal).toHaveAttribute("data-visual-style", "storybook-sanctuary");
   await expect(page.locator("#sanctuary3DCanvas")).toBeVisible();
   await expect(page.locator("#gameScenarioTitle")).toContainText("East Lake");
+  await expect(page.locator("#gameScenarioStory")).toContainText("rescued koi");
+  await expect(page.locator(".game-scenario-tab[data-scenario='east-lake']")).toHaveAttribute("aria-selected", "true");
 
   // Select turtle species
   await page.locator(".species-btn[data-species='turtle']").click();
@@ -103,6 +105,9 @@ test("3D sanctuary mini-game launches, switches scenarios, and allows interactiv
   // Switch scenario to Oxford Wisdom Library
   await page.locator(".game-scenario-tab[data-scenario='reading-room']").click();
   await expect(page.locator("#gameScenarioTitle")).toContainText("Oxford");
+  await expect(modal).toHaveAttribute("data-scenario", "reading-room");
+  await expect(page.locator(".game-scenario-tab[data-scenario='east-lake']")).toHaveAttribute("aria-selected", "false");
+  await expect(page.locator(".game-scenario-tab[data-scenario='reading-room']")).toHaveAttribute("aria-selected", "true");
 
   // Perform reading action in Oxford
   await page.locator("#gamePrimaryActionBtn").click();

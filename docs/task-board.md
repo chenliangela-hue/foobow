@@ -8,6 +8,7 @@
 
 ## Done
 
+- Refactored all five web World Sanctuary games into a shared living-storybook diorama system: illustrated interaction sprites, scenario-specific mission copy, clearer progress, reduced duplicate scenery, and visible action-state feedback for East Lake, Toronto, the Amazon, Kyoto, and Oxford. Added desktop and phone visual baselines; Quiet Moment game-by-game polish continues in GitHub issue #4. Mobile feature work remains deferred.
 - Live-verified the Storybook Sanctuary release at `www.foobow.com` on desktop and a 390 x 844 phone viewport, corrected the rice-paper HUD contrast, added deterministic canvas still rendering for visual regression, and regenerated all affected baselines with the same repository-pinned Chromium build used by Windows CI. Also cleared the API audit blocker with non-breaking `proxy-addr`, `js-yaml`, and `argparse` lockfile updates.
 - Reframed the web ritual collection as one warm illustrated Storybook Sanctuary: eight concrete Quiet Moment scenes, a lakeside Gratitude Garden with three visible memory stones, and five real-world animated deed settings for East Lake, Toronto, the Amazon, Kyoto, and Oxford. Existing game mechanics remain intact, mobile feature work remains deferred, and desktop/phone visual baselines cover the shared style.
 - Implemented the web Gratitude Pebble Garden as a seventh Quiet Moment: three private prompts, tactile pond completion, device-local count-only persistence, six-locale copy, keyboard focus return, reduced-motion handling, and desktop/phone visual coverage. Research and reuse decisions are recorded in `docs/web-peace-game-research.md`; mobile implementation remains deferred.
@@ -308,7 +309,7 @@
 - Complete the web experience before resuming mobile work: expose Quiet Moments from the public homepage, finish all web localization/accessibility paths, stabilize web visual baselines, and run live desktop/tablet/mobile-browser PAQA.
 - Verify the public Quiet Moments preview, deep link, hub, and immersive ritual cards on the deployed web routes after the next `main` push. Check all seven ritual paths, locale/theme switching, phone layout, Escape/Close return, and reduced motion against the live asset version.
 - Keep the newly disclosed Expo transitive `braces` and `node-forge` high/critical advisories visible as a mobile security blocker. Their current npm fixes require an incompatible Expo downgrade and no patched package release is available; recheck upstream before resuming mobile work.
-- Finish the live accessibility fixes found at `www.foobow.com`: pale selected Calm text, daily thought, and 3D entry button in light mode; washed-out map detail text in dark mode. A scoped CSS draft is local and still needs verification and publication. Also sync the 3D scenario tabs' `aria-selected` state when opening Kyoto directly; coordinate with the existing uncommitted `game3d.js` changes.
+- Finish the live accessibility fixes found at `www.foobow.com`: pale selected Calm text, daily thought, and 3D entry button in light mode; washed-out map detail text in dark mode. A scoped CSS draft is local and still needs verification and publication. The 3D scenario tabs now synchronize `aria-selected` state across direct and in-dialog navigation.
 
 - Optional payments/Stripe mode and real map host provider setup if desired.
 

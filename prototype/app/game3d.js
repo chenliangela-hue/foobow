@@ -29,6 +29,10 @@
       feedActionNameZh: "投喂莲华 (+1)",
       badgeTitle: "Lake Guardian",
       badgeTitleZh: "东湖护生使",
+      story: "Guide a rescued koi from the release basket into open water.",
+      storyZh: "护送获救锦鲤离开鱼篓，游入开阔湖水。",
+      chapter: "A gentle return",
+      chapterZh: "温柔归湖",
       defaultCam: { rotX: 0.44, rotY: 0, zoom: 1, dist: 280 }
     },
     "toronto-crosswalk": {
@@ -47,6 +51,10 @@
       feedActionNameZh: "温和护送前行",
       badgeTitle: "Kindness Escort",
       badgeTitleZh: "慈心护行使",
+      story: "Make the crossing safe, then walk beside a neighbour at their pace.",
+      storyZh: "先亮起安全信号，再陪邻里长者按自己的步伐过街。",
+      chapter: "A safe way home",
+      chapterZh: "平安归途",
       defaultCam: { rotX: 0.38, rotY: 0, zoom: 0.95, dist: 300 }
     },
     "amazon-grove": {
@@ -65,6 +73,10 @@
       feedActionNameZh: "细雨浇灌生机",
       badgeTitle: "Rainforest Custodian",
       badgeTitleZh: "雨林绿洲守护者",
+      story: "Plant a native sapling and help its roots settle into the rainforest.",
+      storyZh: "种下一株原生树苗，让根系在雨林中安稳生长。",
+      chapter: "Roots of tomorrow",
+      chapterZh: "明日新根",
       defaultCam: { rotX: 0.46, rotY: 0, zoom: 1.05, dist: 290 }
     },
     "night-corridor": {
@@ -83,6 +95,10 @@
       feedActionNameZh: "微风引渡水流",
       badgeTitle: "Illumination Bearer",
       badgeTitleZh: "心灯引路人",
+      story: "Choose a quiet wish and guide its lantern into Kyoto's evening current.",
+      storyZh: "选择一份静心善愿，引导水灯随京都暮色缓缓远行。",
+      chapter: "Light on the water",
+      chapterZh: "水上心灯",
       defaultCam: { rotX: 0.42, rotY: 0, zoom: 1, dist: 285 }
     },
     "reading-room": {
@@ -101,6 +117,10 @@
       feedActionNameZh: "温润案灯 · 结缘明光",
       badgeTitle: "Wisdom Keeper",
       badgeTitleZh: "般若智慧守护者",
+      story: "Turn a page, read one kind thought, and share the light of learning.",
+      storyZh: "翻开一页善言，诵读并分享学习之光。",
+      chapter: "A story shared",
+      chapterZh: "共读一页",
       defaultCam: { rotX: 0.52, rotY: 0, zoom: 1.1, dist: 270 }
     }
   };
@@ -132,11 +152,28 @@
   };
   const storybookBackdrops = {};
 
+  const STORYBOOK_SPRITE_SOURCES = {
+    koi: "../assets/foobow/sprites/storybook/koi-kohaku.webp",
+    escort: "../assets/foobow/sprites/storybook/toronto-escort.webp",
+    sapling: "../assets/foobow/sprites/storybook/amazon-sapling.webp",
+    lantern: "../assets/foobow/sprites/storybook/kyoto-lantern.webp",
+    book: "../assets/foobow/sprites/storybook/oxford-book.webp"
+  };
+  const storybookSprites = {};
+  const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches || false;
+
   Object.entries(STORYBOOK_BACKDROP_SOURCES).forEach(([key, src]) => {
     const image = new Image();
     image.decoding = "async";
     image.src = src;
     storybookBackdrops[key] = image;
+  });
+
+  Object.entries(STORYBOOK_SPRITE_SOURCES).forEach(([key, src]) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = src;
+    storybookSprites[key] = image;
   });
 
   function drawStorybookBackdrop(key, fallbackTop, fallbackBottom, tint) {
@@ -305,6 +342,88 @@
       depth: camZ,
       visible: sx >= -800 && sx <= width + 800 && sy >= -800 && sy <= height + 800
     };
+  }
+
+  function spriteReady(key) {
+    const image = storybookSprites[key];
+    return Boolean(image && image.complete && image.naturalWidth > 0);
+  }
+
+  function drawStorybookSprite(key, point, options = {}) {
+    if (!point?.visible || !spriteReady(key)) return false;
+
+    const image = storybookSprites[key];
+    const spriteWidth = Math.max(28, (options.width || 120) * point.scale);
+    const spriteHeight = spriteWidth * (image.naturalHeight / image.naturalWidth);
+    const bob = prefersReducedMotion ? 0 : Math.sin(waterTime * (options.bobSpeed || 1.5) + (options.phase || 0)) * (options.bob || 2);
+    const anchorY = options.anchorY ?? 0.78;
+
+    ctx.save();
+    ctx.globalAlpha = options.alpha ?? 1;
+    ctx.translate(point.sx, point.sy + bob);
+    ctx.rotate(options.rotation || 0);
+    if (options.flipX) ctx.scale(-1, 1);
+    if (options.filter) ctx.filter = options.filter;
+
+    if (options.glow) {
+      const glowRadius = spriteWidth * (options.glowRadius || 0.62);
+      const glow = ctx.createRadialGradient(0, 0, 2, 0, 0, glowRadius);
+      glow.addColorStop(0, options.glow);
+      glow.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(0, 0, glowRadius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (options.shadow !== false) {
+      ctx.save();
+      ctx.filter = "blur(5px)";
+      ctx.fillStyle = options.shadowColor || "rgba(7, 26, 24, 0.28)";
+      ctx.beginPath();
+      ctx.ellipse(0, spriteHeight * (1 - anchorY) + 5, spriteWidth * 0.34, Math.max(4, spriteHeight * 0.08), 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.drawImage(image, -spriteWidth / 2, -spriteHeight * anchorY, spriteWidth, spriteHeight);
+    ctx.restore();
+    return true;
+  }
+
+  function drawSceneVignette(color = "rgba(10, 35, 32, 0.2)") {
+    const vignette = ctx.createRadialGradient(width / 2, height * 0.46, Math.min(width, height) * 0.2, width / 2, height * 0.48, Math.max(width, height) * 0.72);
+    vignette.addColorStop(0, "rgba(255,255,255,0)");
+    vignette.addColorStop(1, color);
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  function drawWaypoint(x, y, label, active = false) {
+    const pulse = prefersReducedMotion ? 0 : Math.sin(waterTime * 3) * 2;
+    ctx.save();
+    const halo = ctx.createRadialGradient(x, y, 2, x, y, 26 + pulse);
+    halo.addColorStop(0, active ? "rgba(255, 220, 132, .55)" : "rgba(239, 247, 230, .38)");
+    halo.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(x, y, 28 + pulse, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = active ? "#f6c96b" : "rgba(255,255,255,.88)";
+    ctx.strokeStyle = "rgba(28, 62, 56, .72)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    if (label) {
+      ctx.font = "700 10px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#163b35";
+      ctx.fillText(label, x, y + 0.5);
+    }
+    ctx.restore();
   }
 
   // ---------------------------------------------------------------------------
@@ -707,6 +826,22 @@
       draw3DTurtle(koi, headPt);
       return;
     }
+
+    const spriteFilter = koi.pattern === "yamabuki"
+      ? "sepia(.75) saturate(1.35) hue-rotate(350deg) brightness(1.05)"
+      : koi.pattern === "showa"
+        ? "saturate(.55) contrast(1.16) brightness(.9)"
+        : "none";
+    if (drawStorybookSprite("koi", headPt, {
+      width: 54 * koi.size,
+      anchorY: 0.52,
+      rotation: koi.heading + camera.rotY - 0.7,
+      phase: koi.phase,
+      bob: 1.2,
+      shadowColor: "rgba(2, 35, 43, .3)",
+      filter: spriteFilter,
+      glow: koi.isReleased && Date.now() - koi.bornAt < 6000 ? "rgba(255, 216, 111, .32)" : null
+    })) return;
 
     const isDark = document.body.classList.contains("dark");
 
@@ -2112,6 +2247,244 @@
     });
   }
 
+  function drawModernTorontoCrosswalk() {
+    const isDark = document.body.classList.contains("dark");
+    drawStorybookBackdrop(
+      "toronto-crosswalk",
+      isDark ? "#263849" : "#d6d6cf",
+      isDark ? "#121a24" : "#8b6544",
+      isDark ? "rgba(10, 18, 28, 0.36)" : "rgba(255, 245, 226, 0.02)"
+    );
+    drawSceneVignette(isDark ? "rgba(7, 14, 25, .48)" : "rgba(62, 48, 31, .16)");
+
+    const routeY = height * 0.73;
+    const routeStart = width * 0.23;
+    const routeEnd = width * 0.76;
+    const progress = Math.max(0, Math.min(1, elderPedestrian.progress || (elderPedestrian.x + 140) / 230));
+    const escortX = routeStart + (routeEnd - routeStart) * progress;
+
+    ctx.save();
+    ctx.lineCap = "round";
+    ctx.setLineDash([8, 10]);
+    ctx.strokeStyle = trafficLight.state === "green" ? "rgba(34, 145, 111, .82)" : "rgba(255, 255, 255, .72)";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(routeStart, routeY);
+    ctx.lineTo(routeEnd, routeY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    drawWaypoint(routeStart, routeY, "1", true);
+    drawWaypoint(width * 0.5, routeY, "2", trafficLight.state === "green");
+    drawWaypoint(routeEnd, routeY, "3", progress > 0.72);
+    ctx.restore();
+
+    drawStorybookSprite("escort", { sx: escortX, sy: routeY + 8, scale: Math.max(.62, height / 560), visible: true }, {
+      width: 128,
+      anchorY: .89,
+      flipX: true,
+      phase: elderPedestrian.frame,
+      bob: elderPedestrian.walking ? 2.6 : .8,
+      bobSpeed: elderPedestrian.walking ? 4 : 1.3,
+      shadowColor: "rgba(44, 31, 20, .28)"
+    });
+
+    const signalX = width * .62;
+    const signalY = height * .41;
+    const signalGlow = trafficLight.state === "green" ? "rgba(52, 211, 153, .45)" : "rgba(251, 113, 133, .42)";
+    const signalGradient = ctx.createRadialGradient(signalX, signalY, 3, signalX, signalY, 38);
+    signalGradient.addColorStop(0, signalGlow);
+    signalGradient.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = signalGradient;
+    ctx.beginPath();
+    ctx.arc(signalX, signalY, 38, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(25, 39, 41, .9)";
+    ctx.beginPath();
+    ctx.roundRect(signalX - 15, signalY - 24, 30, 48, 11);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(signalX, signalY, 7, 0, Math.PI * 2);
+    ctx.fillStyle = trafficLight.state === "green" ? "#43d9a3" : "#ff6f86";
+    ctx.shadowColor = ctx.fillStyle;
+    ctx.shadowBlur = 14;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  function drawModernAmazonGrove() {
+    const isDark = document.body.classList.contains("dark");
+    drawStorybookBackdrop(
+      "amazon-grove",
+      isDark ? "#153929" : "#79a66e",
+      isDark ? "#07150e" : "#274f37",
+      isDark ? "rgba(3, 17, 10, .36)" : "rgba(25, 86, 52, .04)"
+    );
+    drawSceneVignette(isDark ? "rgba(4, 20, 12, .46)" : "rgba(15, 57, 33, .16)");
+
+    const tree = sacredTrees[0];
+    const growth = tree ? Math.max(.24, Math.min(1, tree.height / 65)) : .24;
+    const groundX = width * .51;
+    const groundY = height * .76;
+
+    const rootGlow = ctx.createRadialGradient(groundX, groundY, 4, groundX, groundY, 110 * growth);
+    rootGlow.addColorStop(0, tree?.bloom ? "rgba(255, 221, 120, .32)" : "rgba(141, 207, 135, .22)");
+    rootGlow.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = rootGlow;
+    ctx.beginPath();
+    ctx.ellipse(groundX, groundY, 130 * growth, 38 * growth, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawStorybookSprite("sapling", { sx: groundX, sy: groundY, scale: .62 + growth * .42, visible: true }, {
+      width: 190,
+      anchorY: .91,
+      bob: tree?.bloom ? 2 : .7,
+      bobSpeed: 1,
+      glow: tree?.bloom ? "rgba(255, 224, 132, .24)" : null,
+      shadowColor: "rgba(16, 47, 25, .32)"
+    });
+
+    rainDroplets.forEach((drop) => {
+      const x = width * .5 + drop.x * 2.4;
+      const y = height * .2 + (60 - drop.y) * 4.5;
+      const rain = ctx.createLinearGradient(x, y - 14, x, y + 4);
+      rain.addColorStop(0, "rgba(206, 241, 255, 0)");
+      rain.addColorStop(1, "rgba(206, 241, 255, .85)");
+      ctx.strokeStyle = rain;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x + 5, y - 14);
+      ctx.lineTo(x, y + 4);
+      ctx.stroke();
+    });
+
+    butterflies.forEach((butterfly, index) => {
+      const wing = 5 + (prefersReducedMotion ? 0 : Math.abs(Math.sin(butterfly.angle)) * 4);
+      const bx = width * .5 + butterfly.x * 2.1;
+      const by = height * .5 - butterfly.y * 2.4;
+      ctx.save();
+      ctx.translate(bx, by);
+      ctx.fillStyle = index % 2 ? "rgba(255, 198, 103, .9)" : "rgba(76, 191, 224, .92)";
+      ctx.beginPath();
+      ctx.ellipse(-wing * .55, 0, wing, wing * .55, -.45, 0, Math.PI * 2);
+      ctx.ellipse(wing * .55, 0, wing, wing * .55, .45, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawModernKyotoLanterns() {
+    const isDark = document.body.classList.contains("dark");
+    drawStorybookBackdrop("night-corridor", "#16304b", "#050c18", isDark ? "rgba(2, 7, 16, .42)" : "rgba(4, 16, 31, .18)");
+    drawSceneVignette("rgba(1, 8, 20, .58)");
+
+    [...riverLanterns].sort((a, b) => b.z - a.z).forEach((lantern, index) => {
+      const travel = Math.max(0, Math.min(1, (lantern.z + 110) / 330));
+      const point = {
+        sx: width * .5 + lantern.x * (1.9 - travel * .7),
+        sy: height * (.79 - travel * .43),
+        scale: .55 + (1 - travel) * .34,
+        visible: true
+      };
+      drawStorybookSprite("lantern", point, {
+        width: 76,
+        anchorY: .58,
+        phase: lantern.flamePhase + index,
+        bob: 2.6,
+        glow: "rgba(255, 178, 72, .4)",
+        glowRadius: .9,
+        shadow: false
+      });
+      ctx.save();
+      ctx.font = "700 11px 'Noto Serif SC', serif";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "rgba(255, 248, 226, .96)";
+      ctx.shadowColor = "rgba(0,0,0,.75)";
+      ctx.shadowBlur = 6;
+      ctx.fillText(lantern.wish, point.sx, point.sy + 25 * point.scale);
+      ctx.restore();
+    });
+
+    for (let i = 0; i < 14; i++) {
+      const fx = (Math.sin(waterTime * .6 + i * 12.7) * .42 + .5) * width;
+      const fy = (Math.cos(waterTime * .48 + i * 7.3) * .22 + .45) * height;
+      const alpha = prefersReducedMotion ? .42 : .22 + Math.abs(Math.sin(waterTime * 2 + i)) * .64;
+      ctx.fillStyle = `rgba(255, 220, 118, ${alpha.toFixed(2)})`;
+      ctx.beginPath();
+      ctx.arc(fx, fy, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function wrapCanvasText(text, maxWidth) {
+    const words = document.documentElement.lang.startsWith("zh") ? Array.from(text) : text.split(" ");
+    const spacer = document.documentElement.lang.startsWith("zh") ? "" : " ";
+    const lines = [];
+    let line = "";
+    words.forEach((word) => {
+      const candidate = line ? `${line}${spacer}${word}` : word;
+      if (line && ctx.measureText(candidate).width > maxWidth) {
+        lines.push(line);
+        line = word;
+      } else line = candidate;
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function drawModernReadingRoom() {
+    const isDark = document.body.classList.contains("dark");
+    drawStorybookBackdrop(
+      "reading-room",
+      isDark ? "#21100b" : "#7e4c2a",
+      isDark ? "#0d0604" : "#2e160c",
+      isDark ? "rgba(12, 5, 3, .42)" : "rgba(75, 33, 12, .06)"
+    );
+    drawSceneVignette(isDark ? "rgba(24, 8, 4, .56)" : "rgba(60, 26, 9, .2)");
+
+    const flipLift = readingBook.isFlipping && !prefersReducedMotion ? Math.sin(readingBook.pageAngle) * 8 : 0;
+    drawStorybookSprite("book", { sx: width * .5, sy: height * .79 - flipLift, scale: Math.max(.7, height / 520), visible: true }, {
+      width: 260,
+      anchorY: .72,
+      bob: .7,
+      glow: readingLamp.lit ? "rgba(255, 218, 132, .28)" : null,
+      shadowColor: "rgba(36, 14, 5, .38)"
+    });
+
+    const isZh = document.documentElement.lang.startsWith("zh");
+    const quote = readingBook.quotes[readingBook.curQuoteIdx] || readingBook.quotes[0];
+    const quoteText = isZh ? quote.zh : quote.en;
+    const cardW = Math.min(330, width * .38);
+    const cardX = width - cardW - 28;
+    const cardY = height * .25;
+    ctx.save();
+    ctx.fillStyle = isDark ? "rgba(28, 17, 12, .76)" : "rgba(255, 249, 231, .82)";
+    ctx.strokeStyle = isDark ? "rgba(241, 201, 120, .32)" : "rgba(115, 78, 35, .28)";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(cardX, cardY, cardW, 112, 22);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = isDark ? "#f5d99a" : "#755126";
+    ctx.font = "700 11px system-ui, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(isZh ? "今日善言" : "TODAY'S KIND THOUGHT", cardX + 20, cardY + 27);
+    ctx.fillStyle = isDark ? "#fff7df" : "#382619";
+    ctx.font = `${isZh ? "600" : "italic 600"} 14px 'Noto Serif SC', serif`;
+    wrapCanvasText(quoteText, cardW - 40).slice(0, 3).forEach((line, index) => {
+      ctx.fillText(line, cardX + 20, cardY + 55 + index * 20);
+    });
+    ctx.restore();
+
+    wisdomGlyphs.forEach((glyph) => {
+      const gp = project(glyph.x, glyph.y, glyph.z);
+      if (!gp.visible) return;
+      ctx.font = `700 ${Math.max(14, 18 * glyph.scale)}px 'Noto Serif SC', serif`;
+      ctx.textAlign = "center";
+      ctx.fillStyle = `rgba(255, 222, 139, ${glyph.alpha.toFixed(2)})`;
+      ctx.fillText(glyph.char, gp.sx, gp.sy);
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Atmospheric Sky & Dynamic Lighting
   // ---------------------------------------------------------------------------
@@ -2368,16 +2741,16 @@
       drawEastLake();
     } else if (currentScenarioKey === "toronto-crosswalk") {
       updateTorontoCrosswalk(dt);
-      drawTorontoCrosswalk();
+      drawModernTorontoCrosswalk();
     } else if (currentScenarioKey === "amazon-grove") {
       updateAmazonGrove(dt);
-      drawAmazonGrove();
+      drawModernAmazonGrove();
     } else if (currentScenarioKey === "night-corridor") {
       updateKyotoLanterns(dt);
-      drawKyotoLanterns();
+      drawModernKyotoLanterns();
     } else if (currentScenarioKey === "reading-room") {
       updateReadingRoom(dt);
-      drawReadingRoom();
+      drawModernReadingRoom();
     }
 
     // 4. Draw 3D Floating Merit Particles
@@ -2497,6 +2870,15 @@
     const titleEl = document.getElementById("gameScenarioTitle");
     if (titleEl) titleEl.textContent = isZh ? scen.nameZh : scen.name;
 
+    const storyEl = document.getElementById("gameScenarioStory");
+    if (storyEl) storyEl.textContent = isZh ? scen.storyZh : scen.story;
+
+    const chapterEl = document.getElementById("gameScenarioChapter");
+    if (chapterEl) chapterEl.textContent = isZh ? scen.chapterZh : scen.chapter;
+
+    const dialog = document.getElementById("sanctuary3DGameModal");
+    if (dialog) dialog.dataset.scenario = currentScenarioKey;
+
     const coordsEl = document.getElementById("gameScenarioCoords");
     if (coordsEl) coordsEl.textContent = `📍 ${scen.coords} · ${scen.biosphere}`;
 
@@ -2545,7 +2927,10 @@
 
     // Active pill styling
     document.querySelectorAll(".game-scenario-tab").forEach((tab) => {
-      tab.classList.toggle("active", tab.dataset.scenario === currentScenarioKey);
+      const active = tab.dataset.scenario === currentScenarioKey;
+      tab.classList.toggle("active", active);
+      tab.setAttribute("aria-selected", String(active));
+      tab.tabIndex = active ? 0 : -1;
     });
 
     // Species picker: only shown for East Lake
@@ -2750,10 +3135,10 @@
     drawAtmosphere(0);
 
     if (currentScenarioKey === "east-lake") drawEastLake();
-    else if (currentScenarioKey === "toronto-crosswalk") drawTorontoCrosswalk();
-    else if (currentScenarioKey === "amazon-grove") drawAmazonGrove();
-    else if (currentScenarioKey === "night-corridor") drawKyotoLanterns();
-    else if (currentScenarioKey === "reading-room") drawReadingRoom();
+    else if (currentScenarioKey === "toronto-crosswalk") drawModernTorontoCrosswalk();
+    else if (currentScenarioKey === "amazon-grove") drawModernAmazonGrove();
+    else if (currentScenarioKey === "night-corridor") drawModernKyotoLanterns();
+    else if (currentScenarioKey === "reading-room") drawModernReadingRoom();
   }
 
   function setupBindings() {

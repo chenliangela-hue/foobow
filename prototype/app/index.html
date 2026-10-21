@@ -1559,11 +1559,11 @@
           <div class="game-hud-top-bar">
             <!-- Scenario Quick Switcher Pills -->
             <div class="game-scenario-tabs" role="tablist" aria-label="Sanctuary 3D Scenarios">
-              <button class="game-scenario-tab active" type="button" data-scenario="east-lake" role="tab">🐟 East Lake</button>
-              <button class="game-scenario-tab" type="button" data-scenario="toronto-crosswalk" role="tab">👵 Toronto</button>
-              <button class="game-scenario-tab" type="button" data-scenario="amazon-grove" role="tab">🌱 Amazon</button>
-              <button class="game-scenario-tab" type="button" data-scenario="night-corridor" role="tab">🏮 Kyoto</button>
-              <button class="game-scenario-tab" type="button" data-scenario="reading-room" role="tab">📖 Oxford</button>
+              <button class="game-scenario-tab active" type="button" data-scenario="east-lake" role="tab" aria-selected="true">🐟 East Lake</button>
+              <button class="game-scenario-tab" type="button" data-scenario="toronto-crosswalk" role="tab" aria-selected="false" tabindex="-1">👵 Toronto</button>
+              <button class="game-scenario-tab" type="button" data-scenario="amazon-grove" role="tab" aria-selected="false" tabindex="-1">🌱 Amazon</button>
+              <button class="game-scenario-tab" type="button" data-scenario="night-corridor" role="tab" aria-selected="false" tabindex="-1">🏮 Kyoto</button>
+              <button class="game-scenario-tab" type="button" data-scenario="reading-room" role="tab" aria-selected="false" tabindex="-1">📖 Oxford</button>
             </div>
 
             <!-- Atmosphere Picker & Close Button -->
@@ -1580,8 +1580,9 @@
 
           <!-- Floating Quest & Sanctuary Status Banner -->
           <div class="game-quest-badge">
-            <p class="eyebrow game-quest-coords" id="gameScenarioCoords">📍 30.5539° N, 114.3644° E · Freshwater Sanctuary</p>
+            <div class="game-quest-meta"><p class="eyebrow game-quest-coords" id="gameScenarioCoords">📍 30.5539° N, 114.3644° E · Freshwater Sanctuary</p><span class="game-chapter-pill" id="gameScenarioChapter">A gentle return</span></div>
             <h2 class="game-quest-title" id="gameScenarioTitle">East Lake Sanctuary · 慈心放生池</h2>
+            <p class="game-quest-story" id="gameScenarioStory">Guide a rescued koi from the release basket into open water.</p>
             <div class="game-hud-status">
               <span class="game-goal-counter" id="gameGoalCounter">Release 5 fish: 0/5 · 功德 +0</span>
               <span class="game-combo-badge" id="gameComboBadge" hidden>✨ <span id="gameComboMultiplier">2</span>x Serenity</span>
