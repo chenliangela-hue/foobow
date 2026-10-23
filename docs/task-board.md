@@ -311,7 +311,7 @@
 - Continue GitHub issue #1 with additional location-appropriate scenarios beyond fish release, richer completion feedback on the selected map location, and deployed desktop/tablet/phone PAQA.
 - Complete the web experience before resuming mobile work: expose Quiet Moments from the public homepage, finish all web localization/accessibility paths, stabilize web visual baselines, and run live desktop/tablet/mobile-browser PAQA.
 - Keep the newly disclosed Expo transitive `braces` and `node-forge` high/critical advisories visible as a mobile security blocker. Their current npm fixes require an incompatible Expo downgrade and no patched package release is available; recheck upstream before resuming mobile work.
-- Finish the live accessibility fixes found at `www.foobow.com`: pale selected Calm text, daily thought, and 3D entry button in light mode; washed-out map detail text in dark mode. A scoped CSS draft is local and still needs verification and publication. The 3D scenario tabs now synchronize `aria-selected` state across direct and in-dialog navigation.
+- Live accessibility contrast fixes are published for the selected Calm mood, daily thought, and 3D entry button in light mode plus map detail text in dark mode. Focused computed-style regression coverage now protects all four callouts. The 3D scenario tabs synchronize `aria-selected` state across direct and in-dialog navigation.
 
 - Optional payments/Stripe mode and real map host provider setup if desired.
 

@@ -274,3 +274,57 @@ test("core design tokens meet WCAG contrast thresholds", async ({ page }) => {
     expect.soft(ratio, `${name} contrast`).toBeGreaterThanOrEqual(4.5);
   }
 });
+
+test("illustrated screen callouts keep readable contrast in light and dark themes", async ({ page }) => {
+  const contrastFor = async (foregroundSelector, backgroundSelector) =>
+    page.evaluate(({ foregroundSelector, backgroundSelector }) => {
+      const parse = (value) => {
+        if (value.trim().startsWith("#")) {
+          const hex = value.trim().slice(1);
+          return {
+            red: Number.parseInt(hex.slice(0, 2), 16),
+            green: Number.parseInt(hex.slice(2, 4), 16),
+            blue: Number.parseInt(hex.slice(4, 6), 16),
+            alpha: 1
+          };
+        }
+        const match = value.match(/[\d.]+/g)?.map(Number) || [];
+        return { red: match[0] || 0, green: match[1] || 0, blue: match[2] || 0, alpha: match[3] ?? 1 };
+      };
+      const composite = (front, back) => ({
+        red: front.red * front.alpha + back.red * (1 - front.alpha),
+        green: front.green * front.alpha + back.green * (1 - front.alpha),
+        blue: front.blue * front.alpha + back.blue * (1 - front.alpha),
+        alpha: 1
+      });
+      const channel = (value) => {
+        const normalized = value / 255;
+        return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      };
+      const luminance = (color) => 0.2126 * channel(color.red) + 0.7152 * channel(color.green) + 0.0722 * channel(color.blue);
+      const bodyBackground = parse(getComputedStyle(document.body).getPropertyValue("--bg") || "rgb(255, 249, 242)");
+      const foreground = parse(getComputedStyle(document.querySelector(foregroundSelector)).color);
+      const rawBackground = parse(getComputedStyle(document.querySelector(backgroundSelector)).backgroundColor);
+      const background = composite(rawBackground, bodyBackground);
+      const lighter = Math.max(luminance(foreground), luminance(background));
+      const darker = Math.min(luminance(foreground), luminance(background));
+      return {
+        ratio: (lighter + 0.05) / (darker + 0.05),
+        foreground: getComputedStyle(document.querySelector(foregroundSelector)).color,
+        background: getComputedStyle(document.querySelector(backgroundSelector)).backgroundColor,
+        bodyBackground: getComputedStyle(document.body).getPropertyValue("--bg").trim()
+      };
+    }, { foregroundSelector, backgroundSelector });
+
+  expect((await contrastFor(".mood.selected", ".mood.selected")).ratio, "selected Calm mood").toBeGreaterThanOrEqual(4.5);
+  expect((await contrastFor("#dailyThought", ".hero-panel")).ratio, "daily thought").toBeGreaterThanOrEqual(4.5);
+  expect((await contrastFor("#launchSanctuaryFromTodayBtn", "#launchSanctuaryFromTodayBtn")).ratio, "3D sanctuary entry").toBeGreaterThanOrEqual(4.5);
+
+  await page.getByRole("button", { name: "Map" }).click();
+  await page.getByRole("button", { name: "Toggle dark mode" }).click();
+  await page.locator(".spot-detail").evaluate((element) =>
+    Promise.all(element.getAnimations().map((animation) => animation.finished.catch(() => undefined)))
+  );
+  const darkMapDetail = await contrastFor(".spot-detail p", ".spot-detail");
+  expect(darkMapDetail.ratio, `dark map detail ${JSON.stringify(darkMapDetail)}`).toBeGreaterThanOrEqual(4.5);
+});
