@@ -29,11 +29,36 @@
 .sense-prompt { min-height: 180px; display: grid; align-content: center; padding: 24px 26px; border: 1px solid rgba(66,105,90,.24); border-radius: 20px; background: rgba(250,255,245,.82); }
 .sense-icon { font-size: 2.1rem; margin-bottom: 7px; filter: drop-shadow(0 4px 6px rgba(32,65,55,.16)); }
 .five-senses-scene[data-sense="complete"] .sense-prompt { background: rgba(255,245,205,.9); }
+.loving-kindness-lantern-scene { position: relative; overflow: hidden; background-image: linear-gradient(90deg,rgba(22,30,57,.12),rgba(28,32,62,.28)),url("../assets/foobow/backgrounds/mountain-moon.png"); }
+.loving-kindness-lantern-scene::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 72% 24%,rgba(255,211,117,.22),transparent 22%),linear-gradient(180deg,transparent 58%,rgba(18,47,50,.4)); }
+.lantern-sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.lantern-moon { position: absolute; right: 10%; top: 9%; width: 88px; aspect-ratio: 1; border-radius: 50%; background: #fff1c5; box-shadow: 0 0 34px rgba(255,226,153,.7); }
+.lantern-hills { position: absolute; left: -8%; right: -8%; bottom: -12%; height: 42%; border-radius: 50% 50% 0 0; background: linear-gradient(180deg,rgba(43,88,79,.5),#183e3d 75%); }
+.lantern-light { position: absolute; left: 65%; bottom: 22%; width: 46px; height: 58px; border: 2px solid #9d482d; border-radius: 9px 9px 14px 14px; opacity: .12; transform: translateY(0) scale(.8); background: linear-gradient(90deg,#ef9b46,#ffe28a 48%,#e78c3d); box-shadow: 0 0 24px rgba(255,183,69,.8); transition: transform 1.1s cubic-bezier(.2,.7,.2,1),opacity .6s ease;
+}
+.lantern-light::before { content: ""; position: absolute; left: 50%; top: 9px; width: 8px; height: 15px; border-radius: 50% 50% 45% 45%; transform: translateX(-50%); background: #fff6bd; box-shadow: 0 0 11px #ffd25f; }
+.lantern-light-two { left: 76%; bottom: 18%; transform: scale(.7); }
+.lantern-light-three { left: 86%; bottom: 25%; transform: scale(.6); }
+.light-1-released .lantern-light-one { opacity: 1; transform: translate(-55px,-145px) scale(.88); }
+.light-2-released .lantern-light-two { opacity: .92; transform: translate(-22px,-225px) scale(.72); }
+.light-3-released .lantern-light-three { opacity: .86; transform: translate(-68px,-300px) scale(.62); }
+.lantern-journey-panel { position: relative; z-index: 2; }
+.lantern-journey-progress { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; margin: 20px 0 14px; }
+.lantern-progress-light { min-height: 43px; display: grid; place-items: center; border: 1px solid rgba(121,84,57,.22); border-radius: 999px; color: #705842; background: rgba(255,255,255,.64); font-weight: 800; }
+.lantern-progress-light.active { border-color: #d1953d; color: #8a4a28; background: #ffedbd; box-shadow: 0 0 0 3px rgba(255,209,106,.18); }
+.lantern-progress-light.lit { color: #fff7dc; border-color: #9f542c; background: linear-gradient(135deg,#ca6a32,#efa63e); box-shadow: 0 6px 15px rgba(143,70,34,.24); }
+.lantern-wish-card { min-height: 190px; display: grid; align-content: center; padding: 24px 27px; border: 1px solid rgba(163,103,50,.33); border-radius: 20px; background: linear-gradient(145deg,rgba(255,253,239,.95),rgba(246,220,168,.9)); box-shadow: 0 13px 30px rgba(51,42,44,.2); }
+.lantern-wish-icon { font-size: 2rem; margin-bottom: 7px; filter: drop-shadow(0 4px 8px rgba(196,99,34,.3)); }
+.lantern-wish-card > p:first-of-type { margin: 0 0 7px; color: #965331; font: 800 .7rem/1.2 var(--font-sans); letter-spacing: .08em; text-transform: uppercase; }
+.lantern-wish-card h4 { margin: 0; color: #293e3c; font: 700 1.42rem/1.17 var(--font-serif); }
+.lantern-wish-card > p:last-child { margin: 10px 0 0; color: #596e68; line-height: 1.48; }
 .ritual-focus-dialog[data-ritual="kindnessQuest"] { background-image: linear-gradient(90deg,rgba(255,250,232,.36),rgba(235,223,190,.52)),url("../assets/foobow/backgrounds/kindness-quest-pavilion.webp"); }
 .ritual-focus-dialog[data-ritual="fiveSenses"] { background-image: linear-gradient(90deg,rgba(247,252,233,.3),rgba(221,235,205,.5)),url("../assets/foobow/backgrounds/five-senses-garden.webp"); }
+.ritual-focus-dialog[data-ritual="lantern"] { background-image: linear-gradient(90deg,rgba(34,38,69,.28),rgba(41,45,79,.46)),url("../assets/foobow/backgrounds/mountain-moon.png"); }
 .ritual-focus-dialog .peace-game-card { width: 100%; margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
 .ritual-focus-dialog[data-ritual="kindnessQuest"] .ritual-focus-stage,
-.ritual-focus-dialog[data-ritual="fiveSenses"] .ritual-focus-stage { margin: 0 auto; }
+.ritual-focus-dialog[data-ritual="fiveSenses"] .ritual-focus-stage,
+.ritual-focus-dialog[data-ritual="lantern"] .ritual-focus-stage { margin: 0 auto; }
 .ritual-focus-dialog .peace-game-scene { min-height: min(610px,72vh); }
 .ritual-focus-dialog .peace-game-panel { background: rgba(255,252,238,.92); }
 .scene-kindnessQuest, .scene-fiveSenses { background-position: center; background-size: cover; }
@@ -41,5 +66,5 @@
 .scene-fiveSenses { background-image: url("../assets/foobow/backgrounds/five-senses-garden.webp"); }
 .scene-kindnessQuest > *, .scene-fiveSenses > * { display: none; }
 @keyframes questReveal { 0% { transform: rotateY(88deg) scale(.92); opacity: .3; } 100% { transform: none; opacity: 1; } }
-@media (max-width: 680px) { .peace-game-scene { min-height: 660px; align-items: end; padding: 10px; background-position: 58% center; } .peace-game-panel { padding: 20px 17px; border-radius: 20px; } .peace-game-panel h3 { font-size: 1.55rem; } .quest-card { min-height: 175px; padding: 24px 20px; } .peace-game-actions > button { flex: 1 1 150px; } .ritual-focus-dialog[data-ritual="kindnessQuest"] .ritual-focus-shell, .ritual-focus-dialog[data-ritual="fiveSenses"] .ritual-focus-shell { padding: 12px; } .ritual-focus-dialog[data-ritual="kindnessQuest"] .peace-game-scene, .ritual-focus-dialog[data-ritual="fiveSenses"] .peace-game-scene { min-height: 0; padding: 10px; } }
-@media (prefers-reduced-motion: reduce) { .quest-card.revealing { animation: none; } .peace-game-primary, .peace-game-secondary, .quest-paths button { transition: none; } }
+@media (max-width: 680px) { .peace-game-scene { min-height: 660px; align-items: end; padding: 10px; background-position: 58% center; } .peace-game-panel { padding: 20px 17px; border-radius: 20px; } .peace-game-panel h3 { font-size: 1.55rem; } .quest-card,.lantern-wish-card { min-height: 175px; padding: 24px 20px; } .peace-game-actions > button { flex: 1 1 150px; } .ritual-focus-dialog[data-ritual="kindnessQuest"] .ritual-focus-shell, .ritual-focus-dialog[data-ritual="fiveSenses"] .ritual-focus-shell, .ritual-focus-dialog[data-ritual="lantern"] .ritual-focus-shell { padding: 12px; } .ritual-focus-dialog[data-ritual="kindnessQuest"] .peace-game-scene, .ritual-focus-dialog[data-ritual="fiveSenses"] .peace-game-scene, .ritual-focus-dialog[data-ritual="lantern"] .peace-game-scene { min-height: 0; padding: 10px; } .lantern-moon { width: 62px; } }
+@media (prefers-reduced-motion: reduce) { .quest-card.revealing { animation: none; } .peace-game-primary, .peace-game-secondary, .quest-paths button, .lantern-light { transition: none; } }

@@ -347,6 +347,36 @@
             </div>
           </section>
 
+          <section class="peace-game-card loving-kindness-lantern-card" id="lovingKindnessLanternCard" aria-labelledby="lanternJourneyTitle">
+            <div class="peace-game-scene loving-kindness-lantern-scene" data-lantern-step="self">
+              <div class="lantern-sky" aria-hidden="true">
+                <span class="lantern-moon"></span>
+                <span class="lantern-light lantern-light-one"></span>
+                <span class="lantern-light lantern-light-two"></span>
+                <span class="lantern-light lantern-light-three"></span>
+                <span class="lantern-hills"></span>
+              </div>
+              <div class="peace-game-panel lantern-journey-panel">
+                <p class="peace-game-kicker" data-lantern-i18n="kicker">LOVING-KINDNESS LANTERNS · 3 MIN</p>
+                <h3 id="lanternJourneyTitle" data-lantern-i18n="title">Send three quiet lights of kindness into the evening.</h3>
+                <p data-lantern-i18n="intro">Begin with yourself, then someone close, then the wider world. No names or messages are saved.</p>
+                <div class="lantern-journey-progress" id="lanternJourneyProgress" role="list" aria-label="Loving-kindness lantern progress"></div>
+                <article class="lantern-wish-card" aria-live="polite">
+                  <span class="lantern-wish-icon" id="lanternWishIcon" aria-hidden="true">🕯️</span>
+                  <p id="lanternStepLabel">1 of 3 · For yourself</p>
+                  <h4 id="lanternWishTitle">May I meet this moment with patience.</h4>
+                  <p id="lanternWishHint">Choose words that feel believable and gentle.</p>
+                </article>
+                <div class="peace-game-actions">
+                  <button class="peace-game-primary" id="offerLanternWish" type="button" data-lantern-i18n="offer">Light this wish</button>
+                  <button class="peace-game-secondary" id="restartLanternJourney" type="button" hidden data-lantern-i18n="restart">Light three more</button>
+                </div>
+                <p class="peace-game-note" data-lantern-i18n="privacy">Only your completed journey count is saved on this device.</p>
+                <p class="peace-game-status" id="lanternJourneyStatus" aria-live="polite"></p>
+              </div>
+            </div>
+          </section>
+
           <section class="gratitude-garden-card" id="gratitudeGardenCard" aria-labelledby="gratitudeGardenTitle">
             <div class="gratitude-garden-copy">
               <p class="gratitude-garden-kicker" data-gratitude-i18n="kicker">THREE GOOD THINGS · 3 MIN</p>

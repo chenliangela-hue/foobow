@@ -196,6 +196,17 @@ test("five senses grounding garden visual baseline", async ({ page }) => {
   });
 });
 
+test("loving-kindness lantern journey visual baseline", async ({ page }) => {
+  await page.locator('.bottom-nav .nav-item[data-target="blessings"]').click();
+  await page.locator('[data-play-ritual="lantern"]').click();
+  await page.locator("#offerLanternWish").click();
+  await page.locator("#offerLanternWish").click();
+  await expect(page.locator("#ritualFocusDialog")).toHaveScreenshot("loving-kindness-lantern.png", {
+    animations: "disabled",
+    maxDiffPixelRatio: 0.008
+  });
+});
+
 test("dark community visual baseline", async ({ page }) => {
   await page.getByRole("button", { name: "Toggle dark mode" }).click();
   await page.getByRole("button", { name: "Community" }).click();

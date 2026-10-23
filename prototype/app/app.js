@@ -3695,10 +3695,6 @@ function setupRedesignInteractions() {
   document.getElementById("ritualFocusClose").addEventListener("click", () => dialog.close());
 
   function openQuietRitual(ritual) {
-    if (ritual === "lantern") {
-      document.querySelector('.sanctuary-quick-pill[data-scenario="night-corridor"]')?.click();
-      return;
-    }
     const cards = {
       lamp: ".lamp-card",
       incense: ".incense-card",
@@ -3706,6 +3702,7 @@ function setupRedesignInteractions() {
       wheel: ".wheel-card",
       breathe: ".calm-ritual-card",
       gratitudeGarden: ".gratitude-garden-card",
+      lantern: ".loving-kindness-lantern-card",
       kindnessQuest: ".kindness-quest-card",
       fiveSenses: ".five-senses-card"
     };

@@ -46,7 +46,15 @@ test("Quiet Moments responds to mood, locale, and lantern choice", async ({ page
     await expect(page.locator('[data-play-ritual="muyu"] strong')).not.toBeEmpty();
   }
   await page.locator('[data-play-ritual="lantern"]').click();
-  await expect(page.locator("#sanctuary3DGameModal")).toBeVisible();
+  await expect(page.locator("#ritualFocusDialog #lovingKindnessLanternCard")).toBeVisible();
+  await expect(page.locator("#lanternJourneyTitle")).toContainText("kindness");
+  await expect(page.locator("#lanternStepLabel")).toContainText("1 of 3");
+  await page.locator("#offerLanternWish").click();
+  await expect(page.locator("#lanternStepLabel")).toContainText("2 of 3");
+  await page.locator("#offerLanternWish").click();
+  await page.locator("#offerLanternWish").click();
+  await expect(page.locator("#lanternJourneyStatus")).toContainText("three lights");
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("foobow.lovingKindnessLantern.v1"))).toBe("1");
 });
 
 test("landing deep link opens the Quiet Moments hub", async ({ page }) => {
