@@ -1,5 +1,11 @@
 # Foobow Community — safety-by-design
 
+## Kindness mosaic preview
+
+The web Community screen includes an illustrative Kindness Mosaic preview. It is a closed, fixed-category visualization and does not accept submissions, names, free text, locations, images, or raw activity. Its sample totals are clearly labeled as illustrative and must not be presented as verified community impact.
+
+Public aggregation remains gated on production identity ownership, server-authoritative moderation, privacy review, and an aggregate API that returns category totals only. Counts must come from completed, eligible deed actions; private actions and groups below the approved disclosure threshold must not be exposed.
+
 ## The problem
 
 We want a RedNote (小红书) / Xiaohongshu-style visual community where people share their good deeds and support each other. But free user uploads — arbitrary text and especially arbitrary images — are the single largest legal and moderation liability a small team can take on: illegal imagery (incl. CSAM), hate speech, defamation, copyright, spam, and PII all arrive through that door, and reviewing them at scale needs staff we do not have.

@@ -17,6 +17,120 @@ const POST_KINDS = ["share", "ask"];
 const POST_TAGS = ["animals", "elders", "environment", "community", "learning"];
 const FEED_FILTERS = ["all", "share", "ask"];
 
+const MOSAIC_CATEGORIES = [
+  { id: "environment", icon: "🌿", count: 18, color: "sage" },
+  { id: "community", icon: "🏡", count: 15, color: "coral" },
+  { id: "animals", icon: "🐾", count: 13, color: "sky" },
+  { id: "elders", icon: "🫶", count: 11, color: "gold" },
+  { id: "learning", icon: "📖", count: 9, color: "violet" }
+];
+
+const MOSAIC_COPY = {
+  en: {
+    kicker: "Kindness mosaic", title: "Small acts, seen together.", badge: "Illustrative preview",
+    intro: "Explore a sample of how completed deeds could form a shared garden without showing names, messages, or locations.",
+    privacy: "Category totals only · community publishing stays off until identity and moderation are ready.",
+    sample: "sample acts", categories: "Kindness categories",
+    environment: ["Care for the earth", "Small care for trees, waterways, and shared green places."],
+    community: ["Help close to home", "Meals, errands, and practical care shared with neighbours."],
+    animals: ["Protect living beings", "Gentle support for animals and the places they depend on."],
+    elders: ["Stand beside elders", "Patient company, listening, and everyday help across generations."],
+    learning: ["Share what you know", "Time given to reading, mentoring, and curious minds."]
+  },
+  "zh-Hans": {
+    kicker: "善意拼图", title: "微小善举，汇成风景。", badge: "示意预览",
+    intro: "看看已完成的善举如何在不展示姓名、留言或位置的情况下汇成一座共享花园。",
+    privacy: "仅显示分类总数 · 身份与审核机制完善前，社区发布保持关闭。", sample: "件示意善举", categories: "善举分类",
+    environment: ["守护自然", "关怀树木、水域和共享绿地。"], community: ["帮助身边的人", "为邻里送上餐食、跑腿与实际关怀。"],
+    animals: ["保护生命", "温柔帮助动物和它们赖以生存的地方。"], elders: ["陪伴长辈", "用耐心陪伴、倾听与日常帮助连接世代。"],
+    learning: ["分享所知", "把时间送给阅读、辅导与好奇的心。"]
+  },
+  fr: {
+    kicker: "Mosaïque de bonté", title: "De petits gestes, réunis.", badge: "Aperçu illustratif",
+    intro: "Découvrez comment des gestes accomplis pourraient former un jardin partagé sans noms, messages ni lieux.",
+    privacy: "Totaux par catégorie uniquement · la publication reste fermée avant la mise en place de l'identité et de la modération.", sample: "gestes exemples", categories: "Catégories de bonté",
+    environment: ["Prendre soin de la terre", "De petites attentions pour les arbres, l'eau et les espaces verts."], community: ["Aider près de chez soi", "Repas, courses et aide concrète entre voisins."],
+    animals: ["Protéger le vivant", "Un soutien doux aux animaux et à leurs habitats."], elders: ["Être présent pour les aînés", "Présence, écoute et entraide entre générations."],
+    learning: ["Partager son savoir", "Du temps pour lire, guider et nourrir la curiosité."]
+  },
+  es: {
+    kicker: "Mosaico de bondad", title: "Pequeños actos, juntos.", badge: "Vista ilustrativa",
+    intro: "Explora cómo las buenas acciones podrían formar un jardín compartido sin mostrar nombres, mensajes ni ubicaciones.",
+    privacy: "Solo totales por categoría · la publicación seguirá cerrada hasta contar con identidad y moderación.", sample: "actos de muestra", categories: "Categorías de bondad",
+    environment: ["Cuidar la tierra", "Pequeños cuidados para árboles, agua y espacios verdes."], community: ["Ayudar cerca de casa", "Comidas, recados y ayuda práctica entre vecinos."],
+    animals: ["Proteger la vida", "Apoyo amable para animales y sus hábitats."], elders: ["Acompañar a mayores", "Compañía, escucha y ayuda cotidiana entre generaciones."],
+    learning: ["Compartir lo que sabes", "Tiempo para leer, orientar y despertar curiosidad."]
+  },
+  th: {
+    kicker: "โมเสกแห่งความเมตตา", title: "ความดีเล็ก ๆ เมื่อมองร่วมกัน", badge: "ตัวอย่างเพื่อการออกแบบ",
+    intro: "ดูตัวอย่างว่าความดีที่ทำแล้วจะรวมเป็นสวนร่วมกันได้อย่างไร โดยไม่แสดงชื่อ ข้อความ หรือสถานที่",
+    privacy: "แสดงเฉพาะยอดรวมตามหมวด · การเผยแพร่จะยังปิดจนกว่าระบบตัวตนและการดูแลจะพร้อม", sample: "ตัวอย่างความดี", categories: "หมวดความเมตตา",
+    environment: ["ดูแลโลก", "ใส่ใจต้นไม้ แหล่งน้ำ และพื้นที่สีเขียวร่วมกัน"], community: ["ช่วยเหลือใกล้บ้าน", "แบ่งปันอาหาร ธุระ และความช่วยเหลือกับเพื่อนบ้าน"],
+    animals: ["ปกป้องชีวิต", "ช่วยสัตว์และถิ่นอาศัยของพวกมันอย่างอ่อนโยน"], elders: ["อยู่เคียงข้างผู้สูงวัย", "มอบเวลา รับฟัง และช่วยเหลือกันระหว่างวัย"],
+    learning: ["แบ่งปันความรู้", "มอบเวลาให้การอ่าน การแนะนำ และความอยากรู้อยากเห็น"]
+  },
+  ja: {
+    kicker: "やさしさのモザイク", title: "小さな行いを、ひとつの景色に。", badge: "イメージプレビュー",
+    intro: "名前・メッセージ・場所を表示せず、完了した善行が共有の庭になる姿を体験できます。",
+    privacy: "カテゴリ別合計のみ · 本人確認とモデレーションが整うまで投稿機能は公開しません。", sample: "件のサンプル", categories: "善行カテゴリ",
+    environment: ["地球をいたわる", "木々、水辺、みんなの緑地への小さな心配り。"], community: ["身近な人を助ける", "食事、用事、近所で分かち合う実用的な支援。"],
+    animals: ["いのちを守る", "動物とその生息地への穏やかな支援。"], elders: ["年長者に寄り添う", "世代をつなぐ傾聴、交流、日々の手助け。"],
+    learning: ["知恵を分かち合う", "読書、助言、好奇心のために時間を贈ること。"]
+  }
+};
+
+let activeMosaicCategory = "environment";
+
+function renderKindnessMosaic() {
+  const root = document.getElementById("kindnessMosaic");
+  const list = document.getElementById("mosaicCategoryList");
+  const field = document.getElementById("mosaicTileField");
+  if (!root || !list || !field) return;
+  const copy = MOSAIC_COPY[normalizeLocale(state.language)] || MOSAIC_COPY.en;
+  const active = MOSAIC_CATEGORIES.find((item) => item.id === activeMosaicCategory) || MOSAIC_CATEGORIES[0];
+
+  document.getElementById("kindnessMosaicKicker").textContent = copy.kicker;
+  document.getElementById("kindnessMosaicTitle").textContent = copy.title;
+  document.getElementById("kindnessMosaicBadge").textContent = copy.badge;
+  document.getElementById("kindnessMosaicIntro").textContent = copy.intro;
+  document.getElementById("kindnessMosaicPrivacy").textContent = copy.privacy;
+  list.setAttribute("aria-label", copy.categories);
+  list.replaceChildren();
+
+  MOSAIC_CATEGORIES.forEach((category) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `mosaic-category-card ${category.color}${category.id === active.id ? " active" : ""}`;
+    button.dataset.mosaicCategory = category.id;
+    button.setAttribute("aria-pressed", String(category.id === active.id));
+    button.innerHTML = `<span class="mosaic-category-icon" aria-hidden="true">${category.icon}</span><span><strong>${copy[category.id][0]}</strong><small>${category.count} ${copy.sample}</small></span>`;
+    button.addEventListener("click", () => {
+      activeMosaicCategory = category.id;
+      renderKindnessMosaic();
+      window.FOOBOW_RITUAL_ENGINE?.audio?.playWaterRipple?.();
+    });
+    list.append(button);
+  });
+
+  field.replaceChildren();
+  MOSAIC_CATEGORIES.forEach((category, categoryIndex) => {
+    const tileCount = Math.ceil(category.count / 3);
+    for (let index = 0; index < tileCount; index += 1) {
+      const tile = document.createElement("span");
+      tile.className = `mosaic-tile ${category.color}${category.id === active.id ? " active" : ""}`;
+      tile.style.setProperty("--tile-delay", `${(categoryIndex * 4 + index) * 24}ms`);
+      tile.textContent = index === 0 ? category.icon : "";
+      field.append(tile);
+    }
+  });
+
+  document.getElementById("mosaicDetailIcon").textContent = active.icon;
+  document.getElementById("mosaicDetailCount").textContent = `${active.count} ${copy.sample}`;
+  document.getElementById("mosaicDetailTitle").textContent = copy[active.id][0];
+  document.getElementById("mosaicDetailCopy").textContent = copy[active.id][1];
+  root.dataset.activeCategory = active.id;
+}
+
 function tagLabel(tag) {
   const key = "tag" + tag.charAt(0).toUpperCase() + tag.slice(1);
   return dictionary()[key] || tag;
@@ -277,6 +391,7 @@ function renderCommunityFeed() {
   const list = document.getElementById("feedList");
   if (!list) return;
   const dict = dictionary();
+  renderKindnessMosaic();
   renderPostKinds();
   renderPostTags();
   renderComposerMode();

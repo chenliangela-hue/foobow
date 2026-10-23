@@ -152,3 +152,21 @@ test("posts and replies reject links to limit spam and scams", async ({ page }) 
   // A link makes the post fail the pre-publish filter — nothing is created.
   await expect(page.locator(".feed-post")).toHaveCount(0);
 });
+
+test("kindness mosaic previews fixed categories without collecting personal data", async ({ page }) => {
+  const mosaic = page.locator("#kindnessMosaic");
+  await expect(mosaic).toBeVisible();
+  await expect(mosaic).toContainText("Illustrative preview");
+  await expect(mosaic.locator(".mosaic-category-card")).toHaveCount(5);
+  await expect(mosaic.locator("input, textarea, select")).toHaveCount(0);
+
+  const environment = mosaic.locator('[data-mosaic-category="environment"]');
+  await environment.click();
+  await expect(environment).toHaveAttribute("aria-pressed", "true");
+  await expect(mosaic.locator("#mosaicDetailTitle")).toHaveText("Care for the earth");
+  await expect(mosaic.locator("#mosaicDetailCopy")).toContainText("trees, waterways");
+
+  await page.locator("#languageSelect").selectOption("zh-Hans");
+  await expect(mosaic.locator("#kindnessMosaicTitle")).toHaveText("微小善举，汇成风景。");
+  await expect(mosaic.locator("#kindnessMosaicPrivacy")).toContainText("仅显示分类总数");
+});
