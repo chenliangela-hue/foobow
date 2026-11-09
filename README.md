@@ -94,6 +94,7 @@ Foobow should feel calm, premium, emotionally warm, and trustworthy. It should a
 - [Task Board](docs/task-board.md)
 - [Mini-Game Refactor Roadmap: 30 Games](docs/mini-game-refactor-roadmap-2026-11.md)
 - [ADR 003 Mini-Game Rendering (Proposed)](docs/adr-003-mini-game-rendering.md)
+- [Background Collections, Appearance and Rotation Roadmap](docs/background-theme-roadmap-2026-11.md)
 - [Sprint Audit And Next Plan](docs/sprint-audit-and-next-plan.md)
 - [Calm Ritual Feature Spec](docs/calm-ritual-feature-spec.md)
 - [Acceptance Criteria](docs/acceptance-criteria.md)
