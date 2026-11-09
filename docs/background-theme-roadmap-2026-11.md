@@ -4,6 +4,8 @@ Date: 2026-11-09. Status: proposed future implementation; no images generated, p
 
 Execution tracker: [Foobow Web Delivery](https://github.com/users/chenliangela-hue/projects/2). Companion program: [Little Worlds of Kindness mini-games #5](https://github.com/chenliangela-hue/foobow/issues/5). Use the same art direction, accessibility rules, and web-first priority.
 
+Companion [audio roadmap #73](https://github.com/chenliangela-hue/foobow/issues/73) can suggest a music family for a collection, but scenery rotation never resets mute or restarts music automatically. [Together/rankings #60](https://github.com/chenliangela-hue/foobow/issues/60) uses the same readable surfaces; its web release is an additional native-mobile gate through #44.
+
 ## 1. Desired experience and current baseline
 
 Create a library of coordinated illustrated background collections. A collection provides a distinct but related scene for every supported page and a matched light/dark pair for each scene. Users can keep one collection, browse alternatives, or opt into a periodic change. The interface remains recognizably Foobow across pages, seasons, devices and appearance modes.

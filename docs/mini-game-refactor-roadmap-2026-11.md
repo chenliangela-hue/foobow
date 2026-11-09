@@ -6,6 +6,8 @@ Canonical execution tracker: [Foobow Web Delivery](https://github.com/users/chen
 
 Companion web work: [background collections and automatic rotation #46](https://github.com/chenliangela-hue/foobow/issues/46), specified in `docs/background-theme-roadmap-2026-11.md`. It shares art-bible task F02/#7. Its BG12 web release gate also blocks F08/#44 before native mobile work can begin; game scenery remains bound to per-game acceptance.
 
+Additional companion plans: [Together and geographic rankings #60](https://github.com/chenliangela-hue/foobow/issues/60) and [shared music/audio #73](https://github.com/chenliangela-hue/foobow/issues/73). Game registration will declare scoring-policy/group and audio-scene mappings; unvalidated local karma cannot become public rank, and mute never reduces credits. Their RK11/#71 and AU10/#83 web gates also block F08/#44.
+
 ## 1. Objective, audience, and boundaries
 
 Help a person do one small, understandable act of kindness or take a quiet break and feel willing to return. Make the world charming enough to explore and the interaction satisfying enough to replay. Popularity and improved inner peace are hypotheses to validate, not guaranteed outcomes.
@@ -169,7 +171,7 @@ Planning roles are responsibilities, not named assignments. External agent outpu
 | G15-G20 | Six new web games, each a separate vertical slice / game owner | F06; serial order below | Prototype first, then full row + applicable gates and release evidence; Todo |
 | F07 | Consented web pilot and final web acceptance / product + QA | F06, F10, G15-G20, agreed outstanding web items #1/#2 | Metrics with denominators/limits, physical web device review, all blocking defects resolved or explicit scope decision, no unrecorded CI waiver; Todo |
 | G21-G30 | Discovery prototypes, not production commitments / product + design | F06 | One-session concept test and explicit promote/park/reject decision; Todo, discovery only |
-| F08 | Deferred mobile compatibility/rendering spike / mobile engineering | F07, #3 resolution, BG12 background web release, web backlog gate | Supported Expo upgrade assessment, Skia/WebView comparison, physical device trace, offline/native accessibility, no runtime selected by assumption; Todo, blocked by gate |
+| F08 | Deferred mobile compatibility/rendering spike / mobile engineering | F07, #3 resolution, BG12 backgrounds, RK11 rankings, AU10 audio web releases, web backlog gate | Supported Expo upgrade assessment, Skia/WebView comparison, physical device trace, offline/native accessibility, no runtime selected by assumption; Todo, blocked by gate |
 | F09 | Deferred native rollout and stores / mobile engineering + QA | F08 | One accepted game first, then approved parity scope; TestFlight/internal Android testing, device, privacy and store gates; Todo, blocked by gate |
 
 Recommended one-at-a-time order: G01 -> G02 -> G03 -> G04 -> G05 -> G06 -> G07 -> G08 -> G09 -> G10 -> G11 -> G12 -> G13 -> G14 -> F05/F06 closeout -> G15 -> G16 -> G17 -> G18 -> G19 -> G20 -> F07. F05 preparatory work can begin after G05; closeout waits for all relevant games. Do not progress past a game's unresolved blocking usability or quality failure just to increase catalog count.
