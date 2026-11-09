@@ -307,6 +307,8 @@
 
 ## Next
 
+- Published the next game-quality roadmap in [GitHub issue #5](https://github.com/chenliangela-hue/foobow/issues/5) and the existing Foobow Web Delivery Project: 14 existing-game refactors, six proposed new web games, ten discovery concepts, ten shared/gating tasks, measurable player/technical gates, and deferred mobile architecture. Specification: `docs/mini-game-refactor-roadmap-2026-11.md`; proposed renderer ADR: `docs/adr-003-mini-game-rendering.md`. Start [F01/#6](https://github.com/chenliangela-hue/foobow/issues/6) before engine adoption; current API advisories are a release blocker in [F10/#20](https://github.com/chenliangela-hue/foobow/issues/20). The prior storybook delivery (#4) remains complete for its original scope. All new implementation tasks remain Todo.
+
 - Community Kindness Mosaic design slice is implemented as an explicitly illustrative, count-only web preview with five fixed categories, six locales, responsive layouts, keyboard controls, and reduced-motion support. Keep live community publishing and real aggregate counts gated until production identity ownership, server moderation, privacy thresholds, and an aggregate API are ready.
 - Continue GitHub issue #1 with additional location-appropriate scenarios beyond fish release, richer completion feedback on the selected map location, and deployed desktop/tablet/phone PAQA.
 - Complete the web experience before resuming mobile work: expose Quiet Moments from the public homepage, finish all web localization/accessibility paths, stabilize web visual baselines, and run live desktop/tablet/mobile-browser PAQA.
