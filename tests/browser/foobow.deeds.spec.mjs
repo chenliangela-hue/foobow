@@ -192,6 +192,35 @@ test("Today screen direct 3D sanctuary portal launches scenario directly", async
   await expect(modal).not.toBeVisible();
 });
 
+test("Kyoto lantern can be folded, placed and settled in reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.locator(".bottom-nav .nav-item[data-target='today']").click();
+  await page.locator(".sanctuary-quick-pill[data-scenario='night-corridor']").click();
+  await page.getByRole("button", { name: "Fold lantern" }).press("Enter");
+  await page.getByRole("button", { name: "Place on the water" }).click();
+  await expect(page.locator("#kyotoStatus")).toContainText("joined the lights");
+  await expect(page.getByRole("button", { name: "Fold another lantern" })).toBeVisible();
+  await expect(page.locator("#gameComboBadge")).toBeHidden();
+});
+
+test("Kyoto offers a motion pause and one completion when a drifting lantern is skipped", async ({ page }, info) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.locator(".bottom-nav .nav-item[data-target='today']").click();
+  await page.locator(".sanctuary-quick-pill[data-scenario='night-corridor']").click();
+  await page.getByRole("button", { name: "Fold lantern" }).click();
+  const place = page.getByRole("button", { name: "Place on the water" });
+  if (info.project.use.hasTouch) await place.tap();
+  else await place.click();
+  await expect(page.locator("#kyotoStatus")).toContainText("drift");
+  await page.getByRole("button", { name: "Pause motion" }).click();
+  await expect(page.getByRole("button", { name: "Resume motion" })).toBeVisible();
+  await page.getByRole("button", { name: "Skip to the river bend" }).press("Enter");
+  await expect(page.getByRole("button", { name: "Fold another lantern" })).toBeFocused();
+  await expect(page.locator("#gameGoalCounter")).toContainText("1/5");
+  await page.getByRole("button", { name: "Fold another lantern" }).click();
+  await expect(page.locator("#gameGoalCounter")).toContainText("1/5");
+});
+
 test("10-second seedling nurturing micro-game sprouts plant into personal Kindness Garden shelf", async ({ page }) => {
   await page.locator(".bottom-nav .nav-item[data-target='deeds']").click();
   await expect(page.locator("#seedlingCard")).toBeVisible();

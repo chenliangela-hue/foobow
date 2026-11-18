@@ -30,6 +30,8 @@ MIT license metadata was observed for PixiJS, Phaser, Three.js and both Skia pac
 
 ## Actions / reconsideration
 
+2026-11-17 evidence update. The product owner liked the local **Beneath the Lilies** prototype. Its fish-eye view makes true depth a candidate for that specific scene. Include the pinned Three.js prototype in F03 alongside the 2D baseline and relevant Pixi experiment. The browser evidence is Chromium on WebGL 2. Record real-device and other-browser evidence, test equivalent progression on the fallback, and compare against the existing budgets before adopting a renderer. Keep DOM/CSS for simple rituals unless their own prototype demonstrates a concrete need. [Prototype evidence](living-sanctuary-story-plan.md#beneath-the-lilies--2026-11-17-review-sample)
+
 - [ ] F01 preserves current launch routes, saves, rewards and test evidence.
 - [ ] F02 establishes art scale and motion consistency before asset expansion.
 - [ ] F03 records comparable measurements and changes this ADR to Accepted only with a justified selection.

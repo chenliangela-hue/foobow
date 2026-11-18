@@ -48,6 +48,9 @@ jobs:
       - name: Run browser PA checks
         run: npm run test:browser
 
+      - name: Run living sanctuary browser checks
+        run: npm run test:browser:sanctuary
+
   api-db-smoke:
     runs-on: ubuntu-latest
     services:

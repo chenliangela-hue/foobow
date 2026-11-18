@@ -10,5 +10,7 @@ server.err.log
 server.out.log
 foobow-mobile-pa.png
 test-results/
+test-results-sanctuary/
+test-results-sanctuary-today/
 playwright-report/
 .claude/

@@ -33,6 +33,43 @@ test("Today ritual card opens the lamp in the same play view", async ({ page }) 
   await expect(page.locator("#screen-today")).toBeVisible();
 });
 
+test("Wooden Fish responds in the rainy room and starts silent", async ({ page }, info) => {
+  await page.locator("#viewAllRitualsBtn").click();
+  await page.locator('[data-play-ritual="muyu"]').click();
+  await expect(page.getByRole("button", { name: "Instrument sound" })).toHaveAttribute("aria-pressed", "false");
+  await page.locator("#muyuBtn").press("Enter");
+  await expect(page.locator("#muyuStage")).toHaveClass(/room-resonant/);
+  await expect(page.locator("#muyuCount")).toHaveText("1");
+  const sound = page.getByRole("button", { name: "Instrument sound" });
+  await sound.click();
+  await expect(sound).toHaveAttribute("aria-pressed", "true");
+  await sound.click();
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+  if (info.project.use.hasTouch) await page.locator("#muyuBtn").tap();
+  else await page.locator("#muyuBtn").click();
+  await expect(page.locator("#muyuCount")).toHaveText("2");
+});
+
+test("Gratitude accepts three stone placements without private text", async ({ page }, info) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.locator("#viewAllRitualsBtn").click();
+  await page.locator('[data-play-ritual="gratitudeGarden"]').click();
+  const second = page.getByRole("button", { name: "Place stone 2" });
+  await second.scrollIntoViewIfNeeded();
+  if (info.project.use.hasTouch) await second.tap();
+  else await second.click();
+  await expect(second).toHaveAttribute("aria-pressed", "true");
+  await second.press("Enter");
+  await expect(page.locator("#gratitudePond .gratitude-pebble")).toHaveCount(1);
+  await page.getByRole("button", { name: "Place stone 1" }).press("Enter");
+  const third = page.getByRole("button", { name: "Place stone 3" });
+  await third.scrollIntoViewIfNeeded();
+  await third.press("Enter");
+  await expect(page.locator("#gratitudePond .gratitude-pebble")).toHaveCount(3);
+  await expect(page.locator("#gratitudeAgainBtn")).toBeFocused();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("foobow.peaceGarden.v1")))).toEqual({ sessions: 1 });
+});
+
 test("Quiet Moments responds to mood, locale, and lantern choice", async ({ page }) => {
   await page.locator("#viewAllRitualsBtn").click();
   await page.locator('[data-quiet-mood="gratitude"]').click();
@@ -81,7 +118,7 @@ test("Gratitude Pebble Garden settles three private good moments", async ({ page
 
   await expect(page.locator("#gratitudePond .gratitude-pebble")).toHaveCount(3);
   await expect(page.locator("#gratitudePond")).toHaveClass(/garden-complete/);
-  await expect(page.locator("#gratitudePond .storybook-memory-stone.filled")).toHaveCount(3);
+  await expect(page.locator('#gratitudePond button[aria-pressed="true"]')).toHaveCount(3);
   await expect(page.locator("#gratitudeGardenStatus")).toContainText("settled");
   await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("foobow.peaceGarden.v1")).sessions)).toBe(1);
 

@@ -1484,7 +1484,35 @@ function setupMuyu() {
   const btn = document.getElementById("muyuBtn");
   const autoBtn = document.getElementById("muyuAutoBtn");
   const countEl = document.getElementById("muyuCount");
+  const stage = document.getElementById("muyuStage");
+  const sound = document.getElementById("muyuRoomSound");
+  const instruction = document.getElementById("muyuRoomInstruction");
+  const roomCopy = {
+    en: ["Instrument sound", "Sound off", "Sound on", "Tap the wood and let the room settle. Stop whenever you like."],
+    "zh-Hans": ["木鱼声音", "声音关闭", "声音开启", "轻敲木鱼，静静等待。随时都可以停下。"],
+    fr: ["Son de l’instrument", "Son coupé", "Son activé", "Tapotez le bois et laissez le calme revenir. Arrêtez quand vous voulez."],
+    es: ["Sonido del instrumento", "Sin sonido", "Con sonido", "Toca la madera y deja que vuelva la calma. Para cuando quieras."],
+    th: ["เสียงเครื่องดนตรี", "ปิดเสียง", "เปิดเสียง", "เคาะไม้เบา ๆ แล้วพักสักครู่ หยุดได้ทุกเมื่อ"],
+    ja: ["木魚の音", "音なし", "音あり", "木魚をたたいて、静けさが戻るのを待ちましょう。いつでも終われます。"]
+  };
   if (!btn) return;
+  let roomSound = false;
+  let roomTimer;
+
+  function updateRoomSound() {
+    const [label, off, on, hint] = roomCopy[document.documentElement.lang] || roomCopy.en;
+    sound.setAttribute("aria-label", label);
+    sound.setAttribute("aria-pressed", String(roomSound));
+    sound.textContent = roomSound ? on : off;
+    instruction.textContent = hint;
+  }
+
+  sound.addEventListener("click", () => {
+    roomSound = !roomSound;
+    updateRoomSound();
+  });
+  new MutationObserver(updateRoomSound).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  updateRoomSound();
 
   if (typeof state.muyuTaps !== "number") {
     state.muyuTaps = 0;
@@ -1494,11 +1522,14 @@ function setupMuyu() {
   updateMuyuGoal();
 
   function handleTap() {
-    playMuyuSound(state.muyuTimbre);
+    if (roomSound) playMuyuSound(state.muyuTimbre);
+    stage.classList.add("room-resonant");
+    clearTimeout(roomTimer);
+    roomTimer = setTimeout(() => stage.classList.remove("room-resonant"), 1800);
     state.muyuTaps += 1;
     if (state.muyuTaps % 108 === 0) {
       updateKarma(8, btn);
-      playZenChime();
+      if (roomSound) playZenChime();
       const banner = document.getElementById("muyu108Banner");
       if (banner) {
         banner.textContent = dictionary().muyu108Attained || "108 Earthly Burdens Released · Serenity Attained! (+8 Karma)";
@@ -1511,7 +1542,7 @@ function setupMuyu() {
       }
     } else if (state.muyuTaps % 10 === 0) {
       updateKarma(1, btn);
-      playZenChime();
+      if (roomSound) playZenChime();
     } else {
       spawnFloatingMerit(btn, getMeritText(1));
     }
@@ -1575,7 +1606,7 @@ function setupMuyu() {
 
     if (pres.leveledUp) {
       window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone();
-      playZenChime();
+      if (roomSound) playZenChime();
       if (pres.level === "stillness") {
         const card = document.querySelector(".muyu-card");
         if (card) {
@@ -1609,6 +1640,7 @@ function setupMuyu() {
   btn.addEventListener("keydown", (e) => {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
+      if (e.repeat) return;
       btn.classList.add("compressing");
       if (malletEl) malletEl.classList.add("anticipating");
       window.FOOBOW_RITUAL_ENGINE?.haptics?.tap();
@@ -1630,25 +1662,36 @@ function setupMuyu() {
     chip.addEventListener("click", () => {
       state.muyuTimbre = chip.dataset.timbre || "wood";
       timbreChips.forEach((c) => c.classList.toggle("active", c === chip));
-      playMuyuSound(state.muyuTimbre);
+      if (roomSound) playMuyuSound(state.muyuTimbre);
       saveState();
     });
   });
 
   if (autoBtn) {
+    function stopAuto() {
+      clearInterval(muyuAutoTimer);
+      muyuAutoTimer = null;
+      autoBtn.textContent = dictionary().muyuAutoTap || "Auto tap";
+      autoBtn.classList.remove("active");
+    }
     autoBtn.addEventListener("click", () => {
       const dict = dictionary();
       if (muyuAutoTimer) {
-        clearInterval(muyuAutoTimer);
-        muyuAutoTimer = null;
-        autoBtn.textContent = dict.muyuAutoTap || "Auto tap";
-        autoBtn.classList.remove("active");
+        stopAuto();
       } else {
         autoBtn.textContent = dict.muyuStopAuto || "Pause auto";
         autoBtn.classList.add("active");
         handleTap();
         muyuAutoTimer = setInterval(handleTap, 1400);
       }
+    });
+    document.getElementById("ritualFocusDialog")?.addEventListener("close", () => {
+      stopAuto();
+      clearTimeout(roomTimer);
+      stage.classList.remove("room-resonant");
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopAuto();
     });
   }
 

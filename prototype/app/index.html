@@ -240,6 +240,7 @@
                 <button class="sanctuary-quick-pill" type="button" data-scenario="east-lake">🐟 East Lake Release</button>
                 <button class="sanctuary-quick-pill" type="button" data-scenario="night-corridor">🏮 Kyoto Lanterns</button>
                 <button class="sanctuary-quick-pill" type="button" data-scenario="amazon-grove">🌱 Amazon Grove</button>
+                <a class="sanctuary-quick-pill" href="../sanctuary/" aria-label="Play A Life You Set Free, story prototype">A Life You Set Free · Story prototype</a>
               </div>
             </div>
             <div class="mini-world-globe-art" aria-hidden="true">
@@ -384,12 +385,15 @@
               <p data-gratitude-i18n="intro">Recall three moments, people, or small comforts from today. Each one becomes a pebble in your quiet garden.</p>
               <div class="gratitude-session-count"><span aria-hidden="true">◌</span> <span id="gratitudeSessionCount">0 gardens tended</span></div>
             </div>
-            <div class="gratitude-pond" id="gratitudePond" aria-hidden="true">
-              <span class="gratitude-moon"></span>
-              <span class="gratitude-lotus lotus-one">✦</span>
-              <span class="gratitude-lotus lotus-two">✦</span>
-              <span class="gratitude-ripple ripple-one"></span>
-              <span class="gratitude-ripple ripple-two"></span>
+            <div class="creek-scene">
+              <div class="gratitude-pond" id="gratitudePond" role="group" aria-label="Creek stone placements">
+                <button type="button" class="creek-stone" aria-pressed="false" aria-label="Place stone 1"></button>
+                <button type="button" class="creek-stone" aria-pressed="false" aria-label="Place stone 2"></button>
+                <button type="button" class="creek-stone" aria-pressed="false" aria-label="Place stone 3"></button>
+              </div>
+              <p class="creek-instruction" data-gratitude-i18n="placeHint">Choose three stones. Writing is optional.</p>
+              <p class="gratitude-status" id="gratitudeGardenStatus" aria-live="polite"></p>
+              <button class="gratitude-again" id="gratitudeAgainBtn" type="button" hidden data-gratitude-i18n="again">Tend another garden</button>
             </div>
             <form class="gratitude-form" id="gratitudeGardenForm">
               <label for="gratitudeMoment1"><span data-gratitude-i18n="prompt1">One small moment</span><input id="gratitudeMoment1" type="text" maxlength="72" autocomplete="off" data-gratitude-placeholder="placeholder1" placeholder="Warm sunlight, an easy laugh…"></label>
@@ -398,9 +402,7 @@
               <p class="gratitude-privacy" id="gratitudePrivacyNote"><span aria-hidden="true">⌁</span> <span data-gratitude-i18n="privacy">Your words stay on this page. Only your garden count is saved on this device.</span></p>
               <div class="gratitude-actions">
                 <button class="gratitude-settle" id="settleGratitudeBtn" type="submit" disabled><span data-gratitude-i18n="settle">Settle these moments</span><span aria-hidden="true">→</span></button>
-                <button class="gratitude-again" id="gratitudeAgainBtn" type="button" hidden data-gratitude-i18n="again">Tend another garden</button>
               </div>
-              <p class="gratitude-status" id="gratitudeGardenStatus" aria-live="polite"></p>
             </form>
           </section>
 
@@ -557,7 +559,7 @@
               </div>
               <span class="soft-pill" id="muyuCount">0</span>
             </div>
-            <p class="muyu-copy" data-i18n="muyuCopy">Tap the wooden fish to ease worry and cultivate quiet merit. Every tap is a moment of presence.</p>
+            <p class="muyu-copy" id="muyuRoomInstruction">Tap the wood and let the room settle. Stop whenever you like.</p>
             <div class="muyu-stage" id="muyuStage" aria-label="Electronic wooden fish">
               <button class="muyu-btn" id="muyuBtn" type="button" aria-label="Tap electronic wooden fish">
                 <div class="muyu-halo" aria-hidden="true"></div>
@@ -611,6 +613,7 @@
               </div>
             </div>
             <div class="muyu-controls">
+              <button class="text-button" id="muyuRoomSound" type="button" aria-label="Instrument sound" aria-pressed="false">Sound off</button>
               <button class="text-button" id="muyuAutoBtn" type="button" data-i18n="muyuAutoTap">Auto tap</button>
               <span class="muyu-hint" data-i18n="muyuHint">Knock softly to gather presence</span>
             </div>
@@ -1706,6 +1709,7 @@
             <div class="game-goal-bar-wrap" aria-hidden="true">
               <div class="game-goal-bar-fill" id="gameGoalBarFill"></div>
             </div>
+            <p id="kyotoStatus" class="kyoto-status" role="status" hidden></p>
           </div>
 
           <!-- Interactive Center Overlays & Toasts -->
@@ -1723,7 +1727,7 @@
             </div>
 
             <!-- Wish Selector Chips (shown in Kyoto Night River) -->
-            <div class="game-wish-picker" id="gameWishPicker" role="radiogroup" aria-label="Lantern Wish Intention" style="display: none;">
+            <div class="game-wish-picker" id="gameWishPicker" role="group" aria-label="Lantern wish" style="display: none;">
               <button class="wish-btn active" type="button" data-wish="peace" title="Peace · 平安">🕊️ 平安</button>
               <button class="wish-btn" type="button" data-wish="health" title="Health · 安康">🌿 安康</button>
               <button class="wish-btn" type="button" data-wish="wisdom" title="Wisdom · 般若">✨ 般若</button>
@@ -1739,6 +1743,7 @@
 
             <!-- Camera & Utility Controls -->
             <div class="game-hud-controls">
+              <button class="text-button game-hud-btn-sm" id="kyotoMotion" type="button" hidden>Pause motion</button>
               <button class="text-button game-hud-btn-sm" id="gameCamModeBtn" type="button" title="Switch Camera Mode">🎥 <span id="gameCamModeLabel">Orbit</span></button>
               <button class="text-button game-hud-btn-sm" id="gameResetCamBtn" type="button" title="Reset Camera View">🔄 View</button>
               <button class="text-button game-hud-btn-sm game-hud-close-btn" id="close3DGameBottomBtn" type="button" data-i18n="closeDialog">Close</button>
