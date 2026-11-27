@@ -19,3 +19,9 @@ Audit date: November 26, 2026. Scope: public homepage and guest web app at www.f
 5. Run responsive and keyboard acceptance, review the browser and visual regression results, and compare against a hosted preview before any production promotion. [#93](https://github.com/chenliangela-hue/foobow/issues/93)
 
 GitHub repository issues hold acceptance criteria. Issues #89–#93 are on the existing [Foobow Web Delivery Project](https://github.com/users/chenliangela-hue/projects/2). The saved project-owner login can update the board. The default CLI account can update repository issues and needs separate project access for board updates.
+
+## Preview acceptance
+
+The protected Vercel deployment linked from draft pull request #94 passed guest acceptance in Edge at 390 and 1280 pixels. Both runs completed all three games and checked the landing path, return from a retired game URL, localized gallery copy, Map-to-Deeds focus, deed search recovery, Profile privacy heading, and the Community preview notice. The runs observed no uncaught script errors or horizontal viewport overflow in the final screen.
+
+The release branch isolates this audit from the local wallet and garden reward work. It also applies compatible API dependency patches to restore that audit gate. The native dependency audit remains a separate CI gate and still reports existing advisories. Keep the draft unmerged until the repository release gates are satisfied.
