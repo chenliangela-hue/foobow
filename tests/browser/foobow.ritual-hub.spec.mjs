@@ -272,6 +272,6 @@ test("primary screens fit the viewport", async ({ page }) => {
     await page.locator(`.bottom-nav [data-target="${target}"]`).click();
     await expect(page.locator(`#screen-${target}`)).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), target).toBeLessThanOrEqual(1);
-    if (target === "profile") await expect(page.getByText("Earn 10 Seeds on your first signed-in visit", { exact: false })).toBeVisible();
+    if (target === "profile") await expect(page.getByRole("heading", { name: "Privacy and data" })).toBeVisible();
   }
 });

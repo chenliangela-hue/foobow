@@ -1680,15 +1680,6 @@ function setupMuyu() {
     });
   }
 
-  const karmaRing = document.querySelector(".karma-ring");
-  if (karmaRing && !karmaRing.dataset.hasTap) {
-    karmaRing.dataset.hasTap = "true";
-    karmaRing.setAttribute("title", "Tap for presence");
-    karmaRing.addEventListener("click", () => {
-      if (roomSound) playMuyuSound(state.muyuTimbre);
-      updateKarma(1, karmaRing);
-    });
-  }
 }
 
 let incenseTimer = null;

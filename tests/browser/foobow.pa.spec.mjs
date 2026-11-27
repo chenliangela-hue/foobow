@@ -203,45 +203,15 @@ test("soundscape audio control is opt-in, toggles, and survives retuning", async
   await expect(page.locator("#soundscapeToggle")).toHaveAttribute("aria-pressed", "false");
 });
 
-test("Today karma ring plays the instrument only after opt-in", async ({ page }) => {
-  await page.evaluate(() => {
-    window.testInstrumentHits = 0;
-    window.FOOBOW_RITUAL_ENGINE.audio.playTok = () => { window.testInstrumentHits += 1; };
-  });
-  const ring = page.getByLabel("Karma progress");
+test("Today karma is a progress display and the daily check-in earns karma", async ({ page }) => {
   const karma = page.locator("#karmaValue");
   const initialKarma = Number(await karma.textContent());
-  const instrumentHits = () => page.evaluate(() => window.testInstrumentHits);
 
-  const openWoodenFish = async () => {
-    await page.locator('.bottom-nav [data-target="blessings"]').click();
-    await page.locator('.games-gallery [data-play-ritual="muyu"]').click();
-  };
-  const returnToToday = async () => {
-    await page.keyboard.press("Escape");
-    await page.locator(".bottom-nav").getByRole("button", { name: "Today" }).click();
-  };
+  await page.getByLabel("Karma progress").click();
+  await expect(karma).toHaveText(String(initialKarma));
 
-  await ring.click();
-  await expect(karma).toHaveText(String(initialKarma + 1));
-  expect(await instrumentHits()).toBe(0);
-
-  await openWoodenFish();
-  const instrument = page.getByRole("button", { name: "Instrument sound" });
-  await instrument.click();
-  await expect(instrument).toHaveAttribute("aria-pressed", "true");
-  await returnToToday();
-  await ring.click();
-  await expect(karma).toHaveText(String(initialKarma + 2));
-  expect(await instrumentHits()).toBe(1);
-
-  await openWoodenFish();
-  await instrument.click();
-  await expect(instrument).toHaveAttribute("aria-pressed", "false");
-  await returnToToday();
-  await ring.click();
-  await expect(karma).toHaveText(String(initialKarma + 3));
-  expect(await instrumentHits()).toBe(1);
+  await page.locator("#completeDaily").click();
+  await expect(karma).toHaveText(String(initialKarma + 4));
 });
 
 test("profile menu opens, shows merit, and can open the profile screen", async ({ page }) => {
