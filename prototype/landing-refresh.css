@@ -1,0 +1,39 @@
+body { background: #f4f0e5; color: #233a2f; }
+.cinematic-backdrop, .aurora, .hero-badge-wrap, .phrase-rotator, .hero-visual > *, .quiet-preview-kicker { display: none; }
+.site-header { background: #f4f0e5; color: #233a2f; box-shadow: none; border-color: #d7dacc; }
+.site-header :is(.brand, .brand-word, .site-nav a) { color: #233a2f; }
+.hero { min-height: 0; padding-block: clamp(2rem, 5vw, 5rem); }
+.hero-content { color: #233a2f; }
+.hero .hero-title { color: #233a2f; background: none; -webkit-text-fill-color: currentColor; text-shadow: none; }
+.hero .hero-sub, .hero .kicker { color: #4c5e53; text-shadow: none; }
+.hero .btn-primary, .site-header .btn-primary, .final-cta .btn-primary { background: #254b3b; color: #fff8e7; border-color: #254b3b; box-shadow: none; }
+.hero .btn-ghost { border-color: #5d7469; color: #254b3b; background: transparent; }
+.hero .hero-visual { display: block; min-height: 0; height: auto; aspect-ratio: 5 / 4; border-radius: 18px; background: #12332d url('sanctuary/dive/assets/pond.webp') 59% center / cover; }
+.quiet-preview { background: #e1e8d8; color: #233a2f; border: 1px solid #c3cebd; box-shadow: none; }
+.quiet-preview h2, .quiet-preview-copy > p:last-of-type { color: #233a2f; }
+.quiet-preview .quiet-preview-cta { color: #234b36; text-shadow: none; }
+.quiet-preview .quiet-preview-rituals { display: block; min-height: 205px; border-radius: 13px; background: #2a4051 url('assets/foobow/backgrounds/storybook/kyoto-blue-hour.webp') center / cover; }
+.hero .couplet, .footer-blessing, .footer-note { color: #415748; text-shadow: none; }
+.site-footer { background: #e1e8d8; }
+.gates, .steps, .phrases {
+  --bg-card: #fdfaf0;
+  --border-glass: #d4d7c9;
+  --text-primary: #233a2f;
+  --text-secondary: #4a6254;
+  --gold-light: #784c29;
+}
+.gates .section-eyebrow, .steps .section-eyebrow, .phrases .section-eyebrow { text-shadow: none; }
+.gate-card, .gate-card:hover, .merit-inner, .ethics-inner { box-shadow: none; }
+.gate-badge { display: none; }
+.gate-icon { filter: none; }
+.step-list li::before { position: static; background: #e1e8d8; box-shadow: none; color: #233a2f; }
+.phrase-chip:hover { background: #e1e8d8; }
+.quiet-preview .quiet-preview-cta:hover { color: #182e22; text-decoration: underline; }
+body :is(a, button, select):focus-visible { outline: 3px solid #a44e2c; outline-offset: 4px; }
+@media (max-width: 959px) { .hero .hero-visual { aspect-ratio: 16 / 8; } }
+@media (max-width: 520px) {
+  .site-header { flex-wrap: wrap; gap: .65rem; }
+  .site-header .header-actions { flex-wrap: wrap; max-width: 100%; }
+  .site-header .header-actions .btn { white-space: normal; }
+}
+@media (min-width: 1150px) { .gate-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }

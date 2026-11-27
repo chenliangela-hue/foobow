@@ -12,26 +12,28 @@
     <link rel="stylesheet" href="peace-garden.css">
     <link rel="stylesheet" href="storybook-rituals.css">
     <link rel="stylesheet" href="peace-games.css">
+    <link rel="stylesheet" href="experience.css">
+    <link rel="stylesheet" href="quiet-games.css">
   </head>
   <body>
     <div class="cinematic-backdrop cinematic-backdrop-container" id="backdropContainer" aria-hidden="true">
       <!-- Light Mode Daytime Sanctuary (Blue Sky & White Clouds) -->
       <div class="cinematic-backdrop-group light-group">
-        <div class="cinematic-backdrop-layer active" data-tab="today" style="background-image: url('../assets/foobow/backgrounds/tab-today-light.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="blessings" style="background-image: url('../assets/foobow/backgrounds/tab-blessings-light.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="map" style="background-image: url('../assets/foobow/backgrounds/tab-map-light.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="deeds" style="background-image: url('../assets/foobow/backgrounds/tab-deeds-light.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="community" style="background-image: url('../assets/foobow/backgrounds/tab-community-light.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="profile" style="background-image: url('../assets/foobow/backgrounds/tab-profile-light.png');"></div>
+        <div class="cinematic-backdrop-layer" data-tab="today" data-image="backgrounds/tab-today-light.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="blessings" data-image="backgrounds/tab-blessings-light.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="map" data-image="backgrounds/tab-map-light.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="deeds" data-image="backgrounds/tab-deeds-light.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="community" data-image="backgrounds/tab-community-light.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="profile" data-image="backgrounds/tab-profile-light.png"></div>
       </div>
       <!-- Dark Mode Midnight Sanctuary (Deep Teal & Moonlit Waters) -->
       <div class="cinematic-backdrop-group dark-group">
-        <div class="cinematic-backdrop-layer active" data-tab="today" style="background-image: url('../assets/foobow/backgrounds/tab-today-dark.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="blessings" style="background-image: url('../assets/foobow/backgrounds/tab-blessings-dark.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="map" style="background-image: url('../assets/foobow/backgrounds/tab-map-dark.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="deeds" style="background-image: url('../assets/foobow/backgrounds/tab-deeds-dark.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="community" style="background-image: url('../assets/foobow/backgrounds/tab-community-dark.png');"></div>
-        <div class="cinematic-backdrop-layer" data-tab="profile" style="background-image: url('../assets/foobow/backgrounds/tab-profile-dark.png');"></div>
+        <div class="cinematic-backdrop-layer" data-tab="today" data-image="backgrounds/tab-today-dark.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="blessings" data-image="backgrounds/tab-blessings-dark.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="map" data-image="backgrounds/tab-map-dark.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="deeds" data-image="backgrounds/tab-deeds-dark.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="community" data-image="backgrounds/tab-community-dark.png"></div>
+        <div class="cinematic-backdrop-layer" data-tab="profile" data-image="backgrounds/tab-profile-dark.png"></div>
       </div>
     </div>
     <div class="zen-ambient-embers" aria-hidden="true">
@@ -59,8 +61,8 @@
         </a>
 
         <nav class="top-nav" id="topNav" aria-label="Sections">
-          <a class="top-nav-item active" href="#screen-today" data-target="today">Today</a>
-          <a class="top-nav-item" href="#screen-blessings" data-target="blessings">Blessings</a>
+          <a class="top-nav-item active" href="#screen-today" data-target="today" aria-current="page">Today</a>
+          <a class="top-nav-item" href="#screen-blessings" data-target="blessings">Games</a>
           <a class="top-nav-item" href="#screen-map" data-target="map">Map</a>
           <a class="top-nav-item" href="#screen-deeds" data-target="deeds">Deeds</a>
           <a class="top-nav-item" href="#screen-community" data-target="community">Community</a>
@@ -111,22 +113,13 @@
             </div>
           </div>
 
-          <div class="global-kindness-card" aria-label="Global kindness sanctuary">
-            <div class="kindness-metric-col">
-              <span class="kindness-metric-num">1.2M+</span>
-              <span class="kindness-metric-label">Kind Souls</span>
+          <section class="experience-feature" aria-labelledby="experience-feature-title">
+            <div class="experience-feature-art" aria-hidden="true"></div>
+            <div><h3 id="experience-feature-title" data-experience="games">Quiet Worlds</h3>
+              <p data-experience="gamesCopy">Choose a small world to spend a moment in.</p>
+              <a class="experience-action" href="?view=rituals" data-experience="browse">Browse games</a>
             </div>
-            <div class="kindness-metric-divider" aria-hidden="true"></div>
-            <div class="kindness-metric-col center-highlight">
-              <span class="kindness-metric-num gold-glow">8.4M+</span>
-              <span class="kindness-metric-label">Blessings Shared</span>
-            </div>
-            <div class="kindness-metric-divider" aria-hidden="true"></div>
-            <div class="kindness-metric-col">
-              <span class="kindness-metric-num">120+</span>
-              <span class="kindness-metric-label">Countries</span>
-            </div>
-          </div>
+          </section>
 
           <section class="almanac-panel" aria-labelledby="almanac-title">
             <div class="section-heading">
@@ -191,56 +184,12 @@
             <button class="primary-action" id="completeDaily" type="button" data-i18n="completeDeed">Complete deed</button>
           </section>
 
-          <section class="quick-rituals-panel" id="quickRitualsPanel" aria-labelledby="quick-rituals-title">
-            <div class="section-heading">
-              <div>
-                <p class="eyebrow" data-i18n="quickRitualsTitle">Quiet Moments</p>
-                <h3 id="quick-rituals-title" data-i18n="quickRitualsSubtitle">Find peace in a busy day</h3>
-              </div>
-              <button class="text-button quick-rituals-link" id="viewAllRitualsBtn" type="button" data-i18n="viewAllRituals">Explore all seven rituals →</button>
-            </div>
-            <div class="quick-rituals-grid">
-              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="lamp">
-                <span class="quick-ritual-icon">🪔</span>
-                <span class="quick-ritual-name" data-i18n="quickRitualLamp">Light a Lamp</span>
-                <span class="quick-ritual-duration" data-i18n="duration30Sec">30 sec</span>
-              </button>
-              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="incense">
-                <span class="quick-ritual-icon">🕯️</span>
-                <span class="quick-ritual-name" data-i18n="quickRitualIncense">Burn Incense</span>
-                <span class="quick-ritual-duration" data-i18n="duration1Min">1 min</span>
-              </button>
-              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="muyu">
-                <span class="quick-ritual-icon">🪵</span>
-                <span class="quick-ritual-name" data-i18n="quickRitualMuyu">Wooden Fish</span>
-                <span class="quick-ritual-duration" data-i18n="duration30Sec">30 sec</span>
-              </button>
-              <button class="quick-ritual-card tilt-card" type="button" data-quick-ritual="wheel">
-                <span class="quick-ritual-icon">☸️</span>
-                <span class="quick-ritual-name" data-i18n="quickRitualWheel">Prayer Wheel</span>
-                <span class="quick-ritual-duration" data-i18n="duration1Min">1 min</span>
-              </button>
-            </div>
-          </section>
-
           <section class="mini-world-card tilt-card" id="miniWorldCard" aria-labelledby="mini-world-title">
             <div class="mini-world-content">
               <div class="mini-world-badge" data-i18n="manySmallDeedsSubtitle">Global Kindness Map</div>
               <h3 id="mini-world-title" data-i18n="manySmallDeedsTitle">Many Small Deeds · A Brighter World</h3>
-              <div class="mini-world-stats">
-                <span class="mini-world-stat-item"><strong data-i18n="goodDeedsTodayCount">128,921 deeds today</strong></span>
-                <span class="mini-world-dot">·</span>
-                <span class="mini-world-stat-item" data-i18n="peopleSpreadingKindness">2.4M people spreading kindness</span>
-              </div>
               <div class="mini-world-actions-row">
                 <button class="primary-action mini-world-cta" id="exploreMapCta" type="button" data-i18n="exploreTheMapBtn">Explore Sanctuary →</button>
-                <button class="text-button mini-world-game-btn" id="launchSanctuaryFromTodayBtn" type="button" data-i18n="enterSanctuary3D">🎮 Enter 3D Sanctuary</button>
-              </div>
-              <div class="mini-world-shortcuts" id="miniWorldShortcuts" role="group" aria-label="Sanctuary 3D Mini-games">
-                <button class="sanctuary-quick-pill" type="button" data-scenario="east-lake">🐟 East Lake Release</button>
-                <button class="sanctuary-quick-pill" type="button" data-scenario="night-corridor">🏮 Kyoto Lanterns</button>
-                <button class="sanctuary-quick-pill" type="button" data-scenario="amazon-grove">🌱 Amazon Grove</button>
-                <a class="sanctuary-quick-pill" href="../sanctuary/" aria-label="Play A Life You Set Free, story prototype">A Life You Set Free · Story prototype</a>
               </div>
             </div>
             <div class="mini-world-globe-art" aria-hidden="true">
@@ -258,7 +207,16 @@
           </section>
         </section>
 
-        <section class="screen" id="screen-blessings" aria-labelledby="blessings-title">
+        <section class="screen" id="screen-blessings" aria-labelledby="games-gallery-title">
+          <section class="games-gallery" aria-labelledby="games-gallery-title">
+            <h2 id="games-gallery-title" tabindex="-1" data-experience="games">Quiet Worlds</h2>
+            <p data-experience="gamesCopy">Choose a small world to spend a moment in.</p>
+            <div class="games-gallery-grid">
+              <button class="game-tile game-tile-stream" type="button" data-quiet-puzzle="stream"><span class="game-tile-art" aria-hidden="true"></span><span><strong>After the Rain</strong><small data-i18n="streamGameCopy">Turn channels to bring spring water to a pond.</small></span></button>
+              <button class="game-tile game-tile-herbarium" type="button" data-quiet-puzzle="herbarium"><span class="game-tile-art" aria-hidden="true"></span><span><strong>The Herbarium</strong><small data-i18n="herbariumGameCopy">Find six pairs in a cabinet of botanical tiles.</small></span></button>
+              <button class="game-tile game-tile-mosaic" type="button" data-quiet-puzzle="mosaic"><span class="game-tile-art" aria-hidden="true"></span><span><strong>Courtyard Mosaic</strong><small data-i18n="mosaicGameCopy">Fit four ceramic pieces into one square tray.</small></span></button>
+            </div>
+          </section>
           <div class="section-heading">
             <div>
               <p class="eyebrow" data-i18n="blessingsEyebrow">Blessings · 祈福</p>
@@ -462,7 +420,6 @@
               <span class="hold-hint" id="lampHoldHint">Hold 1.2s to kindle & release into the night sky</span>
             </div>
             <div class="lamp-joined-toast" id="lampJoinedToast" aria-live="polite" hidden></div>
-            <ul class="lamp-list" id="lampList"></ul>
           </section>
 
           <section class="incense-card" aria-labelledby="incense-title">
@@ -648,7 +605,6 @@
                 <button class="timbre-chip" type="button" data-timbre="chime" data-i18n="timbreChime">🪷 Bodhi Bell</button>
               </div>
             </div>
-            <div class="muyu-108-banner" id="muyu108Banner" hidden></div>
           </section>
 
           <section class="wheel-card" id="wheelCard" aria-labelledby="wheel-title">
@@ -889,8 +845,7 @@
             </section>
 
             <div class="spot-actions-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 8px;">
-              <button class="primary-action" id="launch3DGameBtn" type="button" data-i18n="launch3DGame">🎮 3D Sanctuary Game · 场景三维互动</button>
-              <button class="text-button" id="spotActionBtn" type="button" data-i18n="matchDeedBtn">Perform matching deed →</button>
+              <button class="primary-action" id="spotActionBtn" type="button" data-i18n="matchDeedBtn">Open matching deed →</button>
               <button class="text-button" id="openLiveMapBtn" type="button" data-i18n="liveMapOpen">🌐 Live OpenStreetMap Sanctuary</button>
             </div>
             <div class="layer-row" id="mapLayerRow" aria-label="Map category filters"></div>
@@ -909,6 +864,10 @@
             </div>
           </div>
           <div class="layer-row deed-filter-row" id="deedCategoryRow" aria-label="Deed category filters"></div>
+          <div class="panel deed-no-results" id="deedNoResults" hidden>
+            <p role="status" data-i18n="deedNoResults">No deeds match your search.</p>
+            <button class="text-button" id="clearDeedSearch" type="button" data-i18n="clearDeedSearch">Clear search</button>
+          </div>
           <div class="deed-list" id="deedList">
             <article class="deed-item selected" data-title="Compassionate Fish Release" data-desc="Release a digital fish without ecological harm.">
               <span class="deed-mark water"></span>
@@ -939,7 +898,7 @@
               </div>
             </article>
           </div>
-          <section class="ritual-panel">
+          <section class="ritual-panel" id="deedRitualPreview" aria-labelledby="ritualTitle">
             <div class="ritual-scene pond-scene" id="ritualScene" aria-label="Zen lotus pond">
               <canvas id="pondRippleCanvas" class="pond-ripple-canvas" aria-hidden="true"></canvas>
               <span class="pond-interactive-hint" data-i18n="clickToRipple">Tap water to send ripples</span>
@@ -1072,11 +1031,10 @@
             </div>
             <div>
               <p class="eyebrow" data-i18n="ritualPreview">Ritual preview</p>
-              <h3 id="ritualTitle">Compassionate Fish Release</h3>
+              <h3 id="ritualTitle" tabindex="-1">Compassionate Fish Release</h3>
               <p id="ritualDesc">Release a digital fish into a selected lake or river.</p>
               <div class="ritual-buttons-wrap" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
                 <button class="primary-action" id="performRitual" type="button" data-i18n="performRitual">Perform ritual</button>
-                <button class="text-button" id="open3DDeedGameBtn" type="button" data-i18n="open3DDeedGame">🎮 3D Interactive Release Game</button>
               </div>
               <div class="ritual-dedication" id="ritualDedication" aria-live="polite" hidden></div>
             </div>
@@ -1146,37 +1104,14 @@
             <p class="safety-note" data-i18n="calmSafety">This is symbolic comfort only. It does not guarantee luck, virtue, health, or real-world impact.</p>
           </section>
 
-          <!-- Nurturing Seedling & Kindness Garden Micro-Game -->
           <section class="seedling-card" id="seedlingCard" aria-labelledby="seedling-title">
             <div class="section-heading">
-              <div>
-                <p class="eyebrow" data-i18n="plantSeedlingTitle">Nurture Seedling · 培育善苗</p>
-                <h3 id="seedling-title">10-Second Nurturing Micro-Game</h3>
-              </div>
-              <span class="soft-pill" id="gardenCount">0 Plants</span>
+              <h3 id="seedling-title" data-i18n="kindnessGardenTitle">Kindness Garden</h3>
+              <span class="soft-pill" id="gardenCount"></span>
             </div>
-            <p class="seedling-copy">Drag a seed into fertile soil, offer gentle water, and guide warm sunlight to sprout a lasting plant for your Kindness Garden.</p>
-            
-            <div class="seedling-stage" id="seedlingStage" aria-label="Seedling nurturing stage">
-              <div class="seedling-soil-mound" id="soilMound">
-                <div class="seedling-sprout" id="seedlingSprout" hidden>
-                  <span class="sprout-icon" id="sproutIcon">🪷</span>
-                </div>
-              </div>
-              <div class="seedling-seed" id="draggableSeed" role="button" tabindex="0" aria-label="Move seed into soil"><span aria-hidden="true"></span></div>
-              <div class="seedling-tools-row">
-                <button class="seedling-tool-btn" id="waterCanBtn" type="button" title="Hold to water">🚿 Hold to Water</button>
-                <button class="seedling-tool-btn" id="sunBeamBtn" type="button" title="Guide sunlight">☀️ Guide Sunlight</button>
-              </div>
-              <div class="water-stream-anim" id="waterStreamAnim" hidden></div>
-              <div class="sun-beam-overlay" id="sunBeamOverlay" hidden></div>
-            </div>
-            <div class="seedling-prompt" id="seedlingPrompt" aria-live="polite">Step 1: Drag seed into soil</div>
-            
             <!-- Kindness Garden Collection Shelf -->
             <div class="kindness-garden-shelf" id="kindnessGardenShelf">
               <div class="shelf-header">
-                <span class="shelf-title" data-i18n="kindnessGardenTitle">Kindness Garden · 善行花园</span>
                 <span class="shelf-badge" id="gardenBadge">Sanctuary Garden</span>
               </div>
               <div class="garden-plants-grid" id="gardenPlantsGrid">
@@ -1229,9 +1164,10 @@
             <textarea id="blessingInput" rows="3" maxlength="140" data-i18n-placeholder="blessingPlaceholder" placeholder="May your road feel less heavy today."></textarea>
             <button class="primary-action" type="submit" data-i18n="sendBlessing">Send blessing</button>
           </form>
-          <section class="feed-composer" aria-labelledby="feed-title">
+          <section class="feed-composer" aria-labelledby="feed-title" aria-describedby="feedPreviewNote">
             <p class="eyebrow" data-i18n="feedEyebrow">Community feed</p>
             <h3 id="feed-title" data-i18n="feedTitle">Share a good deed, or ask for help.</h3>
+            <p id="feedPreviewNote" data-i18n="feedPreviewNote">Posts in this preview stay on this device.</p>
             <div class="post-kind-row" id="postKindRow" aria-label="Post kind"></div>
             <div class="post-tag-row" id="postTagRow" aria-label="Post tags"></div>
             <label class="post-deed-label" for="postDeedSelect" id="postDeedLabel" data-i18n="postDeedLabel">Which deed did you do?</label>
@@ -1261,7 +1197,7 @@
             <div>
               <p class="eyebrow" data-i18n="profileEyebrow">Profile</p>
               <h2 id="profile-title">Quiet Helper</h2>
-              <p id="profileUserEmail" data-i18n="profileCopy">Private journal on. Ranking visibility set to quiet mode.</p>
+              <p id="profileUserEmail" data-i18n="profileCopy">You’re browsing as a guest.</p>
             </div>
           </div>
 
@@ -1340,102 +1276,11 @@
           <div class="stat-grid">
             <div><strong id="deedCount">42</strong><span data-i18n="statDeeds">deeds</span></div>
             <div><strong id="profileLightsCount">14</strong><span data-i18n="statLightsReleased">lights released</span></div>
-            <div><strong>9</strong><span data-i18n="statBadges">badges</span></div>
-            <div><strong>$18</strong><span data-i18n="statDonated">donated</span></div>
           </div>
-
-          <section class="panel profile-progress-grid-panel" aria-labelledby="profile-circles-title">
-            <div class="section-heading">
-              <h3 id="profile-circles-title" data-i18n="progressTitle">Your progress</h3>
-            </div>
-            <div class="progress-rings-grid">
-              <div class="progress-ring-card tilt-card">
-                <div class="ring-svg-wrap">
-                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
-                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
-                    <circle class="ring-fill ring-teal" cx="22" cy="22" r="18" style="stroke-dashoffset: 23;"/>
-                  </svg>
-                  <span class="ring-pct">80%</span>
-                </div>
-                <div class="ring-text">
-                  <strong class="ring-label" data-i18n="progressRitualsDone">Rituals Done</strong>
-                  <span class="ring-sub">12 / 15</span>
-                </div>
-              </div>
-              <div class="progress-ring-card tilt-card">
-                <div class="ring-svg-wrap">
-                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
-                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
-                    <circle class="ring-fill ring-gold" cx="22" cy="22" r="18" style="stroke-dashoffset: 23;"/>
-                  </svg>
-                  <span class="ring-pct">80%</span>
-                </div>
-                <div class="ring-text">
-                  <strong class="ring-label" data-i18n="progressPeopleHelped">People Helped</strong>
-                  <span class="ring-sub">8 / 10</span>
-                </div>
-              </div>
-              <div class="progress-ring-card tilt-card">
-                <div class="ring-svg-wrap">
-                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
-                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
-                    <circle class="ring-fill ring-coral" cx="22" cy="22" r="18" style="stroke-dashoffset: 28;"/>
-                  </svg>
-                  <span class="ring-pct">75%</span>
-                </div>
-                <div class="ring-text">
-                  <strong class="ring-label" data-i18n="progressJournalEntries">Journal Entries</strong>
-                  <span class="ring-sub">6 / 8</span>
-                </div>
-              </div>
-              <div class="progress-ring-card tilt-card">
-                <div class="ring-svg-wrap">
-                  <svg class="progress-ring-svg" viewBox="0 0 44 44">
-                    <circle class="ring-bg" cx="22" cy="22" r="18"/>
-                    <circle class="ring-fill ring-purple" cx="22" cy="22" r="18" style="stroke-dashoffset: 45;"/>
-                  </svg>
-                  <span class="ring-pct">60%</span>
-                </div>
-                <div class="ring-text">
-                  <strong class="ring-label" data-i18n="progressImpactGoals">Kindness Goals</strong>
-                  <span class="ring-sub">3 / 5</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel impact-metrics-panel" aria-labelledby="impact-metrics-title">
-            <div class="section-heading">
-              <h3 id="impact-metrics-title" data-i18n="manySmallDeedsTitle">Many Small Deeds · A Brighter World</h3>
-              <span class="soft-pill">Global Impact</span>
-            </div>
-            <div class="impact-metrics-grid">
-              <div class="impact-stat-card tilt-card">
-                <span class="impact-icon">🤲</span>
-                <strong class="impact-val" id="impactValHelped">124</strong>
-                <span class="impact-lbl" data-i18n="impactPeopleHelped">People Helped</span>
-              </div>
-              <div class="impact-stat-card tilt-card">
-                <span class="impact-icon">✨</span>
-                <strong class="impact-val" id="impactValBlessings">8.4M+</strong>
-                <span class="impact-lbl" data-i18n="impactBlessingsShared">Blessings Shared</span>
-              </div>
-              <div class="impact-stat-card tilt-card">
-                <span class="impact-icon">🌐</span>
-                <strong class="impact-val" id="impactValCountries">5</strong>
-                <span class="impact-lbl" data-i18n="impactCountries">Countries</span>
-              </div>
-              <div class="impact-stat-card tilt-card">
-                <span class="impact-icon">🌱</span>
-                <strong class="impact-val" id="impactValCo2">12.3 kg</strong>
-                <span class="impact-lbl" data-i18n="impactCo2Saved">CO₂ Saved</span>
-              </div>
-            </div>
-          </section>
 
           <section class="panel progress-panel">
             <div class="section-heading">
-              <h3 data-i18n="progressTitle">Your progress</h3>
+              <h3 data-i18n="progressTitle">Merit progress</h3>
               <span class="soft-pill" id="progressNext"></span>
             </div>
             <div class="progress-track" aria-hidden="true">
@@ -1452,6 +1297,11 @@
             <ul class="activity-list" id="activityList"></ul>
           </section>
 
+          <section class="panel" id="saved-wishes" aria-labelledby="saved-wishes-title" hidden>
+            <h3 id="saved-wishes-title" data-experience="savedWishes">Saved wishes</h3>
+            <ul class="lamp-list" id="lampList"></ul>
+          </section>
+
           <section class="panel">
             <div class="section-heading">
               <h3 data-i18n="badgesTitle">Badges</h3>
@@ -1464,9 +1314,8 @@
             </div>
           </section>
           <section class="panel settings-panel">
-            <h3 data-i18n="settingsTitle">Enterprise settings</h3>
+            <h3 data-i18n="settingsTitle">Privacy and data</h3>
             <label><input id="settingPrivateJournal" data-setting-key="privateJournal" type="checkbox" checked> <span data-i18n="settingPrivacy">Private journal</span></label>
-            <label><input id="settingQuietRanking" data-setting-key="quietRanking" type="checkbox" checked> <span data-i18n="settingQuiet">Quiet rankings</span></label>
             <label><input id="settingDonationReceipts" data-setting-key="donationReceipts" type="checkbox" checked> <span data-i18n="settingReceipts">Donation receipts</span></label>
             <div class="privacy-actions">
               <button class="text-button" id="exportDataButton" type="button" data-i18n="exportData">Export data</button>
@@ -1501,8 +1350,8 @@
       </aside>
 
       <nav class="bottom-nav" aria-label="Primary">
-        <button class="nav-item active" type="button" data-target="today">Today</button>
-        <button class="nav-item" type="button" data-target="blessings">Blessings</button>
+        <button class="nav-item active" type="button" data-target="today" aria-current="page">Today</button>
+        <button class="nav-item" type="button" data-target="blessings">Games</button>
         <button class="nav-item" type="button" data-target="map">Map</button>
         <button class="nav-item" type="button" data-target="deeds">Deeds</button>
         <button class="nav-item" type="button" data-target="community">Community</button>
@@ -1668,91 +1517,6 @@
       </div>
     </dialog>
 
-    <dialog id="sanctuary3DGameModal" class="zen-dialog sanctuary-3d-dialog" data-visual-style="storybook-sanctuary">
-      <div class="sanctuary-3d-stage-wrapper">
-        <!-- Main 3D Viewport Stage (fills stage) -->
-        <div class="sanctuary-3d-viewport" id="sanctuary3DViewport" aria-label="3D Sanctuary Interactive Viewport">
-          <canvas id="sanctuary3DCanvas" class="sanctuary-3d-canvas"></canvas>
-
-          <!-- Floating Glass Top Navigation Bar -->
-          <div class="game-hud-top-bar">
-            <!-- Scenario Quick Switcher Pills -->
-            <div class="game-scenario-tabs" role="tablist" aria-label="Sanctuary 3D Scenarios">
-              <button class="game-scenario-tab active" type="button" data-scenario="east-lake" role="tab" aria-selected="true">🐟 East Lake</button>
-              <button class="game-scenario-tab" type="button" data-scenario="toronto-crosswalk" role="tab" aria-selected="false" tabindex="-1">👵 Toronto</button>
-              <button class="game-scenario-tab" type="button" data-scenario="amazon-grove" role="tab" aria-selected="false" tabindex="-1">🌱 Amazon</button>
-              <button class="game-scenario-tab" type="button" data-scenario="night-corridor" role="tab" aria-selected="false" tabindex="-1">🏮 Kyoto</button>
-              <button class="game-scenario-tab" type="button" data-scenario="reading-room" role="tab" aria-selected="false" tabindex="-1">📖 Oxford</button>
-            </div>
-
-            <!-- Atmosphere Picker & Close Button -->
-            <div class="game-hud-top-right">
-              <div class="game-tod-picker" role="radiogroup" aria-label="Atmosphere / Time of Day">
-                <button class="tod-btn" type="button" data-tod="dawn" title="Dawn / 晨曦" aria-label="Dawn">🌅</button>
-                <button class="tod-btn active" type="button" data-tod="day" title="Day / 晴昼" aria-label="Day">☀️</button>
-                <button class="tod-btn" type="button" data-tod="sunset" title="Sunset / 暮霞" aria-label="Sunset">🌇</button>
-                <button class="tod-btn" type="button" data-tod="night" title="Night / 星夜" aria-label="Night">🌙</button>
-              </div>
-              <button class="icon-close-btn game-top-close-btn" id="close3DGameTopBtn" type="button" aria-label="Close 3D game">✕</button>
-            </div>
-          </div>
-
-          <!-- Floating Quest & Sanctuary Status Banner -->
-          <div class="game-quest-badge">
-            <div class="game-quest-meta"><p class="eyebrow game-quest-coords" id="gameScenarioCoords">📍 30.5539° N, 114.3644° E · Freshwater Sanctuary</p><span class="game-chapter-pill" id="gameScenarioChapter">A gentle return</span></div>
-            <h2 class="game-quest-title" id="gameScenarioTitle">East Lake Sanctuary · 慈心放生池</h2>
-            <p class="game-quest-story" id="gameScenarioStory">Guide a rescued koi from the release basket into open water.</p>
-            <div class="game-hud-status">
-              <span class="game-goal-counter" id="gameGoalCounter">Release 5 fish: 0/5 · 功德 +0</span>
-              <span class="game-combo-badge" id="gameComboBadge" hidden>✨ <span id="gameComboMultiplier">2</span>x Serenity</span>
-            </div>
-            <div class="game-goal-bar-wrap" aria-hidden="true">
-              <div class="game-goal-bar-fill" id="gameGoalBarFill"></div>
-            </div>
-            <p id="kyotoStatus" class="kyoto-status" role="status" hidden></p>
-          </div>
-
-          <!-- Interactive Center Overlays & Toasts -->
-          <div class="game-3d-overlay-hint" id="gameCanvasHint" data-i18n="gameCanvasHint">💡 Tap water to scatter food · Drag to orbit · Scroll to zoom</div>
-          <div class="game-badge-toast" id="gameBadgeToast" hidden role="status" aria-live="polite"></div>
-
-          <!-- Floating Glass Bottom Action Dock -->
-          <div class="game-hud-panel">
-            <!-- Species Selector Chips (shown in East Lake) -->
-            <div class="game-species-picker" id="gameSpeciesPicker" role="radiogroup" aria-label="Release Species">
-              <button class="species-btn active" type="button" data-species="yamabuki" title="Golden Koi · 黄金锦鲤">🟡 金鲤</button>
-              <button class="species-btn" type="button" data-species="kohaku" title="Kohaku · 红白锦鲤">🔴 红白</button>
-              <button class="species-btn" type="button" data-species="showa" title="Showa · 昭和三色">⚫ 昭和</button>
-              <button class="species-btn" type="button" data-species="turtle" title="River Terrapin · 吉祥灵龟">🐢 灵龟</button>
-            </div>
-
-            <!-- Wish Selector Chips (shown in Kyoto Night River) -->
-            <div class="game-wish-picker" id="gameWishPicker" role="group" aria-label="Lantern wish" style="display: none;">
-              <button class="wish-btn active" type="button" data-wish="peace" title="Peace · 平安">🕊️ 平安</button>
-              <button class="wish-btn" type="button" data-wish="health" title="Health · 安康">🌿 安康</button>
-              <button class="wish-btn" type="button" data-wish="wisdom" title="Wisdom · 般若">✨ 般若</button>
-              <button class="wish-btn" type="button" data-wish="love" title="Compassion · 慈爱">💖 慈爱</button>
-              <button class="wish-btn" type="button" data-wish="release" title="Release · 释然">🌊 释然</button>
-            </div>
-
-            <!-- Primary & Secondary Interactive Action Buttons -->
-            <div class="game-hud-actions">
-              <button class="primary-action game-hud-btn" id="gamePrimaryActionBtn" type="button">🐟 Release Koi (+1)</button>
-              <button class="text-button game-hud-btn game-secondary-btn" id="gameSecondaryActionBtn" type="button">Feed Lotus Petals</button>
-            </div>
-
-            <!-- Camera & Utility Controls -->
-            <div class="game-hud-controls">
-              <button class="text-button game-hud-btn-sm" id="kyotoMotion" type="button" hidden>Pause motion</button>
-              <button class="text-button game-hud-btn-sm" id="gameCamModeBtn" type="button" title="Switch Camera Mode">🎥 <span id="gameCamModeLabel">Orbit</span></button>
-              <button class="text-button game-hud-btn-sm" id="gameResetCamBtn" type="button" title="Reset Camera View">🔄 View</button>
-              <button class="text-button game-hud-btn-sm game-hud-close-btn" id="close3DGameBottomBtn" type="button" data-i18n="closeDialog">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </dialog>
-
     <!-- Tonight's Gentle Sleep Ritual Guided Modal -->
     <dialog class="tonight-ritual-modal" id="tonightRitualModal" aria-labelledby="tonightModalTitle">
       <div class="tonight-modal-shell">
@@ -1836,7 +1600,20 @@
     <script src="app.js"></script>
     <script src="peace-garden.js"></script>
     <script src="peace-games.js"></script>
-    <script src="game3d.js"></script>
     <script src="community.js"></script>
+    <dialog id="quietPuzzle" class="quiet-puzzle" aria-labelledby="puzzleTitle" aria-describedby="puzzleInstructions" lang="en">
+      <form method="dialog" class="puzzle-exit"><button type="submit">Back to games</button></form>
+      <h2 id="puzzleTitle" tabindex="-1"></h2>
+      <p id="puzzleInstructions"></p>
+      <div class="puzzle-palette"></div>
+      <div class="puzzle-board"></div>
+      <p class="puzzle-status" role="status"></p>
+      <div class="puzzle-actions">
+        <button id="puzzleUndo" type="button" hidden>Undo last piece</button>
+        <button id="puzzleRestart" type="button">New board</button>
+      </div>
+    </dialog>
+    <script src="experience.js"></script>
+    <script type="module" src="quiet-games.mjs"></script>
   </body>
 </html>

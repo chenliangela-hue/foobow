@@ -1,41 +1,8 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#092e32"><title>A Life You Set Free · 福报 Foobow</title>
-  <link rel="stylesheet" href="sanctuary.css">
-</head>
-<body>
-  <header class="topbar"><a href="../app/" class="brand">福报 <span>foobow</span></a><nav aria-label="Sanctuary controls"><button id="collectionToggle" aria-expanded="false" aria-controls="journey">Show collection</button><button id="journalButton" data-copy="journal">Life journal</button><button id="sound" aria-pressed="false" data-copy="soundOff">Enable music</button><button id="pause" aria-pressed="false" data-copy="pause">Pause</button><button id="language" lang="zh-Hans">中文</button></nav></header>
-  <main>
-    <section class="experience" aria-labelledby="title">
-      <div class="scene" id="scene" data-habitat="pond"><div class="painting" aria-hidden="true"></div><div id="water" aria-label="Interactive virtual sanctuary"></div><div class="water-light" aria-hidden="true"></div><span id="waypointHint" class="waypoint-hint" aria-hidden="true" hidden></span><p class="renderer-note" id="rendererStatus" role="status"></p></div>
-      <div class="story"><p class="chapter-label" id="chapterLabel">The lotus pond · A beginning</p><h1 id="title" data-copy="title">A life you<br>set free.</h1><p id="storyCopy">In a quiet bowl, a little koi dreams of a world without edges. Today, you can open that world.</p><p class="blessing" id="blessing" role="status">May the kindness you give find its way back to you.</p></div>
-      <p id="pauseOverlay" class="pause-overlay" role="status" hidden></p>
-      <div class="scene-bottom">
-        <section id="companionJourney" class="companion-journey" aria-labelledby="journeyTitle" hidden>
-          <h2 id="journeyTitle"></h2><ol id="journeySteps" aria-label="Journey chapters"></ol>
-          <progress id="journeyProgress" value="0" max="3" aria-label="Journey progress"></progress>
-          <p id="journeyInstruction" role="status"></p>
-          <div class="journey-actions"><button id="journeyGuide"></button><button id="journeySkip"></button></div>
-        </section>
-        <p id="playHint" data-copy="hint">Move over the water. Your companions will follow.<br>Touch to guide, or use the gathering buttons below.</p><div class="gather"><a href="#journey" data-copy="choose">Choose a companion</a><button id="gather" data-copy="gather">Gather by the lotus</button><button id="wander" data-copy="wander">Explore together</button><button id="journeyVisit" hidden>Visit a companion</button><a id="diveLink" href="dive/">Beneath the Lilies</a></div>
-      </div>
-    </section>
-    <aside class="journey" id="journey" aria-label="Your release journey">
-      <div class="journey-heading"><h2 data-copy="journey">Your little sanctuary</h2><p data-copy="intro">A little kindness. A whole new world.</p></div>
-      <div class="wallet"><div><strong id="seeds">80</strong><span data-copy="seeds">kindness seeds</span></div><span id="rank">New companion</span></div>
-      <p class="demo-note" data-copy="demo">Prototype wallet · 80 welcome seeds. Separate from your account score.</p>
-      <section class="habitats"><h3 data-copy="where">Where does the story begin?</h3><div class="atlas" aria-label="Illustrated habitat selector"><svg viewBox="0 0 330 120" role="img" aria-labelledby="atlasTitle"><title id="atlasTitle">A symbolic map connecting pond, lake, river and sea</title><path class="land" d="M0 0H330V37Q285 20 250 49T171 53T98 77T0 97Z"/><path class="stream" d="M40 18Q110 18 125 57T226 82T315 108"/><circle cx="52" cy="37" r="13"/><ellipse cx="132" cy="66" rx="26" ry="14"/><path class="map-path" d="M52 37L132 66L217 57L290 96"/><g><text x="35" y="15">Pond</text><text x="115" y="105">Lake</text><text x="200" y="30">River</text><text x="277" y="78">Sea</text></g></svg></div><div class="habitat-options" id="habitats" role="group" aria-label="Choose a habitat"></div><button id="nearby" class="text-button" data-copy="nearby">Find nearest featured place</button><p class="small" id="locationNote" data-copy="location">Optional location permission. Coordinates stay in this page; four curated places, not a nearby-place search.</p></section>
-      <section><h3 data-copy="who">Who will you set free?</h3><div id="creatures" class="creatures" role="group" aria-label="Choose a creature"></div></section>
-      <button class="release" id="release">Release a golden koi · 20 seeds</button>
-      <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
-      <div class="collection-line"><span id="collectionCount">0 lives · 0 species</span><button id="visit" data-copy="visit">A quiet visit · +10 seeds</button></div>
-      <p class="ethics" data-copy="ethics">A fictional, virtual release. Please never release captive animals into the wild. Wishes are expressions of care, not promised outcomes.</p>
-      <details><summary data-copy="about">About this story</summary><p data-copy="aboutCopy">Return tomorrow for a new life chapter. Companions grow at 1, 3 and 7 days; they never suffer when you are away. Progress and seeds live only on this device. Personal titles celebrate play, not moral worth or public ranking.</p><button id="delete" class="text-button" data-copy="delete">Delete this prototype’s progress</button><button id="confirmDelete" hidden data-copy="confirmDelete">Confirm deletion</button></details>
-      <p id="storageNotice" class="storage-note" role="status"></p>
-    </aside>
-  </main>
-  <dialog id="journal"><div class="journal-head"><h2 data-copy="journal">Life journal</h2><button id="closeJournal" data-copy="close">Close</button></div><p data-copy="journalIntro">The life beyond the moment of release. These are imagined stories, unfolding gently over time.</p><p id="journalSummary"></p><div id="entries"></div></dialog>
-  <script src="vendor/pixi.min.js"></script><script type="module" src="sanctuary.mjs"></script>
-</body></html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="0; url=../app/?view=rituals">
+<title>Quiet Worlds · Foobow</title>
+<p><a href="../app/?view=rituals">Browse the current Foobow games</a></p>
+</html>

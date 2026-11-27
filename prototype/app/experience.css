@@ -1,0 +1,115 @@
+/* Shared surfaces for the public Foobow app. Game dialogs keep their own lighting. */
+body {
+  --experience-paper: #f8f5eb;
+  --experience-ink: #1e3028;
+  --experience-muted: #556157;
+  --experience-line: #d7d8c8;
+  --experience-accent: #254b3b;
+}
+body.dark {
+  --experience-paper: #1d2823;
+  --experience-ink: #eef1e0;
+  --experience-muted: #becbbd;
+  --experience-line: #4a5b50;
+  --experience-accent: #c5d9b6;
+}
+.app-shell { max-width: 1310px; }
+.app-shell .topbar { background: var(--experience-paper); border: 1px solid var(--experience-line); box-shadow: none; color: var(--experience-ink); }
+.app-shell .top-nav-item { color: var(--experience-muted); }
+.app-shell .top-nav-item.active { background: var(--experience-accent); color: var(--experience-paper); }
+.app-shell .bottom-nav { background: var(--experience-paper); border-color: var(--experience-line); }
+.app-shell .bottom-nav .nav-item { color: var(--experience-muted); }
+.app-shell .bottom-nav .nav-item.active { background: var(--experience-accent); color: var(--experience-paper); box-shadow: none; }
+.app-shell .screen > :is(.panel, .hero-panel, .profile-overview, .mini-world-card) { border-radius: 18px; }
+.app-shell .screen > :is(.panel, .hero-panel) { border: 1px solid var(--experience-line); box-shadow: none; }
+.app-shell .screen:not(#screen-today) > .section-heading h2 { letter-spacing: -.035em; }
+.app-shell .screen > .section-heading { margin-block: 1.3rem; }
+.app-shell :is(#screen-map, #screen-deeds, #screen-community) > .section-heading,
+.app-shell .profile-head {
+  background: var(--experience-paper);
+  border: 1px solid var(--experience-line);
+  border-inline-start: 4px solid var(--section-mark, var(--experience-accent));
+  color: var(--experience-ink);
+  padding: clamp(1rem, 3vw, 2rem);
+  border-radius: 0 15px 15px 0;
+}
+#screen-map { --section-mark: #537b7a; }
+#screen-deeds { --section-mark: #a26046; }
+#screen-community { --section-mark: #6b7e54; }
+#screen-profile { --section-mark: #837188; }
+#deedRitualPreview[hidden], #deedNoResults[hidden] { display: none; }
+.deed-no-results { grid-column: 1 / -1; padding: 1rem 1.25rem; }
+.deed-no-results p { margin: 0 0 .5rem; }
+.deed-no-results button { min-height: 44px; }
+.participation-card {
+  margin-block: 1rem;
+  padding: clamp(1rem, 3vw, 1.7rem);
+  border: 1px solid var(--experience-line);
+  border-radius: 14px;
+  background: var(--experience-paper);
+  color: var(--experience-ink);
+}
+.participation-card h3 { font: 600 1.55rem/1.15 Georgia, serif; margin: 0 0 .45rem; }
+.participation-card p { color: var(--experience-muted); margin: 0; max-width: 64ch; line-height: 1.55; }
+.seed-balance { display: block; margin-top: .8rem; font: 600 1.35rem/1.25 Georgia, serif; }
+.seed-balance[hidden] { display: none; }
+.participation-card .seed-status { margin-top: .45rem; }
+.seed-history { margin-top: 1rem; padding-top: .7rem; border-top: 1px solid var(--experience-line); }
+.seed-history summary { display: list-item; align-content: center; min-height: 44px; cursor: pointer; font-weight: 650; }
+.seed-history ul { margin: .55rem 0; padding-inline-start: 1.25rem; }
+.seed-history li + li { margin-top: .3rem; }
+.app-shell .screen :is(textarea,input,select):focus-visible,
+.experience-action:focus-visible, .experience-link:focus-visible, .game-tile:focus-visible { outline: 3px solid #b66038; outline-offset: 3px; }
+.zen-ambient-embers, .mini-world-globe-art, .hero-eyebrow-row .karma-delta-pill,
+#screen-blessings > :is(.quiet-hub, .peace-game-card, .gratitude-garden-card, .lamp-card, .incense-card, .muyu-card, .wheel-card) {
+  display: none;
+}
+.sanctuary-3d-dialog[data-scenario="night-corridor"] .game-scenario-tabs { display: none; }
+.sanctuary-3d-dialog[data-scenario="night-corridor"] .game-hud-top-bar { justify-content: flex-end; }
+
+.experience-feature, .games-gallery {
+  color: var(--experience-ink);
+  background: var(--experience-paper);
+  border: 1px solid var(--experience-line);
+  border-radius: 18px;
+  margin-block: 0 1.4rem;
+  overflow: hidden;
+}
+.experience-feature, .games-gallery, #screen-map > .section-heading { grid-column: 1 / -1; }
+.experience-feature { display: grid; grid-template-columns: 1.15fr 1fr; }
+.experience-feature-art { background: #12322d url('../sanctuary/dive/assets/pond.webp') 64% center / cover; min-height: 245px; }
+.experience-feature > div { align-self: center; padding: clamp(1.25rem, 4vw, 3rem); }
+.experience-kicker { color: var(--experience-muted); font-size: .9rem; }
+.experience-feature h3, .games-gallery h2 { margin: .15em 0; font: 600 clamp(2.2rem, 4.5vw, 4rem)/1 Georgia, serif; letter-spacing: -.05em; }
+.experience-feature p, .games-gallery p { max-width: 54ch; line-height: 1.55; color: var(--experience-muted); }
+.experience-action, .experience-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 650; }
+.experience-action { background: var(--experience-accent); color: var(--experience-paper); padding: .6em .95em; border-radius: 8px; text-decoration: none; }
+.experience-link { color: var(--experience-ink); padding: .55em .75em; text-underline-offset: .25em; }
+.games-gallery { padding: clamp(1rem, 3vw, 2.5rem); }
+.games-gallery { scroll-margin-top: 6rem; }
+.games-gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(.8rem, 1.5vw, 1.45rem); margin-top: 1.5rem; }
+.games-gallery-grid .game-tile {
+  display: grid; grid-template-rows: auto 1fr; text-align: start; padding: 0;
+  min-width: 0; border: 1px solid var(--experience-line); border-radius: 12px; overflow: hidden;
+  background: var(--experience-paper); color: var(--experience-ink); font: inherit; text-decoration: none; cursor: pointer;
+}
+.games-gallery-grid .game-tile:hover { border-color: var(--experience-accent); }
+.game-tile-art { display: block; aspect-ratio: 16 / 9; background: #273f35 var(--game-image) center / cover; }
+.game-tile strong, .game-tile small { display: block; }
+.game-tile strong { font: 600 1.35rem/1.15 Georgia, serif; }
+.game-tile small { color: var(--experience-muted); margin-top: .45rem; font-size: .875rem; line-height: 1.45; }
+.game-tile > span:last-child { padding: .85rem 1rem 1rem; }
+.game-tile-koi { --game-image: url('../sanctuary/dive/assets/pond.webp'); }
+.game-tile-creek { --game-image: url('../assets/foobow/backgrounds/storybook/gratitude-creek.webp'); }
+.game-tile-river { --game-image: url('../assets/foobow/backgrounds/storybook/kyoto-blue-hour.webp'); }
+.game-tile-wood { --game-image: url('../assets/foobow/backgrounds/storybook/muyu-rain-room.webp'); }
+.game-tile-lamp { --game-image: url('../play/lamp/workbench.webp'); }
+.game-tile-courtyard { --game-image: url('../assets/foobow/backgrounds/kindness-quest-pavilion.webp'); }
+@media (min-width: 1024px) { .app-shell .zen-mini-player { bottom: 94px; } }
+@media (max-width: 780px) { .games-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) {
+  .experience-feature { grid-template-columns: 1fr; }
+  .experience-feature-art { min-height: 175px; }
+  .games-gallery-grid { grid-template-columns: 1fr; }
+  .app-shell .bottom-nav .nav-item { min-width: 0; overflow-wrap: anywhere; }
+}

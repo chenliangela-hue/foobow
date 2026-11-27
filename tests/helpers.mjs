@@ -17,7 +17,7 @@ export async function withStaticServer(callback) {
   const server = createServer(async (request, response) => {
     try {
       const url = new URL(request.url, "http://127.0.0.1");
-      const relativePath = url.pathname === "/" ? "index.html" : url.pathname.slice(1);
+      const relativePath = url.pathname.slice(1) + (url.pathname.endsWith("/") ? "index.html" : "");
       const fileUrl = new URL(relativePath, prototypeRoot);
       const body = await readFile(fileUrl);
       const extension = extname(fileUrl.pathname);
@@ -25,7 +25,7 @@ export async function withStaticServer(callback) {
         ? "text/html"
         : extension === ".css"
           ? "text/css"
-          : extension === ".js"
+          : (extension === ".js" || extension === ".mjs")
             ? "text/javascript"
             : "application/octet-stream";
 

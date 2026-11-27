@@ -32,13 +32,23 @@ test("Enter CTA links into the app at /app/", async ({ page }) => {
 });
 
 test("homepage exposes a localized direct path to Quiet Moments", async ({ page }) => {
-  await expect(page.locator("#quietPreviewTitle")).toHaveText("Six small rituals. One softer moment.");
-  await expect(page.locator(".quiet-preview-rituals span")).toHaveCount(6);
+  await expect(page.locator("#quietPreviewTitle")).toHaveText("Quiet Worlds");
+  await expect(page.locator(".quiet-preview-rituals")).toBeVisible();
   await expect(page.locator("#quietMomentsCta")).toHaveAttribute("href", "/app/?view=rituals");
 
   await page.selectOption("#langSelect", "zh-Hans");
-  await expect(page.locator("#quietPreviewTitle")).toHaveText("六种小仪式，一段柔和时光。");
-  await expect(page.locator("#quietMomentsCta")).toContainText("体验静心片刻");
+  await expect(page.locator("#quietPreviewTitle")).toHaveText("静谧小世界");
+  await expect(page.locator("#quietMomentsCta")).toContainText("浏览游戏");
+});
+
+test("localized landing header fits a narrow phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const locale of ["en", "zh-Hans", "fr", "es", "th", "ja"]) {
+    await page.selectOption("#langSelect", locale);
+    await expect(page.locator("#headerEnter")).toBeInViewport();
+    const fits = await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
+    expect(fits, locale).toBe(true);
+  }
 });
 
 test("language switcher flips html lang and visible copy across all six locales", async ({ page }) => {

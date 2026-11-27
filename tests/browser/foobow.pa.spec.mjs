@@ -67,6 +67,70 @@ test("theme, language, and local persistence work", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hans");
 });
 
+test("only the selected page and appearance request a backdrop", async ({ page }) => {
+  const requested = new Set();
+  page.on("request", request => {
+    const filename = new URL(request.url()).pathname.split("/").at(-1);
+    if (/^tab-.*-(?:light|dark)\.png$/.test(filename)) requested.add(filename);
+  });
+  await page.evaluate(() => localStorage.setItem("foobow.prototype.state.v1", JSON.stringify({ theme: "dark" })));
+  await page.reload();
+  expect([...requested]).toEqual(["tab-today-dark.png"]);
+  const today = page.locator(".dark-group .cinematic-backdrop-layer.active[data-tab=today] img");
+  await expect(today).toHaveJSProperty("complete", true);
+
+  await page.locator(".bottom-nav").getByRole("button", { name: "Map" }).click();
+  const darkMap = page.locator(".dark-group .cinematic-backdrop-layer.active[data-tab=map] img");
+  await expect(darkMap).toHaveJSProperty("complete", true);
+  await expect(page.locator(".dark-group [data-tab=today] img")).toBeAttached();
+  expect([...requested]).toEqual(["tab-today-dark.png", "tab-map-dark.png"]);
+
+  await page.getByRole("button", { name: "Toggle dark mode" }).click();
+  const lightMap = page.locator(".light-group .cinematic-backdrop-layer.active[data-tab=map] img");
+  await expect(lightMap).toHaveJSProperty("complete", true);
+  expect([...requested]).toEqual(["tab-today-dark.png", "tab-map-dark.png", "tab-map-light.png"]);
+});
+
+test("a corrupt CDN backdrop falls back to the bundled page image", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("foobow_cdn_url", "https://cdn.example.test/foobow/"));
+  await page.route("https://cdn.example.test/foobow/backgrounds/tab-today-light.png", route =>
+    route.fulfill({ contentType: "image/png", body: "not a decodable image" }));
+  const cdnRequest = page.waitForRequest("https://cdn.example.test/foobow/backgrounds/tab-today-light.png");
+  await page.reload();
+  await cdnRequest;
+  const today = page.locator(".light-group .cinematic-backdrop-layer.active[data-tab=today] img");
+  await expect(today).toHaveAttribute("src", /^file:.*\/backgrounds\/tab-today-light\.png$/);
+  await expect(today).toHaveJSProperty("complete", true);
+});
+
+test("a delayed backdrop does not replace the later selected scene", async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem("foobow_cdn_url", "https://cdn.example.test/foobow/"));
+  await page.route("https://cdn.example.test/**", route => route.abort());
+  let finishMapRequest;
+  const releaseMap = new Promise(resolve => { finishMapRequest = resolve; });
+  const mapUrl = "https://cdn.example.test/foobow/backgrounds/tab-map-light.png";
+  await page.route(mapUrl, async route => {
+    await releaseMap;
+    await route.abort();
+  });
+  await page.reload();
+  await expect(page.locator(".light-group .cinematic-backdrop-layer.active[data-tab=today] img")).toBeAttached();
+
+  try {
+    const mapRequest = page.waitForRequest(mapUrl);
+    await page.locator(".bottom-nav").getByRole("button", { name: "Map" }).click();
+    await mapRequest;
+    await expect(page.locator(".light-group .cinematic-backdrop-layer.active")).toHaveAttribute("data-tab", "today");
+    await page.locator(".bottom-nav").getByRole("button", { name: "Deeds" }).click();
+    await expect(page.locator(".light-group .cinematic-backdrop-layer.active")).toHaveAttribute("data-tab", "deeds");
+  } finally {
+    finishMapRequest();
+  }
+
+  await expect(page.locator(".light-group [data-tab=map] img")).toBeAttached();
+  await expect(page.locator(".light-group .cinematic-backdrop-layer.active")).toHaveAttribute("data-tab", "deeds");
+});
+
 test("category filters narrow map spots and deed catalog", async ({ page }) => {
   await page.getByRole("button", { name: "Map" }).click();
   await page.locator("#mapLayerRow").getByRole("button", { name: "Elders" }).click();
@@ -83,18 +147,13 @@ test("category filters narrow map spots and deed catalog", async ({ page }) => {
 });
 
 test("keyboard users can reach controls and activate deed cards", async ({ page }) => {
-  const focusedNames = [];
-  // Tab depth accommodates the top navigation (brand + section links on
-  // desktop) ahead of the header controls and mood buttons.
-  for (let index = 0; index < 14; index += 1) {
+  const remaining = new Set(["Switch language", "Toggle dark mode", "Browse games", "Calm", "Heavy"]);
+  for (let index = 0; index < 32 && remaining.size > 0; index += 1) {
     await page.keyboard.press("Tab");
-    focusedNames.push(await page.evaluate(() => document.activeElement?.ariaLabel || document.activeElement?.textContent?.trim()));
+    const label = await page.evaluate(() => document.activeElement?.ariaLabel || document.activeElement?.textContent?.trim());
+    remaining.delete(label);
   }
-
-  expect(focusedNames).toContain("Switch language");
-  expect(focusedNames).toContain("Toggle dark mode");
-  expect(focusedNames).toContain("Calm");
-  expect(focusedNames).toContain("Heavy");
+  expect([...remaining]).toEqual([]);
 
   await page.getByRole("button", { name: "Deeds" }).click();
   await page.getByRole("button", { name: /Clean a coastline/ }).focus();
@@ -142,6 +201,47 @@ test("soundscape audio control is opt-in, toggles, and survives retuning", async
   await page.reload();
   await page.getByRole("button", { name: "Deeds" }).click();
   await expect(page.locator("#soundscapeToggle")).toHaveAttribute("aria-pressed", "false");
+});
+
+test("Today karma ring plays the instrument only after opt-in", async ({ page }) => {
+  await page.evaluate(() => {
+    window.testInstrumentHits = 0;
+    window.FOOBOW_RITUAL_ENGINE.audio.playTok = () => { window.testInstrumentHits += 1; };
+  });
+  const ring = page.getByLabel("Karma progress");
+  const karma = page.locator("#karmaValue");
+  const initialKarma = Number(await karma.textContent());
+  const instrumentHits = () => page.evaluate(() => window.testInstrumentHits);
+
+  const openWoodenFish = async () => {
+    await page.locator('.bottom-nav [data-target="blessings"]').click();
+    await page.locator('.games-gallery [data-play-ritual="muyu"]').click();
+  };
+  const returnToToday = async () => {
+    await page.keyboard.press("Escape");
+    await page.locator(".bottom-nav").getByRole("button", { name: "Today" }).click();
+  };
+
+  await ring.click();
+  await expect(karma).toHaveText(String(initialKarma + 1));
+  expect(await instrumentHits()).toBe(0);
+
+  await openWoodenFish();
+  const instrument = page.getByRole("button", { name: "Instrument sound" });
+  await instrument.click();
+  await expect(instrument).toHaveAttribute("aria-pressed", "true");
+  await returnToToday();
+  await ring.click();
+  await expect(karma).toHaveText(String(initialKarma + 2));
+  expect(await instrumentHits()).toBe(1);
+
+  await openWoodenFish();
+  await instrument.click();
+  await expect(instrument).toHaveAttribute("aria-pressed", "false");
+  await returnToToday();
+  await ring.click();
+  await expect(karma).toHaveText(String(initialKarma + 3));
+  expect(await instrumentHits()).toBe(1);
 });
 
 test("profile menu opens, shows merit, and can open the profile screen", async ({ page }) => {
@@ -318,7 +418,7 @@ test("illustrated screen callouts keep readable contrast in light and dark theme
 
   expect((await contrastFor(".mood.selected", ".mood.selected")).ratio, "selected Calm mood").toBeGreaterThanOrEqual(4.5);
   expect((await contrastFor("#dailyThought", ".hero-panel")).ratio, "daily thought").toBeGreaterThanOrEqual(4.5);
-  expect((await contrastFor("#launchSanctuaryFromTodayBtn", "#launchSanctuaryFromTodayBtn")).ratio, "3D sanctuary entry").toBeGreaterThanOrEqual(4.5);
+  expect((await contrastFor(".experience-feature .experience-action", ".experience-feature .experience-action")).ratio, "3D sanctuary entry").toBeGreaterThanOrEqual(4.5);
 
   await page.getByRole("button", { name: "Map" }).click();
   await page.getByRole("button", { name: "Toggle dark mode" }).click();
