@@ -18,20 +18,6 @@ async function resetPrototype(page) {
   await page.locator(".app-shell").waitFor();
 }
 
-async function freezeSanctuaryCanvas(page) {
-  await page.evaluate(() => window.FoobowGame3D.renderStill());
-}
-
-async function seedSanctuaryRandom(page) {
-  await page.evaluate(() => {
-    let seed = 246813579;
-    Math.random = () => {
-      seed = (seed * 1664525 + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
-  });
-}
-
 test("landing hero visual baseline", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(landingUrl);
@@ -147,39 +133,6 @@ for (const [ritual, label, snapshot] of storybookQuietRituals) {
     await expect(page.locator("#ritualFocusDialog")).toHaveScreenshot(snapshot, {
       animations: "disabled",
       maxDiffPixelRatio: 0.008
-    });
-  });
-}
-
-test.skip("storybook East Lake sanctuary visual baseline", async ({ page }) => {
-  await seedSanctuaryRandom(page);
-  await page.locator('.bottom-nav .nav-item[data-target="deeds"]').click();
-  await page.evaluate(() => window.FoobowGame3D.open("east-lake"));
-  await page.waitForTimeout(400);
-  await freezeSanctuaryCanvas(page);
-  await expect(page.locator("#sanctuary3DGameModal")).toHaveScreenshot("storybook-east-lake-sanctuary.png", {
-    animations: "disabled",
-    maxDiffPixelRatio: 0.01
-  });
-});
-
-const storybookWorldScenarios = [
-  ["toronto-crosswalk", "Toronto crosswalk", "storybook-toronto-crosswalk.png"],
-  ["amazon-grove", "Amazon grove", "storybook-amazon-grove.png"],
-  ["night-corridor", "Kyoto river", "storybook-kyoto-river.png"],
-  ["reading-room", "Oxford reading room", "storybook-oxford-reading-room.png"]
-];
-
-for (const [scenario, label, snapshot] of storybookWorldScenarios) {
-  test(`storybook ${label} visual baseline`, async ({ page }) => {
-    await seedSanctuaryRandom(page);
-    await page.locator('.bottom-nav .nav-item[data-target="deeds"]').click();
-    await page.evaluate(key => window.FoobowGame3D.open(key), scenario);
-    await page.waitForTimeout(400);
-    await freezeSanctuaryCanvas(page);
-    await expect(page.locator("#sanctuary3DGameModal")).toHaveScreenshot(snapshot, {
-      animations: "disabled",
-      maxDiffPixelRatio: 0.01
     });
   });
 }

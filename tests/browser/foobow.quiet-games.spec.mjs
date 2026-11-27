@@ -12,6 +12,7 @@ test('gallery lists only the new puzzles and retired URLs return to the gallery'
     await expect(page.locator('#games-gallery-title')).toBeFocused();
     const tiles = page.locator('.games-gallery .game-tile');
     await expect(tiles).toHaveCount(3);
+    await expect(tiles.first()).toBeEnabled();
     await page.locator('.games-gallery').screenshot({ path: test.info().outputPath('gallery.png') });
     await page.keyboard.press('Tab');
     await expect(tiles.first()).toBeFocused();

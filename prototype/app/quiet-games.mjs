@@ -214,6 +214,7 @@ document.querySelectorAll('[data-quiet-puzzle]').forEach(button => {
     dialog.showModal();
     title.focus();
   });
+  button.disabled = false;
 });
 restart.addEventListener('click', () => { replay += 1; render(); title.focus(); });
 dialog.addEventListener('close', () => { attempt += 1; });
