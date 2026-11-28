@@ -15,6 +15,8 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 
 ## Active Blocking Advisories
 
+The November 27 Expo SDK 56 refresh leaves a single high-severity dependency chain. Expo Router 56 uses the CommonJS release of `query-string`, which depends on `decode-uri-component` 0.2.2. The patched decoder is ESM and has a different import shape. Expo Router 58 removes that dependency. Assess the full SDK 58 upgrade together with its React Native and Node requirements before changing that native stack. See [issue #3](https://github.com/chenliangela-hue/foobow/issues/3).
+
 | Area | Package Path | Advisory | Current Decision | Review Trigger |
 | --- | --- | --- | --- | --- |
 | Deferred mobile tooling | `expo -> metro -> micromatch -> braces` | `braces` stack exhaustion through deeply nested patterns (`GHSA-vfj7-8cjw-p6xm`) | Blocked upstream: npm currently marks every published `braces` version affected and proposes an incompatible Expo 44 downgrade | Re-check when `braces` publishes a patched release and Expo accepts it |
@@ -27,6 +29,8 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 | Mobile tooling | `expo -> @expo/cli -> @expo/config-plugins -> xcode -> uuid` | `uuid` buffer bounds issue for v3/v5/v6 with explicit buffer use | Monitor Expo SDK upstream; current force fix would downgrade Expo to an incompatible old version | Re-check when Expo SDK updates its transitive dependency chain |
 
 ## Resolved Advisories
+
+The November 27 mobile manifest raises the floors for `compression`, `node-forge`, `shell-quote`, and `source-map-js`. It also scopes patched Zod 4 to Expo CLI. npm audit reports zero critical findings and three high findings in the remaining Expo Router chain.
 
 | Area | Package Path | Advisory | Resolution |
 | --- | --- | --- | --- |
