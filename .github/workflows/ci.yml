@@ -34,12 +34,6 @@ jobs:
       - name: Run API runtime tests
         run: npm run test:api
 
-      - name: Install mobile dependencies
-        run: npm --prefix apps/mobile ci
-
-      - name: Run mobile typecheck
-        run: npm run test:mobile
-
       - name: Audit web and API dependencies
         run: npm run audit:high && npm run audit:api:high
 
@@ -61,7 +55,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 20.19.4
+          node-version: 24
+
+      - name: Install mobile dependencies
+        run: npm --prefix apps/mobile ci
+
+      - name: Run mobile typecheck
+        run: npm run test:mobile
 
       - name: Audit native mobile dependencies
         run: npm run audit:mobile:high

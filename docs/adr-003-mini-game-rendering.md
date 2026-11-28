@@ -40,3 +40,12 @@ MIT license metadata was observed for PixiJS, Phaser, Three.js and both Skia pac
 - [ ] Mobile tasks remain blocked until the web and dependency gates are complete.
 
 Full specification: [mini-game roadmap](mini-game-refactor-roadmap-2026-11.md).
+
+
+## November 27 renderer research
+
+- **Three.js 0.187.0 (MIT)** fits a single genuinely spatial prototype. Reuse the WebGL 2 approach from the existing prototype and compare a feature-detected WebGPU build on the same scene. WebGPU still has renderer and material compatibility gaps. Verify equivalent controls and progression with reduced motion and without a GPU. [Package](https://www.npmjs.com/package/three) · [Renderer guide](https://threejs.org/manual/pages/webgpurenderer)
+- **Babylon.js 9.38.0 (Apache-2.0)** offers glTF, physics and game tooling. Reconsider when the game needs those systems and measurements show they justify the extra integration. [Package](https://www.npmjs.com/package/@babylonjs/core) · [Engine specifications](https://www.babylonjs.com/specifications/)
+- **PixiJS 8.23.0 (MIT)** fits illustrated 2D worlds and sprite effects. Its WebGL renderer is the production baseline, with WebGPU a candidate for testing. [Package](https://www.npmjs.com/package/pixi.js) · [Rendering guide](https://pixijs.download/dev/docs/rendering.html)
+
+Keep the shipped puzzle mechanics and controls in semantic HTML. Before choosing a renderer, measure startup, frame time, asset size and memory on the same puzzle or spatial scene. Test touch, keyboard, reduced motion, and recovery after a lost graphics context. This research does not change the proposed ADR status.

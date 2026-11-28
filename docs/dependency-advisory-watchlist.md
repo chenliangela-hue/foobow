@@ -15,22 +15,15 @@ Foobow fails CI on high and critical dependency advisories. Moderate transitive 
 
 ## Active Blocking Advisories
 
-The November 27 Expo SDK 56 refresh leaves a single high-severity dependency chain. Expo Router 56 uses the CommonJS release of `query-string`, which depends on `decode-uri-component` 0.2.2. The patched decoder is ESM and has a different import shape. Expo Router 58 removes that dependency. Assess the full SDK 58 upgrade together with its React Native and Node requirements before changing that native stack. See [issue #3](https://github.com/chenliangela-hue/foobow/issues/3).
-
-| Area | Package Path | Advisory | Current Decision | Review Trigger |
-| --- | --- | --- | --- | --- |
-| Deferred mobile tooling | `expo -> metro -> micromatch -> braces` | `braces` stack exhaustion through deeply nested patterns (`GHSA-vfj7-8cjw-p6xm`) | Blocked upstream: npm currently marks every published `braces` version affected and proposes an incompatible Expo 44 downgrade | Re-check when `braces` publishes a patched release and Expo accepts it |
-| Deferred mobile tooling | `expo -> @expo/cli -> @expo/code-signing-certificates -> node-forge` | `node-forge` accepts extra nested signature algorithm elements (`GHSA-86w9-cpqp-85rv`) | Blocked upstream: npm currently marks every published `node-forge` version affected and proposes an incompatible Expo 44 downgrade | Re-check when `node-forge` publishes a patched release and Expo accepts it |
+The Expo SDK 58 lockfile reports zero high and critical findings. Expo Router 58 removes the vulnerable query-decoder dependency chain tracked in [issue #3](https://github.com/chenliangela-hue/foobow/issues/3). Expo compatibility checks use Node 24, while the existing web and API checks retain their pinned runtime.
 
 ## Active Moderate Advisories
 
-| Area | Package Path | Advisory | Current Decision | Review Trigger |
-| --- | --- | --- | --- | --- |
-| Mobile tooling | `expo -> @expo/cli -> @expo/config-plugins -> xcode -> uuid` | `uuid` buffer bounds issue for v3/v5/v6 with explicit buffer use | Monitor Expo SDK upstream; current force fix would downgrade Expo to an incompatible old version | Re-check when Expo SDK updates its transitive dependency chain |
+The SDK 58 lockfile reports moderate findings in Expo fingerprint tooling through `minimatch` and in Clerk’s transitive wallet dependencies through `stream-json` and `uuid`. The audit tool proposes incompatible direct dependency changes. Review patched upstream releases rather than applying its forced downgrade suggestions. Foobow does not expose wallet functionality.
 
 ## Resolved Advisories
 
-The November 27 mobile manifest raises the floors for `compression`, `node-forge`, `shell-quote`, and `source-map-js`. It also scopes patched Zod 4 to Expo CLI. npm audit reports zero critical findings and three high findings in the remaining Expo Router chain.
+The November 27 mobile manifest raises the floors for `compression`, `node-forge`, `shell-quote`, and `source-map-js`. It also scopes patched Zod 4 to Expo CLI. The SDK 58 follow-up removes the remaining high findings by upgrading Expo Router.
 
 | Area | Package Path | Advisory | Resolution |
 | --- | --- | --- | --- |
@@ -48,7 +41,7 @@ The Foobow acceptance gate remains:
 npm run test:security
 ```
 
-This runs high/critical audit gates for the root, API, and mobile packages. The moderate advisories above are allowed only while they remain transitive tooling issues and while the documented force fixes would break the selected stack. Active high or critical advisories remain release blockers even while their product track is deferred; they are not suppressed or downgraded in CI.
+This runs high/critical audit gates for the root, API, and mobile packages. The moderate advisories above stay tracked. Reassess their reachability before enabling related features and review compatible upstream updates. Active high or critical advisories remain release blockers even while their product track is deferred; they are not suppressed or downgraded in CI.
 
 ## Next Review
 
