@@ -12,9 +12,10 @@ for (const expected of [
   "prisma -> @prisma/dev -> @hono/node-server",
   "repeated-slash",
   "Resolved 2026-07-23",
-  "expo -> @expo/cli -> @expo/config-plugins -> xcode -> uuid",
-  "buffer bounds",
-  "Monitor Expo SDK upstream"
+  "Expo fingerprint tooling",
+  "Clerk’s transitive wallet dependencies",
+  "`stream-json` and `uuid`",
+  "Review patched upstream releases"
 ]) {
   assert.ok(docs.includes(expected), `dependency advisory watchlist missing: ${expected}`);
 }
