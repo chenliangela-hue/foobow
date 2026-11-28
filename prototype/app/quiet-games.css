@@ -1,0 +1,86 @@
+.game-tile-stream { --game-image: url('../assets/foobow/backgrounds/storybook/gratitude-creek.webp'); }
+.game-tile-herbarium { --game-image: url('../assets/foobow/backgrounds/kindness-quest-pavilion.webp'); }
+.game-tile-mosaic { --game-image: url('../play/lamp/workbench.webp'); }
+.experience-feature-art { background-image: url('../assets/foobow/backgrounds/storybook/gratitude-creek.webp'); }
+.games-gallery-grid .game-tile:focus-visible { outline-offset: -4px; }
+.games-gallery-grid .game-tile:hover strong { text-decoration: underline; text-underline-offset: .18em; }
+.games-gallery-grid .game-tile strong { color: inherit; }
+
+.quiet-puzzle {
+  --surface: #f8f3e7;
+  --ink: #242e24;
+  width: min(35rem, calc(100% - 1.5rem));
+  max-height: calc(100dvh - 1.5rem);
+  margin: auto;
+  padding: clamp(1rem, 4vw, 2rem);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid #b1a381;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 4rem #10171166;
+  overflow: auto;
+}
+.quiet-puzzle::backdrop { background: #101b16cc; }
+.quiet-puzzle h2 { font: 500 clamp(2.2rem, 7vw, 3.4rem)/1 Georgia, serif; letter-spacing: -.045em; margin: .3em 0; }
+.quiet-puzzle p { line-height: 1.45; margin: .55rem 0 1rem; }
+.quiet-puzzle button {
+  appearance: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 1px solid #837c64;
+  border-radius: .45rem;
+  background: #fffcf4;
+  min-height: 44px;
+}
+.quiet-puzzle button:focus-visible { outline: 3px solid #a3431f; outline-offset: 2px; z-index: 1; }
+.quiet-puzzle button:disabled { cursor: default; }
+.puzzle-exit button, .puzzle-actions button { padding: .45rem .75rem; }
+.puzzle-actions { display: flex; flex-wrap: wrap; gap: .55rem; }
+.puzzle-status { min-height: 1.5em; font-weight: 650; }
+.puzzle-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .3rem;
+  max-width: 23rem;
+  margin-inline: auto;
+  padding: .5rem;
+  border-radius: .6rem;
+  background: #dcd6bf;
+}
+.puzzle-board > button { position: relative; aspect-ratio: 1; padding: 0; }
+[data-game='stream'] .puzzle-board { background: #b8c6b5; }
+[data-game='stream'] .puzzle-board button:not(:disabled) { background: #f7f3df; }
+[data-game='stream'] .puzzle-board button:disabled { background: #a6af97; }
+[data-game='stream'] .puzzle-board button[data-edge] { box-shadow: inset 0 0 0 3px #527477; }
+[data-game='stream'] .puzzle-board button[data-edge='spring'] { border-inline-start: 5px solid #1b657b; }
+[data-game='stream'] .puzzle-board button[data-edge='pond'] { border-inline-end: 5px solid #1b657b; }
+[data-game='stream'] .puzzle-board span { position: absolute; background: #757459; }
+[data-game='stream'] .puzzle-board .wet span { background: #167189; }
+.puzzle-board :is(.north,.south) { width: 20%; left: 40%; height: 55%; }
+.puzzle-board :is(.east,.west) { height: 20%; top: 40%; width: 55%; }
+.puzzle-board .north { top: 0; }
+.puzzle-board .south { bottom: 0; }
+.puzzle-board .west { left: 0; }
+.puzzle-board .east { right: 0; }
+[data-game='herbarium'] .puzzle-board button { background: #24493b; color: #fff6dd; font-size: clamp(1.4rem, 7vw, 2.6rem); }
+[data-game='herbarium'] .puzzle-board button.revealed { background: #fff9ed; color: #294f3b; }
+[data-game='herbarium'] .puzzle-board button.matched { background: #d5e2bd; color: #294f3b; border-color: #657d58; }
+.puzzle-palette { display: flex; flex-wrap: wrap; gap: .45rem; margin-block: 0 .8rem; }
+.puzzle-palette:empty { display: none; }
+.puzzle-palette button { flex: 1 0 auto; display: grid; justify-items: center; gap: .2em; padding: .4rem; }
+.puzzle-palette button[aria-pressed='true'] { border-color: #212a20; box-shadow: inset 0 0 0 2px #212a20; }
+.puzzle-palette button:disabled { opacity: .55; }
+.piece-preview { display: inline-grid; grid-template: repeat(3, .49rem) / repeat(3, .49rem); gap: 1px; }
+[data-color='Clay'] { --ceramic: #a65242; }
+[data-color='Ochre'] { --ceramic: #b37a26; }
+[data-color='Jade'] { --ceramic: #347667; }
+[data-color='Indigo'] { --ceramic: #475889; }
+.piece-preview i { background: var(--ceramic); border-radius: 1px; }
+[data-game='mosaic'] .puzzle-board button[data-color]:not([data-color='']) {
+  background:
+    radial-gradient(ellipse at 22% 18%, #fff3bf38, transparent 65%),
+    linear-gradient(140deg, transparent, #1a1a2327),
+    var(--ceramic);
+  box-shadow: inset 0 0 0 2px #ffffff45, inset 0 -3px 5px #26202150;
+}

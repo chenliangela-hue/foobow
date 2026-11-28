@@ -42,6 +42,8 @@ Last updated: 2026-10-12 17:08 America/Toronto
 
 ## Last Sync Notes
 
+- 2026-11-09 roadmap planning check: the October 12 usage percentages are historical, not current capacity measurements. Gemini's short health prompt failed because its API key is not configured. Claude's short health prompt produced no response before cancellation. Neither received repository contents or blocking-path work; Codex integrated the planning specification and tracker structure. Recheck health and actual usage before future assignments.
+
 - 2026-10-12 ritual refinement health check: local Node is `20.19.4`. Claude CLI returned an expired OAuth session; Gemini CLI requested `GEMINI_API_KEY`. Neither was assigned blocking work. The web ritual changes were implemented and verified locally; no secrets were sent to either CLI.
 
 - Dashboard initialized from zero counters as requested.

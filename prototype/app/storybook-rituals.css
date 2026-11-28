@@ -337,15 +337,6 @@
 .ritual-focus-dialog[data-ritual="wheel"] .wheel-svg,
 .ritual-focus-dialog[data-ritual="wheel"] .wheel-pendulum { opacity: 0; }
 
-/* Gratitude is now a recognizable lakeside garden with a guide and three destinations. */
-.gratitude-pond {
-  min-height: 310px;
-  border-radius: 26px;
-  border-color: rgba(86, 91, 61, .32);
-  background:
-    linear-gradient(180deg, rgba(144, 201, 218, .18), rgba(33, 100, 95, .44)),
-    url("../assets/foobow/backgrounds/ritual-lake.png") center / cover;
-}
 .gratitude-garden-card {
   color: #29413c;
   background: linear-gradient(145deg, rgba(255, 253, 244, .97), rgba(238, 225, 193, .96));
@@ -361,25 +352,6 @@
 .gratitude-form input { color: #263d38; border-color: rgba(67, 98, 88, .3); background: rgba(255,255,255,.78); }
 .gratitude-form input::placeholder { color: #75857e; }
 .gratitude-again { color: #315b52; border-color: rgba(49, 91, 82, .42); background: rgba(255,255,255,.64); }
-.gratitude-pond::before { inset: auto 0 0; height: 42%; border-radius: 50% 50% 0 0; background: linear-gradient(180deg, rgba(80, 145, 139, .18), rgba(34, 100, 99, .72)); }
-.gratitude-moon { width: 48px; height: 48px; top: 18px; right: 24px; background: #ffe9a4; box-shadow: 0 0 28px #ffe4a0; }
-.gratitude-lotus { color: #fff1b3; }
-.storybook-garden-bank { position: absolute; left: -5%; right: -5%; bottom: -16px; height: 88px; z-index: 2; border-radius: 50% 50% 0 0; background: linear-gradient(#7aa174, #315f50); box-shadow: inset 0 13px rgba(255, 225, 142, .12); }
-.storybook-garden-guide { position: absolute; left: 8%; bottom: 52px; width: 52px; height: 75px; z-index: 4; filter: drop-shadow(0 6px 5px rgba(22,50,41,.28)); transition: transform .7s ease; }
-.guide-head { position: absolute; left: 12px; top: 0; width: 30px; height: 32px; border-radius: 48%; background: #f1c59a; box-shadow: inset 0 8px #413a34; }
-.guide-body { position: absolute; left: 5px; top: 28px; width: 43px; height: 47px; border-radius: 17px 17px 9px 9px; background: #d9684d; }
-.guide-arm { position: absolute; left: 34px; top: 39px; width: 31px; height: 8px; border-radius: 8px; background: #f1c59a; transform: rotate(-18deg); transform-origin: left; }
-.storybook-memory-path { position: absolute; left: 24%; right: 8%; bottom: 28px; z-index: 5; display: flex; justify-content: space-around; align-items: flex-end; }
-.storybook-memory-stone { position: relative; width: 55px; height: 24px; border-radius: 50%; background: #d7c79d; border: 2px solid rgba(255,245,211,.7); box-shadow: 0 7px 11px rgba(17,54,51,.35); transition: transform .55s ease, background .55s ease; }
-.storybook-memory-stone:nth-child(2) { transform: translateY(-17px); }
-.storybook-memory-stone:nth-child(3) { transform: translateY(-3px); }
-.memory-flower { position: absolute; left: 19px; top: -22px; width: 16px; height: 16px; border-radius: 50%; opacity: 0; transform: scale(.2); background: #ffd46b; box-shadow: 0 -9px #f5a8a8, 0 9px #f5a8a8, 9px 0 #f5a8a8, -9px 0 #f5a8a8; transition: opacity .5s ease, transform .65s cubic-bezier(.2,.8,.2,1); }
-.storybook-memory-stone.filled { background: #f1ddb0; transform: translateY(-7px) scale(1.07); }
-.storybook-memory-stone:nth-child(2).filled { transform: translateY(-24px) scale(1.07); }
-.storybook-memory-stone.filled .memory-flower { opacity: 1; transform: scale(.85); }
-.gratitude-pond.garden-complete .storybook-garden-guide { transform: translateX(10px) rotate(-3deg); }
-.gratitude-pond.garden-complete .guide-arm { animation: storybookWave 1.2s ease-in-out 2; }
-.gratitude-pebble { z-index: 6; max-width: 118px; color: #263d38; background: linear-gradient(145deg, #fff1ca, #cfb57d); }
 
 /* The world-game frame now belongs to the same sanctuary instead of a black arcade shell. */
 .sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] {
@@ -532,7 +504,6 @@
 @keyframes storybookFloat { 50% { transform: translateY(-8px); } }
 @keyframes storybookSmoke { 0% { opacity: 0; transform: translateY(4px) rotate(4deg) scaleX(.7); } 45% { opacity: .8; } 100% { opacity: 0; transform: translate(-8px, -28px) rotate(-9deg) scaleX(1.2); } }
 @keyframes storybookBreathe { 50% { transform: scale(1.16); filter: brightness(1.12); } }
-@keyframes storybookWave { 50% { transform: rotate(-42deg); } }
 
 body.dark .quiet-hub { color: #f7edda; background: linear-gradient(180deg, rgba(9, 37, 39, .86), rgba(10, 29, 32, .94)), url("../assets/foobow/backgrounds/tab-blessings-dark.png") center / cover; }
 body.dark .quiet-game { color: #f8efdd; background: rgba(12, 42, 43, .88); }
@@ -551,9 +522,6 @@ body.dark .gratitude-form input { color: #fff8e7; background: rgba(255,255,255,.
   .quiet-feature { grid-template-columns: 1fr; }
   .scene-feature { min-height: 215px; }
   .quiet-game { min-height: 245px; }
-  .gratitude-pond { min-height: 250px; }
-  .storybook-garden-guide { transform: scale(.82); transform-origin: bottom left; }
-  .storybook-memory-path { left: 22%; right: 3%; }
   .sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"] { padding: 4px; border-radius: 20px; }
 }
 
@@ -562,17 +530,171 @@ body.dark .gratitude-form input { color: #fff8e7; background: rgba(255,255,255,.
   .ritual-story-scene { height: 122px; }
   .scene-feature { height: 200px; }
   .quiet-game strong { font-size: 1.2rem; }
-  .gratitude-pond { min-height: 230px; }
-  .storybook-memory-stone { width: 43px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .story-effect,
   .scene-incense .story-prop::before,
   .scene-incense .story-prop::after,
-  .scene-breathe .story-prop,
-  .gratitude-pond.garden-complete .guide-arm { animation: none; }
-  .storybook-memory-stone,
-  .memory-flower,
-  .storybook-garden-guide { transition: none; }
+  .scene-breathe .story-prop { animation: none; }
+}
+
+/* The object and its response share the same surface in each of these scenes. */
+.gratitude-pond {
+  isolation: isolate;
+  min-height: clamp(205px, 42vw, 350px);
+  border-radius: 23px;
+  border-color: #596e5b;
+  background: #142c27 url("../assets/foobow/backgrounds/storybook/gratitude-creek.webp") center / cover;
+  pointer-events: none;
+}
+.gratitude-pond::before {
+  inset: 0;
+  height: auto;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 49% 57%, transparent 28%, #051c165c);
+  pointer-events: none;
+}
+.creek-stone {
+  --stone-size: clamp(54px, 12vw, 85px);
+  --stone-x: 28%;
+  --stone-y: 59%;
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--stone-x) - var(--stone-size) / 2);
+  top: calc(var(--stone-y) - var(--stone-size) / 2);
+  width: var(--stone-size);
+  height: var(--stone-size);
+  padding: 0;
+  border: 1px solid #f5eed6c2;
+  border-radius: 50%;
+  background: #1c382c70;
+  cursor: pointer;
+  touch-action: manipulation;
+  pointer-events: auto;
+  color: #fff2ce;
+}
+.creek-stone:nth-of-type(2) { --stone-x: 50%; --stone-y: 42%; }
+.creek-stone:nth-of-type(3) { --stone-x: 72%; --stone-y: 63%; }
+.creek-stone::before { content: '+'; font: 400 1.6rem/1 Georgia, serif; }
+.creek-stone:hover { background: #37594b9c; }
+.creek-stone:focus-visible { outline: 3px solid #fff7c2; outline-offset: 4px; }
+.creek-stone[aria-pressed="true"] { border-color: transparent; background: none; cursor: default; }
+.creek-stone[aria-pressed="true"]::before { content: none; }
+.creek-stone[aria-pressed="true"]::after {
+  content: '';
+  position: absolute;
+  inset: 24% 7%;
+  z-index: -1;
+  border-radius: 50%;
+  border: 2px solid #e5ffdbc4;
+  box-shadow: 0 0 8px #d3f7c9b8, inset 0 0 7px #d3f7c99e;
+  animation: creek-contact 1.25s ease-out both;
+}
+.creek-stone .gratitude-pebble {
+  position: absolute;
+  left: 12%;
+  right: auto;
+  top: 29%;
+  width: 76%;
+  height: 53%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 47% 57% 45% 51%;
+  transform: rotate(-14deg);
+  background: repeating-linear-gradient(15deg, #f2daba28 0 1px, transparent 2px 7px), radial-gradient(ellipse at 26% 19%, #d1b79a, #916c4d 48%, #382c23 99%);
+  box-shadow: inset 0 2px 3px #ead4aeae, inset 1px -7px 7px #30261d86, 3px 8px 8px #102419a8;
+  animation: creek-stone-settle .42s ease-out both;
+}
+.creek-stone:nth-of-type(2) .gratitude-pebble { background-color: #789080; filter: hue-rotate(55deg) saturate(.42); rotate: 25deg; }
+.creek-stone:nth-of-type(3) .gratitude-pebble { filter: saturate(.6) brightness(1.33); rotate: -19deg; }
+.creek-instruction { margin: .65rem 0; color: #355047; font-size: .98rem; }
+.creek-scene .gratitude-status:empty { min-height: 0; }
+.creek-scene .gratitude-again { margin-top: .7rem; }
+.gratitude-garden-card:has(.garden-complete) .creek-instruction { display: none; }
+.ritual-focus-dialog[data-ritual="gratitudeGarden"] .gratitude-garden-card h3 { font-size: clamp(1.8rem, 3vw, 2.7rem); }
+
+@keyframes creek-contact {
+  from { transform: scale(.6); opacity: 1; }
+  to { transform: scale(2.1); opacity: 0; }
+}
+@keyframes creek-stone-settle {
+  from { translate: 0 -14px; opacity: .25; }
+  to { translate: 0 0; opacity: 1; }
+}
+
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-stage {
+  isolation: isolate;
+  min-height: clamp(250px, 37vw, 405px);
+  background: #271f19 url("../assets/foobow/backgrounds/storybook/muyu-rain-room.webp") center / cover;
+}
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-stage::before { display: none; }
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-stage::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse at 49% 77%, #ffcb865c, transparent 62%);
+  opacity: .22;
+  transition: opacity .85s ease-out;
+  pointer-events: none;
+}
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-stage.room-resonant::after { opacity: 1; transition-duration: .15s; }
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-btn {
+  align-self: end;
+  margin-bottom: 3%;
+  width: clamp(170px, 28vw, 244px);
+  background-image: url("../assets/foobow/sprites/storybook/muyu-walnut.webp");
+}
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-mallet {
+  top: auto;
+  bottom: calc(58px + 3%);
+  right: calc(50% - 105px);
+  transform: rotate(-8deg);
+}
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-mallet.striking { animation-name: tea-room-strike; }
+@keyframes tea-room-strike {
+  0%, 100% { transform: rotate(-8deg); }
+  34% { transform: translate(-15px, 22px) rotate(-48deg); }
+  70% { transform: translate(2px, -5px) rotate(2deg); }
+}
+.ritual-focus-dialog[data-ritual="muyu"] :is(.muyu-presence-bar, .muyu-goal-wrap, #muyuCount, .muyu-hint) { display: none; }
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-card > .section-heading { display: none; }
+.ritual-focus-dialog[data-ritual="muyu"] .muyu-controls button { min-height: 44px; }
+.ritual-focus-dialog[data-ritual="muyu"] .timbre-chip.active { color: #67451d; }
+#muyuRoomSound[aria-pressed="true"] { font-weight: 700; }
+
+.sanctuary-3d-dialog[data-scenario="night-corridor"] :is(.game-hud-status, .game-goal-bar-wrap, .game-quest-meta, .game-tod-picker, #gameCanvasHint, #gameCamModeBtn, #gameResetCamBtn) { display: none; }
+.kyoto-status { font-size: .95rem; line-height: 1.35; margin: .45rem 0 0; }
+.sanctuary-3d-dialog[data-scenario="night-corridor"] .game-quest-badge { max-width: min(31rem, calc(100% - 20px)); }
+.sanctuary-3d-dialog[data-visual-style="storybook-sanctuary"][data-scenario="night-corridor"] #gamePrimaryActionBtn {
+  background: #884229;
+  color: #fff9eb;
+  min-height: 44px;
+}
+.sanctuary-3d-dialog[data-scenario="night-corridor"] .game-wish-picker {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+}
+.sanctuary-3d-dialog[data-scenario="night-corridor"] :is(.wish-btn, .game-secondary-btn, #kyotoMotion) { min-height: 44px; }
+.sanctuary-3d-dialog[data-scenario="night-corridor"] .game-wish-picker .wish-btn { padding-inline: .55rem; }
+
+@media (max-width: 700px) {
+  .ritual-focus-dialog:is([data-ritual="muyu"], [data-ritual="gratitudeGarden"]) #ritualFocusTitle {
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+  }
+  .ritual-focus-dialog[data-ritual="gratitudeGarden"] .gratitude-garden-card { gap: 1rem; }
+  .ritual-focus-dialog[data-ritual="gratitudeGarden"] :is(.gratitude-session-count, .gratitude-garden-kicker) { display: none; }
+  .sanctuary-3d-dialog[data-scenario="night-corridor"] .game-scenario-tabs { max-width: calc(100% - 45px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .creek-stone[aria-pressed="true"]::after { animation: none; opacity: .55; }
+  .creek-stone .gratitude-pebble { animation: none; }
+  .ritual-focus-dialog[data-ritual="muyu"] .muyu-stage::after { transition: none; }
+  .ritual-focus-dialog[data-ritual="muyu"] :is(.muyu-btn, .muyu-mallet, .muyu-ripple, .floating-merit) { animation: none !important; }
 }

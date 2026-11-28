@@ -7,6 +7,7 @@ const translations = I18N.ui;
 let state = loadState();
 window.state = state;
 let focusTimer = null;
+let refreshBackdrop = () => {};
 
 function loadState() {
   try {
@@ -464,20 +465,23 @@ function renderDeeds() {
   const list = document.getElementById("deedList");
   list.replaceChildren();
 
-  const query = (deedSearchQuery || "").trim().toLowerCase();
+  const copy = dictionary();
+  const query = deedSearchQuery.trim().toLowerCase();
   const visibleDeeds = data.deeds.filter((deed) => {
     const matchesCategory = state.activeCategory === "all" || deed.categoryKey === state.activeCategory;
     if (!matchesCategory) return false;
     if (!query) return true;
-    const titleMatch = (deed.title || "").toLowerCase().includes(query);
-    const descMatch = (deed.description || "").toLowerCase().includes(query);
-    const shortMatch = (deed.shortDescription || "").toLowerCase().includes(query);
-    return titleMatch || descMatch || shortMatch;
+    const key = deed.id.replace(/-/g, "_");
+    return [copy[`deed_title_${key}`], copy[`deed_desc_${key}`], deed.title, deed.description, deed.shortDescription]
+      .some(value => value?.toLowerCase().includes(query));
   });
 
-  if (!visibleDeeds.some((deed) => deed.id === state.selectedDeed)) {
-    state.selectedDeed = visibleDeeds[0]?.id || data.deeds[0].id;
+  if (visibleDeeds.length && !visibleDeeds.some(deed => deed.id === state.selectedDeed)) {
+    state.selectedDeed = visibleDeeds[0].id;
   }
+
+  document.getElementById("deedNoResults").hidden = visibleDeeds.length > 0;
+  document.getElementById("deedRitualPreview").hidden = visibleDeeds.length === 0;
 
   const groupIds =
     state.activeCategory === "all"
@@ -512,7 +516,6 @@ function renderDeeds() {
     list.append(group);
   });
 
-  const copy = dictionary();
   const countTmpl = copy.deedTypeCountText || "%{count} shown";
   setText("deedTypeCount", countTmpl.replace("%{count}", visibleDeeds.length));
   renderSelectedDeed();
@@ -1226,6 +1229,7 @@ function renderLamps() {
   const count = document.getElementById("lampCount");
   if (!list) return;
   if (count) count.textContent = String(state.lamps.length);
+  document.getElementById("saved-wishes").hidden = state.lamps.length === 0;
   list.replaceChildren();
   state.lamps.slice(0, 6).forEach(function (lamp) {
     const li = document.createElement("li");
@@ -1484,7 +1488,35 @@ function setupMuyu() {
   const btn = document.getElementById("muyuBtn");
   const autoBtn = document.getElementById("muyuAutoBtn");
   const countEl = document.getElementById("muyuCount");
+  const stage = document.getElementById("muyuStage");
+  const sound = document.getElementById("muyuRoomSound");
+  const instruction = document.getElementById("muyuRoomInstruction");
+  const roomCopy = {
+    en: ["Instrument sound", "Sound off", "Sound on", "Tap the wood and let the room settle. Stop whenever you like."],
+    "zh-Hans": ["木鱼声音", "声音关闭", "声音开启", "轻敲木鱼，静静等待。随时都可以停下。"],
+    fr: ["Son de l’instrument", "Son coupé", "Son activé", "Tapotez le bois et laissez le calme revenir. Arrêtez quand vous voulez."],
+    es: ["Sonido del instrumento", "Sin sonido", "Con sonido", "Toca la madera y deja que vuelva la calma. Para cuando quieras."],
+    th: ["เสียงเครื่องดนตรี", "ปิดเสียง", "เปิดเสียง", "เคาะไม้เบา ๆ แล้วพักสักครู่ หยุดได้ทุกเมื่อ"],
+    ja: ["木魚の音", "音なし", "音あり", "木魚をたたいて、静けさが戻るのを待ちましょう。いつでも終われます。"]
+  };
   if (!btn) return;
+  let roomSound = false;
+  let roomTimer;
+
+  function updateRoomSound() {
+    const [label, off, on, hint] = roomCopy[document.documentElement.lang] || roomCopy.en;
+    sound.setAttribute("aria-label", label);
+    sound.setAttribute("aria-pressed", String(roomSound));
+    sound.textContent = roomSound ? on : off;
+    instruction.textContent = hint;
+  }
+
+  sound.addEventListener("click", () => {
+    roomSound = !roomSound;
+    updateRoomSound();
+  });
+  new MutationObserver(updateRoomSound).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  updateRoomSound();
 
   if (typeof state.muyuTaps !== "number") {
     state.muyuTaps = 0;
@@ -1494,27 +1526,11 @@ function setupMuyu() {
   updateMuyuGoal();
 
   function handleTap() {
-    playMuyuSound(state.muyuTimbre);
+    if (roomSound) playMuyuSound(state.muyuTimbre);
+    stage.classList.add("room-resonant");
+    clearTimeout(roomTimer);
+    roomTimer = setTimeout(() => stage.classList.remove("room-resonant"), 1800);
     state.muyuTaps += 1;
-    if (state.muyuTaps % 108 === 0) {
-      updateKarma(8, btn);
-      playZenChime();
-      const banner = document.getElementById("muyu108Banner");
-      if (banner) {
-        banner.textContent = dictionary().muyu108Attained || "108 Earthly Burdens Released · Serenity Attained! (+8 Karma)";
-        banner.hidden = false;
-        banner.classList.add("active");
-        setTimeout(() => {
-          banner.classList.remove("active");
-          banner.hidden = true;
-        }, 6000);
-      }
-    } else if (state.muyuTaps % 10 === 0) {
-      updateKarma(1, btn);
-      playZenChime();
-    } else {
-      spawnFloatingMerit(btn, getMeritText(1));
-    }
     saveState();
 
     if (countEl) countEl.textContent = String(state.muyuTaps);
@@ -1575,7 +1591,7 @@ function setupMuyu() {
 
     if (pres.leveledUp) {
       window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone();
-      playZenChime();
+      if (roomSound) playZenChime();
       if (pres.level === "stillness") {
         const card = document.querySelector(".muyu-card");
         if (card) {
@@ -1609,6 +1625,7 @@ function setupMuyu() {
   btn.addEventListener("keydown", (e) => {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
+      if (e.repeat) return;
       btn.classList.add("compressing");
       if (malletEl) malletEl.classList.add("anticipating");
       window.FOOBOW_RITUAL_ENGINE?.haptics?.tap();
@@ -1630,19 +1647,22 @@ function setupMuyu() {
     chip.addEventListener("click", () => {
       state.muyuTimbre = chip.dataset.timbre || "wood";
       timbreChips.forEach((c) => c.classList.toggle("active", c === chip));
-      playMuyuSound(state.muyuTimbre);
+      if (roomSound) playMuyuSound(state.muyuTimbre);
       saveState();
     });
   });
 
   if (autoBtn) {
+    function stopAuto() {
+      clearInterval(muyuAutoTimer);
+      muyuAutoTimer = null;
+      autoBtn.textContent = dictionary().muyuAutoTap || "Auto tap";
+      autoBtn.classList.remove("active");
+    }
     autoBtn.addEventListener("click", () => {
       const dict = dictionary();
       if (muyuAutoTimer) {
-        clearInterval(muyuAutoTimer);
-        muyuAutoTimer = null;
-        autoBtn.textContent = dict.muyuAutoTap || "Auto tap";
-        autoBtn.classList.remove("active");
+        stopAuto();
       } else {
         autoBtn.textContent = dict.muyuStopAuto || "Pause auto";
         autoBtn.classList.add("active");
@@ -1650,17 +1670,16 @@ function setupMuyu() {
         muyuAutoTimer = setInterval(handleTap, 1400);
       }
     });
-  }
-
-  const karmaRing = document.querySelector(".karma-ring");
-  if (karmaRing && !karmaRing.dataset.hasTap) {
-    karmaRing.dataset.hasTap = "true";
-    karmaRing.setAttribute("title", "Tap for presence");
-    karmaRing.addEventListener("click", () => {
-      playMuyuSound(state.muyuTimbre);
-      updateKarma(1, karmaRing);
+    document.getElementById("ritualFocusDialog")?.addEventListener("close", () => {
+      stopAuto();
+      clearTimeout(roomTimer);
+      stage.classList.remove("room-resonant");
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopAuto();
     });
   }
+
 }
 
 let incenseTimer = null;
@@ -2097,7 +2116,6 @@ function applyTranslations() {
 
 function renderSettings() {
   document.getElementById("settingPrivateJournal").checked = state.settings.privateJournal;
-  document.getElementById("settingQuietRanking").checked = state.settings.quietRanking;
   document.getElementById("settingDonationReceipts").checked = state.settings.donationReceipts;
 }
 
@@ -2122,6 +2140,7 @@ function renderAlmanac() {
 
 function renderAll() {
   document.body.classList.toggle("dark", state.theme === "dark");
+  refreshBackdrop();
   document.body.classList.toggle("senior-mode", Boolean(state.settings.seniorMode));
   document.getElementById("seniorToggle").setAttribute("aria-pressed", String(Boolean(state.settings.seniorMode)));
   applyTranslations();
@@ -2155,16 +2174,16 @@ function renderAll() {
 
 function navigateTo(target) {
   document.querySelectorAll(".nav-item, .top-nav-item").forEach((item) => {
-    item.classList.toggle("active", item.dataset.target === target);
+    const active = item.dataset.target === target;
+    item.classList.toggle("active", active);
+    if (active) item.setAttribute("aria-current", "page");
+    else item.removeAttribute("aria-current");
   });
   document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));
   const screen = document.getElementById(`screen-${target}`);
   if (screen) screen.classList.add("active");
 
-  // Switch to dedicated sanctuary backdrop for the active tab
-  document.querySelectorAll(".cinematic-backdrop-layer").forEach((layer) => {
-    layer.classList.toggle("active", layer.dataset.tab === target);
-  });
+  refreshBackdrop();
 
   if (target === "map" && typeof currentMapMode !== "undefined" && currentMapMode === "osm") {
     const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
@@ -2175,13 +2194,17 @@ function navigateTo(target) {
 // Both the bottom tab bar (buttons) and the top nav (links) drive the same
 // single-page navigation and stay in sync.
 document.querySelectorAll(".nav-item").forEach((button) => {
-  button.addEventListener("click", () => navigateTo(button.dataset.target));
+  button.addEventListener("click", () => {
+    navigateTo(button.dataset.target);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
 });
 
 document.querySelectorAll(".top-nav-item").forEach((link) => {
   link.addEventListener("click", (event) => {
     event.preventDefault();
     navigateTo(link.dataset.target);
+    window.scrollTo({ top: 0, behavior: "instant" });
   });
 });
 
@@ -2425,9 +2448,20 @@ if (spotActionBtn) {
   spotActionBtn.addEventListener("click", () => {
     const spot = data.spots[state.selectedSpot] || data.spots["east-lake"];
     if (spot && spot.deedId) {
+      document.getElementById("deedSearchInput").value = "";
+      deedSearchQuery = "";
+      const deed = data.deeds.find(item => item.id === spot.deedId);
+      if (deed && state.activeCategory !== "all" && deed.categoryKey !== state.activeCategory) {
+        state.activeCategory = "all";
+        renderCategoryFilters();
+        renderMapPins();
+      }
       selectDeed(spot.deedId);
     }
     navigateTo("deeds");
+    const heading = document.getElementById("ritualTitle");
+    heading.focus({ preventScroll: true });
+    heading.scrollIntoView({ block: "center" });
   });
 }
 
@@ -2815,7 +2849,7 @@ document.getElementById("languageSelect").addEventListener("change", (event) => 
   renderAll();
 });
 
-["settingPrivateJournal", "settingQuietRanking", "settingDonationReceipts"].forEach((id) => {
+["settingPrivateJournal", "settingDonationReceipts"].forEach((id) => {
   document.getElementById(id).addEventListener("change", (event) => {
     const key = event.target.dataset.settingKey;
     state.settings[key] = event.target.checked;
@@ -3158,6 +3192,12 @@ function setupDeedSearch() {
   searchInput.addEventListener("input", (e) => {
     deedSearchQuery = e.target.value;
     renderDeeds();
+  });
+  document.getElementById("clearDeedSearch").addEventListener("click", () => {
+    searchInput.value = "";
+    deedSearchQuery = "";
+    renderDeeds();
+    searchInput.focus();
   });
 }
 
@@ -3612,7 +3652,6 @@ function setupTiltCards() {
     ".wheel-card",
     ".almanac-panel",
     ".global-kindness-card",
-    ".quick-ritual-card",
     ".mini-world-card",
     ".tonight-ritual-card",
     ".impact-stat-card",
@@ -3649,20 +3688,6 @@ function setupTiltCards() {
 }
 
 function setupRedesignInteractions() {
-  const viewAllBtn = document.getElementById("viewAllRitualsBtn");
-  if (viewAllBtn) {
-    viewAllBtn.addEventListener("click", () => {
-      navigateTo("blessings");
-      document.getElementById("quietMomentsHub")?.scrollIntoView({ block: "start" });
-    });
-  }
-
-  document.querySelectorAll(".quick-ritual-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      openQuietRitual(card.dataset.quickRitual);
-    });
-  });
-
   document.querySelectorAll("[data-play-ritual]").forEach((button) => {
     button.addEventListener("click", () => openQuietRitual(button.dataset.playRitual));
   });
@@ -3906,7 +3931,7 @@ function setupTonightRitual() {
 
   setupTonightRitual();
   setupKoiDirectGesture();
-  setupSeedlingMicroGame();
+  renderKindnessGarden();
   setupSanctuaryLanternGame();
 }
 
@@ -3930,7 +3955,7 @@ function renderKindnessGarden() {
     const emptyNotice = document.createElement("span");
     emptyNotice.className = "garden-plant-name";
     emptyNotice.style.fontStyle = "italic";
-    emptyNotice.textContent = "Your garden awaits its first seedling...";
+    emptyNotice.textContent = "No saved plants.";
     grid.appendChild(emptyNotice);
     return;
   }
@@ -3945,206 +3970,6 @@ function renderKindnessGarden() {
     `;
     grid.appendChild(card);
   });
-}
-
-function setupSeedlingMicroGame() {
-  const seedBtn = document.getElementById("draggableSeed");
-  const waterBtn = document.getElementById("waterCanBtn");
-  const sunBtn = document.getElementById("sunBeamBtn");
-  const sproutEl = document.getElementById("seedlingSprout");
-  const sproutIcon = document.getElementById("sproutIcon");
-  const promptEl = document.getElementById("seedlingPrompt");
-  const waterAnim = document.getElementById("waterStreamAnim");
-  const sunOverlay = document.getElementById("sunBeamOverlay");
-  const soil = document.getElementById("soilMound");
-  const stage = document.getElementById("seedlingStage");
-
-  if (!seedBtn || !waterBtn || !sunBtn || !soil || !stage) return;
-
-  let step = 1; // 1: Plant seed, 2: Water, 3: Sunlight, 4: Harvested
-
-  function resetGame() {
-    step = 1;
-    seedBtn.style.display = "";
-    seedBtn.style.transform = "";
-    seedBtn.classList.remove("planted", "dragging");
-    soil.classList.remove("ready");
-    if (sproutEl) sproutEl.hidden = true;
-    if (waterAnim) waterAnim.hidden = true;
-    if (sunOverlay) sunOverlay.hidden = true;
-    stage.style.removeProperty("--sun-x");
-    stage.style.removeProperty("--sun-y");
-    if (promptEl) promptEl.textContent = "Step 1: Drag seed into soil";
-  }
-
-  // Step 1: Plant seed
-  function plantSeed() {
-    if (step !== 1) return;
-    step = 2;
-    window.FOOBOW_RITUAL_ENGINE?.haptics?.tap?.();
-    window.FOOBOW_RITUAL_ENGINE?.audio?.playTok?.({ timbre: "wood", detune: 0.95 });
-    seedBtn.classList.add("planted");
-    seedBtn.style.transform = "";
-    if (promptEl) promptEl.textContent = "Step 2: Hold watering can to nourish";
-  }
-
-  function insideSoil(x, y) {
-    const rect = soil.getBoundingClientRect();
-    return x >= rect.left && x <= rect.right && y >= rect.top - 12 && y <= rect.bottom + 12;
-  }
-
-  let seedDrag = null;
-  seedBtn.addEventListener("pointerdown", (e) => {
-    if (step !== 1 || e.button !== 0) return;
-    seedDrag = { x: e.clientX, y: e.clientY };
-    seedBtn.setPointerCapture(e.pointerId);
-    seedBtn.classList.add("dragging");
-  });
-  seedBtn.addEventListener("pointermove", (e) => {
-    if (!seedDrag) return;
-    seedBtn.style.transform = `translate(${e.clientX - seedDrag.x}px, ${e.clientY - seedDrag.y}px)`;
-    soil.classList.toggle("ready", insideSoil(e.clientX, e.clientY));
-  });
-  seedBtn.addEventListener("pointerup", (e) => {
-    if (!seedDrag) return;
-    seedDrag = null;
-    seedBtn.classList.remove("dragging");
-    soil.classList.remove("ready");
-    if (insideSoil(e.clientX, e.clientY)) plantSeed();
-    else seedBtn.style.transform = "";
-  });
-  seedBtn.addEventListener("pointercancel", () => {
-    seedDrag = null;
-    seedBtn.classList.remove("dragging");
-    soil.classList.remove("ready");
-    seedBtn.style.transform = "";
-  });
-  seedBtn.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      plantSeed();
-    }
-  });
-
-  // Step 2: Water
-  let waterTimer = null;
-  function startWatering() {
-    if (step !== 2) return;
-    window.FOOBOW_RITUAL_ENGINE?.audio?.playWaterRipple?.();
-    window.FOOBOW_RITUAL_ENGINE?.haptics?.holdTick?.();
-    if (waterAnim) waterAnim.hidden = false;
-    waterBtn.classList.add("active");
-
-    if (waterTimer) clearTimeout(waterTimer);
-    waterTimer = setTimeout(() => {
-      waterTimer = null;
-      step = 3;
-      if (waterAnim) waterAnim.hidden = true;
-      waterBtn.classList.remove("active");
-      window.FOOBOW_RITUAL_ENGINE?.haptics?.tap?.();
-      if (promptEl) promptEl.textContent = "Step 3: Guide warm sunlight over seedling";
-    }, 1200);
-  }
-
-  function stopWatering() {
-    if (step === 2 && waterTimer) {
-      clearTimeout(waterTimer);
-      waterTimer = null;
-      if (waterAnim) waterAnim.hidden = true;
-      waterBtn.classList.remove("active");
-    }
-  }
-
-  waterBtn.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;
-    waterBtn.setPointerCapture(e.pointerId);
-    startWatering();
-  });
-  waterBtn.addEventListener("pointerup", stopWatering);
-  waterBtn.addEventListener("pointercancel", stopWatering);
-  waterBtn.addEventListener("keydown", (e) => {
-    if ((e.key === "Enter" || e.key === " ") && !e.repeat) {
-      e.preventDefault();
-      startWatering();
-    }
-  });
-  waterBtn.addEventListener("keyup", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      stopWatering();
-    }
-  });
-  waterBtn.addEventListener("blur", stopWatering);
-
-  // Step 3: Sunlight & Sprout
-  function growSeedling() {
-    if (step !== 3) return;
-    step = 4;
-    if (sunOverlay) {
-      sunOverlay.hidden = false;
-      setTimeout(() => { sunOverlay.hidden = true; }, 1800);
-    }
-    seedBtn.style.display = "none";
-    if (sproutEl) sproutEl.hidden = false;
-
-    const species = ["lotus", "bamboo", "pine", "flower", "tree"];
-    const icons = { lotus: "🪷", bamboo: "🎋", pine: "🌲", flower: "🌸", tree: "🌳" };
-    const picked = species[Math.floor(Math.random() * species.length)];
-
-    if (sproutIcon) sproutIcon.textContent = icons[picked] || "🪷";
-
-    window.FOOBOW_RITUAL_ENGINE?.garden?.addPlant?.(picked);
-    window.FOOBOW_RITUAL_ENGINE?.audio?.playSingingBowl?.(587.33, 2.2);
-    window.FOOBOW_RITUAL_ENGINE?.haptics?.milestone?.();
-
-    updateKarma(5, sunBtn);
-    spawnFloatingMerit(sunBtn, "功德 +5 · 善苗成长");
-    logActivity("deed");
-    saveState();
-
-    if (promptEl) promptEl.textContent = `Sprouted a gentle ${picked}! Added to your Kindness Garden.`;
-    renderKindnessGarden();
-
-    setTimeout(resetGame, 6500);
-  }
-
-  let sunDragging = false;
-  sunBtn.addEventListener("pointerdown", (e) => {
-    if (step !== 3 || e.button !== 0) return;
-    sunDragging = true;
-    sunBtn.setPointerCapture(e.pointerId);
-    sunBtn.classList.add("active");
-    if (sunOverlay) sunOverlay.hidden = false;
-  });
-  sunBtn.addEventListener("pointermove", (e) => {
-    if (!sunDragging) return;
-    const rect = stage.getBoundingClientRect();
-    stage.style.setProperty("--sun-x", `${e.clientX - rect.left}px`);
-    stage.style.setProperty("--sun-y", `${e.clientY - rect.top}px`);
-    soil.classList.toggle("ready", insideSoil(e.clientX, e.clientY));
-  });
-  sunBtn.addEventListener("pointerup", (e) => {
-    if (!sunDragging) return;
-    sunDragging = false;
-    sunBtn.classList.remove("active");
-    soil.classList.remove("ready");
-    if (insideSoil(e.clientX, e.clientY)) growSeedling();
-    else if (sunOverlay) sunOverlay.hidden = true;
-  });
-  sunBtn.addEventListener("pointercancel", () => {
-    sunDragging = false;
-    sunBtn.classList.remove("active");
-    soil.classList.remove("ready");
-    if (sunOverlay) sunOverlay.hidden = true;
-  });
-  sunBtn.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      growSeedling();
-    }
-  });
-
-  renderKindnessGarden();
 }
 
 function setupWaterRipples() {
@@ -4230,7 +4055,7 @@ function renderProfileAccount(user) {
 
     if (profileAvatar) profileAvatar.textContent = "F";
     if (profileTitle) profileTitle.textContent = "Quiet Helper";
-    if (profileEmail) profileEmail.textContent = dict.profileCopy || "Private journal on. Ranking visibility set to quiet mode.";
+    if (profileEmail) profileEmail.textContent = dict.profileCopy || "You’re browsing as a guest.";
 
     if (topNavAvatar) topNavAvatar.textContent = "☺";
     if (dropdownAvatar) dropdownAvatar.textContent = "☺";
@@ -4735,24 +4560,76 @@ setupPondCanvas();
 setupSkyLanterns();
 setupMapKindnessStream();
 setupGlobeParticlesCanvas();
-setupCdnAssetPipeline();
-
 // Public landing links can open the ritual gallery directly without creating
 // a second router or duplicating any ritual state.
 if (new URLSearchParams(window.location.search).get("view") === "rituals") {
   navigateTo("blessings");
-  requestAnimationFrame(() => document.getElementById("quietMomentsHub")?.scrollIntoView({ block: "start" }));
+  const target = document.getElementById("games-gallery-title");
+  target.focus({ preventScroll: true });
+  target.scrollIntoView({ block: "center" });
+}
+setupBackdrop();
+
+function getBackdropCdn() {
+  try {
+    const value = window.FOOBOW_CDN_URL || localStorage.getItem("foobow_cdn_url");
+    const url = new URL(value);
+    if (!/^https?:$/.test(url.protocol) || url.username || url.password || url.search || url.hash) return null;
+    url.pathname = `${url.pathname.replace(/\/+$/, "")}/`;
+    return url;
+  } catch {
+    return null;
+  }
 }
 
-function setupCdnAssetPipeline() {
-  const cdn = window.FOOBOW_CDN_URL || localStorage.getItem("foobow_cdn_url") || "";
-  if (!cdn) return;
-  document.querySelectorAll(".cinematic-backdrop-layer").forEach((layer) => {
-    const bg = layer.style.backgroundImage;
-    const match = bg.match(/url\(['"]?([^'"]+)['"]?\)/);
-    if (match && match[1] && match[1].startsWith("../assets/foobow/")) {
-      const assetKey = match[1].replace("../assets/foobow/", "");
-      layer.style.backgroundImage = `url('${cdn.replace(/\/$/, "")}/${assetKey}')`;
+function setupBackdrop() {
+  const cdn = getBackdropCdn();
+  const bundled = new URL("../assets/foobow/", document.baseURI);
+  const loads = new WeakMap();
+  let requestedLayer;
+
+  async function loadLayer(layer) {
+    const image = new Image();
+    image.alt = "";
+    const asset = layer.dataset.image;
+    const bundledUrl = new URL(asset, bundled).href;
+    image.src = cdn ? new URL(asset, cdn).href : bundledUrl;
+    try {
+      await image.decode();
+    } catch {
+      if (image.src === bundledUrl) return false;
+      image.src = bundledUrl;
+      try {
+        await image.decode();
+      } catch {
+        return false;
+      }
     }
-  });
+    layer.append(image);
+    return true;
+  }
+
+  refreshBackdrop = async () => {
+    const mode = state.theme === "dark" ? "dark" : "light";
+    const layers = Array.from(document.querySelectorAll(`.${mode}-group .cinematic-backdrop-layer`));
+    const tab = document.querySelector(".screen.active")?.id.slice("screen-".length);
+    const layer = layers.find(candidate => candidate.dataset.tab === tab);
+    if (!layer || layer === requestedLayer) return;
+
+    if (requestedLayer?.parentElement !== layer.parentElement) {
+      // On appearance changes, let the old group fade out. Show the theme's
+      // solid surface while the matching image loads instead of another tab.
+      layers.forEach(candidate => {
+        if (candidate !== layer) candidate.classList.remove("active");
+      });
+    }
+    requestedLayer = layer;
+
+    if (!loads.has(layer)) loads.set(layer, loadLayer(layer));
+    const loaded = await loads.get(layer);
+    if (!loaded) loads.delete(layer);
+    if (layer !== requestedLayer) return;
+    layers.forEach(candidate => candidate.classList.toggle("active", loaded && candidate === layer));
+  };
+  refreshBackdrop();
 }

@@ -216,7 +216,8 @@ test("dependency advisory watchlist tracks accepted moderate transitive risks", 
     "npm run test:security",
     "Do not run `npm audit fix --force`",
     "prisma -> @prisma/dev -> @hono/node-server",
-    "expo -> @expo/cli -> @expo/config-plugins -> xcode -> uuid",
+    "Expo fingerprint tooling",
+    "Clerk’s transitive wallet dependencies",
     "Dependency advisory watchlist"
   ]);
 

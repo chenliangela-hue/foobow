@@ -8,7 +8,8 @@ on:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    # The locked Playwright build ships Chromium for Ubuntu 24.04.
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -33,20 +34,37 @@ jobs:
       - name: Run API runtime tests
         run: npm run test:api
 
-      - name: Install mobile dependencies
-        run: npm --prefix apps/mobile ci
-
-      - name: Run mobile typecheck
-        run: npm run test:mobile
-
-      - name: Run high severity audit gates
-        run: npm run test:security
+      - name: Audit web and API dependencies
+        run: npm run audit:high && npm run audit:api:high
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
       - name: Run browser PA checks
         run: npm run test:browser
+
+      - name: Run Quiet Worlds browser checks
+        run: npm run test:browser:sanctuary
+
+  mobile-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install mobile dependencies
+        run: npm --prefix apps/mobile ci
+
+      - name: Run mobile typecheck
+        run: npm run test:mobile
+
+      - name: Audit native mobile dependencies
+        run: npm run audit:mobile:high
 
   api-db-smoke:
     runs-on: ubuntu-latest

@@ -18,6 +18,17 @@
   const count = document.getElementById("gratitudeSessionCount");
   const inputs = [...form.querySelectorAll("input")];
   if (!card || !form || !pond) return;
+  const placements = [...pond.querySelectorAll(".creek-stone")];
+  const creekCopy = {
+    en: ["Choose three stones. Writing is optional.", "Place stone", "Creek stone placements"],
+    "zh-Hans": ["放下三颗石子。可以不写文字。", "放下石子", "溪流石子"],
+    fr: ["Posez trois galets. Écrire est facultatif.", "Poser le galet", "Galets du ruisseau"],
+    es: ["Coloca tres piedras. Escribir es opcional.", "Colocar la piedra", "Piedras del arroyo"],
+    th: ["วางหินสามก้อน จะเขียนหรือไม่ก็ได้", "วางหินก้อนที่", "ก้อนหินในลำธาร"],
+    ja: ["石を三つ置きましょう。書かなくても大丈夫です。", "石を置く", "小川の石"]
+  };
+  const placed = new Set();
+  let complete = false;
 
   function locale() {
     const lang = document.documentElement.lang;
@@ -35,13 +46,17 @@
 
   function applyCopy() {
     const words = copy[locale()];
+    const [hint, place, group] = creekCopy[locale()];
     card.querySelectorAll("[data-gratitude-i18n]").forEach((node) => {
-      node.textContent = words[node.dataset.gratitudeI18n];
+      node.textContent = node.dataset.gratitudeI18n === "placeHint" ? hint : words[node.dataset.gratitudeI18n];
     });
     card.querySelectorAll("[data-gratitude-placeholder]").forEach((node) => {
       node.placeholder = words[node.dataset.gratitudePlaceholder];
     });
     count.textContent = words.count(readState().sessions);
+    pond.setAttribute("aria-label", group);
+    placements.forEach((button, index) => button.setAttribute("aria-label", `${place} ${index + 1}`));
+    if (complete) status.textContent = words.complete;
   }
 
   function updateReadyState() {
@@ -49,43 +64,73 @@
   }
 
   function resetGarden() {
+    placed.clear();
+    complete = false;
     inputs.forEach((input) => { input.value = ""; input.disabled = false; });
-    pond.querySelectorAll(".gratitude-pebble").forEach((pebble) => pebble.remove());
+    placements.forEach((button) => {
+      button.setAttribute("aria-pressed", "false");
+      button.replaceChildren();
+    });
     pond.classList.remove("celebrating", "garden-complete");
-    pond.querySelectorAll(".storybook-memory-stone").forEach((stone) => stone.classList.remove("filled"));
     status.textContent = "";
+    form.hidden = false;
     settleButton.hidden = false;
     settleButton.disabled = true;
     againButton.hidden = true;
-    inputs[0].focus();
+    placements[0].focus();
   }
 
+  function placeStone(index) {
+    if (complete || placed.has(index)) return;
+    placed.add(index);
+    const button = placements[index];
+    button.setAttribute("aria-pressed", "true");
+    const pebble = document.createElement("span");
+    pebble.className = "gratitude-pebble";
+    pebble.setAttribute("aria-hidden", "true");
+    button.append(pebble);
+    if (placed.size < placements.length) return;
+
+    complete = true;
+    pond.classList.add("celebrating", "garden-complete");
+    inputs.forEach((input) => { input.value = ""; input.disabled = true; });
+    const next = { sessions: readState().sessions + 1 };
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(next));
+    } catch {
+      // The played scene can still settle when local storage is unavailable.
+    }
+    count.textContent = copy[locale()].count(next.sessions);
+    status.textContent = copy[locale()].complete;
+    settleButton.hidden = true;
+    form.hidden = true;
+    againButton.hidden = false;
+    againButton.focus();
+    if (typeof updateKarma === "function") {
+      try { updateKarma(3, againButton); } catch { /* Session remains complete. */ }
+    }
+  }
+
+  placements.forEach((button, index) => {
+    button.addEventListener("click", () => placeStone(index));
+    // Mobile Chromium can retarget a synthesized click to the pond after dialog focus changes.
+    button.addEventListener("pointerup", (event) => {
+      if (event.pointerType !== "touch" || !event.isPrimary) return;
+      if (document.elementFromPoint(event.clientX, event.clientY)?.closest(".creek-stone") === button) {
+        placeStone(index);
+      }
+    });
+  });
   inputs.forEach((input) => input.addEventListener("input", updateReadyState));
   againButton.addEventListener("click", resetGarden);
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const moments = inputs.map((input) => input.value.trim().slice(0, 72));
-    if (moments.some((moment) => !moment)) return;
-
-    pond.querySelectorAll(".gratitude-pebble").forEach((pebble) => pebble.remove());
-    moments.forEach((moment) => {
-      const pebble = document.createElement("span");
-      pebble.className = "gratitude-pebble";
-      pebble.textContent = moment;
-      pond.append(pebble);
-    });
-    pond.querySelectorAll(".storybook-memory-stone").forEach((stone, index) => {
-      stone.classList.toggle("filled", Boolean(moments[index]));
-    });
-    pond.classList.add("celebrating", "garden-complete");
-    inputs.forEach((input) => { input.disabled = true; });
-    const next = { sessions: readState().sessions + 1 };
-    localStorage.setItem(storageKey, JSON.stringify(next));
-    count.textContent = copy[locale()].count(next.sessions);
-    status.textContent = copy[locale()].complete;
-    settleButton.hidden = true;
-    againButton.hidden = false;
-    if (typeof updateKarma === "function") updateKarma(3, againButton);
+    if (settleButton.disabled) return;
+    placements.forEach((_, index) => placeStone(index));
+  });
+  document.getElementById("ritualFocusDialog")?.addEventListener("close", () => {
+    inputs.forEach((input) => { input.value = ""; });
+    updateReadyState();
   });
 
   new MutationObserver(applyCopy).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });

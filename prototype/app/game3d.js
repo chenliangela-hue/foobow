@@ -82,7 +82,7 @@
     "night-corridor": {
       id: "night-corridor",
       icon: "🏮",
-      name: "Kyoto River Lanterns",
+      name: "Kyoto River of Light",
       nameZh: "京都 · 水灯祈福照归途",
       coords: "35.0116° N, 135.7681° E",
       biosphere: "Tranquil night river & bamboo sanctuary",
@@ -147,7 +147,7 @@
     "east-lake": "../assets/foobow/backgrounds/storybook/east-lake.webp",
     "toronto-crosswalk": "../assets/foobow/backgrounds/storybook/toronto-crosswalk.webp",
     "amazon-grove": "../assets/foobow/backgrounds/storybook/amazon-grove.webp",
-    "night-corridor": "../assets/foobow/backgrounds/storybook/kyoto-river.webp",
+    "night-corridor": "../assets/foobow/backgrounds/storybook/kyoto-blue-hour.webp",
     "reading-room": "../assets/foobow/backgrounds/storybook/oxford-reading-room.webp"
   };
   const storybookBackdrops = {};
@@ -234,11 +234,11 @@
   };
 
   const WISH_LABELS = {
-    peace: { en: "Peace · 平安", zh: "平安" },
-    health: { en: "Health · 安康", zh: "安康" },
-    wisdom: { en: "Wisdom · 般若", zh: "般若" },
-    love: { en: "Compassion · 慈爱", zh: "慈爱" },
-    release: { en: "Release · 释然", zh: "释然" }
+    peace: { en: "Peace", "zh-Hans": "平安", fr: "Paix", es: "Paz", th: "สงบ", ja: "安らぎ" },
+    health: { en: "Health", "zh-Hans": "安康", fr: "Santé", es: "Salud", th: "สุขภาพ", ja: "健やかさ" },
+    wisdom: { en: "Wisdom", "zh-Hans": "智慧", fr: "Sagesse", es: "Sabiduría", th: "ปัญญา", ja: "知恵" },
+    love: { en: "Compassion", "zh-Hans": "慈爱", fr: "Compassion", es: "Compasión", th: "เมตตา", ja: "思いやり" },
+    release: { en: "Release", "zh-Hans": "释然", fr: "Lâcher prise", es: "Soltar", th: "ปล่อยวาง", ja: "手放す" }
   };
   let currentWish = "peace";
 
@@ -280,6 +280,18 @@
 
   // Scenario 4: Kyoto Night River Entities
   let riverLanterns = [];
+  let kyotoPhase = "fold";
+  let kyotoLantern;
+  let kyotoPaused = prefersReducedMotion;
+  const kyotoTints = { peace: "246, 198, 126", health: "187, 226, 171", wisdom: "187, 200, 249", love: "255, 172, 156", release: "168, 229, 225" };
+  const kyotoCopy = {
+    en: ["Fold lantern", "Place on the water", "Fold another lantern", "Skip to the river bend", "Pause motion", "Resume motion", "Choose a wish and fold one paper lantern.", "Your lantern is ready. Set it in the river.", "Watch your virtual lantern drift. You can skip to the bend.", "Your lantern joined the lights. Stay a while, or fold another.", "A fictional river scene. Every lantern stays virtual."],
+    "zh-Hans": ["折一盏灯", "放入水中", "再折一盏灯", "跳到河湾", "暂停动画", "恢复动画", "选一个心愿，折一盏纸灯。", "纸灯折好了，把它放入河中。", "看虚拟纸灯随水漂流，也可以跳到河湾。", "你的纸灯已汇入点点灯光。可以静坐片刻，也可以再折一盏。", "这是虚构河景，纸灯仅在游戏中漂流。"],
+    fr: ["Plier la lanterne", "Poser sur l’eau", "Plier une autre lanterne", "Aller au méandre", "Mettre en pause", "Reprendre le mouvement", "Choisissez un souhait et pliez une lanterne en papier.", "Votre lanterne est prête. Posez-la sur l’eau.", "Regardez votre lanterne virtuelle flotter, ou allez au méandre.", "Votre lanterne a rejoint les lumières. Restez un instant ou pliez-en une autre.", "Une rivière imaginaire et des lanternes virtuelles."],
+    es: ["Doblar la linterna", "Colocar en el agua", "Doblar otra linterna", "Saltar a la curva", "Pausar movimiento", "Reanudar movimiento", "Elige un deseo y dobla una linterna de papel.", "Tu linterna está lista. Colócala en el agua.", "Mira flotar tu linterna virtual o salta a la curva.", "Tu linterna se ha unido a las luces. Quédate un rato o dobla otra.", "Un río imaginario con linternas virtuales."],
+    th: ["พับโคม", "วางลงในน้ำ", "พับโคมอีกดวง", "ข้ามไปยังโค้งน้ำ", "หยุดภาพเคลื่อนไหว", "เล่นภาพเคลื่อนไหวต่อ", "เลือกคำอธิษฐานแล้วพับโคมกระดาษ", "โคมพร้อมแล้ว วางลงในแม่น้ำได้เลย", "ชมโคมเสมือนลอยน้ำ หรือข้ามไปยังโค้งน้ำ", "โคมของคุณไปรวมกับแสงดวงอื่นแล้ว จะพักหรือพับอีกดวงก็ได้", "แม่น้ำในจินตนาการและโคมเสมือน"],
+    ja: ["灯ろうを折る", "水に浮かべる", "もう一つ折る", "川の曲がりまで進む", "動きを止める", "動きを再開する", "願いを選んで紙の灯ろうを折りましょう。", "灯ろうの準備ができました。水に浮かべましょう。", "灯ろうが流れる様子を眺めるか、川の曲がりまで進みましょう。", "灯ろうがほかの光に合流しました。眺めても、もう一つ折っても大丈夫です。", "架空の川を舞台にした、画面の中だけの体験です。"]
+  };
   let riverWaterOffset = 0;
 
   // Scenario 5: Oxford Reading Room Entities
@@ -1777,12 +1789,16 @@
   // ---------------------------------------------------------------------------
   function initKyotoLanterns() {
     riverLanterns = [];
-    spawnRiverLantern(0, -60, "Peace · 平安");
-    spawnRiverLantern(25, -20, "Health · 康宁");
+    kyotoPhase = "fold";
+    kyotoLantern = null;
+    kyotoPaused = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    spawnRiverLantern(-19, 125);
+    spawnRiverLantern(36, 152);
+    spawnRiverLantern(-44, 182);
   }
 
   function spawnRiverLantern(x, z, wish = "Peace · 平安") {
-    riverLanterns.push({
+    const lantern = {
       x,
       y: 0,
       z,
@@ -1790,22 +1806,47 @@
       driftX: (Math.random() - 0.5) * 0.2,
       flamePhase: Math.random() * Math.PI * 2,
       wish
-    });
+    };
+    riverLanterns.push(lantern);
+    return lantern;
   }
 
   function updateKyotoLanterns(dt) {
+    if (kyotoPaused || document.hidden) return;
     riverWaterOffset += dt * 0.8;
+    if (kyotoPhase !== "drift") return;
+    kyotoLantern.z = Math.min(190, kyotoLantern.z + dt * 56);
+    if (kyotoLantern.z >= 190) settleKyotoLantern();
+  }
 
-    riverLanterns.forEach((lantern) => {
-      lantern.flamePhase += dt * 8;
-      lantern.z += lantern.vz;
-      lantern.x += Math.sin(lantern.z * 0.05) * 0.35;
+  function settleKyotoLantern() {
+    if (kyotoPhase !== "drift") return;
+    kyotoPhase = "settled";
+    kyotoLantern.z = 190;
+    const progress = progressState["night-corridor"];
+    progress.count += 1;
+    progress.score += 5;
+    // Preserve the existing completion and badge rewards without a speed multiplier.
+    if (typeof window.updateKarma === "function") window.updateKarma(2, document.getElementById("gamePrimaryActionBtn"));
+    if (progress.count >= SCENARIOS["night-corridor"].targetGoal && !progress.completed) {
+      progress.completed = true;
+      if (typeof window.updateKarma === "function") window.updateKarma(10, document.getElementById("gamePrimaryActionBtn"));
+    }
+    updateHUD();
+  }
 
-      if (lantern.z > 240) {
-        lantern.z = -220;
-        lantern.x = (Math.random() - 0.5) * 40;
-      }
-    });
+  function advanceKyotoLantern() {
+    if (kyotoPhase === "drift") return;
+    if (kyotoPhase === "ready") {
+      kyotoLantern.tint = kyotoTints[currentWish];
+      kyotoPhase = "drift";
+      if (kyotoPaused) settleKyotoLantern();
+    } else {
+      if (kyotoLantern) riverLanterns = riverLanterns.filter((lantern) => lantern !== kyotoLantern);
+      kyotoLantern = spawnRiverLantern(0, -110);
+      kyotoPhase = "ready";
+    }
+    updateHUD();
   }
 
   function drawKyotoLanterns() {
@@ -2373,46 +2414,41 @@
   }
 
   function drawModernKyotoLanterns() {
-    const isDark = document.body.classList.contains("dark");
-    drawStorybookBackdrop("night-corridor", "#16304b", "#050c18", isDark ? "rgba(2, 7, 16, .42)" : "rgba(4, 16, 31, .18)");
-    drawSceneVignette("rgba(1, 8, 20, .58)");
+    drawStorybookBackdrop("night-corridor", "#2e4156", "#101926", "rgba(4, 16, 31, .06)");
+    drawSceneVignette("rgba(1, 8, 20, .25)");
 
     [...riverLanterns].sort((a, b) => b.z - a.z).forEach((lantern, index) => {
       const travel = Math.max(0, Math.min(1, (lantern.z + 110) / 330));
+      const shimmer = kyotoPaused ? 0 : Math.sin(riverWaterOffset * 4 + index) * 1.8;
+      const nearShore = width < 500 ? .64 : .73;
       const point = {
-        sx: width * .5 + lantern.x * (1.9 - travel * .7),
-        sy: height * (.79 - travel * .43),
-        scale: .55 + (1 - travel) * .34,
+        sx: width * .5 + lantern.x * (1.4 - travel * .55) + shimmer + Math.sin(travel * 2.7) * 21,
+        sy: height * (nearShore - travel * (nearShore - .43)),
+        scale: .30 + (1 - travel) * .70,
         visible: true
       };
+      const waiting = lantern === kyotoLantern && kyotoPhase === "ready";
+      const tint = waiting ? kyotoTints[currentWish] : (lantern.tint || kyotoTints.peace);
+      ctx.save();
+      for (let row = 0; row < (waiting ? 0 : 9); row++) {
+        const length = (21 - row * 1.5) * point.scale;
+        const angle = .62 * row + riverWaterOffset * 4;
+        ctx.fillStyle = `rgba(${tint}, ${(.40 - row * .041).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.ellipse(point.sx + Math.sin(angle) * point.scale * 7, point.sy + (13 + row * 5) * point.scale, length, 1.5 * point.scale, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
       drawStorybookSprite("lantern", point, {
-        width: 76,
+        width: 73,
         anchorY: .58,
         phase: lantern.flamePhase + index,
-        bob: 2.6,
-        glow: "rgba(255, 178, 72, .4)",
+        bob: 0,
+        glow: `rgba(${tint}, ${waiting ? .17 : .43})`,
         glowRadius: .9,
         shadow: false
       });
-      ctx.save();
-      ctx.font = "700 11px 'Noto Serif SC', serif";
-      ctx.textAlign = "center";
-      ctx.fillStyle = "rgba(255, 248, 226, .96)";
-      ctx.shadowColor = "rgba(0,0,0,.75)";
-      ctx.shadowBlur = 6;
-      ctx.fillText(lantern.wish, point.sx, point.sy + 25 * point.scale);
-      ctx.restore();
     });
-
-    for (let i = 0; i < 14; i++) {
-      const fx = (Math.sin(waterTime * .6 + i * 12.7) * .42 + .5) * width;
-      const fy = (Math.cos(waterTime * .48 + i * 7.3) * .22 + .45) * height;
-      const alpha = prefersReducedMotion ? .42 : .22 + Math.abs(Math.sin(waterTime * 2 + i)) * .64;
-      ctx.fillStyle = `rgba(255, 220, 118, ${alpha.toFixed(2)})`;
-      ctx.beginPath();
-      ctx.arc(fx, fy, 1.8, 0, Math.PI * 2);
-      ctx.fill();
-    }
   }
 
   function wrapCanvasText(text, maxWidth) {
@@ -2884,13 +2920,16 @@
 
     // Action button labels
     const primaryBtn = document.getElementById("gamePrimaryActionBtn");
+    if (primaryBtn && currentScenarioKey !== "night-corridor") primaryBtn.hidden = false;
     if (primaryBtn) {
       primaryBtn.textContent = `${scen.icon} ${isZh ? scen.actionNameZh : scen.actionName}`;
+      primaryBtn.disabled = false;
     }
 
     const secondaryBtn = document.getElementById("gameSecondaryActionBtn");
     if (secondaryBtn) {
       secondaryBtn.textContent = isZh ? scen.feedActionNameZh : scen.feedActionName;
+      secondaryBtn.hidden = false;
     }
 
     // Progress counter and bar
@@ -2950,6 +2989,42 @@
     if (camModeLabel) {
       camModeLabel.textContent = cameraMode.charAt(0).toUpperCase() + cameraMode.slice(1);
     }
+
+    updateKyotoHUD();
+  }
+
+  function updateKyotoHUD() {
+    const active = currentScenarioKey === "night-corridor";
+    const status = document.getElementById("kyotoStatus");
+    const motion = document.getElementById("kyotoMotion");
+    status.hidden = motion.hidden = !active;
+    if (!active) return;
+
+    const text = kyotoCopy[document.documentElement.lang] || kyotoCopy.en;
+    const stage = ["fold", "ready", "drift", "settled"].indexOf(kyotoPhase);
+    const main = document.getElementById("gamePrimaryActionBtn");
+    const skip = document.getElementById("gameSecondaryActionBtn");
+    const message = text[6 + stage];
+    if (status.textContent !== message) status.textContent = message;
+    const focusSkip = document.activeElement === main && kyotoPhase === "drift";
+    const focusMain = document.activeElement === skip && kyotoPhase === "settled";
+    main.textContent = text[[0, 1, 1, 2][stage]];
+    main.hidden = kyotoPhase === "drift";
+    skip.hidden = kyotoPhase !== "drift";
+    skip.textContent = text[3];
+    motion.textContent = text[kyotoPaused ? 5 : 4];
+    document.getElementById("gameScenarioStory").textContent = text[10];
+    document.getElementById("gameComboBadge").hidden = true;
+    document.getElementById("gameCanvasHint").textContent = text[1];
+    document.getElementById("gameWishPicker").style.display = (kyotoPhase === "fold" || kyotoPhase === "settled") ? "inline-flex" : "none";
+    const language = document.documentElement.lang;
+    document.querySelectorAll("#gameWishPicker .wish-btn").forEach((button) => {
+      const wish = WISH_LABELS[button.dataset.wish];
+      button.textContent = wish[language] || wish.en;
+      button.setAttribute("aria-pressed", String(button.dataset.wish === currentWish));
+    });
+    if (focusSkip) skip.focus();
+    if (focusMain) main.focus();
   }
 
   // ---------------------------------------------------------------------------
@@ -2958,7 +3033,7 @@
   function performPrimaryAction() {
     const scen = SCENARIOS[currentScenarioKey];
     const prog = progressState[currentScenarioKey];
-    recordComboAction();
+    if (currentScenarioKey !== "night-corridor") recordComboAction();
 
     if (currentScenarioKey === "east-lake") {
       // Release fish / turtle into East Lake
@@ -3012,22 +3087,7 @@
       }
       updateHUD();
     } else if (currentScenarioKey === "night-corridor") {
-      // Float new wish lantern with chosen wish
-      const isZh = document.documentElement.lang.startsWith("zh");
-      const wishObj = WISH_LABELS[currentWish] || WISH_LABELS.peace;
-      const wishText = isZh ? wishObj.zh : wishObj.en;
-      spawnRiverLantern((Math.random() - 0.5) * 30, -110, wishText);
-      addWaterRipple(0, -110, 40, 1.0);
-      playSound("water");
-      spawnFloatingMerit3D(0, 15, -110, `${wishText} · 善愿通天`);
-      prog.count += 1;
-      prog.score += 5 * comboState.multiplier;
-      awardKarma(2 * comboState.multiplier, "Sent gentle wish lantern down Kyoto river");
-      if (prog.count >= scen.targetGoal && !prog.completed) {
-        prog.completed = true;
-        triggerBadgeUnlock("night-corridor");
-      }
-      updateHUD();
+      advanceKyotoLantern();
     } else if (currentScenarioKey === "reading-room") {
       // Turn page and read aloud
       readingBook.isFlipping = true;
@@ -3077,9 +3137,7 @@
       }
       playSound("water");
     } else if (currentScenarioKey === "night-corridor") {
-      // Gentle wind breeze
-      riverLanterns.forEach((l) => (l.vz += 0.4));
-      playSound("chime");
+      settleKyotoLantern();
     } else if (currentScenarioKey === "reading-room") {
       // Dim or brighten banker's reading lamp
       readingLamp.lit = !readingLamp.lit;
@@ -3202,6 +3260,7 @@
         document.querySelectorAll(".wish-btn").forEach((b) => {
           b.classList.toggle("active", b.dataset.wish === currentWish);
         });
+        updateKyotoHUD();
       });
     });
 
@@ -3217,6 +3276,15 @@
 
     const secondaryBtn = document.getElementById("gameSecondaryActionBtn");
     if (secondaryBtn) secondaryBtn.addEventListener("click", performSecondaryAction);
+    document.getElementById("kyotoMotion").addEventListener("click", () => {
+      kyotoPaused = !kyotoPaused;
+      updateKyotoHUD();
+    });
+    matchMedia("(prefers-reduced-motion: reduce)").addEventListener("change", ({ matches }) => {
+      if (!matches || currentScenarioKey !== "night-corridor") return;
+      kyotoPaused = true;
+      updateKyotoHUD();
+    });
 
     const resetCamBtn = document.getElementById("gameResetCamBtn");
     if (resetCamBtn) {
@@ -3235,6 +3303,7 @@
     // Canvas Pointer Interactions (Rotating Camera & Dropping Ripples)
     if (canvas) {
       canvas.addEventListener("pointerdown", (e) => {
+        if (currentScenarioKey === "night-corridor") return;
         isDragging = true;
         lastPointerX = e.clientX;
         lastPointerY = e.clientY;
@@ -3259,6 +3328,12 @@
       canvas.addEventListener("click", (e) => {
         if (!isRunning) return;
         const rect = canvas.getBoundingClientRect();
+        if (currentScenarioKey === "night-corridor") {
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          if (kyotoPhase === "ready" && x >= .26 && x <= .74 && y >= .42 && y <= .86) advanceKyotoLantern();
+          return;
+        }
         const clickX = e.clientX - rect.left - width / 2;
         const clickY = e.clientY - rect.top - height / 2;
 
@@ -3289,16 +3364,6 @@
           playSound("chime");
           spawnFloatingMerit3D(worldX, 14, worldZ, "Forest Sprout · 生机 (+1)");
           progressState["amazon-grove"].count += 1;
-          updateHUD();
-        } else if (currentScenarioKey === "night-corridor") {
-          const isZh = document.documentElement.lang.startsWith("zh");
-          const wishObj = WISH_LABELS[currentWish] || WISH_LABELS.peace;
-          const wishText = isZh ? wishObj.zh : wishObj.en;
-          spawnRiverLantern(worldX, worldZ, wishText);
-          addWaterRipple(worldX, worldZ, 40, 1.0);
-          playSound("water");
-          spawnFloatingMerit3D(worldX, 12, worldZ, `${wishText} · 善愿 (+1)`);
-          progressState["night-corridor"].count += 1;
           updateHUD();
         } else if (currentScenarioKey === "reading-room") {
           if (Math.abs(worldX) < 65 && Math.abs(worldZ) < 45) {
